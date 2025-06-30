@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- YENI TREE VIEW TANIMI -->
+    <record id="view_sale_order_custom_tree" model="ir.ui.view">
+        <field name="name">sale.order.custom.tree</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <tree string="My Custom Sale Orders">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="date_order"/>
+                <field name="amount_total"/>
+                <!-- İhtiyaca göre ek alanlar koyabilirsiniz -->
+            </tree>
+        </field>
+    </record>
+
+    <!-- YENI FORM VIEW TANIMI -->
+    <record id="view_sale_order_custom_form" model="ir.ui.view">
+        <field name="name">sale.order.custom.form</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <form string="My Custom Sale Order Form">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                        <field name="date_order"/>
+                        <field name="amount_total"/>
+
+                        <field name="company_id" invisible="1"/>
+                    </group>
+                    <!-- Diğer alanlarınızı ekleyebilirsiniz -->
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_sale_order_custom" model="ir.actions.act_window">
+        <field name="name">My Sale Orders</field>
+        <field name="res_model">sale.order</field>
+        <!-- İstiyorsanız sadece tree diyebilirsiniz.
+             Ama form da açabilsin diyorsanız virgülle ayırın. -->
+        <field name="view_mode">tree,form</field>
+
+        <!-- İsteğe bağlı: action ilk hangi view ile açılsın? (tree ise liste, form ise form) -->
+        <!-- <field name="view_type">tree</field>  # Odoo 13 ve öncesinde kullanılıyordu, yeni sürümlerde genelde gerek kalmıyor -->
+
+        <!-- Domain veya context isterseniz ekleyebilirsiniz -->
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+
+
+    <record id="action_sale_order_custom" model="ir.actions.act_window">
+        <field name="name">My Sale Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(0, 0, {'view_mode': 'tree', 'view_id': ref('view_sale_order_custom_tree')}),
+                                  (0, 0, {'view_mode': 'form', 'view_id': ref('view_sale_order_custom_form')})]"/>
+    </record>
+
+
+
+    <menuitem id="menu_sale_order_custom" name="My Sale Orders" parent="sale.sale_menu_root" action="action_sale_order_custom" sequence="20"/> 
+
+    
+
+</odoo>

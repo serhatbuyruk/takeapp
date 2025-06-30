@@ -1,0 +1,10 @@
+<odoo>
+    <data noupdate="1">
+        <record id="airport_ist" model="travel.airport"><field name="name">Istanbul Airport</field><field name="code">IST</field><field name="country_id" ref="base.tr"/></record>
+        <record id="airport_saw" model="travel.airport"><field name="name">Sabiha Gokcen International Airport</field><field name="code">SAW</field><field name="country_id" ref="base.tr"/></record>
+        <record id="airport_esb" model="travel.airport"><field name="name">Esenboga Airport</field><field name="code">ESB</field><field name="country_id" ref="base.tr"/></record>
+        <record id="airport_gyd" model="travel.airport"><field name="name">Heydar Aliyev International Airport</field><field name="code">GYD</field><field name="country_id" ref="base.az"/></record>
+        <record id="airport_svx" model="travel.airport"><field name="name">Koltsovo Airport</field><field name="code">SVX</field><field name="country_id" ref="base.ru"/></record>
+        <record id="airport_dme" model="travel.airport"><field name="name">Domodedovo International Airport</field><field name="code">DME</field><field name="country_id" ref="base.ru"/></record>
+    </data>
+</odoo>

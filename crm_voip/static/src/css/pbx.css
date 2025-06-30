@@ -1,0 +1,46 @@
+.missing_call_item:not(.o_no_notification) > span {
+    padding: 8px;
+    border-radius: 45px;
+    background-color: rgb(181, 70, 70);
+    -webkit-animation: flash linear 1s infinite;
+    animation: flash linear 1s infinite;
+}
+
+.missing_book_item:not(.o_no_notification) > span {
+    padding: 8px;
+    border-radius: 45px;
+    background-color: rgb(181, 70, 70);
+    -webkit-animation: flash linear 1s infinite;
+    animation: flash linear 1s infinite;
+}
+
+.missing_call_item.o_no_notification{opacity: .5;}
+.missing_call_item.o_no_notification span.missing_call_text{display: none;}
+.missing_book_item.o_no_notification span.missing_book_text{display: none;}
+.prev_call{
+    padding: 15px 20px 0 20px;
+}
+
+@-webkit-keyframes flash {
+    0% {
+        background-color: rgb(181, 70, 70);
+    }
+    50% {
+        background-color: rgb(139, 0, 0);
+    }
+    100% {
+        background-color: rgb(181, 70, 70);
+    }
+}
+
+@keyframes flash {
+    0% {
+        background-color: rgb(181, 70, 70);
+    }
+    50% {
+        background-color: rgb(139, 0, 0);
+    }
+    100% {
+        background-color: rgb(181, 70, 70);
+    }
+}

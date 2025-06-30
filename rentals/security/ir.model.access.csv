@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_rentals_user_1,Rentals User,model_rentals_profile,rentals.rentals_group_user,1,0,0,0
+access_rentals_user_2,Rentals Manager,model_rentals_profile,rentals.rentals_group_manager,1,1,1,1
+access_rentals_user_3,Rentals Admin,model_rentals_profile,rentals.rentals_group_admin,1,1,1,1
+access_rentals_user_4,Rentals Dealer,model_rentals_profile,rentals.rentals_group_dealer,1,1,1,1
+access_rentals_user_5,Rentals Access Rigths Full Access,model_rentals_profile,base.group_erp_manager,1,1,1,1
+access_rentals_user_6,Rentals Settings Full Access,model_rentals_profile,base.group_system,1,1,1,1

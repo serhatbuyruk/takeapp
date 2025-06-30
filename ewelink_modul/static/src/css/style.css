@@ -1,0 +1,84 @@
+.custom-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.late-text {
+    color: red;
+    font-weight: bold;
+    margin-left: 8px;
+}
+
+
+/* İş Güvenliği Modül için CSS surver.survey içi */
+
+.o_survey_start2 button::before {
+    content: "İş Güvenliği";
+    visibility: visible;
+
+    content: "İş Güvenliği";
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: red;
+    padding: 10px;
+    border-radius: 5px;
+}
+.o_survey_start2 button {
+    visibility: hidden; 
+   /*  color: transparent; */
+}
+
+
+.o_survey_start3 button::before {
+    color: #fff;
+    content: "İş Güvenliği"; /* Yeni metni ekler */
+    visibility: visible;
+    display: flex; /* Buton içinde hizalama sağlar */
+    align-items: center; /* Dikey hizalama */
+    justify-content: center; /* Yatay hizalama */
+    width: 100%; /* Buton genişliği kadar uzasın */
+    height: 100%; /* Buton yüksekliği kadar uzasın */
+    position: absolute; /* Buton içinde aynı konumda dursun */
+    top: 0;
+    left: 0;
+}
+
+.o_survey_start3 button {
+    color: transparent; /* Orijinal metni şeffaf yapar */
+    visibility: visible; /* Butonu görünür yapar */
+    position: relative; /* İçine yeni metin ekleyebilmek için */
+}
+.o_survey_start3 button:hover {
+    color: transparent;  
+   
+}
+ 
+.o_survey_start button {
+    color: transparent; /* Orijinal metni gizler */
+    position: relative; /* Yeni metni eklemek için */
+}
+
+.o_survey_start button::before {
+    content: "İş Güvenliği"; /* Yeni metni ekler */
+    color: white; /* Buton içindeki metnin rengini belirler */
+    font-weight: bold;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_survey_start button:hover {
+    color: transparent;  
+   
+}
+
+.o_survey_brand_message{
+    display: none !important;
+}

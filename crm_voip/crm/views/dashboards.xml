@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="crm_voip_crm_dashboards_tree" model="ir.ui.view">
+            <field name="name">crm_voip.crm.dashboards.tree</field>
+            <field name="model">crm_voip.crm.dashboards</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="name"/>
+                    <field name="url" readonly="1" widget="CopyClipboardChar" options="{'string': 'Copy Link'}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_dashboards_form" model="ir.ui.view">
+            <field name="name">crm_voip.crm.dashboards.form</field>
+            <field name="model">crm_voip.crm.dashboards</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button name="btn_regenerate_access_token" type="object" string="Regenerate Access Token"/>
+                    </header>
+                    <group>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="access_token" readonly="1"/>
+                        <field name="name"/>
+                        <field name="url" readonly="1" widget="CopyClipboardChar" options="{'string': 'Copy Link'}"/>
+                    </group>
+                    <notebook>
+                        <page string="Announcements">
+                            <field name="announcement_ids" context="{'default_dashboard_id': active_id}"/>
+                        </page>
+                        <page string="Sale Targets">
+                            <field name="sale_target_ids" context="{'default_dashboard_id': active_id}"/>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <!--    crm_voip.crm.dashboard.announcements-->
+        <record id="crm_voip_crm_dashboard_announcement_tree" model="ir.ui.view">
+            <field name="name">crm_voip.crm.dashboard.announcements.tree</field>
+            <field name="model">crm_voip.crm.dashboard.announcements</field>
+            <field name="arch" type="xml">
+                <tree string="" decoration-muted="active!=True">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </tree>
+            </field>
+        </record>
+        <record id="crm_voip_crm_dashboard_announcement_form" model="ir.ui.view">
+            <field name="name">crm_voip.crm.dashboard.announcements.form</field>
+            <field name="model">crm_voip.crm.dashboard.announcements</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="announcement" widget="html"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--    crm_voip.crm.dashboard.sale.targets-->
+        <record id="crm_voip_crm_dashboard_sale_targets_tree" model="ir.ui.view">
+            <field name="name">crm_voip.crm.dashboard.sale.targets.tree</field>
+            <field name="model">crm_voip.crm.dashboard.sale.targets</field>
+            <field name="arch" type="xml">
+                <tree string="" editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="target_type"/>
+                    <field name="statistic_type"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="visible_time"/>
+                    <field name="sales_target" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="currency_id"
+                           options='{"no_open": True, "no_create": True, "no_quick_create": True,"no_create_edit": True}'/>
+                    <field name="active" widget="boolean_toggle"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,133 @@
+<odoo>
+    <!-- Kanban View -->
+    <record id="view_custom_survey_kanban" model="ir.ui.view">
+        <field name="name">ewelink_modul.profile.kanban</field>
+        <field name="model">ewelink_modul.profile</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card o_kanban_dashboard">
+                            <div class="o_kanban_title">
+                                <strong><field name="name"/></strong>
+                            </div>
+                            <div class="o_kanban_body">
+                                <span class="text-muted"><field name="description"/></span>
+                            </div>
+                            <div class="o_kanban_footer">
+                                <span class="badge badge-primary">
+                                    <field name="state"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_custom_survey_form" model="ir.ui.view">
+        <field name="name">ewelink_modul.profile.form</field>
+        <field name="model">ewelink_modul.profile</field>
+        <field name="arch" type="xml">
+            <form string="Custom Survey Form">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="state"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_custom_survey_list" model="ir.ui.view">
+        <field name="name">ewelink_modul.profile.list</field>
+        <field name="model">ewelink_modul.profile</field>
+        <field name="arch" type="xml">
+            <tree string="Custom Survey List">
+                <field name="name"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_custom_survey_search" model="ir.ui.view">
+        <field name="name">ewelink_modul.profile.search</field>
+        <field name="model">ewelink_modul.profile</field>
+        <field name="arch" type="xml">
+            <search string="Search Custom Surveys">
+                <field name="name"/>
+                <filter string="Active" name="active" domain="[('state','=','active')]"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Done" name="done" domain="[('state','=','done')]"/>
+            </search>
+        </field>
+    </record>
+</odoo>
+
+
+<!-- <odoo>
+      Kanban View Güncelleme 
+    <record id="view_survey_kanban_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.kanban.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.view_survey_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_kanban_card']" position="inside">
+                <div class="o_kanban_custom_field">
+                    <span>Özel Alan: <field name="survey_ewelink"/></span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+     Form View Güncelleme 
+    <record id="view_survey_form_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.view_survey_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group" position="inside">
+                <group>
+                    <field name="survey_ewelink"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+     List View Güncelleme  
+    <record id="view_survey_list_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.list.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.view_survey_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="survey_ewelink"/>
+            </xpath>
+        </field>
+    </record>
+
+     Search View Güncelleme 
+    <record id="view_survey_search_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.search.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.view_survey_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Özel Alan Dolu" name="survey_ewelink_not_empty" domain="[('survey_ewelink', '!=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+ -->

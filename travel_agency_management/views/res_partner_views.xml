@@ -1,0 +1,85 @@
+<odoo>
+    <record id="view_partner_form_travel" model="ir.ui.view">
+        <field name="name">res.partner.form.travel</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="vat" position="after">
+                <field name="service_type_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+            </field>
+            <notebook position="inside">
+                <page string="Travel Information" name="travel_info">
+                    <group>
+                        <group string="Passport">
+                            <field name="passport_image" widget="image" class="oe_avatar"/>
+                        </group>
+                        <group string="Family Members">
+                            <field name="family_member_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                </tree>
+                            </field>
+                            <field name="main_contact_id" invisible="1"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="view_vendor_tree_travel" model="ir.ui.view">
+        <field name="name">res.partner.tree.vendor.travel</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree><field name="name" string="Name"/><field name="phone" string="Phone"/><field name="mobile" string="Mobile"/><field name="email" string="Email"/><field name="service_type_ids" string="Service" widget="many2many_tags"/></tree>
+        </field>
+    </record>
+
+    <!--
+        ========================================================================
+        BUGFIX: Replaced 'total_receivable' with standard 'debit' and 'credit'
+        fields which are guaranteed to exist when 'account' module is installed.
+        ========================================================================
+    -->
+    <record id="view_financial_summary_tree" model="ir.ui.view">
+        <field name="name">res.partner.tree.financial.summary</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="display_name" string="Customer"/>
+                <field name="sale_order_count_custom" string="Order Count"/>
+                <field name="total_sale_value" string="Total Sales" sum="Total Sales"/>
+                <field name="total_purchase_value" string="Total Purchase" sum="Total Purchase"/>
+                <field name="total_profit_value" string="Total Profit" sum="Total Profit"/>
+                <field name="debit" string="Total Debit" sum="Total Debit"/>
+                <field name="credit" string="Total Credit" sum="Total Credit"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ACTIONS that will be referenced by menus -->
+    <record id="action_travel_vendors" model="ir.actions.act_window">
+        <field name="name">Vendors</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_vendor_tree_travel"/>
+        <field name="domain">[('supplier_rank', '>', 0)]</field>
+        <field name="context">{'default_is_company': True, 'default_supplier_rank': 1}</field>
+    </record>
+    <record id="action_travel_customers" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">[('customer_rank', '>', 0)]</field>
+        <field name="context">{'default_customer_rank': 1}</field>
+    </record>
+    <record id="action_travel_financial_summary" model="ir.actions.act_window">
+        <field name="name">Financial Report</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_financial_summary_tree"/>
+        <field name="domain">[('customer_rank', '>', 0)]</field>
+    </record>
+</odoo>

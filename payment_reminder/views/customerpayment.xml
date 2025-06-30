@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--tree view of the payment model-->
+    <record id="payment_tree" model="ir.ui.view">
+        <field name="name">customer.payment.tree</field>
+        <field name="model">customer.payment</field>
+        <field name="arch" type="xml">
+            <tree string="Cities">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <!--form view of the payment model-->
+    <record id="payment_form" model="ir.ui.view">
+        <field name="name">customer.payment.form</field>
+        <field name="model">customer.payment</field>
+        <field name="arch" type="xml">
+            <form string="Cities">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="customer_payment_tree" model="ir.ui.view">
+        <field name="name">payment_reminder.profile.inherit</field>
+        <field name="model">payment_reminder.profile</field>
+        <field name="inherit_id" ref="payment_reminder.payment_reminder_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='main_page']" position="after">
+                <page name="customer_patment_1" string="Customer Payments">
+                    <field name="customer_payment_lines" widget="one2many" context="{'show_attribute': True, 'default_currency_id': 32}">
+                        <tree string="Customer Payment" editable="bottom">
+                            <field name="order_sequence"/>
+                            <field name="price"/>
+                            <field name="currency_id"/>
+                            <field name="date"/>
+                            <field name="description"/>
+                            <field name="customer_payment_status"/>
+                            <button readonly="True" string="" class="oe_inline oe_stat_button"
+                                icon="/web/content/3586?download=true"
+                                attrs="{'invisible': [('customer_payment_status', '!=', 'paid')]}" type="object"
+                                name="from_profile" />
+                            <button readonly="True" string="" class="oe_inline oe_stat_button"
+                                icon="/web/content/3585?download=true"
+                                attrs="{'invisible': [('customer_payment_status', '!=', 'not_paid')]}" type="object"
+                                name="from_profile" />
+                            <button readonly="True" string="" class="oe_inline oe_stat_button"
+                                icon="/web/content/3585?download=true"
+                                attrs="{'invisible': [('customer_payment_status', '!=', 'partial')]}" type="object"
+                                name="from_profile" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <!-- <record id="payment_reminder.profile.common.form" model="ir.ui.view">
+        <field name="name">payment_reminder.profile.common.form.inherit</field>
+        <field name="model">payment_reminder.profile.common.form</field>
+        <field name="inherit_id" ref="product.payment_reminder.profile.common.form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@string='Product Name']" position="after">
+                <group name="payment_select" string="string">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!-- <record id="view_payment_form_inherit" model="ir.ui.view">
+        <field name="name">payment_reminder.profile.common.form.inherit</field>
+        <field name="model">payment_reminder.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']/group" position="before">
+                <group col="2" colspan="2">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!--field ekleme-->
+    <!--
+    <record id="product_template_inherit" model="ir.ui.view">
+        <field name="name">payment_reminder.profile.inherit</field>
+        <field name="model">payment_reminder.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <field name="image_1920" position="after">
+			<group>
+                <field name="from_id"/>
+                <field name="to_id"/>
+			</group>
+            </field>
+        </field>
+    </record>
+	-->
+    <!--action of the payment menu-->
+    <!-- <record id="action_payment_profile" model="ir.actions.act_window">
+        <field name="name">payment</field>
+        <field name="res_model">customer.payment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="payment_root_menu" name="Cities" web_icon="payment,static/src/img/avatar.png"/>
+    <act_window id="payment_list" name="Cities" res_model="customer.payment" view_mode="tree,form" context="{}"/>
+    <menuitem id="payment_zones" parent="payment_root_menu" name="Cities" action="payment_list" sequence="2"/> -->
+</odoo>

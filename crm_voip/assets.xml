@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="assets_backend" name="CRM assets backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/crm_voip/static/src/js/pbx.js"/>
+            <script type="text/javascript" src="/crm_voip/static/src/js/mp3.js"/>
+            <link href="/crm_voip/static/src/css/pbx.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+    </template>
+
+</odoo>

@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="menus" inherit_id="website.layout" name="Add Snippet to Menu">
+        <xpath expr="//main" position="inside">
+            <t t-if="request.httprequest.path == '/menus'">
+                <t t-set="qr" t-value="request.params.get('qr')"/>
+                <!--<p>Qr: <t t-esc="qr"/></p>  -->
+                <t t-set="qrmenu" t-value="request.env['qrmenu.profile'].search([],limit=1)"/>
+                <t t-if="qrmenu.sepet_button_visibility == False">
+                    <div class="TopbtnDiv">
+                        <a t-attf-href="/shop/cart?qr={{qr}}" class="custom-button" target="_self">
+                            <span>
+                                <t t-esc="qrmenu.sepet_button_name"/>
+                            </span>
+                        </a>
+                        <button id="shareBtn" class="custom-button2" target="_self">Paylaş</button>
+                    </div>
+                </t>
+                <t t-if="request.env.user.id != request.website.user_id.id">
+                    <!-- Kullanıcı oturum açmışsa buradaki kod çalışır -->
+                    <!--  <p>Merhaba <t t-esc="request.env.user.name"/>!</p>-->
+                    <div class="container">
+                        <div class="accordion" id="accordionExample">
+                            <t t-set="categories" t-value="request.env['product.public.category'].search([('x_visibility', '=', False)])"/>
+                            <t t-foreach="categories" t-as="category">
+                                <t t-set="unique_id" t-value="'collapse' + str(category.id)"/>
+                                <!-- Benzersiz ID oluşturma -->
+                                <h2 class="accordion-header" t-attf-id="heading#{unique_id}">
+                                    <button class="accordion-button boxmenu collapsed" type="button" t-att-style="'background-image: url(' + ('data:image/png;base64,' + category.image_1920.decode() if category.image_1920 else '/path/to/default/image.png') + '); box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.5);'" data-bs-toggle="collapse" t-att-data-bs-target="'#' + unique_id" aria-expanded="false" t-att-aria-controls="unique_id">
+                                        <p style="                       display: flex;                       justify-content: center;                       align-items: center;                       font-size: 36px;                       color: white;                       height: 100%;                       margin: 0;                     " t-esc="category.name"/>
+                                    </button>
+                                </h2>
+                                <!-- Category ile ilişkilendirilen ürünler -->
+                                <div t-att-id="unique_id" class="accordion-collapse collapse" t-att-aria-labelledby="'heading' + unique_id" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body content">
+                                        <div class="tab-pane fade show p-0">
+                                            <div class="row g-4">
+                                                <t t-set="products" t-value="request.env['product.template'].search([('public_categ_ids', 'in', category.id)], order='website_sequence asc')"/>
+                                                <t t-foreach="products" t-as="product">
+                                                    <div class="col-lg-6">
+                                                        <div class="d-flex align-items-center smallBox">
+                                                            <img t-if="product.image_1920" alt="Product Image" t-att-src="'data:image/png;base64,' + product.image_1920.decode()" class="flex-shrink-0 img-fluid resim" loading="lazy"/>
+                                                            <div class="w-100 d-flex flex-column text-ps-4">
+                                                                <h5 class="d-flex justify-content-between border-bottom pb-2 baslik name">
+                                                                    <span t-esc="product.name"/>
+                                                                </h5>
+                                                                <h5 class="baslik">
+                                                                    <span class="text-primary fiyat" t-esc="product.list_price"/>
+₺
+                                                                </h5>
+                                                                <p class="yazi" t-esc="product.x_content"/>
+                                                                 <!-- WhatsApp Product Share  -->
+                                                                <t t-if="qrmenu.whatsapp_button_visibility == True">
+                                                                    <div class="whatsapp-share">
+                                                                        <t t-if="qrmenu.whatsapp_phone">
+                                                                            <a t-attf-href="https://wa.me/90{{ qrmenu.whatsapp_phone or '90xxxxxxxxxx' }}?text={{ product.name or 'Ürün Bilgisi Yok' }} - {{ product.list_price or 'Fiyat Yok' }}₺%0A{{ product.x_content }}" target="_blank" class="btn btn-success">
+                                                                                <i class="fa fa-whatsapp"/>
+                                                                                <span class="margin-left:10px;">
+                                                                                    <t t-esc="qrmenu.whatsapp_button_name"/>
+                                                                                </span>
+                                                                            </a>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <p>WhatsApp Telefon Numarası girin Lütfen</p>
+                                                                        </t>
+                                                                    </div>
+                                                                </t> 
+                                                                <!-- WhatsApp Location Share  -->
+                                                                <t t-if="qrmenu.whatsapp_location_button_visibility == True">
+                                                                    <div id="whatsapplocation" class="whatsapp-share">
+                                                                        <a href="#" class="btn btn-success" id="shareLocationButton" t-att-data-whatsapp-phone="qrmenu.whatsapp_location_phone or '90xxxxxxxxxx'">
+                                                                            <i class="fa fa-whatsapp"></i>
+                                                                            <span style="margin-left: 10px;">Konum Paylaş</span>
+                                                                        </a>
+                                                                    </div>
+                                                                </t>
+                                                                
+
+                                                                <div class="descriptionMain">
+                                                                    <t t-if="product.x_sehir">
+                                                                        <div class="description">
+                                                                            <span>
+                                                                                <strong>Konum:</strong>
+                                                                            </span>
+                                                                            <span>
+                                                                                <t t-esc="product.x_sehir"/>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                    <t t-if="product.x_m2">
+                                                                        <div class="description">
+                                                                            <span>
+                                                                                <strong>MetreKare:</strong>
+                                                                            </span>
+                                                                            <span>
+                                                                                <t t-esc="product.x_m2"/>
+                                                                            </span>
+                                                                            <span style="margin-left: 5px">m
+                                                                                <sup>2</sup>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                    <t t-if="product.x_odasayisi">
+                                                                        <div class="description">
+                                                                            <span>
+                                                                                <strong>Oda Sayısı:</strong>
+                                                                            </span>
+                                                                            <span>
+                                                                                <t t-esc="product.x_odasayisi"/>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                    <t t-if="product.x_bulundugukat">
+                                                                        <div class="description">
+                                                                            <span>
+                                                                                <strong>Bulunduğu Kat:</strong>
+                                                                            </span>
+                                                                            <span>
+                                                                                <t t-esc="product.x_bulundugukat"/>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                </div>
+                                                            </div>
+                                                            <t t-if="product.x_type=='sepet' ">
+                                                                <form action="/add_product_form" method="POST" class="form-inline d-flex align-items-center justify-content-end">
+                                                                    <div class="form-group mb-2 me-2">
+                                                                        <input type="hidden" name="product_id" t-att-value="product.id"/>
+                                                                    </div>
+                                                                    <div class="form-group mb-2 me-2">
+                                                                        <input type="number" class="form-control" name="add_qty" value="1" min="1" placeholder="Adet"/>
+                                                                    </div>
+                                                                    <button type="submit" class="btn btn-primary mb-2">
+                                  Ekle
+                                                                    </button>
+                                                                </form>
+                                                            </t>
+                                                            <t t-if="product.x_type == 'link'">
+                                                                <div class="form-inline d-flex align-items-center justify-content-end" style="">
+                                                                    <div class="form-group mb-2 me-2">
+                                                                        <t t-if="product.x_link">
+                                                                            <a t-att-href="'http://' not in product.x_link and 'https://' not in product.x_link and 'https://' + product.x_link or product.x_link" target="_self">
+                                      Link'e Git
+                                                                            </a>
+                                                                        </t>
+                                                                    </div>
+                                                                    <div class="form-group mb-2 me-2">
+                                                                        <t t-if="product.x_icon">
+                                                                            <img alt="" t-att-src="'data:image/png;base64,%s' % product.x_icon.decode('utf-8')" style="                                         width: 40px;                                         height: 40px;                                         border-radius: 50%;                                       " loading="lazy"/>
+                                                                        </t>
+                                                                    </div>
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <!-- Kullanıcı oturum açmamışsa buradaki kod çalışır -->
+                    <!--   <p>Lütfen giriş yapın.</p>-->
+                    <div class="container">
+                        <div class="accordion" id="accordionExample">
+                            <t t-set="categories" t-value="request.env['product.public.category'].search([('x_visibility', '=', False)])"/>
+                            <t t-foreach="categories" t-as="category">
+                                <t t-set="unique_id" t-value="'collapse' + str(category.id)"/>
+                                <!-- Benzersiz ID oluşturma -->
+                                <h2 class="accordion-header" t-attf-id="heading#{unique_id}">
+                                    <button class="accordion-button boxmenu collapsed" type="button" t-att-style="'background-image: url(' + ('data:image/png;base64,' + category.image_1920.decode() if category.image_1920 else '/path/to/default/image.png') + '); box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.5);'" data-bs-toggle="collapse" t-att-data-bs-target="'#' + unique_id" aria-expanded="false" t-att-aria-controls="unique_id">
+                                        <p style="                       display: flex;                       justify-content: center;                       align-items: center;                       font-size: 36px;                       color: white;                       height: 100%;                       margin: 0;                     " t-esc="category.name"/>
+                                    </button>
+                                </h2>
+                                <!-- Category ile ilişkilendirilen ürünler -->
+                                <div t-att-id="unique_id" class="accordion-collapse collapse" t-att-aria-labelledby="'heading' + unique_id" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body content">
+                                        <div class="tab-pane fade show p-0">
+                                            <div class="row g-4">
+                                                <t t-set="products" t-value="request.env['product.template'].search([('public_categ_ids', 'in', category.id), ('x_only_user', '=', False)], order='website_sequence asc')"/>
+                                                <t t-foreach="products" t-as="product">
+                                                    <div class="col-lg-6">
+                                                        <div class="d-flex align-items-center smallBox">
+                                                            <img t-if="product.image_1920" alt="Product Image" t-att-src="'data:image/png;base64,' + product.image_1920.decode()" class="flex-shrink-0 img-fluid resim" loading="lazy"/>
+                                                            <div class="w-100 d-flex flex-column text-ps-4">
+                                                                <h5 class="d-flex justify-content-between border-bottom pb-2 baslik name">
+                                                                    <span t-esc="product.name"/>
+                                                                </h5>
+                                                                <h5 class="baslik">
+                                                                    <span class="text-primary fiyat" t-esc="product.list_price"/>
+₺
+                                                                </h5>
+                                                                <p class="yazi" t-esc="product.x_content"/>
+                                                                
+                                                                 <!-- WhatsApp Product Share  -->
+                                                                 <t t-if="qrmenu.whatsapp_button_visibility == True">
+                                                                    <div class="whatsapp-share">
+                                                                        <t t-if="qrmenu.whatsapp_phone">
+                                                                            <a t-attf-href="https://wa.me/90{{ qrmenu.whatsapp_phone or '90xxxxxxxxxx' }}?text={{ product.name or 'Ürün Bilgisi Yok' }} - {{ product.list_price or 'Fiyat Yok' }}₺%0A{{ product.x_content }}" target="_blank" class="btn btn-success">
+                                                                                <i class="fa fa-whatsapp"/>
+                                                                                <span class="margin-left:10px;">
+                                                                                    <t t-esc="qrmenu.whatsapp_button_name"/>
+                                                                                </span>
+                                                                            </a>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <p>WhatsApp Telefon Numarası girin Lütfen</p>
+                                                                        </t>
+                                                                    </div>
+                                                                </t>
+
+                                                                 <!-- WhatsApp Location Share  -->
+                                                                 <t t-if="qrmenu.whatsapp_location_button_visibility == True">
+                                                                    <div id="whatsapplocation" class="whatsapp-share">
+                                                                        <a href="#" class="btn btn-success" id="shareLocationButton" t-att-data-whatsapp-phone="qrmenu.whatsapp_location_phone or '90xxxxxxxxxx'">
+                                                                            <i class="fa fa-whatsapp"></i>
+                                                                            <span style="margin-left: 10px;">Konum Paylaş</span>
+                                                                        </a>
+                                                                    </div>
+                                                                </t>
+                                                                <div class="descriptionMain">
+                                                                    <t t-if="product.x_sehir">
+                                                                        <div class="description">
+                                                                            <span>
+                                                                                <strong>Konum:</strong>
+                                                                            </span>
+                                                                            <span>
+                                                                                <t t-esc="product.x_sehir"/>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                    <t t-if="product.x_m2">
+                                                                        <div class="description">
+                                                                            <span>
+                                                                                <strong>MetreKare:</strong>
+                                                                            </span>
+                                                                            <span>
+                                                                                <t t-esc="product.x_m2"/>
+                                                                            </span>
+                                                                            <span style="margin-left: 5px">m
+                                                                                <sup>2</sup>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                    <t t-if="product.x_odasayisi">
+                                                                        <div class="description">
+                                                                            <span>
+                                                                                <strong>Oda Sayısı:</strong>
+                                                                            </span>
+                                                                            <span>
+                                                                                <t t-esc="product.x_odasayisi"/>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                    <t t-if="product.x_bulundugukat">
+                                                                        <div class="description">
+                                                                            <span>
+                                                                                <strong>Bulunduğu Kat:</strong>
+                                                                            </span>
+                                                                            <span>
+                                                                                <t t-esc="product.x_bulundugukat"/>
+                                                                            </span>
+                                                                        </div>
+                                                                    </t>
+                                                                </div>
+                                                            </div>
+                                                            <t t-if="product.x_type=='sepet' ">
+                                                                <form action="/add_product_form" method="POST" class="form-inline d-flex align-items-center justify-content-end">
+                                                                    <div class="form-group mb-2 me-2">
+                                                                        <input type="hidden" name="product_id" t-att-value="product.id"/>
+                                                                    </div>
+                                                                    <div class="form-group mb-2 me-2">
+                                                                        <input type="number" class="form-control" name="add_qty" value="1" min="1" placeholder="Adet"/>
+                                                                    </div>
+                                                                    <button type="submit" class="btn btn-primary mb-2">
+                                  Ekle
+                                                                    </button>
+                                                                </form>
+                                                            </t>
+                                                            <t t-if="product.x_type == 'link'">
+                                                                <div class="form-inline d-flex align-items-center justify-content-end" style="">
+                                                                    <div class="form-group mb-2 me-2">
+                                                                        <t t-if="product.x_link">
+                                                                            <a t-att-href="'http://' not in product.x_link and 'https://' not in product.x_link and 'https://' + product.x_link or product.x_link" target="_self">
+                                      Link'e Git
+                                                                            </a>
+                                                                        </t>
+                                                                    </div>
+                                                                    <div class="form-group mb-2 me-2">
+                                                                        <t t-if="product.x_icon">
+                                                                            <img alt="" t-att-src="'data:image/png;base64,%s' % product.x_icon.decode('utf-8')" style="                                         width: 40px;                                         height: 40px;                                         border-radius: 50%;                                       " loading="lazy"/>
+                                                                        </t>
+                                                                    </div>
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+                <!-- Social Media Alan-->
+                <t t-if="qrmenu.social_media_category_active == True">
+                    <div class="container">
+                        <div class="accordion" id="accordionExample">
+                            <t t-set="unique_idSocial" t-value="'collapse' + str(qrmenu.id)"/>
+                            <!-- Benzersiz ID oluşturma -->
+                            <h2 class="accordion-header" t-attf-id="heading#{unique_idSocial}">
+                                <button class="accordion-button boxmenu collapsed" type="button" t-att-style="'background-image: url(' + ('data:image/png;base64,' + qrmenu.social_media_category_image.decode() if qrmenu.social_media_category_image else '/path/to/default/image.png') + '); box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.5);'" data-bs-toggle="collapse" t-att-data-bs-target="'#' + unique_idSocial" aria-expanded="false" t-att-aria-controls="unique_idSocial">
+                                    <p style="                     display: flex;                     justify-content: center;                     align-items: center;                     font-size: 36px;                     color: white;                     height: 100%;                     margin: 0;                   " t-esc="qrmenu.social_media_category_name"/>
+                                </button>
+                            </h2>
+                            <!-- qrmenu ile ilişkilendirilen ürünler -->
+                            <div t-att-id="unique_idSocial" class="accordion-collapse collapse" t-att-aria-labelledby="'heading' + unique_idSocial" data-bs-parent="#accordionExample">
+                                <div class="accordion-body content">
+                                    <div class="row g-4" style="width: 100%; justify-content: space-around">
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active1 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link1">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link1 and 'https://' not in qrmenu.social_media_link1 and 'https://' + qrmenu.social_media_link1 or qrmenu.social_media_link1" target="_self">
+                                                                <t t-if="qrmenu.social_media_image1">
+                                                                    <img t-if="qrmenu.social_media_image1" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image1.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active2 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link2">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link2 and 'https://' not in qrmenu.social_media_link2 and 'https://' + qrmenu.social_media_link2 or qrmenu.social_media_link2" target="_self">
+                                                                <t t-if="qrmenu.social_media_image2">
+                                                                    <img t-if="qrmenu.social_media_image2" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image2.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active3 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link3">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link3 and 'https://' not in qrmenu.social_media_link3 and 'https://' + qrmenu.social_media_link3 or qrmenu.social_media_link3" target="_self">
+                                                                <t t-if="qrmenu.social_media_image3">
+                                                                    <img t-if="qrmenu.social_media_image3" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image3.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active4 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link4">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link4 and 'https://' not in qrmenu.social_media_link4 and 'https://' + qrmenu.social_media_link4 or qrmenu.social_media_link4" target="_self">
+                                                                <t t-if="qrmenu.social_media_image4">
+                                                                    <img t-if="qrmenu.social_media_image4" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image4.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active5 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link5">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link5 and 'https://' not in qrmenu.social_media_link5 and 'https://' + qrmenu.social_media_link5 or qrmenu.social_media_link5" target="_self">
+                                                                <t t-if="qrmenu.social_media_image5">
+                                                                    <img t-if="qrmenu.social_media_image5" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image5.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active6 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link6">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link6 and 'https://' not in qrmenu.social_media_link6 and 'https://' + qrmenu.social_media_link6 or qrmenu.social_media_link6" target="_self">
+                                                                <t t-if="qrmenu.social_media_image6">
+                                                                    <img t-if="qrmenu.social_media_image6" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image6.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active7 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link7">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link7 and 'https://' not in qrmenu.social_media_link7 and 'https://' + qrmenu.social_media_link7 or qrmenu.social_media_link7" target="_self">
+                                                                <t t-if="qrmenu.social_media_image7">
+                                                                    <img t-if="qrmenu.social_media_image7" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image7.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active8 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link8">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link8 and 'https://' not in qrmenu.social_media_link8 and 'https://' + qrmenu.social_media_link8 or qrmenu.social_media_link8" target="_self">
+                                                                <t t-if="qrmenu.social_media_image8">
+                                                                    <img t-if="qrmenu.social_media_image8" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image8.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active9 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link9">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link9 and 'https://' not in qrmenu.social_media_link9 and 'https://' + qrmenu.social_media_link9 or qrmenu.social_media_link9" target="_self">
+                                                                <t t-if="qrmenu.social_media_image9">
+                                                                    <img t-if="qrmenu.social_media_image9" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image9.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                        <!-- başlangıç-->
+                                        <t t-if="qrmenu.social_media_active10 == True">
+                                            <div class="col-lg-6">
+                                                <div class="d-flex align-items-center smallBox">
+                                                    <div class="w-100 d-flex flex-column text-ps-4 socialbox">
+                                                        <t t-if="qrmenu.social_media_link10">
+                                                            <a t-att-href="'http://' not in qrmenu.social_media_link10 and 'https://' not in qrmenu.social_media_link10 and 'https://' + qrmenu.social_media_link10 or qrmenu.social_media_link10" target="_self">
+                                                                <t t-if="qrmenu.social_media_image10">
+                                                                    <img t-if="qrmenu.social_media_image10" alt="qrmenu Image" t-att-src="'data:image/png;base64,' + qrmenu.social_media_image10.decode()" class="flex-shrink-0 socialresim" loading="lazy"/>
+                                                                </t>
+                                                            </a>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <!-- son-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+            <script src="/qrmenu/static/src/js/WhatsappLocationButton.js"></script>
+        </xpath>
+    </template>
+</odoo>

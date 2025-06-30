@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+
+    <t t-name="crm_voip.pbx_menu">
+        <div class="missingcall_dropdown dropdown">
+             <a class="dropdown-toggle o-no-caret missing_call_item" id="missing_call_link" title="Missing Call"
+               href="javascript:void(0);">
+                <span>
+                    <!--                    <span class="missing_call_text">Missing Call</span>-->
+                    <i class="fa fa-phone" role="img" aria-label="Unanswered"/>
+                    <span class="o_notification_counter badge badge-pill unanswered_count"/>
+                </span>
+            </a>
+        </div>
+
+        <div class="o_crm_voip_pbx_call dropdown">
+            <a id="show_last_call" style="display:none;" href="javascript:void(0);">
+                <i class="fa fa-phone-square"/>
+            </a>
+        </div>
+
+        <audio id="myAudio">
+            <source src="/crm_voip/static/src/sounds/alert1.ogg" type="audio/ogg"/>
+            <source src="/crm_voip/static/src/sounds/alert1.wav" type="audio/wav"/>
+        </audio>
+    </t>
+
+
+    <t t-name="crm_voip.pbx_dialog">
+        <div style="text-align:center;">
+            <h1 style="font-size:22px;color:#fe4a49;font-weight:bold;">
+                <t t-esc="seller"/>
+            </h1>
+            <h2>
+                <t t-esc="seller_number"/>
+            </h2>
+            <hr/>
+            <t t-if="customer_exist">
+                <h2 style="font-size:22px;color:#005b96;font-weight:bold;">
+                    <t t-esc="customer_name"/>
+                </h2>
+                <h2 t-if="customer_note" style="font-size:18px;color:#fe8a71;font-weight:bold;">
+                    <t t-esc="customer_note"/>
+                </h2>
+                <h2 t-if="customer_phone_description" style="font-size:16px;color:#fe8a71;font-weight:bold;">
+                    <t t-esc="customer_phone_description"/>
+                </h2>
+            </t>
+            <t t-if="!customer_exist">
+                <h2 style="font-size:22px;color:blue;font-weight:bold;">Unknown Customer</h2>
+            </t>
+            <h2>
+                <t t-esc="customer_number"/>
+            </h2>
+        </div>
+
+        <div class="prev_call" t-if="calls.length">
+            <table class="table  table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="color: orange;">Last Calls</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="calls" t-as="c">
+                        <td><t t-esc="c['date']"/></td>
+                        <td><b t-esc="c['seller']"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </t>
+
+</templates>

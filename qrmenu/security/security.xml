@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.module.category" id="qrmenu_security_groups">
+            <field name="name">qrmenu</field>
+        </record>
+        <!-- Groups User -->
+        <record model="res.groups" id="qrmenu_group_user">
+            <field name="name">qrmenu User</field>
+            <field name="category_id" ref="qrmenu.qrmenu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu.qrmenu_group_user'))]"/>
+        </record>
+
+        <!-- Groups Manager -->
+        <record model="res.groups" id="qrmenu_group_manager">
+            <field name="name">qrmenu Manager</field>
+            <field name="category_id" ref="qrmenu.qrmenu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu.qrmenu_group_manager'))]"/>
+        </record>
+        
+        <!-- Groups Admin -->
+        <record model="res.groups" id="qrmenu_group_admin">
+            <field name="name">qrmenu Admin</field>
+            <field name="category_id" ref="qrmenu.qrmenu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu.qrmenu_group_admin'))]"/>
+        </record>
+
+        <!-- Groups Dealer -->
+        <record model="res.groups" id="qrmenu_group_dealer">
+            <field name="name">qrmenu Dealer</field>
+            <field name="category_id" ref="qrmenu.qrmenu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu.qrmenu_group_dealer'))]"/>
+        </record>
+
+        <!-- Groups Full Access Admin -->
+        <record model="res.groups" id="qrmenu_group_fullaccess">
+            <field name="name">qrmenu Full Access</field>
+            <field name="category_id" ref="qrmenu.qrmenu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu.qrmenu_group_fullaccess'))]"/>
+        </record>
+
+
+
+        <!-- Record Rules User -->
+        <record id="qrmenu_profile_user_rule" model="ir.rule">
+            <field name="name">qrmenu user can access qrmenu.profile (Autoronics)</field>
+            <field ref="qrmenu.model_qrmenu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu.qrmenu_group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="qrmenu_profile_manager_rule" model="ir.rule">
+            <field name="name">qrmenu manager can access qrmenu.profile (Autoronics)</field>
+            <field ref="qrmenu.model_qrmenu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu.qrmenu_group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="qrmenu_profile_admin_rule" model="ir.rule">
+            <field name="name">qrmenu admin can access qrmenu.profile (Autoronics)</field>
+            <field ref="qrmenu.model_qrmenu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu.qrmenu_group_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="qrmenu_profile_dealer_rule" model="ir.rule">
+            <field name="name">qrmenu dealer can access qrmenu.profile (Autoronics)</field>
+            <field ref="qrmenu.model_qrmenu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu.qrmenu_group_dealer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="qrmenu_profile_fullaccess_rule" model="ir.rule">
+            <field name="name">qrmenu fullaccess can access qrmenu.profile (Autoronics)</field>
+            <field ref="qrmenu.model_qrmenu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu.qrmenu_group_fullaccess'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

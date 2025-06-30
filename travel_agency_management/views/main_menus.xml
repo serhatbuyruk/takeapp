@@ -1,0 +1,133 @@
+<odoo>
+    <!-- Ana Kök Menü -->
+    <menuitem 
+        id="travel_agency_root_menu" 
+        name="Travel Agency" 
+        web_icon="travel_agency_management,static/description/icon.svg" 
+        sequence="1"/>
+
+    <!-- Üst Seviye Menüler -->
+    <menuitem 
+        id="travel_sale_orders_menu" 
+        name="Sales" 
+        parent="travel_agency_root_menu" 
+        action="travel_agency_management.action_travel_sale_orders" 
+        sequence="10"/>
+
+    <menuitem 
+        id="travel_all_customers_menu" 
+        name="All Customers" 
+        parent="travel_agency_root_menu" 
+        action="travel_agency_management.action_travel_customers" 
+        sequence="20"/>
+
+    <menuitem 
+        id="travel_all_vendors_menu" 
+        name="All Vendors" 
+        parent="travel_agency_root_menu" 
+        action="travel_agency_management.action_travel_vendors" 
+        sequence="30"/>
+
+    <record id="action_travel_all_contacts" model="ir.actions.act_window">
+        <field name="name">All Contacts</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+    <menuitem 
+        id="travel_all_contacts_menu" 
+        name="All Contacts" 
+        parent="travel_agency_root_menu" 
+        action="action_travel_all_contacts" 
+        sequence="35"/>
+
+    <!-- Faturalama Ana Menüsü -->
+    <menuitem 
+        id="travel_invoicing_menu" 
+        name="Invoicing" 
+        parent="travel_agency_root_menu" 
+        sequence="40"/>
+
+    <record id="action_travel_customer_invoices" model="ir.actions.act_window">
+        <field name="name">Customer Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('move_type', '=', 'out_invoice')]</field>
+        <field name="context">{'default_move_type': 'out_invoice'}</field>
+    </record>
+    <menuitem 
+        id="travel_customer_invoices_menu" 
+        name="Customer Invoices" 
+        parent="travel_invoicing_menu" 
+        action="action_travel_customer_invoices" 
+        sequence="10"/>
+    
+    <record id="action_travel_customer_payments" model="ir.actions.act_window">
+        <field name="name">Customer Payments</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('partner_type', '=', 'customer')]</field>
+        <field name="context">{'default_partner_type': 'customer', 'default_payment_type': 'inbound'}</field>
+    </record>
+    <menuitem 
+        id="travel_customer_payments_menu" 
+        name="Customer Payments" 
+        parent="travel_invoicing_menu" 
+        action="action_travel_customer_payments" 
+        sequence="20"/>
+
+    <record id="action_travel_vendor_bills" model="ir.actions.act_window">
+        <field name="name">Vendor Bills</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('move_type', '=', 'in_invoice')]</field>
+        <field name="context">{'default_move_type': 'in_invoice'}</field>
+    </record>
+    <menuitem 
+        id="travel_vendor_bills_menu" 
+        name="Vendor Bills" 
+        parent="travel_invoicing_menu" 
+        action="action_travel_vendor_bills" 
+        sequence="30"/>
+
+    <record id="action_travel_vendor_payments" model="ir.actions.act_window">
+        <field name="name">Vendor Payments</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('partner_type', '=', 'supplier')]</field>
+        <field name="context">{'default_partner_type': 'supplier', 'default_payment_type': 'outbound'}</field>
+    </record>
+    <menuitem 
+        id="travel_vendor_payments_menu" 
+        name="Vendor Payments" 
+        parent="travel_invoicing_menu" 
+        action="action_travel_vendor_payments" 
+        sequence="40"/>
+
+    <!-- Konfigürasyon Menüsü -->
+    <menuitem 
+        id="travel_configuration_menu" 
+        name="Configuration" 
+        parent="travel_agency_root_menu" 
+        sequence="100"/>
+
+    <!--
+        ========================================================================
+        REVISION: Updated action to explicitly reference the new views.
+        ========================================================================
+    -->
+    <record id="action_travel_airports" model="ir.actions.act_window">
+        <field name="name">Airports</field>
+        <field name="res_model">travel.airport</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('travel_agency_management.view_airport_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('travel_agency_management.view_airport_form')})]"/>
+        <field name="search_view_id" ref="travel_agency_management.view_airport_search"/>
+    </record>
+    <menuitem 
+        id="travel_airports_menu" 
+        name="Airports" 
+        parent="travel_configuration_menu" 
+        action="action_travel_airports" 
+        sequence="10"/>
+</odoo>

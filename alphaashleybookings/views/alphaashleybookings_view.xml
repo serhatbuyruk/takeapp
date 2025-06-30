@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="alphaashleybookings_tree" model="ir.ui.view">
+        <field name="name">alphaashleybookings.profile.tree</field>
+        <field name="model">alphaashleybookings.profile</field>
+        <field name="arch" type="xml">
+            <tree string="alphaashleybookings" default_order="create_date desc">
+                <field name="name" />
+                
+                <field name="partner_id" optional="show" />
+                <field name="product_id" optional="show" />
+                <field name="document_status" optional="hide" />
+                <field name="sale_price" optional="show" />
+                <field name="received_amount_total" optional="hide" />
+                <field name="remaining_amount" optional="show" />
+                <field name="start_date" optional="hide" />
+                <field name="end_date" optional="hide" />
+                <field name="saleperson" optional="hide" />
+                <field name="dealer" optional="hide" />
+                <field name="repeat_count" optional="hide" />
+                <field name="repeat_status" optional="hide" />
+                <field name="repeat_type" optional="hide" />
+                <field name="activity_ids" widget="list_activity" optional="show" />
+                <button readonly="True" string="" class="oe_inline oe_stat_button"
+                    icon="/web/content/377?download=true"
+                    attrs="{'invisible': [('remaining_amount', '=', 0)]}" type="object"
+                    name="from_profile" />
+                <button readonly="True" string="" class="oe_inline oe_stat_button"
+                    icon="/web/content/378?download=true"
+                    attrs="{'invisible': [('remaining_amount', '!=', 0)]}" type="object"
+                    name="from_profile" />
+            </tree>
+        </field>
+    </record>
+ 
+    <record id="alphaashleybookings_form_view" model="ir.ui.view">
+        <field name="name">alphaashleybookings.profile.form.view</field>
+        <field name="model">alphaashleybookings.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>                  
+                    <group name="main_group">
+                        <group name="customer_details" string="Customer Details">
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <label for="start_date" string="Date"/>
+                            <div class="o_row">
+                                <field name="start_date" widget="daterange" nolabel="1" class="oe_inline" options="{'related_end_date': 'end_date'}"/>
+                                <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon" title="Arrow"/>
+                                <field name="end_date" widget="daterange" nolabel="1" class="oe_inline" options="{'related_start_date': 'start_date'}"/>
+                            </div>
+                            <field name="seller_number"/>
+                            <field name="clinic_attend_number"/>
+                            <field name="sales_status"/>
+                        </group>
+                        <group name="product_details" string="Product Details">
+                            <field name="product_id"/>
+                            <field name="saleperson"/>
+                            <field name="city"/>
+                            <field name="region"/>
+                            <field name="note"/>
+                        </group>
+                        <group name="accounting_details" string="Accounting Details">
+                            <label for="sale_price" />
+                            <div class="d-flex">
+                                <field name="sale_price" style="color: orange; font-weight: bold;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="sale_price_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                            </div>
+                            <!-- <label for="repeat_status" />
+                            <div class="d-flex">
+                                <field name="repeat_status" widget="boolean_toggle"
+                                    style="width: 100px;" />
+                                <span class="o_form_label mx-2"> - </span>
+                                <field name="repeat_type" />
+                                <span class="o_form_label mx-2"> - </span>
+                                <field name="repeat_count" />
+                            </div> -->
+                            <!-- <label for="repeat_status" />
+                            <div class="d-flex">
+                                <field name="repeat_status" widget="boolean_toggle"
+                                    style="width: 100px;" />
+                                <span class="o_form_label mx-2"> - </span>
+                                <field name="repeat_type" />
+                                <span class="o_form_label mx-2"> - </span>
+                                <field name="repeat_count" />
+                            </div> -->
+                            <!-- <label for="deposit_price" />
+                            <div class="d-flex">
+                                <field name="deposit_price" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="deposit_price_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                            </div> -->
+                            <label for="received_amount" style="color: green;"/>
+                            <div class="d-flex">
+                                <field name="received_amount" style="color: green; font-weight: bold;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="desc"/>
+                            </div>
+                            <label for="received_amount_1" style="color: green;"
+                                attrs="{'invisible': [('received_amount', '=',0)]}" />
+                            <div class="d-flex" attrs="{'invisible': [('received_amount', '=',0)]}">
+                                <field name="received_amount_1" style="color: green;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="desc_1"/>
+                            </div>
+                            <label for="received_amount_2" style="color: green;"
+                                attrs="{'invisible': [('received_amount_1', '=',0)]}" />
+                            <div class="d-flex"
+                                attrs="{'invisible': [('received_amount_1', '=',0)]}">
+                                <field name="received_amount_2" style="color: green;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="desc_2"/>
+                            </div>
+                            <label for="received_amount_3" style="color: green;"
+                                attrs="{'invisible': [('received_amount_2', '=',0)]}" />
+                            <div class="d-flex"
+                                attrs="{'invisible': [('received_amount_2', '=',0)]}">
+                                <field name="received_amount_3" style="color: green;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="desc_3"/>
+                            </div>
+                            <label for="received_amount_4" style="color: green;"
+                                attrs="{'invisible': [('received_amount_3', '=',0)]}" />
+                            <div class="d-flex"
+                                attrs="{'invisible': [('received_amount_3', '=',0)]}">
+                                <field name="received_amount_4" style="color: green;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="desc_4"/>
+                            </div>
+                            <label for="received_amount_5" style="color: green;"
+                                attrs="{'invisible': [('received_amount_4', '=',0)]}" />
+                            <div class="d-flex"
+                                attrs="{'invisible': [('received_amount_4', '=',0)]}">
+                                <field name="received_amount_5" style="color: green;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="desc_5"/>
+                            </div>
+                            <label for="received_amount_6" style="color: green;"
+                                attrs="{'invisible': [('received_amount_5', '=',0)]}" />
+                            <div class="d-flex"
+                                attrs="{'invisible': [('received_amount_5', '=',0)]}">
+                                <field name="received_amount_6" style="color: green;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="desc_6"/>
+                            </div>
+                            <label for="received_amount_7" style="color: green;"
+                                attrs="{'invisible': [('received_amount_6', '=',0)]}" />
+                            <div class="d-flex"
+                                attrs="{'invisible': [('received_amount_6', '=',0)]}">
+                                <field name="received_amount_7" style="color: green;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="desc_7"/>
+                            </div>
+                            <label for="remaining_amount" />
+                            <div class="d-flex">
+                                <field name="remaining_amount" style="color: red; font-weight: bold;"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="remaining_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                            </div>
+                            <field name="sale_description" widget="text" />
+                            <field name="customer_payment_status" />
+                            <field name="received_amount_total" invisible="1"/>
+                            <field name="first_payment_date" invisible="1"/>
+                            <field name="next_payment_date" groups="base.group_system"/>
+                            <field name="last_payment_date" groups="base.group_system"/>
+                            <field name="document_status" invisible="1" />
+                            <field name="invoice_status" />
+                            <field name="color" groups="base.group_system"/>
+                        </group>
+                        <group string="Saleperson Commission">
+                            <field name="dealer" />
+                            <field name="commission_rate" />
+                            <label for="commission_amount" />
+                            <div class="d-flex">
+                                <field name="commission_amount" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="commission_amount_currency_id"
+                                    options="{'no_open':True,'no_create': True}" />
+                            </div>
+                        </group>
+                        <group string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary" />
+                        </group>
+                        <notebook>
+                            <page name="main_page" invisible="1">
+                                
+                           </page>
+                         </notebook>
+                        <!--
+                        <group string="TC" name="tc" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-id-card-o"/><label style="font-size:
+                        1.2em; font-weight:bold;" for="tc"/></div>
+                            <h1>
+                              <field name="tc" placeholder="Tc No" style="padding: 10px; background-color: rgba(240, 240, 240,
+                        0.5);
+                        border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc;
+                        font-size: 16px; color: #333; width: 300px; overflow:hidden;
+                        white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Email" name="email" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-envelope-o"/><label style="font-size:
+                        1.2em; font-weight:bold;" for="email"/></div>
+                            <h1>
+                              <field name="email" placeholder="test@gmail.com" style="padding: 10px; background-color: rgba(240,
+                        240, 240, 0.5);
+                        border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc;
+                        font-size: 16px; color: #333; width: 300px; overflow:hidden;
+                        white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Mobile" name="mobile" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-mobile"/><label style="font-size:
+                        1.2em; font-weight:bold;" for="mobile"/></div>
+                            <h1>
+                              <field name="mobile" placeholder="+90 555 550 55 55" style="padding: 10px; background-color:
+                        #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0
+                        10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;
+                        white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        -->
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="alphaashleybookings_kanban" model="ir.ui.view">
+        <field name="name">alphaashleybookings.profile.kanban</field>
+        <field name="model">alphaashleybookings.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" sample="1" default_order="sequence desc">
+                <field name="id" />
+                <field name="partner_id" />
+                <field name="product_id" />
+                <field name="start_date" />
+                <field name="end_date" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <div class="o_kanban_image_fill_left"
+                                t-attf-style="background-image: url(#{kanban_image('alphaashleybookings.profile', 'alphaashleybookings_image', record.id.raw_value)})"
+                                role="img" />
+                            <!-- <t t-if="record.link_type.raw_value == '1'">
+                                <div class="o_kanban_image_fill_left"
+                            style="background-image:url('alphaashleybookings/static/src/img/1.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '2'">
+                                <div class="o_kanban_image_fill_left"
+                            style="background-image:url('alphaashleybookings/static/src/img/2.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '3'">
+                                <div class="o_kanban_image_fill_left"
+                            style="background-image:url('alphaashleybookings/static/src/img/3.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '4'">
+                                <div class="o_kanban_image_fill_left"
+                            style="background-image:url('alphaashleybookings/static/src/img/4.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '5'">
+                                <div class="o_kanban_image_fill_left"
+                            style="background-image:url('alphaashleybookings/static/src/img/5.png')"/>
+                            </t> -->
+                            <div class="oe_kanban_details d-flex flex-column">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <strong>
+                                                <field name="name" />
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row">
+                                        <div class="col-7">
+                                            <field name="text"/>
+                                        </div>
+                                    </div> -->
+                                </strong>
+                                <div class="o_kanban_tags_section oe_kanban_partner_categories" />
+                                <ul>
+                                    <li>
+                                        <strong>Customer: </strong>
+                                        <field name="partner_id" />
+                                    </li>
+                                    <li>
+                                        <strong>Product: </strong>
+                                        <field name="product_id" />
+                                    </li>
+                                    <li>
+                                        <strong>start_date:</strong>
+                                        <field name="start_date" />
+                                    </li>
+                                    <li>
+                                        <strong>end_date:</strong>
+                                        <field name="end_date" />
+                                    </li>
+                                </ul>
+                                <!-- <ul>
+                                    <li>
+                                        Son Güncelleyen:
+                                        <field name="last_action_user"/>
+                                    </li>
+                                </ul> -->
+                                <!--
+                                <div class="page-content page-container mb-2" id="page-content">
+                                    <div class="padding">
+                                        <div class="row">
+                                            <div class="col">
+                                                <button name="create_emergency_report" type="object" confirm="Are You Sure To Send Notification To
+                                Ahm" class="btn btn-primary btn-rounded btn-icon">
+                                                    <i class="fa fa-h-square"></i>
+                                                </button>
+                                                <button name="create_ambulance_report" type="object" confirm="Are You Sure To Send Notification To
+                                Ambulance" class="btn btn-primary btn-rounded btn-icon">
+                                                    <i class="fa fa-ambulance"></i>
+                                                </button>
+                                                <button name="create_fire_report" type="object" confirm="Are You Sure To Send Notification To Fire
+                                Department" class="btn btn-primary btn-rounded btn-icon">
+                                                    <i class="fa fa-fire-extinguisher"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                -->
+                                <!-- <div class="page-content page-container mb-2"
+                                id="page-content">
+                                    <div class="row mr-3">
+                                            <h2 class="col-3 ml-3">
+                                                <i class="fa fa-thermometer-full"><field name="temperature"/><span>°C</span></i>
+                                            </h2>
+                                            <h2 class="col-3 ml-5">
+                                                <i class="fa fa-tint"><field name="humidity"/><span>%</span></i>
+                                            </h2>
+                                    </div>
+                                </div>
+                                <div class="page-content page-container mb-2" id="page-content">
+                                    <div class="row mr-3">
+                                        <h2 class="col-3 ml-3">
+                                            <i class="fa fa-leaf"><field name="oxygen"/><span>%</span></i>
+                                        </h2>
+                                        <h2 class="col-3 ml-5">
+                                            <i class="fa fa-heartbeat"><field name="bpm"/><span>dk</span></i>
+                                        </h2>
+                                    </div>
+                                </div> -->
+                                <div class="row">
+                                    <div
+                                        class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <button name="see_profile" type="object"
+                                            class="btn-block rounded-pill btn btn-custom text-o-color-4"
+                                            data-original-title="" title=""
+                                            confirm="Profile View Will Be Tested Are You Sure?"
+                                            style="border-width: 1px; border-style: solid; background-color: rgb(50, 70, 80);">View
+                                            Profile</button>
+                                    </div>
+                                    <div
+                                        class="pt-2 col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <button name="from_profile" type="object"
+                                            class="btn-block rounded-pill btn btn-custom text-o-color-4"
+                                            data-original-title="" title=""
+                                            confirm="Are You Sure You Will Go To The Profile Editing Screen?"
+                                            style="border-width: 1px; border-style: solid; background-color: rgb(50, 70, 80);">Edit
+                                            Profile</button>
+                                    </div>
+                                </div>
+                                <!-- <div class="row pt-2">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_1_Active" type="object" class="btn btn-outline-success btn-block
+                                btn-lg" attrs="{'invisible': [('device_status_1', '!=',
+                                'passive')]}">Kamerayı Devreye Al</button>
+                                            <button name="write_Link_Status_1_Passive" type="object" class="btn btn-outline-danger btn-block
+                                btn-lg" confirm="Kamera Devre Dışı Kalacak Emin Misiniz?"
+                                attrs="{'invisible': [('device_status_1', '!=',
+                                'active')]}">Kamerayı Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-1">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline' and record.device_status_1.raw_value ==
+                                'active'">
+                                            <a  t-attf-href="http://{{ record.camera_ip.value }}">
+                                                <button name="open_link_camera" type="button" class="btn btn-outline-success btn-block btn-lg"
+                                confirm="Canlı İzleme Aktif Edilecek Emin Misiniz?"
+                                attrs="{'invisible': [('camera_ip', '==', False)]}">Canlı
+                                Kamera</button>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-2">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_2_Active" type="object" class="btn btn-outline-success btn-block
+                                btn-lg" confirm="Isı Kontrol Sistemi Aktif Edilecek Emin Misiniz?"
+                                attrs="{'invisible': [('device_status_2', '!=', 'passive')]}">Isıyı
+                                Devreye Al</button>
+                                            <button name="write_Link_Status_2_Passive" type="object" class="btn btn-outline-danger btn-block
+                                btn-lg" confirm="Isı Kontrol Sistemi Devre Dışı Kalacak Emin
+                                Misiniz?" attrs="{'invisible': [('device_status_2', '!=',
+                                'active')]}">Isıyı Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-2">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_3_Active" type="object" class="btn btn-outline-success btn-block
+                                btn-lg" confirm="Dikkat!!! Uv Hastaya Ciddi Oranda Zarar Verir.
+                                İçeride Yatan Hasta Olmadığından Emin Misiniz?" attrs="{'invisible':
+                                ['|',('device_status', '!=', 'passive'),('device_status_3', '!=',
+                                'passive')]}">Uv Devreye Al</button>
+                                            <button name="write_Link_Status_3_Passive" type="object" class="btn btn-outline-danger btn-block
+                                btn-lg" attrs="{'invisible': ['|',('device_status', '!=',
+                                'passive'),('device_status_3', '!=', 'active')]}">Uv Devre Dışı
+                                Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-1">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_4_Active" type="object" class="btn btn-outline-success btn-block
+                                btn-lg" confirm="Işık Aktif Edilecek Emin Misiniz?"
+                                attrs="{'invisible': [('device_status_4', '!=', 'passive')]}">Işığı
+                                Devreye Al</button>
+                                            <button name="write_Link_Status_4_Passive" type="object" class="btn btn-outline-danger btn-block
+                                btn-lg" confirm="Işık Devre Dışı Kalacak Emin Misiniz?"
+                                attrs="{'invisible': [('device_status_4', '!=', 'active')]}">Işığı
+                                Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="o_row">
+                                    <span class="oe_kanban_partner_alphaashleybookings"/>
+                                </div> -->
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="alphaashleybookings_search" model="ir.ui.view">
+        <field name="name">alphaashleybookings.profile.search</field>
+        <field name="model">alphaashleybookings.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                 
+                <field name="partner_id" />
+                <field name="product_id" />
+                <field name="saleperson" />
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="partner_id" string="Customer" domain="[]"
+                        context="{'group_by' : 'partner_id'}" />
+                    
+                    <filter name="product_id" string="Product" domain="[]"
+                        context="{'group_by' : 'product_id'}" />
+                    <filter name="sale_price_currency_id" string="Currency" domain="[]"
+                        context="{'group_by' : 'sale_price_currency_id'}" />
+                </group>
+                <!-- <filter string="Archived" name="active" domain="[('active', '=', False)]"/> -->
+            </search>
+        </field>
+    </record>
+
+    <record id="alphaashleybookings_calendar" model="ir.ui.view">
+        <field name="name">alphaashleybookings.profile.search</field>
+        <field name="model">alphaashleybookings.profile</field>
+        <field eval="2" name="priority" />
+        <field name="arch" type="xml">
+            <calendar date_start="start_date" date_stop="end_date" string="Hbooking" mode="year"
+                color="color" event_limit="5"
+                hide_time="true" js_class="project_calendar" event_open_popup="true"
+                quick_add="false">
+                 
+                <field name="product_id" filters="1"/>
+                <field name="saleperson" filters="1"/>
+                <field name="start_date"/>
+                <field name="end_date" />
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_alphaashleybookings_profile" model="ir.actions.act_window">
+        <field name="name">alphaashleybookings</field>
+        <field name="res_model">alphaashleybookings.profile</field>
+        <field name="view_mode">tree,form,calendar</field>
+    </record>
+    
+    <menuitem id="alphaashleybookings_root_menu" name="alphaashleybookings" web_icon="alphaashleybookings,static/src/img/avatar.png" />
+    
+    <act_window id="alphaashleybookings_list" name="alphaashleybookings" res_model="alphaashleybookings.profile" view_mode="tree,form,calendar" context="{}" />
+    <menuitem id="alphaashleybookings_zones" parent="alphaashleybookings_root_menu" name="alphaashleybookings" action="alphaashleybookings_list" sequence="2" />
+
+    <act_window id="documents_list" name="Documents List" res_model="documents.tracker" view_mode="tree,kanban,form,activity"/>
+    <menuitem id="documents_list_zones" parent="alphaashleybookings_root_menu" name="Documents List" action="documents_list" sequence="2"/>
+
+    
+    
+    <!-- <act_window id="alphaashleybookings_quotations" name="Transfer Request" res_model="sale.order"
+    view_mode="tree,kanban,form,calendar,pivot,graph,activity" context="{}"/>
+    <menuitem id="alphaashleybookings_request" parent="alphaashleybookings_root_menu" name="Transfer Requests"
+    action="alphaashleybookings_quotations" sequence="1"/>
+
+    <menuitem id="alphaashleybookings_general_settings" parent="alphaashleybookings_root_menu" name="General Settings"
+    sequence="5" />
+    <menuitem id="alphaashleybookings_currency" parent="alphaashleybookings_general_settings" name="Currency Config"
+    action="website_sale.website_product_pricelist3" sequence="9"/>
+    <menuitem id="alphaashleybookings_website_config" parent="alphaashleybookings_general_settings" name="Website Configration"
+    action="website.action_website_configuration" sequence="11"/>
+    <menuitem id="alphaashleybookings_website_list" parent="alphaashleybookings_general_settings" name="Websites"
+    action="website.action_website_list" sequence="10"/>
+    <menuitem id="alphaashleybookings_queries" parent="alphaashleybookings_general_settings" name="Transfer Queries"
+    action="action_alphaashleybookings_profile" sequence="8"/>
+    <menuitem id="alphaashleybookings_pages" parent="alphaashleybookings_general_settings" name="Page List"
+    action="website.action_website_pages_list" sequence="1"/>
+    <menuitem id="alphaashleybookings_city_menu" parent="alphaashleybookings_general_settings" name="Cities"
+    action="action_city_profile" sequence="2"/>
+    <menuitem id="alphaashleybookings_car_menu" parent="alphaashleybookings_general_settings" name="Car List"
+    action="action_car_profile" sequence="3"/>
+    <menuitem id="alphaashleybookings_extra_menu" parent="alphaashleybookings_general_settings" name="Extras"
+    action="action_extra_profile" sequence="4"/>
+
+    <menuitem id="alphaashleybookings_marketing" name="Marketing" parent="alphaashleybookings_root_menu" sequence="3"/>
+    <menuitem id="alphaashleybookings_crm" parent="alphaashleybookings_marketing" name="Potential Customers"
+    action="crm.crm_lead_all_leads"/>
+    <menuitem id="alphaashleybookings_livechat" parent="alphaashleybookings_marketing" name="Customer Live Chat"
+    action="im_livechat.im_livechat_channel_action" />
+
+    <menuitem id="alphaashleybookings_statistics" parent="alphaashleybookings_root_menu" name="Web Statistics" sequence="4" />
+    <menuitem id="alphaashleybookings_visitors" parent="alphaashleybookings_statistics" name="Visitors"
+    action="website.website_visitors_action"/>
+    <act_window id="alphaashleybookings_page_view_act" name="Page Views" res_model="website.track"
+    view_mode="tree,graph" context="{'search_default_type_url': 1, 'create': False, 'edit': False,
+    'copy': False}"/>
+    <menuitem id="alphaashleybookings_page_views" parent="alphaashleybookings_statistics" name="Page Views"
+    action="alphaashleybookings_page_view_act"/>
+    <menuitem id="alphaashleybookings_google" parent="alphaashleybookings_statistics" name="Google Analytics"
+    action="website.backend_dashboard"/> -->
+    <!--
+	<menuitem id="alphaashleybookings_profile_menu" name="alphaashleybookings" action="action_alphaashleybookings_profile"
+    parent="alphaashleybookings_sub_menu"/>
+	-->
+</odoo>

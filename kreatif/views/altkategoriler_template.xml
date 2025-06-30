@@ -1,0 +1,36 @@
+<odoo>
+    <template id="altkategoriler_template" name="Alt Kategoriler">
+        <t t-call="website.layout">
+            <div class="container mt-4">
+                <h1>Alt Kategoriler</h1>
+                <div class="row">
+                    <!-- Alt Kategorileri Listeleme -->
+                    <t t-foreach="altkategoriler" t-as="altkategori">
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <!-- Kategori Görseli veya İkon -->
+                                <t t-if="altkategori.get('resim')">
+                                    <img t-att-src="altkategori.get('resim')" alt="Category Image" class="card-img-top" />
+                                </t>
+                                <t t-else="">
+                                    <img t-att-src="altkategori.get('kat_icon')" alt="Category Icon" class="card-img-top" />
+                                </t>
+                                <!-- Kategori Detayları -->
+                                <div class="card-body">
+                                    <h5 class="card-title" t-esc="altkategori.get('isim')"></h5>
+                                    <p class="card-text">
+                                        <t t-esc="altkategori.get('aciklama')" />
+                                    </p>
+                                </div>
+                                <div class="card-footer text-muted text-center">
+                                    <strong>Category ID:</strong> <t t-esc="altkategori.get('kategori_id')" /><br/>
+                                    <strong>Parent Category ID:</strong> <t t-esc="altkategori.get('ustkategori_id')" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

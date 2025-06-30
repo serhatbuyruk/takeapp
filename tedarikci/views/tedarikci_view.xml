@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="tedarikci_tree" model="ir.ui.view">
+        <field name="name">tedarikci.profile.tree</field>
+        <field name="model">tedarikci.profile</field>
+        <field name="arch" type="xml">
+            <tree string="tedarikci">
+                <field name="name"/>
+                <field name="sequence" />
+               
+                <field name="city" />
+                <field name="phone" />
+                <field name="email" />                                             
+                <field name="bakiye" />
+            </tree>
+        </field>
+    </record>
+    <record id="tedarikci_form_view" model="ir.ui.view">
+        <field name="name">tedarikci.profile.form.view</field>
+        <field name="model">tedarikci.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group collapsible="1">
+                            <field name="name"/>
+                           
+                            <field name="phone" />
+                            <field name="email" />
+                            <field name="vergi_dairesi" />
+                            <field name="vergi_numarasi" />
+                            <field name="bakiye" />
+                            <field name="website" />
+                            <field name="adress" />
+                            <field name="city" />
+                            <field name="upload_date" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="tedarikci_kanban" model="ir.ui.view">
+        <field name="name">tedarikci.profile.kanban</field>
+        <field name="model">tedarikci.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" sample="1" default_order="sequence desc">
+                <field name="id" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <div class="o_kanban_image_fill_left"
+                                t-attf-style="background-image: url(#{kanban_image('tedarikci.profile', 'tedarikci_image', record.id.raw_value)})"
+                                role="img" />
+
+                            <div class="oe_kanban_details d-flex flex-column">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <strong>
+                                                <field name="name"/>
+                                                 
+                                                <field name="city" />
+                                                <field name="phone" />
+                                                <field name="email" />                                             
+                                                <field name="bakiye" />                                            
+                                               
+                                                
+                                            </strong>
+                                        </div>
+                                    </div>
+
+                                </strong>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="tedarikci_search" model="ir.ui.view">
+        <field name="name">tedarikci.profile.search</field>
+        <field name="model">tedarikci.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tedarikci_profile" model="ir.actions.act_window">
+        <field name="name">Tedarikçi</field>
+        <field name="res_model">tedarikci.profile</field>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+    <menuitem id="tedarikci_root_menu" name="Tedarikçi" web_icon="tedarikci,static/src/img/69.png" />
+    <act_window id="tedarikci_list" name="Tedarikçi" res_model="tedarikci.profile"
+        view_mode="tree,form,kanban" context="{}" />
+    <menuitem id="tedarikci_zones" parent="tedarikci_root_menu" name="Tedarikçi"
+        action="tedarikci_list" sequence="2" />
+
+</odoo>

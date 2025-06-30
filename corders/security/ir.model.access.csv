@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_corders_user_1,Corders User,model_corders_profile,corders.corders_group_user,1,1,0,0
+access_corders_user_2,Corders Manager,model_corders_profile,corders.corders_group_manager,1,1,1,0
+access_corders_user_3,Corders Admin,model_corders_profile,corders.corders_group_admin,1,1,1,1
+access_corders_user_4,Corders Dealer,model_corders_profile,corders.corders_group_dealer,1,1,1,1
+access_corders_user_5,Corders Access Rigths Full Access,model_corders_profile,base.group_erp_manager,1,1,1,1
+access_corders_user_6,Corders Settings Full Access,model_corders_profile,base.group_system,1,1,1,1
+
+access_order_lines_user_admin,Skurye Lines Admin,model_order_profile_lines,base.group_user,1,1,1,1
+
+access_corders_wizard_user_1,Corders Wizard Full Access,model_corders_wizard,base.group_user,1,1,1,1
+
+access_personalize_admin,Personalize Admin,model_personalize_profile,base.group_user,1,1,1,1
+access_personalize_lines_admin,Personalize Lines Admin,model_personalize_profile_lines,base.group_user,1,1,1,1
+
+access_zones_admin,Zones Admin,model_zones_profile,base.group_user,1,1,1,1

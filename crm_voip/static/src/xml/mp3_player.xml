@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="FieldMp3Player">
+        <div style="display: none; max-width:300px;">
+            <audio controls="controls" preload="none">
+                <source src="" type="audio/mp3"/>
+            </audio>
+        </div>
+    </t>
+</templates>
+

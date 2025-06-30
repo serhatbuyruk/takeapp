@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="qrmenu_partner_tree" model="ir.ui.view">
+        <field name="name">res.partner.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="res.partner" default_order="create_date desc">
+                <field name="name" />
+               
+                <field name="email"  invisible="1" />
+            </tree>
+        </field>
+    </record>
+   
+    <record id="qrmenu_partner_form_view" model="ir.ui.view">
+        <field name="name">res.partner.form.view</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group name="main_group">    
+                        <field name="name" />
+                    </group>    
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="qrmenu_partner_search" model="ir.ui.view">
+        <field name="name">res.partner.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+               
+            </search>
+        </field>
+    </record>
+    <record id="action_qrmenu_partner_profile" model="ir.actions.act_window">
+        <field name="name">res.partner</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="qrmenu_partner_root_menu" name="Sipariş Sayısı" web_icon="qrmenu,static/src/img/pitch-counter.png" />
+    <act_window id="qrmenu_partner_list" name="Sipariş Sayısı" res_model="res.partner" view_mode="tree,form"
+        context="{}" />
+    <menuitem id="qrmenu_partner_zones" parent="qrmenu_partner_root_menu" name="Sipariş Sayısı" action="qrmenu_partner_list"
+        sequence="2" />
+    
+</odoo>

@@ -1,0 +1,14 @@
+<odoo>
+    <template id="survey_static_fields_template">
+        <t t-call="survey.survey_form">
+            <div>
+                <h3>Kişisel Bilgiler</h3>
+                <p><strong>Ad:</strong> <input type="text" name="first_name" required="required"/></p>
+                <p><strong>Soyad:</strong> <input type="text" name="last_name" required="required"/></p>
+                <p><strong>TC Kimlik No:</strong> <input type="text" name="tc_number" required="required"/></p>
+                <p><strong>Telefon:</strong> <input type="text" name="phone_number"/></p>
+                <p><strong>Doğum Tarihi:</strong> <input type="date" name="birth_date"/></p>
+            </div>
+        </t>
+    </template>
+</odoo>

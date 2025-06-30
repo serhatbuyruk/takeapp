@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="translation_ir_ui_view_form" model="ir.ui.view">
+        <field name="name">ir.ui.view.form.inherit.translations</field>
+        <field name="model">ir.ui.view</field>
+        <field name="inherit_id" ref="base.view_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='inherit_children']" position="after">
+                <page name="translation_lines_page_cca" string="Translation Profile Lines">
+                    <group>
+                        <group>
+                            <button name="get_all_translations"
+                                    type="object"
+                                    string="Fetch/Update Translatable Texts"
+                                    class="btn-primary"
+                                    icon="fa-refresh"
+                                    confirm="This will refresh all translation lines. Continue?"/>
+                            <button name="translate_all"
+                                    type="object"
+                                    string="Translate All Pending Lines"
+                                    class="btn-warning"
+                                    icon="fa-language"
+                                    attrs="{'invisible': [('translation_profile_lines_ids', '=', [])]}"
+                                    confirm="This will translate all empty lines. Continue?"/>
+                            <button name="sync_translations"
+                                    type="object"
+                                    string="Sync with Odoo Translations"
+                                    class="btn-info"
+                                    icon="fa-sync"/>
+                        </group>
+                        <group>
+                            <field name="translation_quality" widget="progressbar"/>
+                        </group>
+                    </group>
+
+                    <field name="translation_profile_lines_ids" mode="tree">
+                        <tree string="Translation Lines"
+                              editable="bottom"
+                              decoration-success="state == 'translated'"
+                              decoration-warning="state == 'draft'"
+                              decoration-info="state == 'review'">
+                            <field name="name" string="Key/Context" optional="show" readonly="1"/>
+                            <field name="lang" options="{'no_create': True}" required="1" widget="many2one_avatar_language"/>
+                            <field name="source" readonly="1"/>
+                            <field name="value"/>
+                            <field name="state" widget="badge" readonly="1"/>
+                            <field name="quality_score" widget="progressbar" optional="show" readonly="1"/>
+                            <button name="translate_text"
+                                    type="object"
+                                    string="Translate"
+                                    class="btn-primary btn-sm"
+                                    icon="fa-globe"
+                                    attrs="{'invisible': ['|', ('source', '=', False), ('value', '!=', False)]}"/>
+                            <button name="save_text"
+                                    type="object"
+                                    string="Save"
+                                    class="btn-success btn-sm"
+                                    icon="fa-save"
+                                    attrs="{'invisible': [('value', '=', False)]}"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

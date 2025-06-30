@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+<!--        <record id="crm_voip_crm_dashboard_announcement_form" model="ir.ui.view">-->
+<!--            <field name="name">Dashboard Announcement</field>-->
+<!--            <field name="model">crm_voip.crm.dashboard_announcement</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <form string="Dashboard Announcement">-->
+<!--                    <sheet>-->
+<!--                        <group>-->
+<!--                            <field name="announcement"/>-->
+<!--                            <field name="start_date"/>-->
+<!--                            <field name="end_date"/>-->
+<!--                            <field name="active_show"/>-->
+<!--                        </group>-->
+<!--                    </sheet>-->
+<!--                </form>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        <record id="crm_voip_crm_dashboard_announcement_tree" model="ir.ui.view">-->
+<!--            <field name="name">Dashboard Announcement</field>-->
+<!--            <field name="model">crm_voip.crm.dashboard_announcement</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <tree string="Dashboard Announcement">-->
+<!--                    <field name="announcement"/>-->
+<!--                    <field name="start_date"/>-->
+<!--                    <field name="end_date"/>-->
+<!--                    <field name="active_show"/>-->
+<!--                </tree>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        <record id="crm_voip_crm_dashboard_announcement_action" model="ir.actions.act_window">-->
+<!--            <field name="name">Dashboard Announcement</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">crm_voip.crm.dashboard_announcement</field>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--        </record>-->
+
+<!--        <menuitem id="crm_voip_crm_dashboard_announcement_menu" name="Dashboard Announcement" parent=""-->
+<!--                  action="crm_voip_crm_dashboard_announcement_action" sequence=""/>-->
+
+    </data>
+</odoo>

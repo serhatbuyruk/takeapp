@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_payment_reminder_admin,payment_reminder Admin,model_payment_reminder_profile,base.group_system,1,1,1,1
+access_payment_reminder_user,payment_reminder User,model_payment_reminder_profile,base.group_user,1,0,0,0
+access_payment_reminder_profile_manager,payment_reminder_profile_manager,model_payment_reminder_profile,,1,1,1,1
+access_customer_payment_lines_user_1,Customer Payment Lines Full Access,model_customer_payment_lines,base.group_user,1,1,1,1

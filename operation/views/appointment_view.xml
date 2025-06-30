@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="project_task_inherit_frm" model="ir.ui.view">
+        <field name="name">project.task.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='description_page']" position="before">
+                <page name="appointment" string="Appointments" widget="one2many" context="{'show_attribute': True}">
+                    <field name="appointment_lines" widget="one2many" context="{'show_attribute': True}">
+                        <tree string="Appointments" editable="bottom">
+                            <field name="appointment_start_time" attrs="{'readonly': [('id', '!=', False)]}"/>
+                            <field name="appointment_finish_time"/>
+                            <field name="patient_coming_status" widget="boolean_toggle"/>
+                            <field name="doctor"/>
+                            <field name="box"/>
+                            <field name="description"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

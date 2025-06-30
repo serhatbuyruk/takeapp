@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="qrmenu_kurye_tree" model="ir.ui.view">
+        <field name="name">qrmenu_kurye.profile.tree</field>
+        <field name="model">qrmenu_kurye.profile</field>
+        <field name="arch" type="xml">
+            <tree string="qrmenu_kurye" default_order="create_date desc">
+                <field name="name" />
+                <field name="sequence" />
+               
+            </tree>
+        </field>
+    </record>
+ 
+    <record id="qrmenu_kurye_form_view" model="ir.ui.view">
+        <field name="name">qrmenu_kurye.profile.form.view</field>
+        <field name="model">qrmenu_kurye.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group name="main_group">    
+                        <field name="name" />
+                        <field name="sequence" />
+                         
+                    </group>    
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+
+ 
+    <record id="sale_order_tree_inherit_button" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit.button</field>
+        <field name="model">sale.order</field>
+        <!-- Bu kısımda Odoo'nun orijinal tree view ID'sini referans alıyoruz -->
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <!-- 
+              Aşağıdaki örnekte, 'name' alanının hemen sonrasına
+              <button> ekliyoruz. 
+            -->
+            <xpath expr="//tree/field[@name='name']" position="after">
+                <button name="action_send_to_corders"
+                        type="object"
+                        string="Kurye Çağır" 
+                        class="oe_highlight"/>
+            </xpath>
+        </field>
+    </record>
+ 
+
+
+    <record id="qrmenu_kurye_search" model="ir.ui.view">
+        <field name="name">qrmenu_kurye_kurye.profile.search</field>
+        <field name="model">qrmenu_kurye.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="title" />
+                <field name="description" />
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="qrmenu_kurye" string="Name Group" domain="[]"
+                        context="{'group_by' : 'name'}" />
+                </group>
+              
+            </search>
+        </field>
+    </record>
+    <record id="action_qrmenu_kurye_profile" model="ir.actions.act_window">
+        <field name="name">qrmenu_kurye</field>
+        <field name="res_model">qrmenu_kurye.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="qrmenu_kurye_root_menu" name="QR Menu Kurye" web_icon="qrmenu_kurye,static/src/img/avatar.png" />
+    <act_window id="qrmenu_kurye_list" name="QR Menu Kurye" res_model="qrmenu_kurye.profile" view_mode="tree,form"
+        context="{}" />
+    <menuitem id="qrmenu_kurye_zones" parent="qrmenu_kurye_root_menu" name="QR Menu Kurye" action="qrmenu_kurye_list"
+        sequence="2" />
+
+</odoo>

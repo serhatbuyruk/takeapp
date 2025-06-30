@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_qrmenu_kurye_user_1,qrmenu_kurye User,model_qrmenu_kurye_profile,qrmenu_kurye.qrmenu_kurye_group_user,1,0,0,0
+access_qrmenu_kurye_user_2,qrmenu_kurye Manager,model_qrmenu_kurye_profile,qrmenu_kurye.qrmenu_kurye_group_manager,1,1,0,0
+access_qrmenu_kurye_user_3,qrmenu_kurye Admin,model_qrmenu_kurye_profile,qrmenu_kurye.qrmenu_kurye_group_admin,1,1,1,1
+access_qrmenu_kurye_user_4,qrmenu_kurye Dealer,model_qrmenu_kurye_profile,qrmenu_kurye.qrmenu_kurye_group_dealer,1,1,1,1
+access_qrmenu_kurye_user_5,qrmenu_kurye Access Rigths Full Access,model_qrmenu_kurye_profile,base.group_erp_manager,1,1,1,1
+access_qrmenu_kurye_user_6,qrmenu_kurye Settings Full Access,model_qrmenu_kurye_profile,base.group_system,1,1,1,1
+access_qrmenu_kurye_profile_public,access.qrmenu_kurye.profile.public,model_qrmenu_kurye_profile,,1,0,0,0
+access_qrmenu_kurye_profile_user,User Access to qrmenu kurye Profile,model_qrmenu_kurye_profile,base.group_user,1,0,0,0

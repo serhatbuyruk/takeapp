@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="oe_empty" inherit_id="website.layout" name="Add Snippet to Menu">
+        <!-- İlk div'i hedefleyen xpath -->
+        <!-- <xpath expr="//main/div" position="inside"> -->
+        <xpath expr="//main" position="inside">
+            <t t-if="request.httprequest.path == '/menus'">
+                <!-- Konum Paylaş butonu -->
+                <div id="whatsapp" class="container">
+                    <a href="#" class="btn btn-success" id="shareLocationButton" t-att-data-whatsapp-phone="qrmenu.whatsapp_phone or '90xxxxxxxxxx'">
+                        <i class="fa fa-whatsapp"></i>
+                        <span style="margin-left: 10px;">
+                        Konum Paylaş
+                        </span>
+                    </a>
+                </div>
+            </t>
+        </xpath>
+        <!-- JavaScript kodunu içeren script bloğu -->
+        <!-- <xpath expr="//div[@id='wrap']" position="inside"> -->
+        <!--          <xpath expr="//main" position="inside">
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function () {
+                    document.getElementById("shareLocationButton").addEventListener("click", function (event) {
+                        event.preventDefault();
+
+                        const whatsappPhone = this.getAttribute("data-whatsapp-phone");
+                        console.log("whatsappPhone ", whatsappPhone);
+
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                (position) => {
+                                    const latitude = position.coords.latitude;
+                                    const longitude = position.coords.longitude;
+
+                                    const whatsappLink = `https://wa.me/90${whatsappPhone}?text=Anlık%20konum:%20https://www.google.com/maps?q=${latitude},${longitude}`;
+
+                                    window.open(whatsappLink, "_blank");
+                                },
+                                (error) => {
+                                    if (error.code === error.PERMISSION_DENIED) {
+                                        console.error("Kullanıcı konum iznini reddetti.");
+                                    } else {
+                                        console.error("Konum bilgisi alınamadı:", error.message);
+                                    }
+                                }
+                            );
+                        } else {
+                            console.log("Geolocation API tarayıcınız tarafından desteklenmiyor.");
+                        }
+                    });
+                });
+            </script>
+        </xpath> -->
+    </template>
+</odoo>
+<!-- <odoo>
+    <template id="my_custom_script" inherit_id="website.layout">
+        <xpath expr="//head" position="inside">
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function () {
+                    console.log("Sayfa yüklendi ve JS kodu çalışıyor.");
+                
+                    document.getElementById("shareLocationButton").addEventListener("click", function (event) {
+                        event.preventDefault(); // Varsayılan bağlantıyı engeller
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                (position) => {
+                                    const latitude = position.coords.latitude;
+                                    const longitude = position.coords.longitude;
+                                    console.log("Enlem:", latitude, "Boylam:", longitude);
+                
+                                    // WhatsApp linkini oluştur
+                                    const whatsappLink = `https://wa.me/90${qrmenu.whatsapp_phone || '90xxxxxxxxxx'}?text=Anlık%20konum:%20https://www.google.com/maps?q=${latitude},${longitude}`;
+                
+                                    // Kullanıcıyı WhatsApp linkine yönlendir
+                                    window.open(whatsappLink, "_blank");
+                                },
+                                (error) => {
+                                    if (error.code === error.PERMISSION_DENIED) {
+                                        console.error("Kullanıcı konum iznini reddetti.");
+                                    } else {
+                                        console.error("Konum bilgisi alınamadı:", error.message);
+                                    }
+                                }
+                            );
+                        } else {
+                            console.log("Geolocation API tarayıcınız tarafından desteklenmiyor.");
+                        }
+                    });
+                });
+                
+                document.addEventListener("DOMContentLoaded", function () {
+                    console.log("Sayfa yüklendi ve JS kodu çalışıyor.");
+
+                    // Butona tıklama olayını dinleyelim
+                    document.getElementById("shareLocationButton").addEventListener("click", function () {
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                (position) => {
+                                    const latitude = position.coords.latitude;
+                                    const longitude = position.coords.longitude;
+                                    console.log("Enlem:", latitude, "Boylam:", longitude);
+                                    // Konumu paylaşmak için gerekli kod
+
+                                    // WhatsApp linkini oluştur
+                                    const whatsappLink = `https://wa.me/?text=Anlık%20konum:%20https://www.google.com/maps?q=${latitude},${longitude}`;
+                                    
+                                    // Kullanıcıyı WhatsApp linkine yönlendir
+                                    window.open(whatsappLink, "_blank");
+                                },
+                                (error) => {
+                                    if (error.code === error.PERMISSION_DENIED) {
+                                        console.error("Kullanıcı konum iznini reddetti.");
+                                    } else {
+                                        console.error("Konum bilgisi alınamadı:", error.message);
+                                    }
+                                }
+                            );
+                        } else {
+                            console.log("Geolocation API tarayıcınız tarafından desteklenmiyor.");
+                        }
+                    });
+                }); 
+            </script>
+        </xpath>
+    </template>
+</odoo>
+ -->
+<!-- <odoo>
+    <template id="product_whatsapp_share" inherit_id="website.layout">
+        <xpath expr="//div[contains(@class, 'oe_structure')]" position="inside">
+            <div class="whatsapp-share">
+                <a t-attf-href="https://wa.me/?text={{ product.name or 'Ürün Bilgisi Yok' }} - {{ product.list_price or 'Fiyat Yok' }}₺%0A{{ (product.x_content and product.x_content) or '' }}" target="_blank" class="btn btn-success">
+                    <i class="fa fa-whatsapp"></i> WhatsApp'tan Paylaş
+                </a>
+            </div>
+        </xpath>
+    </template>
+</odoo>
+ -->
+<!-- <odoo>
+    <template id="product_whatsapp_share" inherit_id="website.layout">
+        <xpath expr="//main" position="inside">
+            <div class="whatsapp-share">
+                <a t-attf-href="https://wa.me/?text={{ product.name or 'Ürün Bilgisi Yok' }} - {{ product.list_price or 'Fiyat Yok' }}₺%0A{{ (product.x_content and product.x_content | urlencode) or '' }}" target="_blank" class="btn btn-success">
+                    <i class="fa fa-whatsapp"></i> WhatsApp'tan Paylaş
+                </a>
+            </div>
+        </xpath>
+    </template>
+</odoo> -->
+<!-- 
+<odoo>
+    <template id="product_whatsapp_share" inherit_id="website.layout">
+        <xpath expr="//p[@class='yazi']" position="after">  
+        <xpath expr="//div[@id='wrap']" position="inside">
+            <div class="whatsapp-share">
+                <a t-attf-href="https://wa.me/?text={{ product.name }} - {{ product.list_price }}₺%0A{{ product.x_content | urlencode }}" target="_blank" class="btn btn-success">
+                    <i class="fa fa-whatsapp"></i> WhatsApp'tan Paylaş
+                </a>
+            </div>
+        </xpath>
+    </template>
+</odoo> -->
+<!-- <odoo>
+    <template id="whatsapp_share_snippet" name="WhatsApp Share Snippet">
+        <div class="whatsapp-share">
+            <button class="btn btn-primary" t-att-data-product="product.id" t-att-data-name="product.name" t-att-data-price="product.list_price">
+                <i class="fa fa-whatsapp"></i> WhatsApp ile Paylaş
+            </button>
+        </div>
+    </template>
+    <script src="/qrmenu/static/src/js/whatsapp.js"></script>
+</odoo>
+ -->
+<!-- 
+
+<a t-attf-href="https://api.whatsapp.com/send?phone=905XXXXXXXXX&text=Ürün%20Adı:%20{{product.name}}%0AFiyat:%20{{product.list_price}}%20TL" class="btn btn-success">
+    WhatsApp'tan Gönder
+</a> 
+
+-->
+<!-- 
+<a t-attf-href="https://wa.me/{{ qrmenu.whatsapp_phone or '90xxxxxxxxxx' }}?text={{ product.name or 'Ürün Bilgisi Yok' }} - {{ product.list_price or 'Fiyat Yok' }}₺%0A{{ product.x_content or '' | urlencode }}" target="_blank" class="btn btn-success">
+    <i class="fa fa-whatsapp"></i> WhatsApp'tan Paylaş
+</a>
+ -->
+<!--  
+
+<div>
+    <button id="shareLocationButton" class="btn btn-success">Konumumu Paylaş</button>
+</div>
+
+-->

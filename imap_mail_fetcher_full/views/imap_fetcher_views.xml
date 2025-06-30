@@ -1,0 +1,89 @@
+<odoo>
+    <!-- Manual Fetcher View -->
+    <record id="view_imap_mail_fetcher_form" model="ir.ui.view">
+        <field name="name">imap.mail.fetcher.run.form</field>
+        <field name="model">imap.mail.fetcher.run</field>
+        <field name="arch" type="xml">
+            <form string="IMAP Mail Getir">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="state"/>
+                        <button name="action_fetch_mail" type="object" string="Yeni Mailleri Getir" class="btn-primary"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_imap_mail_fetcher_tree" model="ir.ui.view">
+        <field name="name">imap.mail.fetcher.run.tree</field>
+        <field name="model">imap.mail.fetcher.run</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_mail_fetcher_run" model="ir.actions.act_window">
+        <field name="name">Manuel Mail Çek</field>
+        <field name="res_model">imap.mail.fetcher.run</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Mail Log View -->
+    <record id="view_imap_mail_log_tree" model="ir.ui.view">
+        <field name="name">imap.mail.log.tree</field>
+        <field name="model">imap.mail.log</field>
+        <field name="arch" type="xml">
+            <tree default_order="create_date desc">
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="subject"/>
+                <field name="sender"/>
+                <field name="mail_date"/>
+                <field name="server_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_imap_mail_log_form" model="ir.ui.view">
+        <field name="name">imap.mail.log.form</field>
+        <field name="model">imap.mail.log</field>
+        <field name="arch" type="xml">
+            <form string="Mail Log">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="subject"/>
+                        <field name="sender"/>
+                        <field name="mail_date"/>
+                        <field name="server_id"/>
+                        <field name="body"/>
+                        <field name="event_type"/>
+                        <field name="event_time"/>
+                        <field name="alarm_start_time"/>
+                        <field name="alarm_stop_time"/>
+                        <field name="ipc_name"/>
+                        <field name="ipc_sn"/>
+                        <field name="ip_address"/>
+                        <field name="zone"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_imap_mail_log" model="ir.actions.act_window">
+        <field name="name">Gelen Mail Kayıtları</field>
+        <field name="res_model">imap.mail.log</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menü -->
+    <menuitem id="menu_imap_root" name="IMAP Mail" sequence="10"/>
+    <menuitem id="menu_imap_fetcher_run" name="Manuel Mail Çek" parent="menu_imap_root" action="action_mail_fetcher_run"/>
+    <menuitem id="menu_imap_log" name="Gelen Mail Kayıtları" parent="menu_imap_root" action="action_imap_mail_log"/>
+</odoo>

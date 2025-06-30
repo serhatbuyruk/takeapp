@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_voip_sms_log_form" model="ir.ui.view">
+            <field name="name">crm_voip.sms.log.form</field>
+            <field name="model">crm_voip.sms.log</field>
+            <field name="arch" type="xml">
+                <form string="SMS Log">
+                    <sheet>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="phone_id"/>
+                            <field name="partner_id"/>
+                            <field name="service_id"/>
+                            <field name="sms_content"/>
+                            <field name="mobile_number"/>
+                            <field name="result"/>
+                            <field name="result_text"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_voip_sms_log_tree" model="ir.ui.view">
+            <field name="name">crm_voip.sms.log.tree</field>
+            <field name="model">crm_voip.sms.log</field>
+            <field name="arch" type="xml">
+                <tree string="SMS Log">
+                    <field name="customer_id"/>
+                    <field name="phone_id"/>
+                    <field name="partner_id"/>
+                    <field name="service_id"/>
+                    <field name="mobile_number"/>
+                    <field name="sms_content"/>
+                    <field name="result"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_voip_sms_log_action" model="ir.actions.act_window">
+            <field name="name">SMS Log</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm_voip.sms.log</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+    </data>
+</odoo>

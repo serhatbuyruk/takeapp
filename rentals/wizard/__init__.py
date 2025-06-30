@@ -1,0 +1,1 @@
+from . import rentals_wizard

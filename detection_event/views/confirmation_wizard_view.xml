@@ -1,0 +1,22 @@
+<!-- wizard/confirmation_wizard_view.xml -->
+<odoo>
+    <record id="view_confirmation_wizard_form" model="ir.ui.view">
+        <field name="name">confirmation.wizard.form</field>
+        <field name="model">detection.event.confirmation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Olayı Onayla">
+                <sheet>
+                    <group>
+                         
+                        <field name="comment" placeholder="İsteğe bağlı yorum ekleyin..."/>
+                        <field name="severity"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" string="Onayla" type="object" class="oe_highlight"/>
+                    <button string="İptal" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

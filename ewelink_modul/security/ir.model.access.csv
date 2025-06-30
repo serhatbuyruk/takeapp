@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ewelink_modul_user_1,ewelink_modul User,model_ewelink_modul_profile,ewelink_modul.ewelink_modul_group_user,1,0,0,0
+access_ewelink_modul_user_2,ewelink_modul Manager,model_ewelink_modul_profile,ewelink_modul.ewelink_modul_group_manager,1,1,0,0
+access_ewelink_modul_user_3,ewelink_modul Admin,model_ewelink_modul_profile,ewelink_modul.ewelink_modul_group_admin,1,1,1,1
+access_ewelink_modul_user_4,ewelink_modul Dealer,model_ewelink_modul_profile,ewelink_modul.ewelink_modul_group_dealer,1,1,1,1
+access_ewelink_modul_user_5,ewelink_modul Access Rigths Full Access,model_ewelink_modul_profile,base.group_erp_manager,1,1,1,1
+access_ewelink_modul_user_6,ewelink_modul Settings Full Access,model_ewelink_modul_profile,base.group_system,1,1,1,1
+

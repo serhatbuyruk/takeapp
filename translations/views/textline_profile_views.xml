@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+    <!-- translation.profile Modeli İçin Görünümler -->
+    <record id="view_translations_profile_tree" model="ir.ui.view">
+        <field name="name">translation.profile.tree</field>
+        <field name="model">translation.profile</field>
+        <field name="arch" type="xml">
+            <tree string="Translation Profiles" decoration-success="state == 'active'"
+                decoration-muted="state == 'archived'">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="description" optional="hide" />
+                <field name="state" />
+                <field name="line_count" sum="Total Lines" optional="show" />
+                <field name="color" widget="color_picker" optional="hide" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_translations_profile_form" model="ir.ui.view">
+        <field name="name">translation.profile.form</field>
+        <field name="model">translation.profile</field>
+        <field name="arch" type="xml">
+            <form string="Translation Profile">
+                <header>
+                    <button name="action_import_translations" string="Import" type="object"
+                        class="oe_highlight" />
+                    <button name="action_export_translations" string="Export" type="object"
+                        class="oe_highlight" />
+                    <button name="create_new_lines" string="Generate Lines" type="object"
+                        class="btn-secondary" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_translate_all" type="object" class="oe_stat_button"
+                            icon="fa-language">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Translate All</span>
+                                <!-- İsteğe bağlı: Eğer profilin yönettiği çevrilecek satır sayısı
+                                varsa
+                                    <field name="pending_translation_count" widget="statinfo"/>
+                                    -->
+                            </div>
+                        </button>
+
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" />
+                        <h1>
+                            <field name="name" placeholder="Profile Name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sequence" invisible="1" />
+                            <field name="color" widget="color_picker" />
+                        </group>
+                        <group>
+                            <field name="view_ids" widget="many2many_tags"
+                                placeholder="Select views managed by this profile..."
+                                options="{'no_create': True, 'no_quick_create': True}" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"
+                                placeholder="Add a description for this profile..." />
+                        </page>
+                        <!--
+                                Eğer profil doğrudan çeviri satırlarını da yönetebiliyorsa
+                                (Python modelinde line_ids One2many alanı varsa):
+                            <page string="Direct Translation Lines">
+                                <field name="line_ids" nolabel="1"
+                                       context="{'default_profile_id': active_id}">
+                                     <tree editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name" string="Key/Context"/>
+                                        <field name="lang" options="{'no_create': True}" required="1" widget="many2one_avatar_language"/>
+                                        <field name="source"/>
+                                        <field name="value"/>
+                                        <field name="quality_score" widget="progressbar" options='{"current_value": "quality_score",
+                        "max_value": 100}'/>
+                                        <field name="state"/>
+                                        <button name="translate_text" type="object" icon="fa-language" string="Translate" class="btn-sm"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            -->
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_translations_profile_search" model="ir.ui.view">
+        <field name="name">translation.profile.search</field>
+        <field name="model">translation.profile</field>
+        <field name="arch" type="xml">
+            <search string="Search Translation Profiles">
+                <field name="name" string="Profile Name" />
+                <field name="description" />
+                <field name="state" />
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
+                <filter string="Active" name="active" domain="[('state', '=', 'active')]" />
+                <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]" />
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_translations_profile" model="ir.actions.act_window">
+        <field name="name">Translation Profiles</field>
+        <field name="res_model">translation.profile</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_translations_profile_search" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage translation profiles.
+            </p>
+        </field>
+    </record>
+
+    <!-- translation.profile.linesModeli İçin Görünümler -->
+    <record id="view_text_profile_lines_tree" model="ir.ui.view">
+        <field name="name">translation.profile.lines.tree</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <tree string="Translation Lines" editable="bottom"
+                decoration-info="value == False and source != False">
+                <field name="name" string="Key/Context" optional="show" />
+                <field name="lang" options="{'no_create': True}" required="1"
+                    widget="many2one_avatar_language" />
+                <field name="source" widget="translation_source" />
+                <field name="value" widget="translation_value" />
+                <field name="quality_score" widget="progressbar"
+                    options='{"current_value": "quality_score", "max_value": 100}' />
+                <field name="state" />
+                <field name="parent_id" string="Source View" optional="show"
+                    options="{'no_create': True, 'no_open': True}" />
+                <button name="translate_text" type="object" icon="fa-language" string="Translate"
+                    class="btn-sm" aria-label="Translate Line" />
+                <button name="action_open_quality_checks" type="object" icon="fa-check-square-o"
+                    string="Quality" class="btn-sm" aria-label="Open Quality Checks" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_text_profile_lines_form" model="ir.ui.view">
+        <field name="name">translation.profile.lines.form</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <form string="Translation Line">
+                <header>
+                    <button name="translate_text" string="Translate" type="object"
+                        class="oe_highlight" />
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,translated,reviewed,approved" />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Identifier/Key" class="oe_edit_only" />
+                        <h1>
+                            <field name="name"
+                                placeholder="e.g., my_module.my_xml_id_string or custom_key" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="parent_id" string="Source View"
+                                options="{'no_create': True}" />
+                            <field name="lang" options="{'no_create': True}" />
+                        </group>
+                        <group>
+                            <field name="quality_score" widget="gauge"
+                                options="{'max_field': 'max_quality_score'}"
+                                help="Translation Quality Score (0-100)" />
+                            <field name="max_quality_score" invisible="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Content">
+                            <group>
+                                <field name="source" widget="textarea" placeholder="Source text..." />
+                                <field name="value" widget="textarea"
+                                    placeholder="Translated text..." />
+                            </group>
+                            <field name="notes"
+                                placeholder="Internal notes about this translation line..." />
+                        </page>
+                        <page string="Quality Checks">
+                            <field name="quality_checks">
+                                <tree editable="bottom">
+                                    <field name="check_type" />
+                                    <field name="status" widget="badge"
+                                        decoration-success="status=='pass'"
+                                        decoration-warning="status=='warning'"
+                                        decoration-danger="status=='error'" />
+                                    <field name="details" />
+                                    <button name="run_check" type="object" icon="fa-refresh"
+                                        string="Re-run" class="btn-sm" aria-label="Re-run Check" />
+                                </tree>
+                                <footer>
+                                    <button name="run_all_quality_checks_for_line"
+                                        string="Run All Checks" type="object" class="btn-primary" />
+                                </footer>
+                            </field>
+                        </page>
+                        <page string="Context Info">
+                            <group>
+                                <field name="xml_id_source" string="XML ID (Source View)"
+                                    readonly="1" />
+                                <field name="original_source_id"
+                                    string="Original Source Term (if any)" readonly="1" />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_text_profile_lines_search" model="ir.ui.view">
+        <field name="name">translation.profile.lines.search</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <search string="Search Translation Lines">
+                <field name="name" string="Key/Context" />
+                <field name="source" />
+                <field name="value" />
+                <field name="lang" />
+                <field name="parent_id" string="Source View" />
+                <field name="state" />
+                <filter string="Needs Translation" name="needs_translation"
+                    domain="[('value', '=', False), ('source', '!=', False)]" />
+                <filter string="Low Quality" name="low_quality"
+                    domain="[('quality_score', '&lt;', 70)]" />
+                <group expand="0" string="Group By">
+                    <filter string="Source View" name="group_by_source_view"
+                        context="{'group_by': 'parent_id'}" />
+                    <filter string="Language" name="group_by_language"
+                        context="{'group_by': 'lang'}" />
+                    <filter string="Status" name="group_by_status" context="{'group_by': 'state'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_text_profile_lines" model="ir.actions.act_window">
+        <field name="name">All Translation Lines</field>
+        <field name="res_model">translation.profile.lines</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_text_profile_lines_search" />
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage individual translation lines.
+            </p>
+        </field>
+    </record>
+
+    <!-- translation.quality.check Modeli İçin Görünümler -->
+    <record id="view_translation_quality_check_tree" model="ir.ui.view">
+        <field name="name">translation.quality.check.tree</field>
+        <field name="model">translation.quality.check</field>
+        <field name="arch" type="xml">
+            <tree string="Quality Checks" editable="bottom">
+                <field name="line_id" invisible="1" />
+                <field name="check_type" />
+                <field name="status" widget="badge" decoration-success="status=='pass'"
+                    decoration-warning="status=='warning'" decoration-danger="status=='error'" />
+                <field name="details" optional="show" />
+                <button name="run_check" type="object" icon="fa-refresh" string="Re-run"
+                    class="btn-sm" aria-label="Re-run Check" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_translation_quality_check_form" model="ir.ui.view">
+        <field name="name">translation.quality.check.form</field>
+        <field name="model">translation.quality.check</field>
+        <field name="arch" type="xml">
+            <form string="Quality Check">
+                <sheet>
+                    <group>
+                        <field name="line_id" options="{'no_create': True, 'no_open': True}" />
+                        <field name="check_type" />
+                        <field name="status" />
+                    </group>
+                    <field name="details" placeholder="Details about the check result..." />
+                    <footer>
+                        <button name="run_check" string="Run Check Again" type="object"
+                            class="btn-primary" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- translation.cache Modeli İçin Görünümler -->
+    <record id="view_translation_cache_tree" model="ir.ui.view">
+        <field name="name">translation.cache.tree</field>
+        <field name="model">translation.cache</field>
+        <field name="arch" type="xml">
+            <tree string="Translation Cache">
+                <field name="source_text" string="Source" />
+                <field name="translated_text" string="Translation" />
+                <field name="source_lang" />
+                <field name="target_lang" />
+                <field name="hit_count" />
+                <field name="quality_check" />
+                <field name="create_date" string="Cached On" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_translation_cache_form" model="ir.ui.view">
+        <field name="name">translation.cache.form</field>
+        <field name="model">translation.cache</field>
+        <field name="arch" type="xml">
+            <form string="Cache Entry">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="source_lang" />
+                            <field name="target_lang" />
+                        </group>
+                        <group>
+                            <field name="hit_count" />
+                            <field name="quality_check" />
+                            <field name="create_date" readonly="1" />
+                        </group>
+                    </group>
+                    <group string="Texts">
+                        <field name="source_text" widget="textarea" readonly="1" />
+                        <field name="translated_text" widget="textarea" readonly="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_translation_cache_search" model="ir.ui.view">
+        <field name="name">translation.cache.search</field>
+        <field name="model">translation.cache</field>
+        <field name="arch" type="xml">
+            <search string="Search Translation Cache">
+                <field name="source_text" />
+                <field name="translated_text" />
+                <field name="source_lang" />
+                <field name="target_lang" />
+                <filter string="Quality Checked" name="quality_checked"
+                    domain="[('quality_check', '=', True)]" />
+                <filter string="Not Checked" name="not_quality_checked"
+                    domain="[('quality_check', '=', False)]" />
+                <group expand="0" string="Group By">
+                    <filter string="Source Language" name="group_by_source_lang"
+                        context="{'group_by': 'source_lang'}" />
+                    <filter string="Target Language" name="group_by_target_lang"
+                        context="{'group_by': 'target_lang'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_translation_cache" model="ir.actions.act_window">
+        <field name="name">Translation Cache</field>
+        <field name="res_model">translation.cache</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_translation_cache_search" />
+    </record>
+    <record id="action_manage_translatable_views" model="ir.actions.act_window"> <!-- DİKKAT: ID'de
+        modül öneki yok -->
+        <field name="name">Translatable Views</field>
+        <field name="res_model">ir.ui.view</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type', 'in', ['qweb', 'form', 'tree', 'kanban', 'search']),
+            ('website_id', '=', False)]</field>
+        <field name="context">{'search_default_is_active':1, 'search_default_not_archived':1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage backend translatable views.
+            </p>
+            <p>
+                Access the 'Translations' tab on a view's form (via `text_lines` field inherited
+                into `ir.ui.view`) to manage its specific text lines.
+            </p>
+        </field>
+    </record>
+
+    <!-- API Ayarları (res.config.settings) için Aksiyon -->
+    <record id="action_deepl_config_settings_translations" model="ir.actions.act_window">
+        <field name="name">API Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'translations', 'bin_size': False}</field>
+    </record>
+
+    <!-- ir.ui.view listesi için aksiyon (Translatable Views) -->
+    <record id="action_manage_translatable_views" model="ir.actions.act_window">
+        <field name="name">Translatable Views</field>
+        <field name="res_model">ir.ui.view</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type', 'in', ['qweb', 'form', 'tree', 'kanban', 'search']),
+            ('website_id', '=', False)]</field>
+        <field name="context">{'search_default_is_active':1, 'search_default_not_archived':1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage backend translatable views.
+            </p>
+            <p>
+                Access the 'Translations' tab on a view's form (via `text_lines` field inherited
+                into `ir.ui.view`) to manage its specific text lines.
+            </p>
+        </field>
+    </record>
+    <!-- Menü Öğeleri -->
+    <menuitem id="menu_translations_root" name="Translations" sequence="90"
+        web_icon="translations,static/description/icon.png" />
+
+    <menuitem id="menu_translation_profiles" name="Translation Profiles"
+        parent="menu_translations_root" action="action_translations_profile" sequence="10" />
+    <menuitem id="menu_all_translation_lines" name="All Translation Lines"
+        parent="menu_translations_root" action="action_text_profile_lines" sequence="20" />
+    <menuitem id="menu_translation_views" name="Translatable Views" parent="menu_translations_root"
+        action="action_manage_translatable_views" sequence="30" />
+
+    <menuitem id="menu_translations_config" name="Configuration" parent="menu_translations_root"
+        sequence="100" groups="base.group_system" />
+    <menuitem id="menu_translation_cache_config" name="Translation Cache"
+        parent="menu_translations_config" action="action_translation_cache" sequence="10" />
+    <menuitem id="menu_deepl_config_settings_translations" name="API Settings"
+        parent="menu_translations_config"
+        action="action_deepl_config_settings_translations" sequence="1" />
+</data>
+
+</odoo>

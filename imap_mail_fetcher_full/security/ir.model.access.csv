@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mail_fetcher_run,access_mail_fetcher_run,model_imap_mail_fetcher_run,base.group_user,1,1,1,0
+access_mail_log,access_mail_log,model_imap_mail_log,base.group_user,1,1,1,1
+access_mail_fetcher,access_mail_fetcher,model_imap_mail_fetcher,base.group_system,1,1,1,1

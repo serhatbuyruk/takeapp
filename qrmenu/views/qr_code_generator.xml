@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Custom Tree View for res.partner -->
+    <record id="qrcode_partner_custom_tree_view" model="ir.ui.view">
+        <field name="name">qrcode.partner.custom.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Partners with QR Code" default_order="create_date desc">
+                <field name="name"/>
+                <field name="x_qr_id"/>
+                <button string="QR Kod Göster" class="oe_inline oe_stat_button"
+                        icon="fa-qrcode"
+                        type="object"
+                        name="qr_generate" />
+                <field name="email" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Custom Form View for res.partner -->
+    <record id="qrcode_partner_custom_form_view" model="ir.ui.view">
+        <field name="name">qrcode.partner.custom.form</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form string="QR Code Contact Form">
+                <sheet>
+                    <group name="main_group">
+                        <field name="name"/>
+                        <field name="x_qr_id"/>
+                        <field name="email"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to Open Custom Views -->
+    <record id="action_qrcode_partner_custom_view" model="ir.actions.act_window">
+        <field name="name">QR Kod Contact Listesi</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('qrcode_partner_custom_tree_view')}), (0, 0, {'view_mode': 'form', 'view_id': ref('qrcode_partner_custom_form_view')})]"/>
+    </record>
+
+    <!-- Custom Menu Item -->
+    
+    <menuitem id="qrcode_partner_custom_root_menu" name="QR Kod Oluştur" sequence="7" web_icon="qrmenu,static/src/img/pay.png"/>
+    <menuitem id="qrcode_partner_custom_menu" parent="qrcode_partner_custom_root_menu" name="QR Kod Contact Listesi" action="action_qrcode_partner_custom_view"/>
+</odoo>

@@ -1,0 +1,51 @@
+<odoo>
+    <template id="custom_whatsapp_location_snippet">
+        <t t-name="custom.whatsapp_location_snippet">
+            <div t-if="request.httprequest.path == '/menus'" id="whatsapp" class="container">
+                <a href="#" class="btn btn-success" id="shareLocationButton" 
+                   t-att-data-whatsapp-phone="qrmenu.whatsapp_phone or '90xxxxxxxxxx'">
+                    <i class="fa fa-whatsapp"></i>
+                    <span style="margin-left: 10px;">Konum Paylaş</span>
+                </a>
+            </div>
+        </t>
+        <script src="/qrmenu/static/src/js/WhatsappLocationButton.js"></script>
+    </template>
+
+    <!-- <template id="custom_whatsapp_location_script" inherit_id="website.assets_frontend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function () {
+                    document.getElementById("shareLocationButton").addEventListener("click", function (event) {
+                        event.preventDefault();
+
+                        const whatsappPhone = this.getAttribute("data-whatsapp-phone");
+                        console.log("whatsappPhone ", whatsappPhone);
+
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                (position) => {
+                                    const latitude = position.coords.latitude;
+                                    const longitude = position.coords.longitude;
+
+                                    const whatsappLink = `https://wa.me/90${whatsappPhone}?text=Anlık%20konum:%20https://www.google.com/maps?q=${latitude},${longitude}`;
+
+                                    window.open(whatsappLink, "_blank");
+                                },
+                                (error) => {
+                                    if (error.code === error.PERMISSION_DENIED) {
+                                        console.error("Kullanıcı konum iznini reddetti.");
+                                    } else {
+                                        console.error("Konum bilgisi alınamadı:", error.message);
+                                    }
+                                }
+                            );
+                        } else {
+                            console.log("Geolocation API tarayıcınız tarafından desteklenmiyor.");
+                        }
+                    });
+                });
+            </script>
+        </xpath>
+    </template> -->
+</odoo>

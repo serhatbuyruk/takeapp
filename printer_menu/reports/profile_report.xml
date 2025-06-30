@@ -1,0 +1,9 @@
+<odoo>
+    <record id="action_report_printer_menu_profile" model="ir.actions.report">
+        <field name="name">Printer Menu Profile PDF Report</field>
+        <field name="model">printer.menu.profile</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">printer_menu.profile.report_profile_template</field>
+        <field name="file">report_profile</field>
+    </record>
+</odoo>

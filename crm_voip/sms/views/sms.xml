@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="sms_services_test_form" model="ir.ui.view">
+            <field name="name">Sms Test Provider</field>
+            <field name="model">crm_voip.providers.sms_services.test</field>
+            <field name="arch" type="xml">
+                <form string="Sms Test Provider">
+                    <group>
+                        <field name="service_name"/>
+                        <field name="test_gsm"/>
+                    </group>
+                    <footer>
+                        <button string="Test Now" name="test_configuration" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+<!--        <record id="sms_services_test_action" model="ir.actions.act_window">-->
+<!--            <field name="name">Sms Test Provider</field>-->
+<!--            <field name="res_model">crm_voip.providers.sms_services.test</field>-->
+<!--            <field name="view_mode">form</field>-->
+<!--            <field name="view_id" ref="sms_services_test_form"/>-->
+<!--            <field name="target">new</field>-->
+<!--            <field name="binding_model_id" ref="crm_voip.providers.sms_services"/>-->
+<!--            <field name="binding_view_types">form</field>-->
+<!--        </record>-->
+
+        <record id="sms_services_action" model="ir.actions.act_window">
+            <field name="name">Sms Services</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm_voip.providers.sms_services</field>
+            <field name="binding_view_types">tree,form</field>
+        </record>
+
+        <record id="sms_services_tree" model="ir.ui.view">
+            <field name="name">crm_voip.providers.sms_services.tree</field>
+            <field name="model">crm_voip.providers.sms_services</field>
+            <field eval="5" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Sms Services">
+                    <field name="name"/>
+                    <field name="request_type"/>
+                    <field name="service_url"/>
+                    <field name="partner_ids" widget="many2many_tags" domain="[('is_company', '=', True)]"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sms_services_form" model="ir.ui.view">
+            <field name="name">Sms Services</field>
+            <field name="model">crm_voip.providers.sms_services</field>
+            <field name="arch" type="xml">
+                <form string="Sms Services">
+                    <header>
+
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="request_type"/>
+                            <field name="service_url"/>
+                            <field name="partner_ids" widget="many2many_tags" domain="[('is_company', '=', True)]"/>
+                            <field name="http_headers">
+                                <tree>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="param_name" widget="char"/>
+                                    <field name="param_static_value" widget="char"/>
+                                </tree>
+                            </field>
+                            <field name="parameters">
+                                <tree>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="param_name" widget="char"/>
+                                    <field name="param_dynamic_value"/>
+                                    <field name="param_static_value" widget="char"/>
+                                </tree>
+                            </field>
+                            <field name="match_type"/>
+                            <field name="match_regex"/>
+                            <field name="default"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sms_service_providers_form" model="ir.ui.view">
+            <field name="name">Sms Service Providers</field>
+            <field name="model">crm_voip.providers.sms_services.parameters</field>
+            <field name="arch" type="xml">
+                <form string="Sms Service Parameters">
+                    <group>
+                        <field name="param_name" widget="char"/>
+                        <field name="param_dynamic_value"/>
+                        <field name="param_static_value" widget="char"
+                               attrs="{'invisible':[('param_dynamic_value','!=','static')]}"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="sms_service_providers_http_header_form" model="ir.ui.view">
+            <field name="name">Sms Service Http Header</field>
+            <field name="model">crm_voip.providers.sms_services.http_header</field>
+            <field name="arch" type="xml">
+                <form string="Sms Service Http Header">
+                    <group>
+                        <field name="param_name" widget="char"/>
+                        <field name="param_static_value" widget="char"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

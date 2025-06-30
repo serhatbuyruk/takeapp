@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.module.category" id="ewelink_modul_security_groups">
+            <field name="name">ewelink_modul</field>
+        </record>
+        <!-- Groups User -->
+        <record model="res.groups" id="ewelink_modul_group_user">
+            <field name="name">ewelink_modul User</field>
+            <field name="category_id" ref="ewelink_modul.ewelink_modul_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('ewelink_modul.ewelink_modul_group_user'))]"/>
+        </record>
+
+        <!-- Groups Manager -->
+        <record model="res.groups" id="ewelink_modul_group_manager">
+            <field name="name">ewelink_modul Manager</field>
+            <field name="category_id" ref="ewelink_modul.ewelink_modul_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('ewelink_modul.ewelink_modul_group_manager'))]"/>
+        </record>
+        
+        <!-- Groups Admin -->
+        <record model="res.groups" id="ewelink_modul_group_admin">
+            <field name="name">ewelink_modul Admin</field>
+            <field name="category_id" ref="ewelink_modul.ewelink_modul_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('ewelink_modul.ewelink_modul_group_admin'))]"/>
+        </record>
+
+        <!-- Groups Dealer -->
+        <record model="res.groups" id="ewelink_modul_group_dealer">
+            <field name="name">ewelink_modul Dealer</field>
+            <field name="category_id" ref="ewelink_modul.ewelink_modul_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('ewelink_modul.ewelink_modul_group_dealer'))]"/>
+        </record>
+
+        <!-- Groups Full Access Admin -->
+        <record model="res.groups" id="ewelink_modul_group_fullaccess">
+            <field name="name">ewelink_modul Full Access</field>
+            <field name="category_id" ref="ewelink_modul.ewelink_modul_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('ewelink_modul.ewelink_modul_group_fullaccess'))]"/>
+        </record>
+
+
+
+        <!-- Record Rules User -->
+        <record id="ewelink_modul_profile_user_rule" model="ir.rule">
+            <field name="name">ewelink_modul user can access ewelink_modul.profile (Autoronics)</field>
+            <field ref="ewelink_modul.model_ewelink_modul_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('ewelink_modul.ewelink_modul_group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="ewelink_modul_profile_manager_rule" model="ir.rule">
+            <field name="name">ewelink_modul manager can access ewelink_modul.profile (Autoronics)</field>
+            <field ref="ewelink_modul.model_ewelink_modul_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('ewelink_modul.ewelink_modul_group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="ewelink_modul_profile_admin_rule" model="ir.rule">
+            <field name="name">ewelink_modul admin can access ewelink_modul.profile (Autoronics)</field>
+            <field ref="ewelink_modul.model_ewelink_modul_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('ewelink_modul.ewelink_modul_group_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="ewelink_modul_profile_dealer_rule" model="ir.rule">
+            <field name="name">ewelink_modul dealer can access ewelink_modul.profile (Autoronics)</field>
+            <field ref="ewelink_modul.model_ewelink_modul_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('ewelink_modul.ewelink_modul_group_dealer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="ewelink_modul_profile_fullaccess_rule" model="ir.rule">
+            <field name="name">ewelink_modul fullaccess can access ewelink_modul.profile (Autoronics)</field>
+            <field ref="ewelink_modul.model_ewelink_modul_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('ewelink_modul.ewelink_modul_group_fullaccess'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

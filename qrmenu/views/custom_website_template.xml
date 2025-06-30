@@ -1,0 +1,18 @@
+<odoo>
+    <!-- Örnek bir menü öğesi -->
+    <menuitem id="menu_custom_page_template" name="Ana Sayfa" parent="website.menu_main" sequence="1" action="action_custom_homepage"/>
+
+    <!-- Örnek bir görünüm şablonu -->
+    <template id="custom_page_template" name="Custom Page Template" page="True">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="s_text_image pt10 pb64">
+                    <div class="container">
+                        <h1>Özel Sayfa</h1>
+                        <p>Bu sayfa modül yüklendiğinde otomatik olarak kurulur.</p>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_realestates_user_1,Real Estates User,model_realestates_profile,realestates.realestates_group_user,1,0,0,0
+access_realestates_user_2,Real Estates Manager,model_realestates_profile,realestates.realestates_group_manager,1,1,1,1
+access_realestates_user_3,Real Estates Admin,model_realestates_profile,realestates.realestates_group_admin,1,1,1,1
+access_realestates_user_4,Real Estates Dealer,model_realestates_profile,realestates.realestates_group_dealer,1,1,1,1
+access_realestates_user_5,Real Estates Access Rigths Full Access,model_realestates_profile,base.group_erp_manager,1,1,1,1
+access_realestates_user_6,Real Estates Settings Full Access,model_realestates_profile,base.group_system,1,1,1,1
+access_customer_payment_lines_user_1,Customer Payment Lines Full Access,model_customer_payment_lines,base.group_user,1,1,1,1

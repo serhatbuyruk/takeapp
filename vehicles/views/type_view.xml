@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--tree view of the type model-->
+    <record id="type_tree" model="ir.ui.view">
+        <field name="name">type.profile.tree</field>
+        <field name="model">type.profile</field>
+        <field name="arch" type="xml">
+            <tree string="Cities">
+                <field name="name" />
+                <field name="max_passenger" />
+            </tree>
+        </field>
+    </record>
+    <!--form
+    view of the type model-->
+    <record id="type_form" model="ir.ui.view">
+        <field name="name">type.profile.form</field>
+        <field name="model">type.profile</field>
+        <field name="arch" type="xml">
+            <form string="Cities">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="max_passenger" />
+                            <field name="active_status" />
+                        </group>
+                        <group>
+                            <field name="image" widget="image" class="oe_avatar" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- <record id="type_calendar" model="ir.ui.view">
+        <field name="name">type.profile.lines.search</field>
+        <field name="model">type.profile.lines</field>
+        <field eval="2" name="priority" />
+        <field name="arch" type="xml">
+            <calendar date_start="start_date" date_stop="end_date" string="Vehicle" mode="month" color="color"
+    event_limit="5" hide_time="true" js_class="project_calendar" event_open_popup="true"
+    quick_add="false">
+                <field name="name" filters="1" />
+                <field name="partner_id" filters="1" />
+                <field name="start_date" />
+                <field name="end_date" />
+            </calendar>
+        </field>
+    </record> -->
+    <!-- <record id="vehicles.profile.common.form" model="ir.ui.view">
+        <field name="name">vehicles.profile.common.form.inherit</field>
+        <field name="model">vehicles.profile.common.form</field>
+        <field name="inherit_id" ref="product.vehicles.profile.common.form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@string='Product Name']" position="after">
+                <group name="type_select" string="string">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!-- <record id="view_type_form_inherit" model="ir.ui.view">
+        <field name="name">vehicles.profile.common.form.inherit</field>
+        <field name="model">vehicles.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']/group" position="before">
+                <group col="2" colspan="2">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!--field
+    ekleme-->
+    <!--
+    <record id="product_template_inherit" model="ir.ui.view">
+        <field name="name">vehicles.profile.inherit</field>
+        <field name="model">vehicles.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <field name="image_1920" position="after">
+			<group>
+                <field name="from_id"/>
+                <field name="to_id"/>
+			</group>
+            </field>
+        </field>
+    </record>
+	-->
+    <!--action
+    of the type menu-->
+    <record id="action_type_profile" model="ir.actions.act_window">
+        <field name="name">type_profile</field>
+        <field name="res_model">type.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="type_root_menu" name="Vehicle Types" web_icon="vehicles,static/src/img/avatar.png" />
+    <act_window id="type_list" name="Vehicle Types" res_model="type.profile" view_mode="tree,form"
+        context="{}" />
+    <menuitem id="type_zones" parent="type_root_menu" name="Vehicle Types" action="type_list"
+        sequence="2" />
+</odoo>

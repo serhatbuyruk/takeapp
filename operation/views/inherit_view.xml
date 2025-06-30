@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--bu bölüm üstteki filtreler gruplar ve
+    custom filtreler ayarları-->
+    <!--
+    <record id="view_sales_order_filter_inherit" model="ir.ui.view">
+        <field name="name">sale.order.search.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="transfer_name" string="transfer Name"/>
+                <filter string="transfer Record" name="transfer_record" domain="[('is_transfer','=', True)]"/>
+                <filter name="transfer_groupby" string="transfer" domain="[]"
+    context="{'group_by':'is_transfer'}"/>
+            </xpath>
+        </field>
+    </record>
+	-->
+
+    <!--field
+    ekleme-->
+    <record id="project_task_form_inherit" model="ir.ui.view">
+        <field name="name">project.task.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2" />
+        <field name="arch" type="xml">
+            <group name="main_group" position="before">
+                <div groups="base.group_system,base.group_erp_manager,project.group_project_manager,project.group_project_user">
+                    <group string="Operation Details">
+                        <field name="partner_id" placeholder="Select Customer" />
+                        <field name="user_ids" attrs="{'invisible': [('project_id', '=', 1)]}"/>
+                        <field name="visit" placeholder="Select Visit Number" />
+                        <field name="patient_type" placeholder="Select Patient Type" />
+                        <field name="doctors" widget="many2many_tags"/>
+                        <field name="patient_note" placeholder="" />
+                        <field name="patient_medications" placeholder="" />
+                        <field name="patient_chronic_disease" placeholder="" />
+
+                        <field name="patient_coach" placeholder="Select Patient Coach" />
+                        <field name="sale_person" placeholder="Select Sale Person" />
+                        <field name="source" placeholder="Select Source" />                       
+                        <field name="hotel" placeholder="Antalya Hotel" />
+                        <field name="planned_visit" />
+                        <field name="patient_status" placeholder="Durum Aşaması" />
+                        <field name="sistem_atama_status" />
+                        <field name="operation_description" />
+                    </group>
+                    <group string="Incoming Flight Information">
+                        <field name="ticket_purchase_date" placeholder="Select Ticket Date" />
+                        <field name="ticket_attachments" widget="many2many_binary" />
+                        <field name="fligth_company" />
+                        <label for="fligth_number" />
+                        <div class="d-flex">
+                            <field name="fligth_number" />
+                            <span class="o_form_label mx-3"> - </span>
+                            <button name="fligth_url_open" string="Show Fligth" type="object"
+                                class="oe_highlight" icon="fa-plane" />
+                        </div>
+                        <field name="arrival_datetime" placeholder="Select Coming Date and Time" />
+                        <field name="gelen_hasta_status"  />
+                        <field name="incoming_flight_description" />
+                    </group>
+                    <group string="Outbound Flight Information">
+                        <field name="outgoing_ticket_purchase_date" placeholder="Select Ticket Date" />
+                        <field name="outgoing_ticket_attachments" widget="many2many_binary" />
+                        <field name="outgoing_fligth_company" />
+                        <label for="outgoing_fligth_number" />
+                        <div class="d-flex">
+                            <field name="outgoing_fligth_number" />
+                            <span class="o_form_label mx-3"> - </span>
+                            <button name="fligth_url_open" string="Show Fligth" type="object"
+                                class="oe_highlight" icon="fa-plane" />
+                        </div>
+                         
+                        <field name="departure_datetime" placeholder="Select Return Date and Time" />
+                        <field name="giden_hasta_status"  />
+                        <field name="outbound_flight_description" />
+                    </group>
+                    <group string="Transfer">
+                        <field name="driver" />
+                        <field name="refakat" />
+                        <field name="task_id" invisible="1"/>
+                        <field name="transfer_description" />
+                    </group>
+                    <group string="Appointment Or Meet">
+                        <field name="appointment_start_time" />
+                        <field name="appointment_finish_time" attrs="{'invisible': [('project_id', '!=', 1)]}"/>
+                        <field name="patient_coming_status" widget="boolean_toggle" attrs="{'invisible': [('project_id', '!=', 1)]}"/>
+                        <field name="doctor" attrs="{'invisible': [('project_id', '!=', 1)]}"/>
+                        <field name="box" attrs="{'invisible': [('project_id', '!=', 1)]}"/>
+                        <field name="appointment_description" />
+                    </group>
+                    <div groups="operation.operation_group_admin,operation.operation_group_fullaccess">
+                        <group string="Payments" attrs="{'invisible': [('project_id', '!=', 1)]}">
+                            <label for="first_sale_price" />
+                            <div class="d-flex">
+                                <field name="first_sale_price" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="sale_price_currency_id" />
+                            </div>
+                            <label for="sale_price" />
+                            <div class="d-flex">
+                                <field name="sale_price" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="sale_price_currency_id" />
+                            </div>                        
+                            <label for="deposit_price" />
+                            <div class="d-flex">
+                                <field name="deposit_price" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="deposit_price_currency_id" />
+                            </div>
+                            <label for="visit1_received_amount" />
+                            <div class="d-flex">
+                                <field name="visit1_received_amount" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="visit1_received_amount_currency_id" />
+                            </div>
+                            <label for="visit2_received_amount" />
+                            <div class="d-flex">
+                                <field name="visit2_received_amount" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="visit2_received_amount_currency_id" />
+                            </div>
+                            <label for="visit3_received_amount" />
+                            <div class="d-flex">
+                                <field name="visit3_received_amount" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="visit3_received_amount_currency_id" />
+                            </div>
+                            <!-- <label for="received_amount" />
+                            <div class="d-flex">
+                                <field name="received_amount" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id" />
+                            </div>
+                            <label for="received_amount_1" />
+                            <div class="d-flex">
+                                <field name="received_amount_1" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_1_currency_id" />
+                            </div> -->
+                            <label for="remaining_amount" />
+                            <div class="d-flex">
+                                <field name="remaining_amount" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="remaining_amount_currency_id" />
+                            </div>
+                            <field name="sale_description" />
+                            <field name="customer_payment_status" />
+                            <field name="payments_description" />
+                        </group>
+                    </div>
+                    <group string="Commission" invisible="1">
+                        <field name="commission_rate" />
+                        <label for="commission_amount" />
+                        <div class="d-flex">
+                            <field name="commission_amount" />
+                            <span class="o_form_label mx-3"> - </span>
+                            <field name="commission_amount_currency_id" />
+                        </div>
+                    </group>
+                    <div groups="operation.operation_group_admin,operation.operation_group_fullaccess">
+                        <group string="Treatment" attrs="{'invisible': [('project_id', '!=', 1)]}">
+                            <field name="brand" placeholder="Write Brand" />
+                            <field name="implant_number" />
+                            <field name="lab" placeholder="Lab Name" />
+                            <field name="zirkon_number" />
+                            <field name="other" />
+                            <field name="treatment_type" />
+                            <field name="repeat_process" />
+                            <field name="treatment_description" />
+                        </group>
+                    </div>
+                </div>
+            </group>
+            <!--sale
+            order form görünümünün içine buton koyma-->
+            <!--
+            <button name="preview_sale_order" position="after">
+                <button name="test" string="Test" type="object"/>
+            </button>
+            -->
+        </field>
+    </record>
+
+    <record id="project_task_form_view_inherit_transportation" model="ir.ui.view">
+        <field name="name">project.task.form.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2" />
+        <field name="priority">36</field>
+        <field name="arch" type="xml">
+            <group name="main_group" position="before">
+                <div groups="__export__.res_groups_149_59ee5b94">
+                    <group string="Operation Details">
+                        <field name="partner_id" placeholder="Select Customer" readonly="1"/>
+                        <field name="patient_coach" placeholder="Select Patient Coach" readonly="1"/>
+                        <field name="ticket_purchase_date" placeholder="Select Ticket Date" readonly="1" />
+                        <field name="ticket_attachments" widget="many2many_binary" readonly="1"/>
+                        <field name="fligth_company" readonly="1"/>
+                        <label for="fligth_number" readonly="1"/>
+                        <div class="d-flex">
+                            <field name="fligth_number" readonly="1"/>
+                            <span class="o_form_label mx-3"> - </span>
+                            <button name="fligth_url_open" string="Show Fligth" type="object"
+                                class="oe_highlight" icon="fa-plane" />
+                        </div>
+                        <field name="arrival_datetime" placeholder="Select Coming Date and Time" readonly="1"/>
+                        <field name="hotel" placeholder="Antalya Hotel" readonly="1"/>
+                        <field name="departure_datetime" placeholder="Select Return Date and Time" readonly="1"/>
+                        <field name="driver" readonly="1"/>
+                    </group>
+                    <group string="Appointment">
+                        <field name="appointment_start_time" readonly="1"/>
+                        <field name="appointment_finish_time" readonly="1"/>
+                    </group>
+                </div>
+            </group>
+        </field>
+    </record>
+
+    <record id="res_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <field name="function" position="before">
+                <field name="passport_no" placeholder="Passport No" />
+                <field name="passport_attachment" placeholder="Passport Attachment"
+                    widget="many2many_binary" />
+            </field>
+            <!--sale
+            order form görünümünün içine buton koyma-->
+            <!--
+            <button name="preview_sale_order" position="after">
+                <button name="test" string="Test" type="object"/>
+            </button>
+            -->
+        </field>
+    </record>
+
+    <!--tree
+    view-->
+    <record id="project_task_tree_inherit" model="ir.ui.view">
+        <field name="name">project.task.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="partner_id" optional="show" />
+                <field name="visit" optional="show" />
+                <field name="stage_of_visit" optional="show" />
+                <field name="patient_type" optional="hide" />
+                <field name="patient_coach" optional="hide" />
+                <field name="sale_person" optional="hide" />
+                <field name="source" optional="hide" />
+                <field name="ticket_purchase_date" optional="hide" />
+                <field name="fligth_company" optional="hide" />
+                <field name="fligth_number" optional="hide" />
+                <field name="arrival_datetime" optional="hide" />
+                <field name="hotel" optional="hide" />
+                <field name="sale_price" optional="hide" />
+                <field name="received_amount" optional="hide" />
+                <field name="departure_datetime" optional="hide" />
+                <field name="appointment_start_time" optional="show" />
+                <field name="appointment_finish_time" optional="hide" />
+                <field name="patient_coming_status" optional="hide" />
+                <field name="doctor" optional="hide" />
+                <field name="box" optional="hide" />
+                <field name="remaining_amount" optional="hide" />
+                <field name="brand" optional="hide" />
+                <field name="implant_number" optional="hide" />
+                <field name="lab" optional="hide" />
+                <field name="zirkon_number" optional="hide" />
+                <field name="other" optional="hide" />
+                <field name="treatment_type" optional="hide" />
+                <field name="planned_visit" optional="hide" />
+            </field>
+        </field>
+    </record>
+
+    <record id="project_task_kanban_inherit" model="ir.ui.view">
+        <field name="name">project.task.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="partner_id" optional="show" />
+                <field name="visit" optional="show" />
+                <field name="stage_of_visit" optional="hide" />
+                <field name="patient_type" optional="hide" />
+                <field name="patient_coach" optional="hide" />
+                <field name="sale_person" optional="hide" />
+                <field name="source" optional="hide" />
+                <field name="ticket_purchase_date" optional="hide" />
+                <field name="fligth_company" optional="hide" />
+                <field name="fligth_number" optional="hide" />
+                <field name="arrival_datetime" optional="hide" />
+                <field name="hotel" optional="hide" />
+                <field name="sale_price" optional="hide" />
+                <field name="received_amount" optional="hide" />
+                <field name="departure_datetime" optional="hide" />
+                <field name="appointment_start_time" optional="show" />
+                <field name="appointment_finish_time" optional="hide" />
+                <field name="patient_coming_status" optional="hide" />
+                <field name="doctor" optional="hide" />
+                <field name="box" optional="hide" />
+                <field name="remaining_amount" optional="hide" />
+                <field name="brand" optional="hide" />
+                <field name="implant_number" optional="hide" />
+                <field name="lab" optional="hide" />
+                <field name="zirkon_number" optional="hide" />
+                <field name="other" optional="hide" />
+                <field name="treatment_type" optional="hide" />
+                <field name="planned_visit" optional="hide" />
+            </field>
+        </field>
+    </record>
+
+</odoo>

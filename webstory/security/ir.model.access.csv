@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_webstory_user_1,webstory User,model_webstory_profile,webstory.webstory_group_user,1,0,0,0
+access_webstory_user_2,webstory Manager,model_webstory_profile,webstory.webstory_group_manager,1,1,0,0
+access_webstory_user_3,webstory Admin,model_webstory_profile,webstory.webstory_group_admin,1,1,1,1
+access_webstory_user_4,webstory Dealer,model_webstory_profile,webstory.webstory_group_dealer,1,1,1,1
+access_webstory_user_5,webstory Access Rigths Full Access,model_webstory_profile,base.group_erp_manager,1,1,1,1
+access_webstory_user_6,webstory Settings Full Access,model_webstory_profile,base.group_system,1,1,1,1
+access_webstory_profile_public,access_webstory_profile_public,model_webstory_profile,base.group_public,1,0,0,0
+
+

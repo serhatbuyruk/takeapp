@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_voip_seller_form" model="ir.ui.view">
+            <field name="name">crm_voip.seller.form</field>
+            <field name="model">crm_voip.seller</field>
+            <field name="arch" type="xml">
+                <form string="Seller">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="callcenter"/>
+                            <field name="callcenter_prefix"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_voip_seller_tree" model="ir.ui.view">
+            <field name="name">crm_voip.seller.tree</field>
+            <field name="model">crm_voip.seller</field>
+            <field name="arch" type="xml">
+                <tree string="Seller">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_voip_seller_action" model="ir.actions.act_window">
+            <field name="name">Seller</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm_voip.seller</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,25 @@
+<odoo>
+    <template id="tum_kategoriler_category_template" name="Category List">
+        <t t-call="website.layout">
+            <div class="container mt-4">
+                <h1>Categories</h1>
+                <div class="row">
+                    <t t-foreach="categories" t-as="category">
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <!-- Kategori Görseli -->
+                                <img t-att-src="category.get('resim')" alt="Category Image" class="card-img-top" />
+                                <div class="card-body">
+                                    <h5 class="card-title" t-esc="category.get('isim')"></h5>
+                                    <p class="card-text">
+                                        <t t-esc="category.get('aciklama')" />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--tree view of the tracker model-->
+    <record id="tracker_tree" model="ir.ui.view">
+        <field name="name">rooms.tracker.tree</field>
+        <field name="model">rooms.tracker</field>
+        <field name="arch" type="xml">
+            <tree string="Documents">
+                <field name="order_sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="is_active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+    <!--form view of the tracker model-->
+    <record id="tracker_form" model="ir.ui.view">
+        <field name="name">rooms.tracker.form</field>
+        <field name="model">rooms.tracker</field>
+        <field name="arch" type="xml">
+            <form string="Documents">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="is_active" widget="boolean_toggle"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="rooms_tracker_tree" model="ir.ui.view">
+        <field name="name">hbookings.profile.inherit</field>
+        <field name="model">hbookings.profile</field>
+        <field name="inherit_id" ref="hbookings.hbookings_form_view"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="room" options="{'no_open':True,'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+    <!-- <record id="hbookings.profile.common.form" model="ir.ui.view">
+        <field name="name">hbookings.profile.common.form.inherit</field>
+        <field name="model">hbookings.profile.common.form</field>
+        <field name="inherit_id" ref="product.hbookings.profile.common.form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@string='Product Name']" position="after">
+                <group name="tracker_select" string="string">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!-- <record id="view_tracker_form_inherit" model="ir.ui.view">
+        <field name="name">hbookings.profile.common.form.inherit</field>
+        <field name="model">hbookings.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']/group" position="before">
+                <group col="2" colspan="2">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!--field ekleme-->
+    <!--
+    <record id="product_template_inherit" model="ir.ui.view">
+        <field name="name">hbookings.profile.inherit</field>
+        <field name="model">hbookings.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <field name="image_1920" position="after">
+			<group>
+                <field name="from_id"/>
+                <field name="to_id"/>
+			</group>
+            </field>
+        </field>
+    </record>
+	-->
+    <!--action of the tracker menu-->
+    <!-- <record id="action_tracker_profile_1" model="ir.actions.act_window">
+        <field name="name">tracker</field>
+        <field name="res_model">rooms.tracker</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+
+    <menuitem id="tracker_root_menu_1" name="Documents" web_icon="tracker,static/src/img/avatar.png"/>
+    <act_window id="tracker_list_1" name="Documents" res_model="rooms.tracker" view_mode="tree,form" context="{}"/>
+    <menuitem id="tracker_zones" parent="tracker_root_menu_1" name="Documents" action="tracker_list_1" sequence="2"/> -->
+</odoo>

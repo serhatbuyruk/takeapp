@@ -1,0 +1,29 @@
+.company_selections {
+    display: none !important;
+}
+
+.dark_mode {
+    display: none;
+}
+
+body.o_web_client .o_main_navbar .o_menu_systray .o_switch_company_menu .debug_activator {
+    display: none;
+}
+
+/* .o_MessagingMenu.dropdown {
+    display: none !important;
+  } */
+
+@media (max-width: 768px) {
+    .ks_dashboard_header {
+        height: 100px !important;
+    }
+}
+
+.o_form_view .oe_avatar > img{
+    margin-right: 5px;
+}
+
+.o_pager_refresh{
+    display: none;
+}

@@ -1,0 +1,512 @@
+from odoo import tools, fields, models, api,_
+from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
+import requests
+import json
+from datetime import datetime
+from base64 import b64encode
+cookie = "citizenships"
+import math
+import time
+
+class citizenshipsProfile(models.Model):
+    _name = "citizenships.profile"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    name = fields.Char(string="Name",tracking=True)
+    card_id = fields.Char(string="Card Id")
+    sequence = fields.Integer(string="Sequence", default=1)
+    # sequence = fields.Selection([('1','1'),('2', '2'),('3', '3'),('4', '4'),('5', '5'),('6', '6'),('7', '7'),('8', '8'),('9', '9'),('10', '10'),('11', '11'),('12', '12'),('13', '13'),('14', '14'),('15', '15'),('16', '16'),('17', '17'),('18', '18'),('19', '19'),('20', '20')],
+    #                                string="Sequence", default="1"
+    #                                )
+    # link_type = fields.Selection([('1','Mobile'),('2', 'Phone'),('3', 'Location'),('4', 'Whatsapp'),('5', 'Instagram')],
+    #                                string="Title", default="1"
+    #                                )
+    visibility = fields.Boolean(string="Visibility", default=True)
+    users_can_edit = fields.Many2many('res.users',relation='x_citizenships_profile_res_users_rel', column1='citizenships_users_id',column2='res_users_id', string="Users Can Edit")
+    card_owner = fields.Many2one('res.partner', string="Card Owner")
+    citizenships_image = fields.Binary(string="Image")
+    color = fields.Char(string="Color")
+
+    partner_id = fields.Many2one('res.partner', string="Müşteri",tracking=True)
+    uygunluk_belgesi_attachment_ids = fields.Many2many('ir.attachment','attachment_rel_uygunluk_belgesi','pro_id_uygunluk_belgesi','attach_id_uygunluk_belgesi', string='Uygunluk Belgesi',) 
+    dap_belgesi_attachment_ids = fields.Many2many('ir.attachment','attachment_rel_dap_belgesi','pro_id_dap_belgesi','attach_id_dap_belgesi', string='Dap Belgesi',) 
+    tapu_attachment_ids = fields.Many2many('ir.attachment','attachment_rel_tapu','pro_id_tapu','attach_id_tapu', string='Tapu',) 
+    musteri_iban = fields.Char(string="Müşteri Iban")
+    musteri_nosu = fields.Char(string="Müşteri Numarası")
+    musteri_subesi = fields.Char(string="Banka Şubesi")
+    document_status = fields.Selection([('not_received','Not Received'),('partial_received','Partial Received'),('received','Received')],
+                                    string="Document Status", default="not_received", tracking=True
+                                    )
+    orjinal_status = fields.Selection([('avukat','Avukat'),('ofis','Ofis'),('musteri','Müşteri')],
+                                    string="Orjinaller Kimde", default="ofis", tracking=True
+                                    )
+
+    saleperson = fields.Many2one('res.partner', string="Saleperson",tracking=True)
+    product_id = fields.Many2one('product.product', string="Product/Service",tracking=True)
+    product_status = fields.Selection([('available','Available'),('busy','Busy')],
+                                    string="Product Status", default="available"
+                                    )
+    start_date = fields.Datetime(string="Start Date",tracking=True)
+    end_date = fields.Datetime(string="End Date",tracking=True)
+    days_interval = fields.Integer(string="Days Interval", tracking=True)
+    dealer = fields.Many2one('res.partner', string="Dealer",tracking=True)
+    # contractor_id = fields.Many2one('res.partner', string="Contractor",tracking=True)
+    # real_estate_type = fields.Selection([('individual','Individual'),('commercial','Commercial')],
+    #                                 string="Citizenship Type", default="individual", tracking=True
+    #                                 )
+    # real_estate_model = fields.Selection([('1+0','1+0'),('1+1','1+1'),('2+1','2+1'),('3+1','3+1'),('4+1','4+1'),('5+1','5+1'),('5+2','5+2'),('shop','Shop')],
+    #                                 string="Citizenship Model", default="2+1", tracking=True
+    #                                 )
+    # real_estate_info = fields.Char(string="Citizenship Info")
+    # address = fields.Char(string="Address")
+    # size = fields.Char(string="Size")
+    # reason_for_purchase = fields.Char(string="Reason For Purchase", tracking=True)
+    # deed_value_currency_id = fields.Many2one('res.currency', string='Deed Value Currency',default=32, tracking=True)
+    # deed_value = fields.Monetary(string="Deed Value", currency_field='deed_value_currency_id', tracking=True)
+    # real_value_currency_id = fields.Many2one('res.currency', string='Real Value Currency',default=32, tracking=True)
+    # real_value = fields.Monetary(string="Real Value", currency_field='real_value_currency_id', tracking=True)
+    # deed_details = fields.Char(string="Deed Details", tracking=True)
+    # delivery_details = fields.Char(string="Delivery Details", tracking=True)
+    # turkey_entrance_datetime = fields.Datetime(string="Turkey Entrance",tracking=True)
+    # driver_status = fields.Boolean(string="Driver Status", tracking=True)
+    # driver = fields.Many2one('res.partner', string="Driver",tracking=True)
+    # car_petrol_status = fields.Selection([('1','1/4'),('2','2/4'),('3','3/4'),('4','4/4')],
+    #                                 string="Car Petrol Status", default="4", tracking=True
+    #                                 )
+    contracts_attachment_ids = fields.Many2many('ir.attachment','attachment_rel_contracts_citizenships','pro_id_contracts_citizenships','attach_id_contracts_citizenships', string='Contracts',) 
+    realestates = fields.Many2many('realestates.profile',relation='x_citizenships_profile_realestates_profile_rel', column1='citizenships_profile_realestates_id',column2='_realestates_profile_id', string="Kayıtlı Emlak")
+    vatandaslik_durumu = fields.Selection([('vatandaslik_alinamadi','Vatandaşlık Alınamadı'),('beklemede','Beklemede'),('vatandaslik_alindi','Vatandaşlık Alındı')],
+                                    string="Vatandaşlık Durumu", default="beklemede", tracking=True
+                                    )
+    sirket_durumu = fields.Selection([('sirket_acilamadi','Şirket Alınamadı'),('beklemede','Beklemede'),('sirket_acildi','Şirket Acıldı')],
+                                    string="Şirket Durumu", default="beklemede", tracking=True
+                                    )
+    tapu_durumu = fields.Selection([('tapu_alinamadi','Şirket Alınamadı'),('beklemede','Beklemede'),('tapu_alindi','Şirket Alındı')],
+                                    string="Tapu Durumu", default="beklemede", tracking=True
+                                    )
+    repeat_count = fields.Integer(string="Repeat Count", tracking=True)
+    repeat_status = fields.Boolean(string="Repeat Status", tracking=True)
+    repeat_type = fields.Selection([('once','Once'),('day','Day'),('week','Week'),('Month','Month'),('year','Year')],
+                                    string="Repeat Type", default="once", tracking=True
+                                    )
+    first_payment_date = fields.Datetime(string="First Payment Date", default=fields.Datetime.now, tracking=True)
+    next_payment_date = fields.Datetime(string="Next Payment Date",tracking=True)
+    last_payment_date = fields.Datetime(string="Last Payment Date",tracking=True)
+    sale_price_currency_id = fields.Many2one('res.currency', string='Sale Currency',default=32, tracking=True)
+    sale_price = fields.Monetary(string="Sale Price", currency_field='sale_price_currency_id', tracking=True)
+    deposit_price_currency_id = fields.Many2one('res.currency', string='Deposit Currency',default=32, tracking=True)
+    deposit_price = fields.Monetary(string="Deposit Price", currency_field='deposit_price_currency_id', tracking=True)
+    sale_description = fields.Char(string="Sale Description", tracking=True)
+    desc = fields.Char(string="Desc", tracking=True)
+    desc_1 = fields.Char(string="Desc-1", tracking=True)
+    desc_2 = fields.Char(string="Desc-2", tracking=True)
+    desc_3 = fields.Char(string="Desc-3", tracking=True)
+    desc_4 = fields.Char(string="Desc-4", tracking=True)
+    desc_5 = fields.Char(string="Desc-5", tracking=True)
+    desc_6 = fields.Char(string="Desc-6", tracking=True)
+    desc_7 = fields.Char(string="Desc-7", tracking=True)
+    desc_8 = fields.Char(string="Desc-8", tracking=True)
+    received_amount_currency_id = fields.Many2one('res.currency', string='Received Amount Currency',default=32, tracking=True)
+    received_amount = fields.Monetary(string="Received Amount", currency_field='received_amount_currency_id', tracking=True)
+    received_amount_1 = fields.Monetary(string="Received Amount-1", currency_field='received_amount_currency_id', tracking=True)
+    received_amount_2 = fields.Monetary(string="Received Amount-2", currency_field='received_amount_currency_id', tracking=True)
+    received_amount_3 = fields.Monetary(string="Received Amount-3", currency_field='received_amount_currency_id', tracking=True)
+    received_amount_4 = fields.Monetary(string="Received Amount-4", currency_field='received_amount_currency_id', tracking=True)
+    received_amount_5 = fields.Monetary(string="Received Amount-5", currency_field='received_amount_currency_id', tracking=True)
+    received_amount_6 = fields.Monetary(string="Received Amount-6", currency_field='received_amount_currency_id', tracking=True)
+    received_amount_7 = fields.Monetary(string="Received Amount-7", currency_field='received_amount_currency_id', tracking=True)
+    received_amount_8 = fields.Monetary(string="Received Amount-8", currency_field='received_amount_currency_id', tracking=True)
+    received_amount_total = fields.Monetary(string="Received Amount Total", currency_field='received_amount_currency_id', tracking=True)
+    remaining_amount_currency_id = fields.Many2one('res.currency', string='Remaining Amount Currency',default=32, tracking=True)
+    remaining_amount = fields.Monetary(string="Remaining Amount", currency_field='remaining_amount_currency_id', tracking=True)
+    commission_rate = fields.Float(string="Commission Rate", tracking=True)
+    commission_amount_currency_id = fields.Many2one('res.currency', string='Commission Currency %',default=32, tracking=True)
+    commission_amount = fields.Monetary(string="Commission Amount", currency_field='commission_amount_currency_id', tracking=True)
+    customer_payment_status = fields.Selection([('not_paid','Not Paid'),('in_payment','In Payment'),('paid','Paid'),('partial','Partial'),('reversed','Reversed'),('invoicing_legacy','Invoicing App Legacy')],
+                                    string="Customer Payment Status ", default="not_paid", tracking=True
+                                    )
+    invoice_status = fields.Selection([('draft','Draft'),('posted','Posted'),('canceled','Canceled')],
+                                    string="Customer Invoice Status ", default="draft", tracking=True
+                                    )
+    sale_payment_receiver = fields.Many2one('res.partner', string="Payment Receiver",tracking=True)
+    sale_payment_type = fields.Selection([('bank','Bank'),('cash','Cash')],
+                                    string="Payment Type", default="cash", tracking=True
+                                    )
+    attachment_ids = fields.Many2many('ir.attachment','attachment_rel_citizenships','pro_id_citizenships','attach_id_citizenships', string='Attachments',) 
+    
+
+    # scan_date = fields.Datetime(string="Scan Date")
+    # entry_date = fields.Datetime(string="Entry Date")
+    # exit_date = fields.Datetime(string="Exit Date")
+    
+    email = fields.Char(string="Email")
+    tc = fields.Char(string="TC")
+    mobile = fields.Char(string="Mobile")
+    company_id = fields.Many2one('res.company', string="Company")
+    parent_id = fields.Many2one('res.partner', string="Related Company")
+    scan_type = fields.Selection([('entry','Entry'),('exit','Exit'),('mola','Mola')],
+                                    string="Scan Type ", default=""
+                                    )
+    lat = fields.Float(string="Latitude", digits=(12, 6))
+    lng = fields.Float(string="Longitude", digits=(12, 6))
+
+    contact_name = fields.Char(string="Contact Name")
+    company_name = fields.Char(string="Company Name")
+    street = fields.Char(string="Street")
+    city = fields.Char(string="City")
+    state = fields.Many2one('res.country.state', string="State", domain="[('country_id', '=', country_id)]")
+    country_id = fields.Many2one('res.country', string="Country")
+
+    @api.onchange('sale_price')
+    def payment_calculation(self):
+        self["remaining_amount"] = self.sale_price - self.received_amount - self.received_amount_1 - self.received_amount_2 - self.received_amount_3 - self.received_amount_4 - self.received_amount_5 - self.received_amount_6 - self.received_amount_7 - self.deposit_price
+        self["received_amount_total"] = self.received_amount + self.received_amount_1 + self.received_amount_2 + self.received_amount_3 + self.received_amount_4 + self.received_amount_5 + self.received_amount_6 + self.received_amount_7
+        if self.sale_price > 0 and self.remaining_amount == 0 and self.received_amount > 0:
+            self["customer_payment_status"] = "paid"
+        if self.sale_price > 0 and self.remaining_amount > 0 and self.received_amount > 0:
+            self["customer_payment_status"] = "partial"
+        if self.sale_price > 0 and self.remaining_amount > 0 and self.received_amount == 0:
+            self["customer_payment_status"] = "not_paid"
+    
+    @api.onchange('received_amount','received_amount_1','received_amount_2','received_amount_3','received_amount_4','received_amount_5','received_amount_6','received_amount_7')
+    def received_amount_calculation(self):
+        self["remaining_amount"] = self.sale_price - self.received_amount - self.received_amount_1 - self.received_amount_2 - self.received_amount_3 - self.received_amount_4 - self.received_amount_5 - self.received_amount_6 - self.received_amount_7 - self.deposit_price
+        self["received_amount_total"] = self.received_amount + self.received_amount_1 + self.received_amount_2 + self.received_amount_3 + self.received_amount_4 + self.received_amount_5 + self.received_amount_6 + self.received_amount_7
+        if self.sale_price > 0 and self.remaining_amount == 0 and self.received_amount > 0:
+            self["customer_payment_status"] = "paid"
+        if self.sale_price > 0 and self.remaining_amount > 0 and self.received_amount > 0:
+            self["customer_payment_status"] = "partial"
+        if self.sale_price > 0 and self.remaining_amount > 0 and self.received_amount == 0:
+            self["customer_payment_status"] = "not_paid"
+        # return {
+        #         'warning': {
+        #             'title': "Ödeme Başarılı!",
+        #             'message': str(self.received_amount) + str(self.received_amount_currency_id.name) + " Tutarında Ödeme Alındı. Kalan Tutar: " + str(self.remaining_amount) + str(self.remaining_amount_currency_id.name),
+        #         }
+        #     }
+
+    @api.onchange('deposit_price')
+    def deposite_price_calculation(self):
+        self["remaining_amount"] = self.sale_price - self.received_amount - self.received_amount_1 - self.received_amount_2 - self.received_amount_3 - self.received_amount_4 - self.received_amount_5 - self.received_amount_6 - self.received_amount_7 - self.deposit_price
+        self["received_amount_total"] = self.received_amount + self.received_amount_1 + self.received_amount_2 + self.received_amount_3 + self.received_amount_4 + self.received_amount_5 + self.received_amount_6 + self.received_amount_7
+        if self.sale_price > 0 and self.remaining_amount == 0 and self.received_amount > 0:
+            self["customer_payment_status"] = "paid"
+        if self.sale_price > 0 and self.remaining_amount > 0 and self.received_amount > 0:
+            self["customer_payment_status"] = "partial"
+        if self.sale_price > 0 and self.remaining_amount > 0 and self.received_amount == 0:
+            self["customer_payment_status"] = "not_paid"
+        #if self.deposit_price > 0:
+        #    self["sale_description"] = self.sale_description + str(datetime.now().strftime("%d-%m-%Y %H:%M")) + " tarihinde " + str(self.deposit_price) + " " + str(self.deposit_price_currency_id.name) + " ödeme alındı.\n"
+        # return {
+        #         'warning': {
+        #             'title': "Deposit Ödemesi Başarılı!",
+        #             'message': str(self.deposit_price) + str(self.deposit_price_currency_id.name) + " Tutarında Ödeme Alındı. Kalan Tutar: " + str(self.remaining_amount) + str(self.remaining_amount_currency_id.name),
+        #         }
+        #     }
+
+    @api.onchange('turkey_entrance_datetime')
+    def turkey_entrance_datetime_calculation(self):
+        if datetime.today() and self.turkey_entrance_datetime:
+            return {
+                    'warning': {
+                        'title': "Ehliyet Kullanım Tarihi Hesaplandı!",
+                        'message': str(180 - (datetime.today() - self.turkey_entrance_datetime).days) + " Gün Sonra Ehliyetin Kullanım Süresi Bitecektir.",
+                    }
+                }
+
+    @api.onchange('end_date')
+    def end_date_calculation(self):
+        if self.end_date != False and self.start_date != False:
+            self["days_interval"] = int((self.end_date - self.start_date).days)
+            # return {
+            #         'warning': {
+            #             'title': "Ehliyet Kullanım Tarihi Hesaplandı!",
+            #             'message': str((self.end_date - self.start_date).days) + " Gün Hesaplanmıştır.",
+            #         }
+            #     }
+
+    
+        
+
+    @api.onchange('commission_rate')
+    def commission_calculation(self):
+        self["commission_amount"] = self.sale_price * self.commission_rate / 100
+
+    @api.model
+    def time_sleep(self):
+        time.sleep(6000000)
+        return True
+
+    def see_profile(self):
+        if len(self.card_id) > 4:
+            return { 'name': 'Go to website',
+                    'res_model': 'ir.actions.act_url',
+                    'type': 'ir.actions.act_url',
+                    'target' : 'self',
+                    'url': ("/nfc/profile/" + str(self.card_id))
+                }
+        if len(self.card_id) == 4:
+            return { 'name': 'Go to website',
+                    'res_model': 'ir.actions.act_url',
+                    'type': 'ir.actions.act_url',
+                    'target' : 'self',
+                    'url': ("/panel/touch/" + str(self.card_id))
+                }
+
+    @api.model
+    def find_distance(self,lat1, lon1, lat2, lon2):
+        lat1_rad = math.radians(lat1)
+        lon1_rad = math.radians(lon1)
+        lat2_rad = math.radians(lat2)
+        lon2_rad = math.radians(lon2)
+        
+        # Haversine formula
+        dlon = lon2_rad - lon1_rad
+        dlat = lat2_rad - lat1_rad
+        a = math.sin(dlat/2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon/2)**2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+        # Radius of the Earth in meters
+        R = 6371000  # meters
+        distance = R * c
+        return distance
+
+    
+    def from_profile(self):
+        return {
+            'name':_("Products to Process"),
+            'view_mode': 'form',
+            'view_id': False,
+            'view_type': 'form',
+            'res_model': 'citizenships.profile',
+            'res_id': self.id,
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'current',
+            'domain': '[]'
+        }
+        # return { 'name': 'Go to Form Profile',
+        #         'res_model': 'ir.actions.act_url',
+        #         'type': 'ir.actions.act_url',
+        #         'target' : 'self',
+        #         'url': ("/web/#id=" + str(119) + "&menu_id=284&action=390&model=citizenships.profile&view_type=form/")
+        #        }
+
+    # @api.onchange('device_status','device_status_1','device_status_2','device_status_3','device_status_4','device_status_5')
+    # def _get_partner(self):
+    #     partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #     for rec in self: 
+    #         rec.last_action_user = partner.id
+
+    # def write_Link_Status_Active(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status': 'active'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+        
+    # def write_Link_Status_Passive(self):
+    #     if self.device_update == False:           
+    #         pet = self.env['pets.profile'].sudo().search([["device_id.id","=",self.id]],limit=1)
+    #         reports_number = 0
+    #         reports = self.env['reports.profile'].search(["&","&","&",["device_id.id","=",self.id],["ademco_id","ilike","E602"],["date",">",pet.registration_date],["date","<",datetime.now()]])
+    #         temperature_average = 0
+    #         temperature_max = 0
+    #         temperature_min = 0
+    #         humidity_average = 0
+    #         humidity_max = 0
+    #         humidity_min = 0
+    #         oxygen_average = 0
+    #         oxygen_max = 0
+    #         oxygen_min = 0
+    #         bpm_average = 0
+    #         bpm_max = 0
+    #         bpm_min = 0
+    #         if len(reports) > 0:
+    #             reports_number = len(reports)
+    #             temperature_average = sum(reports.mapped("sensor_1_value")) / reports_number
+    #             temperature_max = max(reports.mapped("sensor_1_value"))
+    #             temperature_min = min(reports.mapped("sensor_1_value"))
+    #             humidity_average = sum(reports.mapped("sensor_2_value")) / reports_number
+    #             humidity_max = max(reports.mapped("sensor_2_value"))
+    #             humidity_min = min(reports.mapped("sensor_2_value"))
+    #             oxygen_average = sum(reports.mapped("sensor_3_value")) / reports_number
+    #             oxygen_max = max(reports.mapped("sensor_3_value"))
+    #             oxygen_min = min(reports.mapped("sensor_3_value"))
+    #             bpm_average = sum(reports.mapped("sensor_4_value")) / reports_number
+    #             bpm_max = max(reports.mapped("sensor_4_value"))
+    #             bpm_min = min(reports.mapped("sensor_4_value"))
+    #         pet['exit_date'] = datetime.now()
+    #         pet['temperature'] = 0
+    #         pet['device_id'] = False
+    #         pet['values_calculation'] = ("*Süreç Boyunca " + str(round(reports_number,2)) + " Adet Rapor Değerlendirildi. \n*Kabin İçinde Minimum Sıcaklık: " + str(round(temperature_min,2)) +  " Maksimum Sıcaklık: " + str(round(temperature_max,2)) + " Ortalama Sıcaklık : " + str(round(temperature_average,2)) 
+    #         + " Olarak Değişti. \n*Kabin İçinde Minimum Nem Oranı: %" + str(round(humidity_min,2)) +  " Maksimum Oksijen Oranı: %" + str(round(humidity_max,2)) + " Ortalama Oksijen Oranı : %" + str(round(humidity_average,2)) + " Olarak Değişti. \n*Kabin İçinde Minimum Oksijen Oranı: %" + str(round(oxygen_min,2)) +  " Maksimum Oksijen Oranı: %" + str(round(oxygen_max,2)) + " Ortalama Oksijen Oranı : %" + str(round(oxygen_average,2)) 
+    #         + " Olarak Değişti. \n*Hasta Kalp Atışı; Minimum Bpm: " + str(round(bpm_min,2)) +  " Maksimum Bpm: " + str(round(bpm_max,2)) + " Ortalama Bpm: " + str(round(bpm_average,2)) + " Olarak Değişti.")
+    #         self.write({'device_status': 'passive'})
+    #         self.write({'device_update': True})
+    #         self.write({'pet_id': False})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+
+    # def write_Link_Status_Home(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status': 'home'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+
+    # def write_Link_Status_1_Active(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_1': 'active'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+        
+    # def write_Link_Status_1_Passive(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_1': 'passive'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+    
+    # def write_Link_Status_2_Active(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_2': 'active'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+        
+    # def write_Link_Status_2_Passive(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_2': 'passive'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+    
+    # def write_Link_Status_3_Active(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_3': 'active'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+        
+    # def write_Link_Status_3_Passive(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_3': 'passive'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+    
+    # def write_Link_Status_4_Active(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_4': 'active'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+        
+    # def write_Link_Status_4_Passive(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_4': 'passive'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+    
+    # def write_Link_Status_5_Active(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_5': 'active'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+        
+    # def write_Link_Status_5_Passive(self):
+    #     if self.device_update == False:
+    #         self.write({'device_status_5': 'passive'})
+    #         self.write({'device_update': True})
+    #         partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #         for rec in self: 
+    #             rec.last_action_user = partner.id
+    #     else:
+    #         raise ValidationError("Cihaz Son Yaptığınız Ayarları Henüz Almadı. 1 Dakika Sonra Tekrar Deneyiniz.")
+    
+    # def create_emergency_report(self):
+    #     partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #     user_name = "Belirlenemeyen"
+    #     for rec in self: 
+    #         user_name = partner.name
+    #     self.env['reports.profile'].sudo().create({
+    #         'name': user_name + " Adlı kullanıcı Acil Durum Çağrısında Bulundu.",
+    #         'ademco_id': "B001-000"
+    #         })
+    # def create_ambulance_report(self):
+    #     partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #     user_name = "Belirlenemeyen"
+    #     for rec in self: 
+    #         user_name = partner.name
+    #     self.env['reports.profile'].sudo().create({
+    #         'name': user_name + " Adlı kullanıcı Ambulans Çağrısında Bulundu.",
+    #         'ademco_id': "B002-000"
+    #         })
+    # def create_fire_report(self):
+    #     partner = self.env['res.users'].browse(self.env.uid).partner_id
+    #     user_name = "Belirlenemeyen"
+    #     for rec in self: 
+    #         user_name = partner.name
+    #     self.env['reports.profile'].sudo().create({
+    #         'name': user_name + " Adlı kullanıcı Yangın Çağrısında Bulundu.",
+    #         'ademco_id': "B003-000"
+    #         })
+        
+
+                            
+
+#discount_percentage = fields.Float("Discount Percentage")
+
+    #gender = fields.Selection([('male','Male'),('female', 'Female'),('other', 'Other'),],string="Gender")
+    #type_of_person = fields.Selection([('adult','Adult'),('child', 'Child'),('baby', 'Baby'),('driver', 'Driver')],string="Person Type")
+    
+    # How to OverRide Create Method Of a Model
+    # https://www.youtube.com/watch?v=AS08H3G9x1U&list=PLqRRLx0cl0hoJhjFWkFYowveq2Zn55dhM&index=26
+    
+    #@api.model
+    #def create(self, vals_list):
+    #    res = super(ResPartners, self).create(vals_list)
+    #    print("yes working")
+    #    # do the custom coding here
+    #    return res
+    

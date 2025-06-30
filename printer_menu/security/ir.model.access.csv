@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_printer_menu_user_1,printer_menu User,model_printer_menu_profile,printer_menu.printer_menu_group_user,1,0,0,0
+access_printer_menu_user_2,printer_menu Manager,model_printer_menu_profile,printer_menu.printer_menu_group_manager,1,1,0,0
+access_printer_menu_user_3,printer_menu Admin,model_printer_menu_profile,printer_menu.printer_menu_group_admin,1,1,1,1
+access_printer_menu_user_4,printer_menu Dealer,model_printer_menu_profile,printer_menu.printer_menu_group_dealer,1,1,1,1
+access_printer_menu_user_5,printer_menu Access Rigths Full Access,model_printer_menu_profile,base.group_erp_manager,1,1,1,1
+access_printer_menu_user_6,printer_menu Settings Full Access,model_printer_menu_profile,base.group_system,1,1,1,1
+

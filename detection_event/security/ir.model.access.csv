@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_detection_event_admin,detection_event Admin,model_detection_event_profile,base.group_system,1,1,1,1
+access_detection_event_user,detection_event User,model_detection_event_profile,base.group_user,1,0,0,0
+access_d_event_confirm_wizard,detection_event_confirmation_wizard,model_detection_event_confirmation_wizard,base.group_user,1,1,1,1
+
+

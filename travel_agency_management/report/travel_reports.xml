@@ -1,0 +1,151 @@
+<odoo>
+    <data>
+        <!-- 1. Rapor Aksiyonu Tanımı -->
+        <record id="action_report_sale_order_travel" model="ir.actions.report">
+            <field name="name">Travel Itinerary</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">travel_agency_management.report_sale_order_document_travel</field>
+            <field name="report_file">travel_agency_management.report_sale_order_document_travel</field>
+            <field name="print_report_name">(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name) or 'Order - %s' % (object.name))</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- 2. QWeb Rapor Şablonu Tanımı -->
+        <template id="report_sale_order_document_travel">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <!-- Standart Odoo başlık ve altbilgisini kullanıyoruz (Logo, şirket bilgileri vb.) -->
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <!-- Başlık -->
+                            <div class="row justify-content-between mt-4">
+                                <div class="col-6">
+                                    <h2>Travel Itinerary: <span t-field="doc.name"/></h2>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <strong>Order Date:</strong> <span t-field="doc.date_order" t-options='{"widget": "date"}'/>
+                                </div>
+                            </div>
+                            
+                            <!-- Müşteri ve Seyahat Bilgileri -->
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <strong>Customer:</strong>
+                                    <div t-field="doc.partner_id" t-options='{"widget": "contact", "fields": ["address", "name", "phone", "email"]}'/>
+                                </div>
+                                <div class="col-6">
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <td><strong>Departure Date:</strong></td>
+                                            <td><span t-field="doc.departure_date"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Return Date:</strong></td>
+                                            <td><span t-field="doc.return_date"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Direction:</strong></td>
+                                            <td><span t-field="doc.travel_direction"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Uçuş Detayları -->
+                            <t t-if="doc.ticket_company_id">
+                                <h3 class="mt-4">Flight Details</h3>
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Airline</th>
+                                            <th>Ticket Number</th>
+                                            <th>Passengers</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span t-field="doc.ticket_company_id.name"/></td>
+                                            <td><span t-field="doc.ticket_number"/></td>
+                                            <td>
+                                                <t t-if="doc.ticket_adults > 0"><span t-esc="doc.ticket_adults"/> Adult(s) </t>
+                                                <t t-if="doc.ticket_children > 0"><span t-esc="doc.ticket_children"/> Child(ren) </t>
+                                                <t t-if="doc.ticket_infants > 0"><span t-esc="doc.ticket_infants"/> Infant(s)</t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p t-if="doc.ticket_note"><strong>Notes:</strong> <span t-esc="doc.ticket_note"/></p>
+                            </t>
+
+                            <!-- Konaklama Detayları -->
+                            <t t-if="doc.hotel_company_id">
+                                <h3 class="mt-4">Accommodation Details</h3>
+                                <table class="table table-sm table-bordered">
+                                     <thead>
+                                        <tr>
+                                            <th>Hotel</th>
+                                            <th>Rooms</th>
+                                            <th>Guests</th>
+                                            <th>Meal Plan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span t-field="doc.hotel_company_id.name"/></td>
+                                            <td><span t-esc="doc.hotel_room_count"/></td>
+                                            <td>
+                                                <t t-if="doc.hotel_adults > 0"><span t-esc="doc.hotel_adults"/> Adult(s) </t>
+                                                <t t-if="doc.hotel_children > 0"><span t-esc="doc.hotel_children"/> Child(ren) </t>
+                                                <t t-if="doc.hotel_infants > 0"><span t-esc="doc.hotel_infants"/> Infant(s)</t>
+                                            </td>
+                                            <td>
+                                                <t t-if="doc.hotel_meal_breakfast">Breakfast</t>
+                                                <t t-if="doc.hotel_meal_lunch">, Lunch</t>
+                                                <t t-if="doc.hotel_meal_dinner">, Dinner</t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p t-if="doc.hotel_note"><strong>Notes:</strong> <span t-esc="doc.hotel_note"/></p>
+                            </t>
+
+                            <!-- Diğer Hizmetler -->
+                            <h3 class="mt-4">Other Included Services</h3>
+                            <ul>
+                                <li t-if="doc.transfer_company_id"><strong>Transfer:</strong> Provided by <span t-esc="doc.transfer_company_id.name"/>.</li>
+                                <li t-if="doc.insurance_company_id"><strong>Insurance:</strong> Provided by <span t-esc="doc.insurance_company_id.name"/>.</li>
+                                <li t-if="doc.tour_company_id"><strong>Tour:</strong> Provided by <span t-esc="doc.tour_company_id.name"/>.</li>
+                                <li t-if="doc.visa_company_id"><strong>Visa Service:</strong> Provided by <span t-esc="doc.visa_company_id.name"/>.</li>
+                                <li t-if="doc.other_service_name"><strong><span t-esc="doc.other_service_name"/></strong>.</li>
+                            </ul>
+
+                            <!-- Toplam Fiyat Bölümü -->
+                            <div class="row mt-4">
+                                <div class="col-6"/>
+                                <div class="col-6">
+                                    <table class="table table-sm">
+                                        <tr class="border-black">
+                                            <td><strong>Total Amount</strong></td>
+                                            <td class="text-end">
+                                                <span t-field="doc.total_sale_price"
+                                                      t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Alt Bilgi / Teşekkür -->
+                            <div class="mt-5">
+                                <p>Thank you for choosing our travel agency. We wish you a pleasant trip!</p>
+                                <p>If you have any questions concerning this itinerary, please contact us.</p>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

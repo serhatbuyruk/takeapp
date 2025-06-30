@@ -1,0 +1,58 @@
+/* Clear butonu */
+.clear {
+    display: inline-block;
+    margin: 10px 0 0 0;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    background-color: #FF6A6A;
+    color: #fff;
+  }
+  .clear:hover {
+    background-color: #cc5454;
+    cursor: pointer;
+  }
+  
+  /* Harita alanı */
+  #map_canvas {
+    height: 540px;
+    width: 960px;
+    box-shadow: 0 0 16px -4px #000;
+    margin: 0 auto;
+    position: relative;
+    z-index: 0; /* Drawing UI'nin altında kalmasın */
+    overflow: visible;
+  }
+  
+  /* Bilgilendirme alanı */
+  #info {
+    margin: 0 auto;
+    padding: 30px;
+    width: 960px;
+    box-sizing: border-box;
+    border-radius: 0 0 3px 3px;
+    background-color: #fff;
+    font-family: Verdana, sans-serif;
+  }
+  
+  /* Google Maps drawing control görünsün diye */
+  .gmnoprint, .gm-control-active {
+    z-index: 10000 !important;
+  }
+  
+  .gmnoprint > div {
+    z-index: 10000 !important;
+    display: block !important;
+  }
+  
+  /* Google kontrol butonlarının ezilmesini engelle */
+  .gm-style .gmnoprint, 
+  .gm-style .gm-fullscreen-control,
+  .gm-style .gm-svpc {
+    z-index: 9999 !important;
+    display: block !important;
+  }
+  
+  
+  
+  

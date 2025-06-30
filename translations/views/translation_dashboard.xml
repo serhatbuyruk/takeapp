@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Translation Dashboard -->
+    <record id="translation_dashboard_view" model="ir.ui.view">
+        <field name="name">translation.dashboard</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <graph string="Translation Statistics" type="bar">
+                <field name="lang" type="row"/>
+                <field name="parent_id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Gelişmiş Translation Editor -->
+    <record id="translation_editor_form" model="ir.ui.view">
+        <field name="name">translation.editor.form</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <form string="Translation Editor" class="o_translation_editor">
+                <header>
+                    <button name="translate_text" type="object" string="Auto Translate"
+                            class="btn-primary" icon="fa-magic"/>
+                    <button name="quality_check" type="object" string="Quality Check"
+                            class="btn-info" icon="fa-check-circle"/>
+                    <button name="auto_fix_issues" type="object" string="Auto Fix"
+                            class="btn-warning" icon="fa-wrench"/>
+                    <button name="save_text" type="object" string="Save Translation"
+                            class="btn-success" icon="fa-save"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="action" icon="fa-star">
+                            <field string="Quality Score" name="parent_id" widget="statinfo"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h3>
+                            <field name="lang" readonly="1"/> -
+                            <field name="view_type" readonly="1"/>
+                        </h3>
+                    </div>
+
+                    <group>
+                        <group string="Source">
+                            <field name="source" readonly="1"
+                                   widget="html"
+                                   style="min-height: 150px; background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px;"/>
+                        </group>
+
+                        <group string="Translation">
+                            <field name="value"
+                                   widget="html"
+                                   style="min-height: 150px; border: 2px solid #007bff; padding: 10px;"
+                                   placeholder="Enter your translation here..."/>
+                            <field name="last_value" readonly="1" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Metadata" col="4">
+                        <field name="key" readonly="1"/>
+                        <field name="xml_id" readonly="1"/>
+                        <field name="parent_id" readonly="1"/>
+                        <field name="sequence" readonly="1"/>
+                    </group>
+
+                    <field name="aciklama" placeholder="Add notes or comments about this translation..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Translation Lines Tree with Enhanced Features -->
+    <record id="text_line_tree_enhanced" model="ir.ui.view">
+        <field name="name">translation.profile.lines.tree.enhanced</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <tree string="Translation Lines"
+                  decoration-success="value != ''"
+                  decoration-warning="value == '' and source != ''"
+                  decoration-muted="source == ''"
+                  editable="bottom">
+
+                <field name="parent_id" optional="hide"/>
+                <field name="name" optional="hide"/>
+                <field name="lang" optional="show" widget="badge"/>
+                <field name="view_type" optional="show"/>
+
+                <!-- Progress bar for completion -->
+                <field name="source" optional="show" widget="char" style="max-width: 300px;"/>
+                <field name="value" optional="show" widget="char" style="max-width: 300px;"/>
+
+                <!-- Quality indicators -->
+                <field name="last_value" optional="hide"/>
+
+                <!-- Action buttons -->
+                <button name="translate_text" type="object"
+                        string="Translate"
+                        class="btn-primary btn-sm"
+                        icon="fa-globe"
+                        attrs="{'invisible': [('source', '=', '')]}"/>
+
+                <button name="quality_check" type="object"
+                        string="Check"
+                        class="btn-info btn-sm"
+                        icon="fa-check"
+                        attrs="{'invisible': [('value', '=', '')]}"/>
+
+                <button name="save_text" type="object"
+                        string="Save"
+                        class="btn-success btn-sm"
+                        icon="fa-save"
+                        attrs="{'invisible': [('value', '=', '')]}"/>
+
+                <field name="aciklama" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Kanban View for Translations -->
+    <record id="text_line_kanban" model="ir.ui.view">
+        <field name="name">translation.profile.lines.kanban</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="lang" class="o_kanban_translation">
+                <field name="lang"/>
+                <field name="source"/>
+                <field name="value"/>
+                <field name="name"/>
+                <field name="view_type"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <span class="badge badge-secondary">
+                                        <field name="view_type"/>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="o_kanban_record_body">
+                                <field name="source" widget="html"/>
+                                <hr/>
+                                <field name="value" widget="html"
+                                       style="color: #007bff; font-weight: bold;"/>
+                            </div>
+
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <button name="translate_text" type="object"
+                                            class="btn btn-primary btn-sm">
+                                        <i class="fa fa-globe"/> Translate
+                                    </button>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <t t-if="record.value.raw_value">
+                                        <span class="badge badge-success">Translated</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="badge badge-warning">Pending</span>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View with Filters -->
+    <record id="text_line_search_view" model="ir.ui.view">
+        <field name="name">translation.profile.lines.search</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Name"
+                       filter_domain="[('name','ilike',self)]"/>
+                <field name="source" string="Source Text"
+                       filter_domain="[('source','ilike',self)]"/>
+                <field name="value" string="Translation"
+                       filter_domain="[('value','ilike',self)]"/>
+                <field name="lang" string="Language"/>
+
+                <separator/>
+
+                <filter string="Translated" name="translated"
+                        domain="[('value','!=','')]"/>
+                <filter string="Not Translated" name="not_translated"
+                        domain="[('value','=','')]"/>
+                <filter string="Has Source" name="has_source"
+                        domain="[('source','!=','')]"/>
+
+                <separator/>
+
+                <filter string="Turkish" name="turkish"
+                        domain="[('lang','=','tr_TR')]"/>
+                <filter string="English" name="english"
+                        domain="[('lang','=','en_US')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Language" name="group_lang"
+                            context="{'group_by':'lang'}"/>
+                    <filter string="View Type" name="group_view_type"
+                            context="{'group_by':'view_type'}"/>
+                    <filter string="Parent View" name="group_parent"
+                            context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Pivot View for Analytics -->
+    <record id="text_line_pivot" model="ir.ui.view">
+        <field name="name">translation.profile.lines.pivot</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <pivot string="Translation Analytics">
+                <field name="lang" type="row"/>
+                <field name="view_type" type="col"/>
+                <field name="parent_id" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_translation_dashboard" model="ir.actions.act_window">
+        <field name="name">Translation Dashboard</field>
+        <field name="res_model">translation.profile.lines</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="context">{'search_default_has_source': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Welcome to Translation Dashboard!
+            </p>
+            <p>
+                Manage all your translations from here. You can:
+                <ul>
+                    <li>View translation progress by language</li>
+                    <li>Auto-translate missing translations</li>
+                    <li>Perform quality checks</li>
+                    <li>Export/Import translations</li>
+                </ul>
+            </p>
+        </field>
+    </record>
+
+    <!-- Batch Operations Action -->
+    <record id="action_batch_translate" model="ir.actions.server">
+        <field name="name">Batch Translate</field>
+        <field name="model_id" ref="model_text_profile_lines"/>
+        <field name="binding_model_id" ref="model_text_profile_lines"/>
+        <field name="state">code</field>
+        <field name="code">
+records.batch_translate()
+        </field>
+    </record>
+
+    <record id="action_quality_check_all" model="ir.actions.server">
+        <field name="name">Quality Check All</field>
+        <field name="model_id" ref="model_text_profile_lines"/>
+        <field name="binding_model_id" ref="model_text_profile_lines"/>
+        <field name="state">code</field>
+        <field name="code">
+for record in records:
+    record.quality_check()
+        </field>
+    </record>
+</odoo>

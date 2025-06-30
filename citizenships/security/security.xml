@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.module.category" id="citizenships_security_groups">
+            <field name="name">citizenships</field>
+        </record>
+        <!-- Groups User -->
+        <record model="res.groups" id="citizenships_group_user">
+            <field name="name">Citizenships User</field>
+            <field name="category_id" ref="citizenships.citizenships_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('citizenships.citizenships_group_user'))]"/>
+        </record>
+
+        <!-- Groups Manager -->
+        <record model="res.groups" id="citizenships_group_manager">
+            <field name="name">Citizenships Manager</field>
+            <field name="category_id" ref="citizenships.citizenships_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('citizenships.citizenships_group_manager'))]"/>
+        </record>
+        
+        <!-- Groups Admin -->
+        <record model="res.groups" id="citizenships_group_admin">
+            <field name="name">Citizenships Admin</field>
+            <field name="category_id" ref="citizenships.citizenships_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('citizenships.citizenships_group_admin'))]"/>
+        </record>
+
+        <!-- Groups Dealer -->
+        <record model="res.groups" id="citizenships_group_dealer">
+            <field name="name">Citizenships Dealer</field>
+            <field name="category_id" ref="citizenships.citizenships_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('citizenships.citizenships_group_dealer'))]"/>
+        </record>
+
+        <!-- Groups Full Access Admin -->
+        <record model="res.groups" id="citizenships_group_fullaccess">
+            <field name="name">Citizenships Full Access</field>
+            <field name="category_id" ref="citizenships.citizenships_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('citizenships.citizenships_group_fullaccess'))]"/>
+        </record>
+
+
+
+        <!-- Record Rules User -->
+        <record id="citizenships_profile_user_rule" model="ir.rule">
+            <field name="name">Citizenships user can access citizenships.profile (Autoronics)</field>
+            <field ref="citizenships.model_citizenships_profile" name="model_id"/>
+            <!-- <field name="domain_force">[('partner_id', 'in', [user.partner_id.id])]</field> -->
+            <field name="groups" eval="[(4, ref('citizenships.citizenships_group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="citizenships_profile_manager_rule" model="ir.rule">
+            <field name="name">Citizenships manager can access citizenships.profile (Autoronics)</field>
+            <field ref="citizenships.model_citizenships_profile" name="model_id"/>
+            <!-- <field name="domain_force">['|',('partner_id', '=', [user.partner_id.id]),('parent_id', '=', [user.partner_id.parent_id.id])]</field> -->
+            <field name="groups" eval="[(4, ref('citizenships.citizenships_group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="citizenships_profile_admin_rule" model="ir.rule">
+            <field name="name">Citizenships admin can access citizenships.profile (Autoronics)</field>
+            <field ref="citizenships.model_citizenships_profile" name="model_id"/>
+            <!-- <field name="domain_force">['|',('partner_id', '=', [user.partner_id.id]),('parent_id', '=', [user.partner_id.parent_id.id])]</field> -->
+            <field name="groups" eval="[(4, ref('citizenships.citizenships_group_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="citizenships_profile_dealer_rule" model="ir.rule">
+            <field name="name">Citizenships dealer can access citizenships.profile (Autoronics)</field>
+            <field ref="citizenships.model_citizenships_profile" name="model_id"/>
+            <!-- <field name="domain_force">['|',('partner_id', '=', [user.partner_id.id]),('parent_id', '=', [user.partner_id.parent_id.id])]</field> -->
+            <field name="groups" eval="[(4, ref('citizenships.citizenships_group_dealer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="citizenships_profile_fullaccess_rule" model="ir.rule">
+            <field name="name">Citizenships fullaccess can access citizenships.profile (Autoronics)</field>
+            <field ref="citizenships.model_citizenships_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('citizenships.citizenships_group_fullaccess'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

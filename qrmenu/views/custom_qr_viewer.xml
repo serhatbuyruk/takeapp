@@ -1,0 +1,51 @@
+<!-- qr_code_viewer_module/views/custom_qr_viewer.xml -->
+<odoo>
+    <template id="qr_code_viewer_page_template" name="QR Code Viewer Page" page="True">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_text_image pt10 pb64 o_colored_level">
+                    <div class="container" id="html-content-holder">
+                        <div class="row align-items-center">
+                            <div id="printableArea" class="pt16 pb16 col-lg-8 o_colored_level">
+                                <img id="myImage" t-att-src="'/report/barcode/?barcode_type=QR&amp;value=' + request.params.get('x_qr_id')" 
+                                     t-att-alt="QR Code for x_qr_id" class="img img-fluid mx-auto" style="padding: 32px !important;" loading="lazy"/>
+                            </div>
+                            <div class="pt16 pb16 col-lg-4 o_colored_level">
+                                <h2>QR Kod Oluşturuldu</h2>
+                                <p>QR kodunu indirmek için aşağıdaki butona tıklayın.</p>
+                                <a href="#" onclick="downloadImage()" class="mb-2 btn btn-primary flat">QR Kod İndir</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>
+
+
+
+
+
+
+<!-- qr_code_viewer_module/views/custom_qr_viewer.xml -->
+<!-- <template id="qr_code_viewer_page" name="QR Code Viewer Page" inherit_id="website.layout">
+    <div id="wrap" class="oe_structure oe_empty">
+        <section class="s_text_image pt10 pb64 o_colored_level">
+            <div class="container" id="html-content-holder">
+                <div class="row align-items-center">
+                    <div id="printableArea" class="pt16 pb16 col-lg-8 o_colored_level">
+                        <t t-set="partner" t-value="env['res.partner'].browse(int(request.params.get('partner_id')))"/>
+                        <img id="myImage" t-att-src="'/report/barcode/?barcode_type=QR&amp;value=' + partner.x_qr_id"
+                             t-att-alt="partner.name" class="img img-fluid mx-auto" style="padding: 32px !important;" loading="lazy"/>
+                    </div>
+                    <div class="pt16 pb16 col-lg-4 o_colored_level">
+                        <h2>QR Kod Oluşturuldu</h2>
+                        <p>QR kodunu indirmek için aşağıdaki butona tıklayın.</p>
+                        <a href="#" onclick="downloadImage()" class="mb-2 btn btn-primary flat">QR Kod İndir</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</template> -->

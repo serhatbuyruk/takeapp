@@ -1,0 +1,140 @@
+<odoo>
+    <template id="etkin_promosyon_varyant_urun_detay_page" name="Ürün Detayı">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <!-- Ürün Detayları -->
+                <div class="row mb-5 align-items-center">
+                    <div class="col-lg-6">
+                        <!-- Ürün Resmi -->
+                        <img t-att-src="urun.get('resim1', '/web/static/src/img/placeholder.png')" 
+                             class="img-fluid rounded shadow" 
+                             t-att-alt="urun.get('urun_isim', 'Ürün Resmi')"
+                             style="height: 100%; width: 100%; object-fit: cover;"
+                             onerror="this.src='/web/static/src/img/placeholder.png';"/>
+                    </div>
+                    <div class="col-lg-6">
+                        <!-- <h1 class="mb-3 text-primary fw-bold">
+                            <t t-esc="urun.get('urun_isim', 'Ürün İsmi')"/>
+                        </h1> -->
+                        <h1 class="text-success fs-5 mb-4">
+                            <strong>Ürün Kodu:</strong>
+                            <t t-esc="urun.get('urun_kodu', '-')"/>
+                        </h1>
+                        <p class="text-muted mb-3">
+                            <strong>Açıklama:</strong>
+                            <t t-esc="urun.get('urun_aciklama', 'Açıklama Yok')"/>
+                        </p>
+                        <!-- <p class="text-muted mb-3">
+                            <strong>Ürün Kodu:</strong>
+                            <t t-esc="urun.get('urun_kodu', '-')"/>
+                        </p> -->
+                        <p class="text-muted mb-3">
+                            <strong>Renk:</strong>
+                            <t t-esc="urun.get('urun_renk', '-')"/>
+                        </p>
+                        <p class="text-muted mb-3">
+                            <strong>Ebat:</strong>
+                            <t t-esc="urun.get('urun_ebat', '-')"/>
+                        </p>
+                        <p class="text-muted mb-3">
+                            <strong>Stok Durumu:</strong>
+                            <t t-esc="urun.get('toplam_stok', 0)"/>
+                        </p>
+                        <p class="text-muted mb-3">
+                            <strong>Katalog Sayfa No:</strong>
+                            <t t-esc="urun.get('katalog_sayfa_no', '-')"/>
+                        </p>
+                        <!-- <p class="text-muted mb-3"><strong>Fiyat:</strong> 
+                            <span class="text-success fs-4"><strong><t t-esc="urun.get('urun_fiyat', 'Fiyat Yok')"/> TL</strong></span>
+                        </p> -->
+                        <p class="text-muted mb-3">
+                            <strong>Fiyat (Virgüllü):</strong>
+                            <span class="text-success fs-4">
+                                <!-- <strong>
+                                    <t t-esc="urun.get('urun_fiyat_virgul', '-')"/> TL
+                                </strong> -->
+                                <strong>
+                                    <t t-esc="urun.get('urun_fiyat_virgul', '-').rsplit(',', 1)[0] + ',' + urun.get('urun_fiyat_virgul', '-').rsplit(',', 1)[1][:2]"/> ₺ + KDV
+                                </strong>
+                            </span>
+                        </p>
+                        <t t-if="urun.get('urun_trase')">
+                            <a t-att-href="urun.get('urun_trase')" target="_blank" 
+                               class="btn btn-outline-primary mt-3 px-4 py-2">
+                                Teknik Çizim İndir
+                            </a>
+                        </t>
+                    </div>
+                </div>
+                <!-- Varyantlar -->
+                <t t-if="urun.get('varyantlar') and len(urun.get('varyantlar')) > 0">
+                    <div class="py-4">
+                        <h2 class="text-center text-secondary mb-4">Varyantlar</h2>
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                            <t t-foreach="urun.get('varyantlar', [])" t-as="varyant">
+                                <div class="col">
+                                    <div class="card shadow border-0 h-100">
+                                        <!-- Varyant Resmi -->
+                                        <img t-att-src="varyant.get('resim1', '/web/static/src/img/placeholder.png')" 
+                                             class="card-img-top rounded-top" 
+                                             t-att-alt="varyant.get('urun_isim', 'Varyant Resmi')"
+                                             style="height: 480px; object-fit: cover;"
+                                             onerror="this.src='/web/static/src/img/placeholder.png';"/>
+                                        <!-- Varyant Bilgileri -->
+                                        <div class="card-body">
+                                            <!-- <h5 class="text-primary mb-2">
+                                                <t t-esc="varyant.get('urun_isim', 'Varyant İsmi')"/>
+                                            </h5> -->
+                                            <h5 class="text-success fs-5 mb-4">
+                                                <strong>Ürün Kodu:</strong>
+                                                <t t-esc="varyant.get('urun_kodu', '-')"/>
+                                            </h5>
+                                            <p class="text-muted">
+                                                <strong>Açıklama:</strong>
+                                                <t t-esc="varyant.get('urun_aciklama', '-')"/>
+                                            </p>
+                                            <!-- <p class="text-muted">
+                                                <strong>Ürün Kodu:</strong>
+                                                <t t-esc="varyant.get('urun_kodu', '-')"/>
+                                            </p> -->
+                                            <p class="text-muted">
+                                                <strong>Renk:</strong>
+                                                <t t-esc="varyant.get('urun_renk', '-')"/>
+                                            </p>
+                                            <p class="text-muted">
+                                                <strong>Ebat:</strong>
+                                                <t t-esc="varyant.get('urun_ebat', '-')"/>
+                                            </p>
+                                            <p class="text-muted">
+                                                <strong>Stok:</strong>
+                                                <t t-esc="varyant.get('toplam_stok', 0)"/>
+                                            </p>
+                                            <p class="text-muted">
+                                                <strong>Katalog Sayfa No:</strong>
+                                                <t t-esc="varyant.get('katalog_sayfa_no', '-')"/>
+                                            </p>
+                                            <!-- <p class="text-muted"><strong>Fiyat:</strong> 
+                                                <span class="text-success fs-5"><strong><t t-esc="varyant.get('urun_fiyat', 'Fiyat Yok')"/> TL</strong></span>
+                                            </p> -->
+                                            <p class="text-muted">
+                                                <strong>Fiyat (Virgüllü):</strong>
+                                                <span class="text-success fs-5">
+                                                    <!-- <strong>
+                                                        <t t-esc="varyant.get('urun_fiyat_virgul', '-')"/> TL
+                                                    </strong> -->
+                                                    <strong>
+                                                        <t t-esc="urun.get('urun_fiyat_virgul', '-').rsplit(',', 1)[0] + ',' + varyant.get('urun_fiyat_virgul', '-').rsplit(',', 1)[1][:2]"/> ₺ + KDV
+                                                    </strong>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

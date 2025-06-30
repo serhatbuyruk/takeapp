@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="ewelink_modul_tree" model="ir.ui.view">
+        <field name="name">ewelink_modul.profile.tree</field>
+        <field name="model">ewelink_modul.profile</field>
+        <field name="arch" type="xml">
+            <tree string="ewelink_modul" default_order="create_date desc">
+                <field name="name" />
+                <field name="sequence" widget="handle"/>
+                <field name="title" />
+                <field name="description" />
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="ewelink_modul_form_view" model="ir.ui.view">
+        <field name="name">ewelink_modul.profile.form.view</field>
+        <field name="model">ewelink_modul.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="ewelink_modul_image" widget="image" class="oe_avatar" />
+                    <div class="oe_title mb24">
+                        <label for="name" />
+                        <h1>
+                            <field class="o_text_overflow" name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ewelink_modul_id" />
+                            <field name="sequence" />
+                            <field name="visibility" />
+                            <field name="title" />
+                            <field name="description" />
+                            <field name="url" />
+                            <!-- <field name="is_late" /> -->
+
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ewelink_modul_kanban" model="ir.ui.view">
+        <field name="name">ewelink_modul.profile.kanban</field>
+        <field name="model">ewelink_modul.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" sample="1" default_order="sequence desc">
+                <field name="id" />
+                <field name="name" />
+                <!-- <field name="is_late" /> -->
+                <templates>
+                    <t t-name="kanban-box">
+
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="ewelink_modul_search" model="ir.ui.view">
+        <field name="name">ewelink_modul.profile.search</field>
+        <field name="model">ewelink_modul.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="title" />
+                <field name="description" />
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="ewelink_modul" string="Name Group" domain="[]" context="{'group_by' : 'name'}" />
+                </group>
+                <!-- <filter string="Archived" name="active" domain="[('active', '=', False)]"/> -->
+            </search>
+        </field>
+    </record>
+
+    <!-- Survey  -->
+
+    <!--     <record id="survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            
+        </field>
+    </record> -->
+    <!--     <record id="survey_survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.inherit.ewelink</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="inside">
+                <field name="survey_ewelink" placeholder="Ewelink id" />
+            </xpath>
+        </field>
+    </record> -->
+
+    <record id="survey_survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.inherit.ewelink</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='title']" position="after">
+                <group name="survey_ewelink_modul_id" >
+                    <!-- <field name="survey_ewelink" placeholder="Ewelink id"/> -->
+                    <field name="survey_ewelink_modul_id" placeholder="Ewelink"/>
+                    <field name="lokasyon" placeholder="Lokasyon"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_ewelink_modul_profile" model="ir.actions.act_window">
+        <field name="name">ewelink_modul</field>
+        <field name="res_model">ewelink_modul.profile</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+    <menuitem id="ewelink_modul_root_menu" name="Röle Modül" web_icon="ewelink_modul,static/src/img/avatar.png" />
+    <act_window id="ewelink_modul_list" name="Röle Modül" res_model="ewelink_modul.profile" view_mode="tree,kanban,form" context="{}" />
+    <menuitem id="ewelink_modul_zones" parent="ewelink_modul_root_menu" name="Röle Modül" action="ewelink_modul_list" sequence="2" />
+
+</odoo>

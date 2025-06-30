@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+
+    <!--tree view of the model-->
+    <record id="webstory_tree" model="ir.ui.view">
+        <field name="name">webstory.profile.tree</field>
+        <field name="model">webstory.profile</field>
+        <field name="arch" type="xml">
+            <tree string="webstory" default_order="create_date desc">
+                <field name="name" />
+               <!--  <field name="sequence" />
+                <field name="image_type" />
+                <field name="title" />
+                <field name="description" /> -->
+                <field name="upload_date" />
+               <!--  <field name="start_date" />
+                <field name="end_date" />
+                <field name="paid" /> -->
+            </tree>
+        </field>
+    </record>
+    <!--
+    <record model="ir.ui.view" id="webstory_graph">
+        <field name="name">webstory.profile.graph</field>
+        <field name="model">webstory.profile</field>
+        <field name="arch" type="xml">
+            <graph string="webstory">
+                <field name="name"/>
+                <field name="webstory_degree" type="measure"/>
+            </graph>
+        </field>
+    </record>
+	-->
+    <record id="webstory_form_view" model="ir.ui.view">
+        <field name="name">webstory.profile.form.view</field>
+        <field name="model">webstory.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+
+                    <div class="oe_title mb24">
+                        <label for="name" />
+                        <h1>
+                            <field class="o_text_overflow" name="name" />
+                        </h1>
+                    </div>
+                    
+                    <div class="row">
+                        <figure class="figure col">
+                            <field name="webstory_image_small" widget="image" class="figure-img img-fluid rounded" />
+                            <figcaption class="figure-caption">Küçük Resim 158*220</figcaption>                             
+                        </figure>
+                        <figure class="figure col">
+                             
+                            <field name="webstory_image_big" widget="image" class="figure-img img-fluid rounded" />
+                            <figcaption class="figure-caption">Büyük Resim 503*700</figcaption>
+                        </figure>
+
+
+                    </div>
+
+                    
+                    
+                    
+                    <group>
+                        <group>
+                           
+                            <field name="visibility" />
+
+<!--                            
+                            
+                             <field name="sequence" />
+                             <field name="image_type" />
+                            <field name="title" />
+                            <field name="description" />
+                            <field name="url" />
+                            <field name="start_date" />
+                            <field name="end_date" />
+                            <field name="rates" attrs="{'invisible':[('image_type','!=','service')]}"/>                           
+                            <field name="price" />
+                            <field name="paid" />
+                            <field name="upload_date" />
+                            <field name="company_name" />
+                            <field name="topic" />
+                            <field name="target_group" />-->
+                        </group> 
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="webstory_kanban" model="ir.ui.view">
+        <field name="name">webstory.profile.kanban</field>
+        <field name="model">webstory.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" sample="1" default_order="sequence desc">
+                <field name="id" />
+                <field name="name" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <div class="o_kanban_image_fill_left"
+                                t-attf-style="background-image: url(#{kanban_image('webstory.profile', 'webstory_image', record.id.raw_value)})"
+                                role="img" />
+                            <!-- <t t-if="record.link_type.raw_value == '1'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('webstory/static/src/img/1.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '2'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('webstory/static/src/img/2.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '3'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('webstory/static/src/img/3.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '4'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('webstory/static/src/img/4.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '5'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('webstory/static/src/img/5.png')"/>
+                            </t> -->
+                            <div class="oe_kanban_details d-flex flex-column">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <strong>
+                                                <field name="name" />
+
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row">
+                                        <div class="col-7">
+                                            <field name="text"/>
+                                        </div>
+                                    </div> -->
+                                </strong>
+                                <div class="o_kanban_tags_section oe_kanban_partner_categories" />
+                                <style>
+                                    .flex-container {
+                                    display: flex;
+                                    flex-direction: column;
+                                    }
+
+                                    .flex-item {
+                                    margin-bottom: 5px;  
+                                    }
+                                </style>
+                                <div class="flex-container">
+                                    <div class="flex-item">
+                                        <field name="image_type" />
+                                    </div>
+                                    <div class="flex-item">
+                                        <field name="start_date" />
+                                    </div>
+                                    <div class="flex-item">
+                                        <field name="end_date" />
+                                    </div>
+                                    <div class="flex-item">
+                                        <field name="price" />
+                                    </div>
+                                    <div class="flex-item">
+                                        <field name="paid" />
+                                    </div>
+                                    <div class="flex-item">
+                                        <field name="upload_date" />
+                                    </div>
+                                    <div class="flex-item">
+                                        <field name="company_name" />
+                                    </div>
+                                    <div class="flex-item">
+                                        <field name="topic" />
+                                    </div>
+                                    <div class="flex-item">
+                                        <field name="target_group" />
+                                    </div>
+                                   
+
+                                </div>
+
+                                <ul>
+                                    <li>
+                                        <strong>Visibility:</strong>
+                                        <field name="visibility" widget="boolean_toggle" />
+                                    </li>
+                                </ul>
+                                <!-- <div class="row pt-2">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_1_Active" type="object" class="btn btn-outline-success btn-block
+                                btn-lg" attrs="{'invisible': [('device_status_1', '!=',
+                                'passive')]}">Kamerayı Devreye Al</button>
+                                            <button name="write_Link_Status_1_Passive" type="object" class="btn btn-outline-danger btn-block
+                                btn-lg" confirm="Kamera Devre Dışı Kalacak Emin Misiniz?"
+                                attrs="{'invisible': [('device_status_1', '!=',
+                                'active')]}">Kamerayı Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-1">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline' and record.device_status_1.raw_value ==
+                                'active'">
+                                            <a  t-attf-href="http://{{ record.camera_ip.value }}">
+                                                <button name="open_link_camera" type="button" class="btn btn-outline-success btn-block btn-lg"
+                                confirm="Canlı İzleme Aktif Edilecek Emin Misiniz?"
+                                attrs="{'invisible': [('camera_ip', '==', False)]}">Canlı
+                                Kamera</button>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-2">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_2_Active" type="object" class="btn btn-outline-success btn-block
+                                btn-lg" confirm="Isı Kontrol Sistemi Aktif Edilecek Emin Misiniz?"
+                                attrs="{'invisible': [('device_status_2', '!=', 'passive')]}">Isıyı
+                                Devreye Al</button>
+                                            <button name="write_Link_Status_2_Passive" type="object" class="btn btn-outline-danger btn-block
+                                btn-lg" confirm="Isı Kontrol Sistemi Devre Dışı Kalacak Emin
+                                Misiniz?" attrs="{'invisible': [('device_status_2', '!=',
+                                'active')]}">Isıyı Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-2">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_3_Active" type="object" class="btn btn-outline-success btn-block
+                                btn-lg" confirm="Dikkat!!! Uv Hastaya Ciddi Oranda Zarar Verir.
+                                İçeride Yatan Hasta Olmadığından Emin Misiniz?" attrs="{'invisible':
+                                ['|',('device_status', '!=', 'passive'),('device_status_3', '!=',
+                                'passive')]}">Uv Devreye Al</button>
+                                            <button name="write_Link_Status_3_Passive" type="object" class="btn btn-outline-danger btn-block
+                                btn-lg" attrs="{'invisible': ['|',('device_status', '!=',
+                                'passive'),('device_status_3', '!=', 'active')]}">Uv Devre Dışı
+                                Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-1">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_4_Active" type="object" class="btn btn-outline-success btn-block
+                                btn-lg" confirm="Işık Aktif Edilecek Emin Misiniz?"
+                                attrs="{'invisible': [('device_status_4', '!=', 'passive')]}">Işığı
+                                Devreye Al</button>
+                                            <button name="write_Link_Status_4_Passive" type="object" class="btn btn-outline-danger btn-block
+                                btn-lg" confirm="Işık Devre Dışı Kalacak Emin Misiniz?"
+                                attrs="{'invisible': [('device_status_4', '!=', 'active')]}">Işığı
+                                Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="o_row">
+                                    <span class="oe_kanban_partner_webstory"/>
+                                </div> -->
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="webstory_search" model="ir.ui.view">
+        <field name="name">webstory.profile.search</field>
+        <field name="model">webstory.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="title" />
+                <field name="description" />
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="webstory" string="Name Group" domain="[]"
+                        context="{'group_by' : 'name'}" />
+                </group>
+                <!-- <filter string="Archived" name="active" domain="[('active', '=', False)]"/> -->
+            </search>
+        </field>
+    </record>
+    <record id="action_webstory_profile" model="ir.actions.act_window">
+        <field name="name">Web Story</field>
+        <field name="res_model">webstory.profile</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+    <menuitem id="webstory_root_menu" name="Web Story" web_icon="webstory,static/src/images/camera_story.png" />
+    <act_window id="webstory_list" name="Web Story" res_model="webstory.profile" view_mode="tree,kanban,form"
+        context="{}" />
+    <menuitem id="webstory_zones" parent="webstory_root_menu" name="Web Story" action="webstory_list"
+        sequence="2" />
+    <!-- <act_window id="webstory_quotations" name="Transfer Request" res_model="sale.order"
+    view_mode="tree,kanban,form,calendar,pivot,graph,activity" context="{}"/>
+    <menuitem id="webstory_request" parent="webstory_root_menu" name="Transfer Requests"
+    action="webstory_quotations" sequence="1"/>
+
+    <menuitem id="webstory_general_settings" parent="webstory_root_menu" name="General Settings" sequence="5"
+    />
+    <menuitem id="webstory_currency" parent="webstory_general_settings" name="Currency Config"
+    action="website_sale.website_product_pricelist3" sequence="9"/>
+    <menuitem id="webstory_website_config" parent="webstory_general_settings" name="Website Configration"
+    action="website.action_website_configuration" sequence="11"/>
+    <menuitem id="webstory_website_list" parent="webstory_general_settings" name="Websites"
+    action="website.action_website_list" sequence="10"/>
+    <menuitem id="webstory_queries" parent="webstory_general_settings" name="Transfer Queries"
+    action="action_webstory_profile" sequence="8"/>
+    <menuitem id="webstory_pages" parent="webstory_general_settings" name="Page List"
+    action="website.action_website_pages_list" sequence="1"/>
+    <menuitem id="webstory_city_menu" parent="webstory_general_settings" name="Cities"
+    action="action_city_profile" sequence="2"/>
+    <menuitem id="webstory_car_menu" parent="webstory_general_settings" name="Car List"
+    action="action_car_profile" sequence="3"/>
+    <menuitem id="webstory_extra_menu" parent="webstory_general_settings" name="Extras"
+    action="action_extra_profile" sequence="4"/>
+
+    <menuitem id="webstory_marketing" name="Marketing" parent="webstory_root_menu" sequence="3"/>
+    <menuitem id="webstory_crm" parent="webstory_marketing" name="Potential Customers"
+    action="crm.crm_lead_all_leads"/>
+    <menuitem id="webstory_livechat" parent="webstory_marketing" name="Customer Live Chat"
+    action="im_livechat.im_livechat_channel_action" />
+
+    <menuitem id="webstory_statistics" parent="webstory_root_menu" name="Web Statistics" sequence="4" />
+    <menuitem id="webstory_visitors" parent="webstory_statistics" name="Visitors"
+    action="website.website_visitors_action"/>
+    <act_window id="webstory_page_view_act" name="Page Views" res_model="website.track"
+    view_mode="tree,graph" context="{'search_default_type_url': 1, 'create': False, 'edit': False,
+    'copy': False}"/>
+    <menuitem id="webstory_page_views" parent="webstory_statistics" name="Page Views"
+    action="webstory_page_view_act"/>
+    <menuitem id="webstory_google" parent="webstory_statistics" name="Google Analytics"
+    action="website.backend_dashboard"/> -->
+    <!--
+	<menuitem id="webstory_profile_menu" name="webstory" action="action_webstory_profile"
+    parent="webstory_sub_menu"/>
+	-->
+</odoo>

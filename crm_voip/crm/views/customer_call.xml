@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_voip_crm_customer_call_form" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.call.form</field>
+            <field name="model">crm_voip.crm.customer.call</field>
+            <field name="arch" type="xml">
+                <form string="Customer Call">
+                    <header>
+                        <button string="Call Phone" name="call_phone" icon="fa-phone" type="object"
+                                class="btn-success"/>
+                        <button string="Send SMS" name="send_sms_wizard" icon="fa-envelope" type="object"
+                                class="btn-primary"/>
+                        <button string="Mark as a  Answered" name="mark_answered" icon="fa-thumbs-up" type="object"
+                                attrs="{'invisible':[('unanswered','=',False)]}" class="btn-info"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="id" invisible="1"/>
+                            <field name="partner_id" groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                            <field name="customer_id"/>
+                            <field name="phone_id"/>
+                            <field name="seller_id"/>
+                            <field name="unique_id"/>
+                            <field name="type"/>
+                            <field name="phone"/>
+                            <field name="incoming_phone"/>
+                            <field name="start"/>
+                            <field name="internal_number"/>
+                            <field name="user_id" string="Call Operator" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True, &quot;no_quick_create&quot;: True,&quot;no_create_edit&quot;: True}"/>
+                            <field name="duration_show"/>
+                            <field name="unanswered"/>
+                            <field name="record_url"/>
+                            <field name="internal_user_contact"/>
+                            <!--
+                            <field name="call_play" widget="mp3player" class="oe_read_only" attrs="{'invisible': [('id', '=', False)]}" readonly="1"/>
+                            -->
+                            <field name="call_record_source" widget="url" class="oe_read_only" readonly="1"/>
+                        </group>
+                        <notebook>
+                            <page string="Logs">
+                                <field name="log_ids">
+                                    <form>
+                                        <group>
+                                            <field name="unique_id"/>
+                                            <field name="scenario"/>
+                                            <field name="customer_num"/>
+                                            <field name="incoming_number"/>
+                                            <field name="queue_name"/>
+                                            <field name="talktime"/>
+                                            <field name="holdtime"/>
+                                            <field name="internal_num"/>
+                                            <field name="context"/>
+                                            <field name="context_name"/>
+                                            <field name="digit"/>
+                                            <field name="type"/>
+                                            <field name="create_date"/>
+                                        </group>
+
+                                    </form>
+                                    <tree>
+                                        <field name="scenario"/>
+                                        <field name="customer_num"/>
+                                        <field name="incoming_number"/>
+                                        <field name="internal_num"/>
+                                        <field name="queue_name"/>
+                                        <field name="talktime"/>
+                                        <field name="holdtime"/>
+                                        <field name="create_date"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_customer_call_tree" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.call.tree</field>
+            <field name="model">crm_voip.crm.customer.call</field>
+            <field name="arch" type="xml">
+                <tree string="Customer Call" decoration-muted="active==False">
+                    <field name="active" invisible="1"/>
+                    <field name="partner_id" groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                    <field name="call_icon" widget="image"/>
+                    <field name="customer_id"/>
+                    <field name="phone_id"/>
+                    <field name="seller_id"/>
+                    <field name="phone"/>
+                    <field name="incoming_phone"/>
+                    <field name="user_id" string="Call Operator" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True, &quot;no_quick_create&quot;: True,&quot;no_create_edit&quot;: True}"/>
+                    <field name="start"/>
+                    <field name="duration_show"/>
+                    <field name="unanswered"/>
+                    <!--
+                    <field name="call_play" widget="mp3player" readonly="1"/>
+                    -->
+                    <button string="Ara" name="call_phone" type="object" class="btn-success"/>
+                    <button string="SMS" name="send_sms_wizard" type="object" class="btn-primary"/>
+                    <button string="Dinle" name="call_record_listen" icon="fa-play" type="object" class="btn-warning" attrs="{'invisible': [('duration_show', '==', '00:00:00')]}" groups="crm_voip.crm_voip_full_access"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_customer_call_action" model="ir.actions.act_window">
+            <field name="name">Customer Call</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm_voip.crm.customer.call</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="crm_voip_crm_customer_call_search" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.call.search</field>
+            <field name="model">crm_voip.crm.customer.call</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id"
+                           groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                    <field name="customer_full_name"/>
+                    <field name="customer_name"/>
+                    <field name="customer_surname"/>
+                    <field name="phone_id"/>
+                    <field name="seller_id"/>
+                    <field name="type"/>
+                    <field name="unanswered"/>
+                    <group expand="1" string="Group by">
+                        <filter string="Seller" name="seller_id" context="{'group_by': 'seller_id'}"/>
+                        <filter string="Type" name="type" context="{'group_by': 'type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

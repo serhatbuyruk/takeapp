@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="payment_provider_paytr_form" model="ir.ui.view">
+        <field name="name">Paytr Provider Form</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='provider_credentials']" position="inside">
+                <group colspan="12" attrs="{'invisible': [('code', '!=', 'paytr')]}" name="paytr_credentials">
+                    <div class="alert alert-info" role="alert">
+                        Paytr Notification URL should be: <b>https://domain/payment/trpay/webhook</b>
+                    </div>
+                    <group colspan="12">
+                        <field name="paytr_merchant_id"></field>
+                        <field name="paytr_merchant_key"></field>
+                        <field name="paytr_merchant_salt"></field>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//group[@name='payment_form']" position="after">
+                <group attrs="{'invisible': [('code', '!=', 'paytr')]}" name="paytr_config">
+                    <field name="paytr_payment_term_id" widget="many2one"></field>
+                    <field name="paytr_payment_interest_term_id" widget="many2one"></field>
+                    <field name="paytr_payment_interest_product_id" widget="many2one" attrs="{'required':[('code', '=', 'paytr')]}"></field>
+                    <field name="paytr_currency_id" widget="many2one" attrs="{'required':[('code', '=', 'paytr')]}"></field>
+                    <field name="paytr_no_installment" widget="selection" attrs="{'required':[('code', '=', 'paytr')]}"></field>
+                    <field name="paytr_max_installmentt" widget="selection"
+                           attrs="{'invisible':[('paytr_no_installment','=','1')],'required':[('paytr_no_installment','=','0')]}"></field>
+                    <field name="paytr_timeout_limit" widget="integer"></field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

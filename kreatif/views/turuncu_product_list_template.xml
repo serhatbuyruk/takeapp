@@ -1,0 +1,53 @@
+<odoo>
+    <template id="turuncu_product_list_template" name="Product List">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="text-center mb-5">Ürün Listesi</h1>
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <t t-foreach="products" t-as="product">
+                        <div class="col">
+                            <div class="card h-100 shadow-lg border-0">
+                                <!-- Ürün Resmi -->
+                                <img t-att-src="product.get('resim1', '/web/static/src/img/placeholder.png')" 
+                                     class="card-img-top" 
+                                     t-att-alt="product.get('urun_isim', 'Ürün Resmi')" 
+                                     style="height: 500px; object-fit: cover;" 
+                                     onerror="this.src='/web/static/src/img/placeholder.png';"/>
+
+                                <!-- Ürün Bilgileri -->
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title text-center fw-bold">
+                                        <t t-esc="product.get('urun_isim', 'Ürün İsmi')"/>
+                                    </h5>
+                                    <p class="text-muted text-center mb-2">
+                                        <strong>Kod:</strong> <t t-esc="product.get('urun_kodu', '-')"/>
+                                    </p>
+                                    <p class="text-muted text-center mb-2">
+                                        <strong>Renk:</strong> <t t-esc="product.get('urun_renk', 'Belirtilmemiş')"/>
+                                    </p>
+                                    <p class="text-muted text-center mb-2">
+                                        <strong>Ebat:</strong> <t t-esc="product.get('urun_ebat', '-')"/>
+                                    </p>
+                                    <p class="text-muted text-center mb-2">
+                                        <strong>Kategori:</strong> <t t-esc="product.get('kategori_adi', '-')"/>
+                                    </p>
+                                    <p class="text-muted text-center mb-2">
+                                        <strong>Stok Durumu:</strong> <t t-esc="product.get('toplam_stok', 0)"/>
+                                    </p>
+                                    <p class="text-success text-center mb-4 fs-5">
+                                        <strong><t t-esc="product.get('urun_fiyat_virgul', '-')"/> TL</strong>
+                                    </p>
+                                    <t t-if="product.get('urun_trase')">
+                                        <a t-att-href="product.get('urun_trase')" target="_blank" class="btn btn-outline-info mb-3">
+                                            Teknik Çizim İndir
+                                        </a>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

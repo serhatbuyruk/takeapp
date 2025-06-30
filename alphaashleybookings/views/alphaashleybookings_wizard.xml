@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Wizard's Action-->
+        <record id="alphaashleybookings_wizard_action" model="ir.actions.act_window">
+            <field name="name">Receive Payment</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">alphaashleybookings.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_active_id': active_id}</field>
+        </record>
+        <!-- Wizard's view-->
+        <record id="alphaashleybookings_wizard_view" model="ir.ui.view">
+            <field name="name">alphaashleybookings.wizard.form</field>
+            <field name="model">alphaashleybookings.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                <!-- <header>
+                    <script type="text/javascript">
+                        $(document).ready(function(){
+                            $('.modal-dialog').css({'max-width': '120%'});
+                            $('.modal-content').css({'max-width': '120%'});
+                        });
+                    </script>
+                </header> -->
+                        <group name="name" string="Receive Payment"> 
+                            <label for="remaining_amount" />
+                            <div class="d-flex">
+                                <field name="remaining_amount" readonly="1"/>
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="remaining_amount_currency_id" readonly="1" options="{'no_open':True,'no_create': True}"/>
+                            </div>
+                            <field name="sale_payment_type" />
+                            <label for="received_amount" />
+                            <div class="d-flex">
+                                <field name="received_amount" />
+                                <span class="o_form_label mx-3"> - </span>
+                                <field name="received_amount_currency_id" options="{'no_open':True,'no_create': True}"/>
+                            </div>
+                        </group>
+                    <footer>
+                        <button string="SAVE" name="update_realestate_information" type="object" id="test_button" class="btn-primary"/>
+                        <button string="CANCEL" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

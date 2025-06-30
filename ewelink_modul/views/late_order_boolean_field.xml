@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <templates id="template" xml:space="preserve">
+        <t t-name="ewelink_modul.LateOrderBooleanField" owl="1">
+            <div class="custom-boolean-field">
+                <input type="checkbox" t-att-checked="props.value" t-on-change="props.update" class="form-check-input"/>
+                <span t-if="props.value" class="late-text">Late!</span>
+            </div>
+        </t>
+    </templates>
+</odoo>
+<!-- 
+
+Açıklamalar:
+
+<input type="checkbox">: Checkbox (boolean) alanı.
+
+t-att-checked="props.value": Alanın işaretli olup olmadığını kontrol eder.
+
+t-on-change="props.update": Alan değiştiğinde Odoo'yu bilgilendirir.
+
+<span t-if="props.value">: Alan işaretliyse "Late!" yazısı görünür. 
+
+-->

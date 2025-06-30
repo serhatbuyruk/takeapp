@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_vehicles_user_1,Vehicles User,model_vehicles_profile,vehicles.vehicles_group_user,1,0,0,0
+access_vehicles_user_2,Vehicles Manager,model_vehicles_profile,vehicles.vehicles_group_manager,1,1,1,1
+access_vehicles_user_3,Vehicles Admin,model_vehicles_profile,vehicles.vehicles_group_admin,1,1,1,1
+access_vehicles_user_4,Vehicles Dealer,model_vehicles_profile,vehicles.vehicles_group_dealer,1,1,1,1
+access_vehicles_user_5,Vehicles Access Rigths Full Access,model_vehicles_profile,base.group_erp_manager,1,1,1,1
+access_vehicles_user_6,Vehicles Settings Full Access,model_vehicles_profile,base.group_system,1,1,1,1
+
+access_type_user_1,Type Admin,model_type_profile,base.group_user,1,1,1,1
+
+access_vehicle_lines_admin,Vehicle Lines Admin,model_vehicles_profile_lines,base.group_user,1,1,1,1
+access_vehicle_lines_portal_user,Vehicle Lines Portal User,model_vehicles_profile_lines,base.group_portal,1,0,0,0

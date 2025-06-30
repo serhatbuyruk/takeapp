@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_html_parser_admin,html_parser Admin,model_html_parser_profile,base.group_system,1,1,1,1
+access_html_parser_user,html_parser User,model_html_parser_profile,base.group_user,1,0,0,0

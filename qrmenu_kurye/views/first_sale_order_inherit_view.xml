@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sale_order_form_inherit_button" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.button</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- HEADER içinde yeni buton ekleme -->
+            <xpath expr="//form/header" position="inside">
+                <!-- <button name="action_send_to_corders"
+                        type="object"
+                        string="Kurye Çağır"
+                        class="btn-primary"
+                        icon="fa-truck"/> -->
+
+<!--             <button name="action_send_to_corders"
+                    type="object"
+                    string="Kurye Çağır"
+                    class="oe_highlight"
+                    attrs="{'invisible': [('kurye_cagrildi_mi', '=', True)]}"/>
+
+            <button name="action_send_to_corders"
+                    type="object"
+                    string="Kurye Çağrıldı"
+                    class="btn-success"
+                    attrs="{'invisible': [('kurye_cagrildi_mi', '=', False)]}"
+                    disabled="1"/> -->
+                     <!-- Kurye Çağır Butonu -->
+            <button name="action_send_to_corders"
+                    type="object"
+                    string="Kurye Çağır"
+                    class="btn-primary"
+                    icon="fa-truck"
+                    attrs="{'invisible': [('kurye_cagrildi_mi', '=', True)]}"/>
+
+            <!-- Kurye Çağrıldı Butonu -->
+            <button name="action_send_to_corders"
+                    type="object"
+                    string="Kurye Çağrıldı"
+                    class="btn-success"
+                    icon="fa-check-circle"
+                    attrs="{'invisible': [('kurye_cagrildi_mi', '=', False)]}"
+                    disabled="1"/>
+
+           <!-- <button name="action_send_to_corders"
+            type="object"
+            string="Kurye Çağır"
+            class="btn-primary"
+            icon="fa-truck"
+            attrs="{'invisible': [('kurye_cagrildi_mi', '=', True)]}"/>     -->     
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="sale_order_tree_inherit_button" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit.button</field>
+        <field name="model">sale.order</field>
+        <!-- Bu kısımda Odoo'nun orijinal tree view ID'sini referans alıyoruz -->
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <!-- 
+              Aşağıdaki örnekte, 'name' alanının hemen sonrasına
+              <button> ekliyoruz. 
+            -->
+            <xpath expr="//tree/field[@name='name']" position="after">
+                <!-- <button name="action_send_to_corders"
+                        type="object"
+                        string="Kurye Çağır" 
+                        class="oe_highlight"/> -->
+                            <field name="kurye_cagrildi_mi" invisible="1"/>
+
+<!--             <button name="action_send_to_corders"
+                    type="object"
+                    string="Kurye Çağır"
+                    class="oe_highlight"
+                    attrs="{'invisible': [('kurye_cagrildi_mi', '=', True)]}"/>
+
+            <button name="action_send_to_corders"
+                    type="object"
+                    string="Kurye Çağrıldı"
+                    class="btn-success"
+                    attrs="{'invisible': [('kurye_cagrildi_mi', '=', False)]}"
+                    disabled="1"/> -->
+                                <!-- Kurye Çağır Butonu -->
+            <button name="action_send_to_corders"
+                    type="object"
+                    string="Kurye Çağır"
+                    class="oe_highlight"
+                    icon="fa-truck"
+                    attrs="{'invisible': [('kurye_cagrildi_mi', '=', True)]}"/>
+
+            <!-- Kurye Çağrıldı Butonu -->
+            <button name="action_send_to_corders"
+                    type="object"
+                    string="Kurye Çağrıldı"
+                    class="btn-success"
+                    icon="fa-check-circle"
+                    attrs="{'invisible': [('kurye_cagrildi_mi', '=', False)]}"
+                    disabled="1"/>
+     <!--        <button name="action_send_to_corders"
+            type="object"
+            string="Kurye Çağır"
+            class="oe_highlight"
+            attrs="{'invisible': [('kurye_cagrildi_mi', '=', True)]}"/> -->
+            </xpath>
+        </field>
+    </record>
+
+    <record id="qrmenu_form_view_inherit" model="ir.ui.view">
+        <field name="name">qrmenu.profile.form.view.inherit</field>
+        <field name="model">qrmenu.profile</field>
+        <field name="inherit_id" ref="qrmenu.qrmenu_form_view"/>   
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group" position="inside">
+                <group string="Restoran Bilgileri">
+                    <field name="restaurant_id" groups="base.group_system"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+     <record id="sale_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group" position="inside">
+               
+                <group string="Sipariş Bilgileri">
+                    <field name="kurye_cagrildi_mi"/>
+                    <field name="siparis_durumu"/>
+                    <field name="musteri_adi"/>
+                    <field name="musteri_telefonu"/>
+                    <field name="adres"/>
+                    <field name="adres_tarifi"/>
+                    <field name="siparis_notu"/>
+                </group>
+                <group string="Ödeme ve Platform">
+                    <field name="odeme_yontemi"/>
+                    <field name="toplam_siparis_tutari"/>
+                    <field name="platform"/>
+                    <field name="magaza"/>
+                    <field name="restaurant_id" groups="base.group_system"/>
+
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+
+
+
+
+</odoo>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_inherit_deepl" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.deepl</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='settings']" position="inside">
+                <div class="app_settings_block" data-string="DeepL Settings" string="DeepL Settings" name="deepl_settings">
+                    <h2>DeepL Ayarları</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6">
+                            <group>
+                                <field name="deepl_api_key" password="True"/>
+                                <field name="deepl_api_url"/>
+                            </group>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,16 @@
+<odoo>
+    <data noupdate="1">
+        <!-- 
+            This product will be used as the single line item on the generated invoice.
+            We use noupdate="1" so that if the user changes this product's name
+            or price later, their changes won't be overwritten on module update.
+        -->
+        <record id="product_tour_sale" model="product.product">
+            <field name="name">Tour Sale Service</field>
+            <field name="detailed_type">service</field>
+            <field name="invoice_policy">order</field> <!-- Invoice based on ordered quantity -->
+            <field name="list_price">0.0</field> <!-- Default price, will be overridden -->
+            <field name="taxes_id" eval="False"/> <!-- No default taxes, can be set by user -->
+        </record>
+    </data>
+</odoo>

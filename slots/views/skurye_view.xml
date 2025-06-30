@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--tree view of the skurye model-->
+    <record id="skurye_tree" model="ir.ui.view">
+        <field name="name">skurye.profile.tree</field>
+        <field name="model">skurye.profile</field>
+        <field name="arch" type="xml">
+            <tree string="Cities">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <!--form view of the skurye model-->
+    <record id="skurye_form" model="ir.ui.view">
+        <field name="name">skurye.profile.form</field>
+        <field name="model">skurye.profile</field>
+        <field name="arch" type="xml">
+            <form string="Cities">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="skurye_profile_lines_tree" model="ir.ui.view">
+        <field name="name">skurye.profile.lines.tree</field>
+        <field name="model">skurye.profile.lines</field>
+        <field name="arch" type="xml">
+            <tree string="Lines">
+                <field name="name" optional="hide"/>
+                <field name="slot_start_date" optional="hide"/>
+                <field name="slot_end_date" optional="hide"/>
+                <field name="id" optional="hide"/>
+                <field name="order_sequence" invisible="1"/>
+                <field name="partner_id" optional="show"/>
+                <field name="active" optional="show"/>
+                <field name="kurye_start_date" optional="show"/>
+                <field name="kurye_end_date" optional="show"/>
+                <field name="start_date" optional="hide"/>
+                <field name="end_date" optional="hide"/>
+                <field name="kurye_yoklamasi" optional="hide"/>
+                <field name="gecikme_durumu" optional="hide"/>
+                <field name="gecikme_dakikasi" optional="hide"/>
+                <field name="erken_kapatma" optional="hide"/>
+                <field name="bitise_kalan_dakika" optional="hide"/>
+                <field name="slot_paket_sayisi" optional="hide"/>
+                <field name="kurye_calisma_saati" optional="hide"/>
+                <field name="sale_price" optional="hide"/>
+                <!-- <field name="baz_price" optional="hide"/>
+                <field name="toplam_km_price" optional="hide"/>
+                <field name="promosyon_price" optional="hide"/>
+                <field name="bahsis_price" optional="hide"/> -->
+            </tree>
+        </field>
+    </record>
+
+    <record id="slot_skurye_tree" model="ir.ui.view">
+        <field name="name">slots.profile.inherit</field>
+        <field name="model">slots.profile</field>
+        <field name="inherit_id" ref="slots.slots_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='main_page']" position="after">
+                <page name="skurye_lines_page" string="Sürücüler">
+                    <field name="skurye_profile_lines" widget="one2many" context="{'show_attribute': True, 'default_currency_id': 32}">
+                        <tree string="Customer Payment" editable="bottom">
+                            <field name="id" optional="hide"/>
+                            <field name="name" optional="hide"/>
+                            <field name="slot_start_date" optional="hide"/>
+                            <field name="slot_end_date" optional="hide"/>
+                            <field name="order_sequence" invisible="1"/>
+                            <field name="partner_id" optional="show"/>
+                            <field name="kurye_active" optional="show"/>
+                            <field name="kurye_start_date" optional="show"/>
+                            <field name="kurye_end_date" optional="show"/>
+                            <field name="active" invisible="1"/>
+                            <field name="start_date" optional="hide"/>
+                            <field name="end_date" optional="hide"/>
+                            <field name="kurye_yoklamasi" optional="hide"/>
+                            <field name="gecikme_durumu" optional="hide"/>
+                            <field name="gecikme_dakikasi" optional="hide"/>
+                            <field name="erken_kapatma" optional="hide"/>
+                            <field name="bitise_kalan_dakika" optional="hide"/>
+                            <field name="slot_paket_sayisi" optional="hide"/>
+                            <field name="kurye_calisma_saati" optional="hide"/>
+                            <field name="sale_price" optional="hide"/>
+                            <!-- <field name="baz_price" optional="hide"/>
+                            <field name="toplam_km_price" optional="hide"/>
+                            <field name="promosyon_price" optional="hide"/>
+                            <field name="bahsis_price" optional="hide"/> -->
+                            <!-- <field name="currency_id"/>
+                            <field name="date"/>
+                            <field name="description"/>
+                            <field name="customer_skurye_status"/>
+                            <button readonly="True" string="" class="oe_inline oe_stat_button"
+                                icon="/web/content/2566?download=true"
+                                attrs="{'invisible': [('customer_skurye_status', '!=', 'paid')]}" type="object"
+                                name="from_profile" />
+                            <button readonly="True" string="" class="oe_inline oe_stat_button"
+                                icon="/web/content/2565?download=true"
+                                attrs="{'invisible': [('customer_skurye_status', '!=', 'not_paid')]}" type="object"
+                                name="from_profile" />
+                            <button readonly="True" string="" class="oe_inline oe_stat_button"
+                                icon="/web/content/2565?download=true"
+                                attrs="{'invisible': [('customer_skurye_status', '!=', 'partial')]}" type="object"
+                                name="from_profile" /> -->
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="skurye_search" model="ir.ui.view">
+        <field name="name">skurye.profile.lines.search</field>
+        <field name="model">skurye.profile.lines</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('partner_id', 'ilike', self)]"/>
+                <field name="create_uid" string="Oluşturan Kişi"/>
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="group_by_day" string="Tarih" domain="[]" context="{'group_by': 'start_date:day'}" />
+                </group>
+                <!-- <filter string="Archived" name="active" domain="[('active', '=', False)]"/> -->
+            </search>
+        </field>
+    </record>
+    <record id="skurye_calendar" model="ir.ui.view">
+        <field name="name">skurye.profile.lines.search</field>
+        <field name="model">skurye.profile.lines</field>
+        <field eval="2" name="priority" />
+        <field name="arch" type="xml">
+            <calendar date_start="start_date" date_stop="end_date" string="Slot" mode="month" color="color" event_limit="5" hide_time="true" js_class="project_calendar" event_open_popup="true" quick_add="false">
+                <field name="name" filters="1" />
+                <field name="partner_id" filters="1" />
+                <field name="start_date" />
+                <field name="end_date" />
+            </calendar>
+        </field>
+    </record>
+    <!-- <record id="slots.profile.common.form" model="ir.ui.view">
+        <field name="name">slots.profile.common.form.inherit</field>
+        <field name="model">slots.profile.common.form</field>
+        <field name="inherit_id" ref="product.slots.profile.common.form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@string='Product Name']" position="after">
+                <group name="skurye_select" string="string">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!-- <record id="view_skurye_form_inherit" model="ir.ui.view">
+        <field name="name">slots.profile.common.form.inherit</field>
+        <field name="model">slots.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']/group" position="before">
+                <group col="2" colspan="2">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!--field ekleme-->
+    <!--
+    <record id="product_template_inherit" model="ir.ui.view">
+        <field name="name">slots.profile.inherit</field>
+        <field name="model">slots.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <field name="image_1920" position="after">
+			<group>
+                <field name="from_id"/>
+                <field name="to_id"/>
+			</group>
+            </field>
+        </field>
+    </record>
+	-->
+    <!--action of the skurye menu-->
+    <record id="action_skurye_profile_lines" model="ir.actions.act_window">
+        <field name="name">skurye_profile_lines</field>
+        <field name="res_model">skurye.profile.lines</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="skurye_root_menu" name="Sürücü Slotları" web_icon="slots,static/src/img/avatar.png"/>
+    <act_window id="skurye_list" name="Sürücü Slotları" res_model="skurye.profile.lines" view_mode="tree,form" context="{}"/>
+    <menuitem id="skurye_zones" parent="skurye_root_menu" name="Sürücü Slotları" action="skurye_list" sequence="2"/>
+</odoo>

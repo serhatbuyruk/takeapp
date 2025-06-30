@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="satin_alma_tree" model="ir.ui.view">
+        <field name="name">satin_alma.profile.tree</field>
+        <field name="model">satin_alma.profile</field>
+        <field name="arch" type="xml">
+            <tree string="satin_alma">
+                <field name="name"/>
+                <field name="sequence"/>
+            </tree>
+        </field>
+    </record>  
+    <record id="satin_alma_form_view" model="ir.ui.view">
+        <field name="name">satin_alma.profile.form.view</field>
+        <field name="model">satin_alma.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>                     
+                    <group>
+                        <group collapsible="1">
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="satin_alma_kanban" model="ir.ui.view">
+        <field name="name">satin_alma.profile.kanban</field>
+        <field name="model">satin_alma.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" sample="1" default_order="sequence desc">
+                <field name="id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <div class="o_kanban_image_fill_left" t-attf-style="background-image: url(#{kanban_image('satin_alma.profile', 'satin_alma_image', record.id.raw_value)})" role="img"/>
+                         
+                            <div class="oe_kanban_details d-flex flex-column">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <strong>
+                                                <field name="name"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                   
+                                </strong>                                
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="satin_alma_search" model="ir.ui.view">
+        <field name="name">satin_alma.profile.search</field>
+        <field name="model">satin_alma.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_satin_alma_profile" model="ir.actions.act_window">
+        <field name="name">satin_alma</field>
+        <field name="res_model">satin_alma.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="satin_alma_root_menu" name="Satın Alma" web_icon="satin_alma,static/src/img/60.png"/>
+    <act_window id="satin_alma_list" name="Satın Alma" res_model="satin_alma.profile" view_mode="tree,form" context="{}"/>
+    <menuitem id="satin_alma_zones" parent="satin_alma_root_menu" name="Satın Alma" action="satin_alma_list" sequence="2"/>
+
+</odoo>

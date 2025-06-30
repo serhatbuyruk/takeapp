@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reports_user_1,Reports User,model_reports_profile,reports.reports_group_user,1,0,0,0
+access_reports_user_2,Reports Manager,model_reports_profile,reports.reports_group_manager,1,1,1,1
+access_reports_user_3,Reports Admin,model_reports_profile,reports.reports_group_admin,1,1,1,1
+access_reports_user_4,Reports Dealer,model_reports_profile,reports.reports_group_dealer,1,1,1,1
+access_reports_user_5,Reports Access Rigths Full Access,model_reports_profile,base.group_erp_manager,1,1,1,1
+access_reports_user_6,Reports Full Access,model_reports_profile,base.group_system,1,1,1,1

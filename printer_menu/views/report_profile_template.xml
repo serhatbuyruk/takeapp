@@ -1,0 +1,14 @@
+<odoo>
+    <template id="report_profile_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <h1>Printer Menu Profile Report</h1>
+                    <p>Name: <t t-esc="doc.name"/></p>
+                    <p>Description: <t t-esc="doc.description"/></p>
+                    <p>Created Date: <t t-esc="doc.create_date"/></p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

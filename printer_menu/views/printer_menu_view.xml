@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="printer_menu_tree" model="ir.ui.view">
+        <field name="name">printer_menu.profile.tree</field>
+        <field name="model">printer_menu.profile</field>
+        <field name="arch" type="xml">
+            <tree string="printer_menu" default_order="create_date desc">
+                <field name="name" />
+                <field name="sequence" optional="hide" />
+
+
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="printer_menu_form_view" model="ir.ui.view">
+        <field name="name">printer_menu.profile.form.view</field>
+        <field name="model">printer_menu.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <!--  <field name="printer_menu_image" widget="image" class="oe_avatar" /> -->
+                    <div class="oe_title mb24">
+                        <label for="name" />
+                        <h1>
+                            <field class="o_text_overflow" name="name" />
+                        </h1>
+                    </div>
+                    <!-- <group>
+                        <group>
+                            <field name="sequence" />
+                            <field name="visibility" />
+                            <field name="image_type" />
+                            <field name="title" />
+                            <field name="description" />
+                            <field name="url" />
+                            <field name="start_date" />
+                            <field name="end_date" />
+                            <field name="rates" attrs="{'invisible':[('image_type','!=','service')]}"/>                           
+                            <field name="price" />
+                            <field name="paid" />
+                            <field name="upload_date" />
+                            <field name="company_name" />
+                            <field name="topic" />
+                            <field name="target_group" />
+                        </group>
+                    </group> -->
+                    <footer>
+                        <button string="Test Print" type="object" name="action_test_print" class="btn-primary"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    
+    <!-- Sale Kısmı -->
+
+    <!--     <record id="view_sale_order_form" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <header>
+                <button string="Print Receipt" type="object" name="action_print_receipt" class="btn-primary" attrs="{'invisible': [('state', '!=', 'sale')]}"/>
+            </header>
+        </field>
+    </record>
+ -->
+
+    <!--  <record id="action_print_receipt" model="ir.ui.view">
+    <field name="name">sale.order.print.receipt</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+        <header position="inside">
+            <button name="action_print_receipt" type="object" string="Print Receipt" class="btn-primary"/>
+        </header>
+    </field>
+</record> -->
+
+    <record id="view_order_form_inherit_print_button" model="ir.ui.view">
+        <field name="name">sale.order.form.print.button</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_print_order_receipt" type="object" string="Fiş Yazdır" class="btn-primary" icon="fa-print"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="printer_menu_search" model="ir.ui.view">
+        <field name="name">printer_menu.profile.search</field>
+        <field name="model">printer_menu.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+
+
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="printer_menu" string="Name Group" domain="[]" context="{'group_by' : 'name'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_printer_menu_profile" model="ir.actions.act_window">
+        <field name="name">printer_menu</field>
+        <field name="res_model">printer_menu.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="printer_menu_root_menu" name="Printer Menu" web_icon="printer_menu,static/src/img/avatar.png" />
+    <act_window id="printer_menu_list" name="Printer Menu" res_model="printer_menu.profile" view_mode="tree,form" context="{}" />
+    <menuitem id="printer_menu_zones" parent="printer_menu_root_menu" name="Printer Menu" action="printer_menu_list" sequence="2" />
+
+</odoo>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Server Action: Seçili Kayıtları Çevir -->
+    <record id="action_translate_selected_lines" model="ir.actions.server">
+        <field name="name">Translate Selected Lines</field>
+        <field name="model_id" ref="model_translation_profile_lines"/>
+        <field name="binding_model_id" ref="model_translation_profile_lines"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.action_translate_selected()
+        </field>
+    </record>
+
+    <!-- Server Action: Tüm Boş Kayıtları Çevir -->
+    <record id="action_translate_all_empty" model="ir.actions.server">
+        <field name="name">Translate All Empty Lines</field>
+        <field name="model_id" ref="model_translation_profile_lines"/>
+        <field name="binding_model_id" ref="model_translation_profile_lines"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+empty_lines = model.search([('source', '!=', False), ('value', '=', False)])
+if empty_lines:
+    action = empty_lines.batch_translate()
+else:
+    raise UserError("No empty translation lines found!")
+        </field>
+    </record>
+
+    <!-- Wizard View (Opsiyonel) -->
+    <record id="view_translation_batch_wizard" model="ir.ui.view">
+        <field name="name">translation.batch.wizard.form</field>
+        <field name="model">translation.batch.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Batch Translation">
+                <header>
+                    <button name="action_start_translation"
+                            string="Start Translation"
+                            type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="action_close"
+                            string="Close"
+                            type="object"
+                            class="btn-secondary"
+                            attrs="{'invisible': [('state', '=', 'running')]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group attrs="{'invisible': [('state', '=', 'draft')]}">
+                        <field name="progress" widget="progressbar"/>
+                    </group>
+
+                    <group col="4">
+                        <field name="total_lines"/>
+                        <field name="translated_lines"
+                               attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                        <field name="failed_lines"
+                               attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                        <field name="skip_cache"/>
+                        <field name="delay_between"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Lines to Translate" attrs="{'invisible': [('state', '!=', 'draft')]}">
+                            <field name="line_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="lang" widget="many2one_avatar_language"/>
+                                    <field name="source"/>
+                                    <field name="value"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Translation Log" attrs="{'invisible': [('state', '=', 'draft')]}">
+                            <field name="log_text" widget="ace" options="{'mode': 'text'}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Wizard -->
+    <record id="action_translation_batch_wizard" model="ir.actions.act_window">
+        <field name="name">Batch Translation</field>
+        <field name="res_model">translation.batch.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menu item for batch operations -->
+    <menuitem id="menu_batch_translation_wizard"
+              name="Batch Translation"
+              parent="text_root_menu"
+              action="action_translation_batch_wizard"
+              sequence="50"/>
+
+    <!-- List view için buton ekle -->
+    <record id="view_translation_lines_tree_inherit_batch" model="ir.ui.view">
+        <field name="name">translation.profile.lines.tree.inherit.batch</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="inherit_id" ref="text_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <header>
+                    <button name="batch_translate"
+                            string="Translate Selected"
+                            type="object"
+                            class="btn-primary"
+                            confirm="This will translate all selected untranslated lines. Continue?"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

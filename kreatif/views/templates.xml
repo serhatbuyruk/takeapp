@@ -1,0 +1,138 @@
+<odoo>
+<!--     <template id="etkin_promosyon_kategoriler_page" name="Kategoriler">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>Kategoriler</h1>
+                <t t-if="data.get('error')">
+                    <p class="text-danger">
+                        <t t-esc="data.get('error')"/>
+                    </p>
+                </t>
+                <t t-else="">
+                    <ul>
+                        <t t-foreach="data.get('data', [])" t-as="kategori">
+                            <li>
+                                <a t-att-href="'/urunler?kategori_id=' + str(kategori.get('kategori_id'))">
+                                    <t t-esc="kategori.get('isim')"/>
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="etkin_promosyon_urunler_page" name="Ürünler">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>Ürünler</h1>
+                <t t-if="data.get('error')">
+                    <p class="text-danger">
+                        <t t-esc="data.get('error')"/>
+                    </p>
+                </t>
+                <t t-else="">
+                    <ul>
+                        <t t-foreach="data.get('data', [])" t-as="urun">
+                            <li>
+                                <strong>
+                                    <t t-esc="urun.get('urun_isim')"/>
+                                </strong> - 
+                                <t t-esc="urun.get('urun_fiyat')"/>
+ TL
+                            </li>
+                        </t>
+                    </ul>
+                </t>
+            </div>
+        </t>
+    </template> -->
+    <template id="api_template" name="API HTML Template">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>API Verisi</h1>
+                <!-- Hata Mesajını Kontrol Et -->
+                <t t-if="data.get('error')">
+                    <p class="text-danger">
+                        <t t-esc="data.get('error')"/>
+                    </p>
+                </t>
+                <!-- Veri Liste ise -->
+                <t t-elif="data.get('data')">
+                    <ul>
+                        <t t-foreach="data.get('data')" t-as="item">
+                            <li>
+                                <strong>Kategori ID:</strong>
+                                <t t-esc="item.get('kategori_id')"/>
+ - 
+                                <strong>Kategori Adı:</strong>
+                                <t t-esc="item.get('isim')"/>
+                            </li>
+                        </t>
+                    </ul>
+                </t>
+                <!-- Veri Yok -->
+                <t t-else="">
+                    <p>Geçerli bir veri bulunamadı.</p>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+
+
+
+<!-- <odoo>
+    <template id="api_template" name="API HTML Template">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>API Verisi</h1>
+                <t t-if="data.get('error')">
+                    <p class="text-danger">
+                        <t t-esc="data.get('error')"/>
+                    </p>
+                </t>
+                <t t-else="">
+                    <ul>
+                        <t t-foreach="data.get('data', [])" t-as="item">
+                            <li>
+                                <strong>Kategori ID:</strong> <t t-esc="item.get('kategori_id')"/> - 
+                                <strong>Kategori Adı:</strong> <t t-esc="item.get('kategori_adi')"/>
+                            </li>
+                        </t>
+                    </ul>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+ -->
+
+
+
+<!-- <odoo>
+    <template id="api_template" name="API Data Template">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>API Verisi</h1>
+                <t t-if="data.get('error')">
+                    <p class="text-danger">
+                        <t t-esc="data.get('error')"/>
+                    </p>
+                </t>
+                <t t-else="">
+                    <ul>
+                        <t t-foreach="data.get('data', [])" t-as="item">
+                            <li>
+                                <strong>Kategori ID:</strong> <t t-esc="item.get('kategori_id')"/> - 
+                                <strong>Kategori Adı:</strong> <t t-esc="item.get('kategori_adi')"/>
+                            </li>
+                        </t>
+                    </ul>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+ -->

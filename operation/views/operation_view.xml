@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="operation_tree" model="ir.ui.view">
+        <field name="name">operation.profile.tree</field>
+        <field name="model">operation.profile</field>
+        <field name="arch" type="xml">
+            <tree string="operation" default_order="create_date desc">
+                <field name="name"/>
+                <field name="scan_date"/>
+                <field name="entry_date"/>
+                <field name="exit_date"/>
+                <field name="working_hours"/>
+                <field name="working_minutes"/>
+            </tree>
+        </field>
+    </record>
+    <!--
+    <record model="ir.ui.view" id="operation_graph">
+        <field name="name">operation.profile.graph</field>
+        <field name="model">operation.profile</field>
+        <field name="arch" type="xml">
+            <graph string="operation">
+                <field name="name"/>
+                <field name="operation_degree" type="measure"/>
+            </graph>
+        </field>
+    </record>
+	-->
+    <record id="operation_form_view" model="ir.ui.view">
+        <field name="name">operation.profile.form.view</field>
+        <field name="model">operation.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <!--
+                    <field name="operation_image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title mb24">
+                        <label for="name"/>
+                        <h1>
+                            <field class="o_text_overflow" name="name"/>
+                        </h1>
+                    </div>
+                    -->
+                    <group>
+                        <group string="Operation" name="partner_id" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-user"/><label style="font-size: 1.2em; font-weight:bold;" for="partner_id"/></div>
+                            <h1>
+                              <field name="partner_id" placeholder="Operation Selection" style="padding: 10px; background-color: #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;  white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Scan Type" name="scan_type" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-user"/><label style="font-size: 1.2em; font-weight:bold;" for="scan_type"/></div>
+                            <h1>
+                              <field name="scan_type" placeholder="Scan Select" style="padding: 10px; background-color: #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;  white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Scan Date" name="scan_date" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-calendar"/><label style="font-size: 1.2em; font-weight:bold;" for="scan_date"/></div>
+                            <h1>
+                              <field name="scan_date" placeholder="Date Select" style="padding: 10px; background-color: #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;  white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Entry Date" name="entry_date" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-calendar"/><label style="font-size: 1.2em; font-weight:bold;" for="entry_date"/></div>
+                            <h1>
+                              <field name="entry_date" placeholder="Date Select" style="padding: 10px; background-color: #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;  white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Exit Date" name="exit_date" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-calendar"/><label style="font-size: 1.2em; font-weight:bold;" for="exit_date"/></div>
+                            <h1>
+                              <field name="exit_date" placeholder="Date Select" style="padding: 10px; background-color: #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;  white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Working Hours" name="working_hours" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-clock-o"/><label style="font-size: 1.2em; font-weight:bold;" for="working_hours"/></div>
+                            <h1>
+                              <field name="working_hours" placeholder="+90 555 550 55 55" style="padding: 10px; background-color: #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;  white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Details" groups="base.group_system,base.group_erp_manager">
+                            <field name="lat" groups="base.group_system,base.group_erp_manager"/>
+                            <field name="lng" groups="base.group_system,base.group_erp_manager"/>
+                            <field name="distance" groups="base.group_system,base.group_erp_manager"/>
+                            <field name="suspect_level" groups="base.group_system,base.group_erp_manager"/>
+                            <field name="parent_id" groups="base.group_system,base.group_erp_manager"/>
+                        </group>
+                        <!--
+                        <group string="TC" name="tc" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-id-card-o"/><label style="font-size: 1.2em; font-weight:bold;" for="tc"/></div>
+                            <h1>
+                              <field name="tc" placeholder="Tc No" style="padding: 10px; background-color: #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;  white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Email" name="email" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-envelope-o"/><label style="font-size: 1.2em; font-weight:bold;" for="email"/></div>
+                            <h1>
+                              <field name="email" placeholder="test@gmail.com" style="padding: 10px; background-color: #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;  white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        <group string="Mobile" name="mobile" collapsible="1">
+                          <div class="oe_title" style="width: 90%;">
+                            <div style="margin-bottom: 3px;"><i class="fa fa-2x fa-fw fa-mobile"/><label style="font-size: 1.2em; font-weight:bold;" for="mobile"/></div>
+                            <h1>
+                              <field name="mobile" placeholder="+90 555 550 55 55" style="padding: 10px; background-color: #f0f0f0; border-radius: 5px; border: none; outline: none; box-shadow: 0 0 10px #ccc; font-size: 16px; color: #333; width: 300px; overflow:hidden;  white-space:nowrap;  text-overflow: ellipsis;"/>
+                            </h1>
+                          </div>
+                        </group>
+                        -->
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="operation_kanban" model="ir.ui.view">
+        <field name="name">operation.profile.kanban</field>
+        <field name="model">operation.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" sample="1" default_order="sequence desc">
+                <field name="id"/>
+                <field name="card_owner"/>
+                <field name="card_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <div class="o_kanban_image_fill_left" t-attf-style="background-image: url(#{kanban_image('operation.profile', 'operation_image', record.id.raw_value)})" role="img"/>
+                            <!-- <t t-if="record.link_type.raw_value == '1'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('operation/static/src/img/1.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '2'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('operation/static/src/img/2.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '3'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('operation/static/src/img/3.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '4'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('operation/static/src/img/4.png')"/>
+                            </t>
+                            <t t-if="record.link_type.raw_value == '5'">
+                                <div class="o_kanban_image_fill_left" style="background-image:url('operation/static/src/img/5.png')"/>
+                            </t> -->
+                            <div class="oe_kanban_details d-flex flex-column">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <strong>
+                                                <field name="name"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row">
+                                        <div class="col-7">
+                                            <field name="text"/>
+                                        </div>
+                                    </div> -->
+                                </strong>
+                                <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
+                                <ul>
+                                    <li>
+                                        <strong>Visibility:</strong>
+                                        <field name="visibility" widget="boolean_toggle"/>
+                                    </li>
+                                </ul>
+                                <!-- <ul>
+                                    <li>
+                                        Son Güncelleyen:
+                                        <field name="last_action_user"/>
+                                    </li>
+                                </ul> -->
+                                <!--
+                                <div class="page-content page-container mb-2" id="page-content">
+                                    <div class="padding">
+                                        <div class="row">
+                                            <div class="col">
+                                                <button name="create_emergency_report" type="object" confirm="Are You Sure To Send Notification To Ahm" class="btn btn-primary btn-rounded btn-icon">
+                                                    <i class="fa fa-h-square"></i>
+                                                </button>
+                                                <button name="create_ambulance_report" type="object" confirm="Are You Sure To Send Notification To Ambulance" class="btn btn-primary btn-rounded btn-icon">
+                                                    <i class="fa fa-ambulance"></i>
+                                                </button>
+                                                <button name="create_fire_report" type="object" confirm="Are You Sure To Send Notification To Fire Department" class="btn btn-primary btn-rounded btn-icon">
+                                                    <i class="fa fa-fire-extinguisher"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                -->
+                                <!-- <div class="page-content page-container mb-2" id="page-content">
+                                    <div class="row mr-3">
+                                            <h2 class="col-3 ml-3">
+                                                <i class="fa fa-thermometer-full"><field name="temperature"/><span>°C</span></i>
+                                            </h2>
+                                            <h2 class="col-3 ml-5">
+                                                <i class="fa fa-tint"><field name="humidity"/><span>%</span></i>
+                                            </h2>
+                                    </div>
+                                </div>
+                                <div class="page-content page-container mb-2" id="page-content">
+                                    <div class="row mr-3">
+                                        <h2 class="col-3 ml-3">
+                                            <i class="fa fa-leaf"><field name="oxygen"/><span>%</span></i>
+                                        </h2>
+                                        <h2 class="col-3 ml-5">
+                                            <i class="fa fa-heartbeat"><field name="bpm"/><span>dk</span></i>
+                                        </h2>
+                                    </div>
+                                </div> -->
+                                <div class="row">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <button name="see_profile" type="object" class="btn-block rounded-pill btn btn-custom text-o-color-4" data-original-title="" title="" confirm="Profile View Will Be Tested Are You Sure?" style="border-width: 1px; border-style: solid; background-color: rgb(50, 70, 80);">View Profile</button>
+                                    </div>
+                                    <div class="pt-2 col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <button name="from_profile" type="object" class="btn-block rounded-pill btn btn-custom text-o-color-4" data-original-title="" title="" confirm="Are You Sure You Will Go To The Profile Editing Screen?" style="border-width: 1px; border-style: solid; background-color: rgb(50, 70, 80);">Edit Profile</button>
+                                    </div>
+                                </div>
+                                <!-- <div class="row pt-2">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_1_Active" type="object" class="btn btn-outline-success btn-block btn-lg" attrs="{'invisible': [('device_status_1', '!=', 'passive')]}">Kamerayı Devreye Al</button>
+                                            <button name="write_Link_Status_1_Passive" type="object" class="btn btn-outline-danger btn-block btn-lg" confirm="Kamera Devre Dışı Kalacak Emin Misiniz?" attrs="{'invisible': [('device_status_1', '!=', 'active')]}">Kamerayı Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-1">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline' and record.device_status_1.raw_value == 'active'">
+                                            <a  t-attf-href="http://{{ record.camera_ip.value }}">
+                                                <button name="open_link_camera" type="button" class="btn btn-outline-success btn-block btn-lg" confirm="Canlı İzleme Aktif Edilecek Emin Misiniz?" attrs="{'invisible': [('camera_ip', '==', False)]}">Canlı Kamera</button>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-2">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_2_Active" type="object" class="btn btn-outline-success btn-block btn-lg" confirm="Isı Kontrol Sistemi Aktif Edilecek Emin Misiniz?" attrs="{'invisible': [('device_status_2', '!=', 'passive')]}">Isıyı Devreye Al</button>
+                                            <button name="write_Link_Status_2_Passive" type="object" class="btn btn-outline-danger btn-block btn-lg" confirm="Isı Kontrol Sistemi Devre Dışı Kalacak Emin Misiniz?" attrs="{'invisible': [('device_status_2', '!=', 'active')]}">Isıyı Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-2">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_3_Active" type="object" class="btn btn-outline-success btn-block btn-lg" confirm="Dikkat!!! Uv Hastaya Ciddi Oranda Zarar Verir. İçeride Yatan Hasta Olmadığından Emin Misiniz?" attrs="{'invisible': ['|',('device_status', '!=', 'passive'),('device_status_3', '!=', 'passive')]}">Uv Devreye Al</button>
+                                            <button name="write_Link_Status_3_Passive" type="object" class="btn btn-outline-danger btn-block btn-lg" attrs="{'invisible': ['|',('device_status', '!=', 'passive'),('device_status_3', '!=', 'active')]}">Uv Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="row pt-1">
+                                    <div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3 col-lg-12 col-lg-offset-0">
+                                        <t t-if="record.live_status.raw_value != 'offline'">
+                                            <button name="write_Link_Status_4_Active" type="object" class="btn btn-outline-success btn-block btn-lg" confirm="Işık Aktif Edilecek Emin Misiniz?" attrs="{'invisible': [('device_status_4', '!=', 'passive')]}">Işığı Devreye Al</button>
+                                            <button name="write_Link_Status_4_Passive" type="object" class="btn btn-outline-danger btn-block btn-lg" confirm="Işık Devre Dışı Kalacak Emin Misiniz?" attrs="{'invisible': [('device_status_4', '!=', 'active')]}">Işığı Devre Dışı Bırak</button>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="o_row">
+                                    <span class="oe_kanban_partner_operation"/>
+                                </div> -->
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="operation_search" model="ir.ui.view">
+        <field name="name">operation.profile.search</field>
+        <field name="model">operation.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="email"/>
+                <field name="mobile"/>
+                <field name="tc"/>
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="operation" string="Operation" domain="[]" context="{'group_by' : 'partner_id'}"/>
+                </group>
+                <!-- <filter string="Archived" name="active" domain="[('active', '=', False)]"/> -->
+            </search>
+        </field>
+    </record>
+    <record id="action_operation_profile" model="ir.actions.act_window">
+        <field name="name">Operation</field>
+        <field name="res_model">operation.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="operation_root_menu" name="Operation" web_icon="operation,static/src/img/avatar.png"/>
+    <act_window id="operation_list" name="Operation" res_model="operation.profile" view_mode="tree,form" context="{}"/>
+    <menuitem id="operation_zones" parent="operation_root_menu" name="operation" action="operation_list" sequence="2"/>
+    <!-- <act_window id="operation_quotations" name="Transfer Request" res_model="sale.order" view_mode="tree,kanban,form,calendar,pivot,graph,activity" context="{}"/>
+    <menuitem id="operation_request" parent="operation_root_menu" name="Transfer Requests" action="operation_quotations" sequence="1"/>
+
+    <menuitem id="operation_general_settings" parent="operation_root_menu" name="General Settings" sequence="5" />
+    <menuitem id="operation_currency" parent="operation_general_settings" name="Currency Config" action="website_sale.website_product_pricelist3" sequence="9"/>
+    <menuitem id="operation_website_config" parent="operation_general_settings" name="Website Configration" action="website.action_website_configuration" sequence="11"/>
+    <menuitem id="operation_website_list" parent="operation_general_settings" name="Websites" action="website.action_website_list" sequence="10"/>
+    <menuitem id="operation_queries" parent="operation_general_settings" name="Transfer Queries" action="action_operation_profile" sequence="8"/>
+    <menuitem id="operation_pages" parent="operation_general_settings" name="Page List" action="website.action_website_pages_list" sequence="1"/>
+    <menuitem id="operation_city_menu" parent="operation_general_settings" name="Cities" action="action_city_profile" sequence="2"/>
+    <menuitem id="operation_car_menu" parent="operation_general_settings" name="Car List" action="action_car_profile" sequence="3"/>
+    <menuitem id="operation_extra_menu" parent="operation_general_settings" name="Extras" action="action_extra_profile" sequence="4"/>
+
+    <menuitem id="operation_marketing" name="Marketing" parent="operation_root_menu" sequence="3"/>
+    <menuitem id="operation_crm" parent="operation_marketing" name="Potential Customers" action="crm.crm_lead_all_leads"/>
+    <menuitem id="operation_livechat" parent="operation_marketing" name="Customer Live Chat" action="im_livechat.im_livechat_channel_action" />
+
+    <menuitem id="operation_statistics" parent="operation_root_menu" name="Web Statistics" sequence="4" />
+    <menuitem id="operation_visitors" parent="operation_statistics" name="Visitors" action="website.website_visitors_action"/>
+    <act_window id="operation_page_view_act" name="Page Views" res_model="website.track" view_mode="tree,graph" context="{'search_default_type_url': 1, 'create': False, 'edit': False, 'copy': False}"/>
+    <menuitem id="operation_page_views" parent="operation_statistics" name="Page Views" action="operation_page_view_act"/>
+    <menuitem id="operation_google" parent="operation_statistics" name="Google Analytics" action="website.backend_dashboard"/> -->
+    <!--
+	<menuitem id="operation_profile_menu" name="operation" action="action_operation_profile" parent="operation_sub_menu"/>
+	-->
+</odoo>

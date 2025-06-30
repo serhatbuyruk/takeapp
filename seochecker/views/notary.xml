@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--tree view of the notary model-->
+    <record id="notary_tree" model="ir.ui.view">
+        <field name="name">agency.notary.tree</field>
+        <field name="model">agency.notary</field>
+        <field name="arch" type="xml">
+            <tree string="Notarys">
+                <field name="name"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+    <!--form view of the notary model-->
+    <record id="notary_form" model="ir.ui.view">
+        <field name="name">agency.notary.form</field>
+        <field name="model">agency.notary</field>
+        <field name="arch" type="xml">
+            <form string="Notarys">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="product_template_notary_select" model="ir.ui.view">
+        <field name="name">res.partner.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <group name="language_prices" position="after">
+                <group name="notery" string="Notery" groups="base.group_system,base.group_erp_manager,account.group_account_invoice,purchase.group_warning_purchase,__export__.res_groups_65_9cb52629" autofocus="autofocus" widget="one2many" context="{'show_attribute': True}">
+                    <field name="notary_lines" widget="one2many" context="{'show_attribute': True}">
+                        <tree string="Notarys" editable="bottom">
+                            <field name="language" attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open':True,'no_create': True}"/>
+                            <field name="notary"/>
+                            <field name="description"/>
+                        </tree>
+                    </field>
+                </group>
+            </group>
+        </field>
+    </record>
+    <!-- <record id="res.partner.common.form" model="ir.ui.view">
+        <field name="name">res.partner.common.form.inherit</field>
+        <field name="model">res.partner.common.form</field>
+        <field name="inherit_id" ref="product.res.partner.common.form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@string='Product Name']" position="after">
+                <group name="notary_select" string="string">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!-- <record id="view_notary_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.common.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']/group" position="before">
+                <group col="2" colspan="2">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!--field ekleme-->
+    <!--
+    <record id="product_template_inherit" model="ir.ui.view">
+        <field name="name">res.partner.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <field name="image_1920" position="after">
+			<group>
+                <field name="from_id"/>
+                <field name="to_id"/>
+			</group>
+            </field>
+        </field>
+    </record>
+	-->
+    <!--action of the notary menu-->
+    <record id="action_notary_profile" model="ir.actions.act_window">
+        <field name="name">notary</field>
+        <field name="res_model">agency.notary</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="notary_root_menu" name="Notarys" web_icon="notary,static/src/img/avatar.png"/>
+    <act_window id="notary_list" name="Notarys" res_model="agency.notary" view_mode="tree,form" context="{}"/>
+    <menuitem id="notary_zones" parent="notary_root_menu" name="Notarys" action="notary_list" sequence="2"/>
+</odoo>

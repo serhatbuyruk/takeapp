@@ -1,0 +1,21 @@
+<odoo>
+    <menuitem id="menu_thermal_printer" name="Thermal Printer" parent="base.menu_custom" sequence="10"/>
+    <record id="view_thermal_printer_form" model="ir.ui.view">
+        <field name="name">printer_menu.profile.form</field>
+        <field name="model">printer_menu.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="vendor_id"/>
+                        <field name="product_id"/>
+                    </group>
+                    <footer>
+                        <button string="Print Test Receipt" type="object" name="action_test_receipt" class="btn-primary"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,35 @@
+<odoo>
+
+    <!--CRM-->
+    <menuitem id="crm_voip_crm_menu" name="CRM VoIP" parent="crm.crm_menu_root" sequence="60"/>
+    <menuitem id="crm_voip_crm_customer_menu" name="Customer" parent="crm_voip_crm_menu"
+              action="crm_voip_crm_customer_action" sequence="10"/>
+    <menuitem id="crm_voip_crm_customer_phone_menu" name="Customer Phone" parent="crm_voip_crm_menu"
+              action="crm_voip_crm_customer_phone_action" sequence="20"/>
+    <menuitem id="crm_voip_crm_customer_call_menu" name="Customer Call" parent="crm_voip_crm_menu"
+              action="crm_voip_crm_customer_call_action" sequence="30"/>
+    <menuitem id="crm_voip_crm_customer_source_menu" name="Customer Source" parent="crm_voip_crm_menu"
+              action="crm_voip_crm_customer_source_action" sequence="40"/>
+    <menuitem id="crm_voip_crm_questions_menu" name="Customer Questions" parent="crm_voip_crm_menu"
+              action="crm_voip_crm_questions_action" sequence="50"/>
+
+    <menuitem id="crm_voip_seller_menu" name="Seller" parent="crm_voip_crm_menu" action="crm_voip_seller_action"
+              sequence="100"/>
+
+    <!--Provider-->
+    <menuitem id="crm_voip_providers_menu" name="Providers" web_icon="crm_voip,static/description/provider_logo.png"
+              sequence="20" groups="crm_voip.crm_voip_manager"/>
+    <menuitem id="crm_voip_providers_pbx_menu" name="PBX" parent="crm_voip_providers_menu"
+              action="crm_voip_providers_pbx_action" sequence="10"/>
+    <menuitem id="crm_voip_sms_setting_menu" name="Sms" parent="crm_voip_providers_menu" sequence="20"/>
+
+
+    <!--SMS-->
+    <menuitem id="crm_voip_sms_services_menu" name="Sms Services" action="sms_services_action"
+              parent="crm_voip_sms_setting_menu" sequence="10"/>
+    <menuitem id="crm_voip_sms_log_menu" name="SMS Log" parent="crm_voip_sms_setting_menu"
+              action="crm_voip_sms_log_action" sequence="20"/>
+    <menuitem id="crm_voip_sms_answer_menu" name="Sms Answer" parent="crm_voip_sms_setting_menu"
+              action="crm_voip_sms_answer_action" sequence="30"/>
+
+</odoo>

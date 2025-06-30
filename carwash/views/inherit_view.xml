@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--bu bölüm üstteki filtreler gruplar ve
+    custom filtreler ayarları-->
+    <!--
+    <record id="view_sales_order_filter_inherit" model="ir.ui.view">
+        <field name="name">sale.order.search.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="transfer_name" string="transfer Name"/>
+                <filter string="transfer Record" name="transfer_record" domain="[('is_transfer','=', True)]"/>
+                <filter name="transfer_groupby" string="transfer" domain="[]" context="{'group_by':'is_transfer'}"/>
+            </xpath>
+        </field>
+    </record>
+	-->
+
+    <!--field
+    ekleme-->
+
+    <record id="product_template_only_form_view" model="ir.ui.view">
+        <field name="name">product.template.only.form.view.inherit.product.import</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <group name="product_type" string="Product type">
+                    <field name="product_type_selection" />
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page name="car_details" string="Car Details" attrs="{'invisible': [('product_type_selection', '!=', 'car')]}">
+                    <group name="car_details" string="Car Details">
+                        <field name="plate" />
+                        <field name="mark_model" />
+                        <field name="car_color" />
+                        <field name="car_year" />
+                        <field name="car_km" />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_normal_form_view" model="ir.ui.view">
+        <field name="name">product.product.only.form.view.inherit.product.import</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <group name="product_type" string="Product type">
+                    <field name="product_type_selection" />
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page name="car_details" string="Car Details" attrs="{'invisible': [('product_type_selection', '!=', 'car')]}">
+                    <group name="car_details" string="Car Details">
+                        <field name="plate" />
+                        <field name="mark_model" />
+                        <field name="car_color" />
+                        <field name="car_year" />
+                        <field name="car_km" />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record id="project_task_form_view_inherit_transportation" model="ir.ui.view">
+        <field name="name">project.task.form.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2" />
+        <field name="priority">36</field>
+        <field name="arch" type="xml">
+            <group name="main_group" position="before">
+                <div groups="__export__.res_groups_149_59ee5b94">
+                    <group string="Operation Details">
+                        <field name="partner_id" placeholder="Select Customer" readonly="1"/>
+                        <field name="patient_coach" placeholder="Select Patient Coach" readonly="1"/>
+                        <field name="ticket_purchase_date" placeholder="Select Ticket Date" readonly="1" />
+                        <field name="ticket_attachments" widget="many2many_binary" readonly="1"/>
+                        <field name="fligth_company" readonly="1"/>
+                        <label for="fligth_number" readonly="1"/>
+                        <div class="d-flex">
+                            <field name="fligth_number" readonly="1"/>
+                            <span class="o_form_label mx-3"> - </span>
+                            <button name="fligth_url_open" string="Show Fligth" type="object" class="oe_highlight" icon="fa-plane" />
+                        </div>
+                        <field name="arrival_datetime" placeholder="Select Coming Date and Time" readonly="1"/>
+                        <field name="hotel" placeholder="Antalya Hotel" readonly="1"/>
+                        <field name="departure_datetime" placeholder="Select Return Date and Time" readonly="1"/>
+                        <field name="driver" readonly="1"/>
+                    </group>
+                    <group string="Appointment">
+                        <field name="appointment_start_time" readonly="1"/>
+                        <field name="appointment_finish_time" readonly="1"/>
+                    </group>
+                </div>
+            </group>
+        </field>
+    </record> -->
+
+    <record id="res_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <field name="function" position="before">
+                <field name="passport_no" placeholder="Passport No" invisible="1"/>
+                <field name="passport_attachment" placeholder="Passport Attachment" widget="many2many_binary" invisible="1"/>
+                <field name="id_card_attachment" placeholder="ID Card Attachment" widget="many2many_binary" invisible="1"/>
+                <field name="driver_licence_attachment" placeholder="Driver Licence" widget="many2many_binary" invisible="1"/>
+                <field name="license_plate" />
+                <field name="car_brand" />
+                <field name="car_model" />
+                <field name="discount"/>
+
+            </field>
+            <!--sale
+            order form görünümünün içine buton koyma-->
+            <!--
+            <button name="preview_sale_order" position="after">
+                <button name="test" string="Test" type="object"/>
+            </button>
+            -->
+        </field>
+    </record>
+
+    <!--tree
+    view-->
+    <record id="product_product_tree_inherit" model="ir.ui.view">
+        <field name="name">product.template.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="plate" optional="show" />
+                <field name="mark_model" optional="hide" />
+                <field name="car_color" optional="hide" />
+                <field name="car_year" optional="hide" />
+                <field name="car_km" optional="hide" />
+            </field>
+        </field>
+    </record>
+
+    <!-- <record id="project_task_kanban_inherit" model="ir.ui.view">
+        <field name="name">project.task.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="partner_id" optional="show" />
+                <field name="visit" optional="show" />
+                <field name="stage_of_visit" optional="hide" />
+                <field name="patient_type" optional="hide" />
+                <field name="patient_coach" optional="hide" />
+                <field name="sale_person" optional="hide" />
+                <field name="source" optional="hide" />
+                <field name="ticket_purchase_date" optional="hide" />
+                <field name="fligth_company" optional="hide" />
+                <field name="fligth_number" optional="hide" />
+                <field name="arrival_datetime" optional="hide" />
+                <field name="hotel" optional="hide" />
+                <field name="sale_price" optional="hide" />
+                <field name="received_amount" optional="hide" />
+                <field name="departure_datetime" optional="hide" />
+                <field name="appointment_start_time" optional="show" />
+                <field name="appointment_finish_time" optional="hide" />
+                <field name="patient_coming_status" optional="hide" />
+                <field name="doctor" optional="hide" />
+                <field name="box" optional="hide" />
+                <field name="remaining_amount" optional="hide" />
+                <field name="brand" optional="hide" />
+                <field name="implant_number" optional="hide" />
+                <field name="lab" optional="hide" />
+                <field name="zirkon_number" optional="hide" />
+                <field name="other" optional="hide" />
+                <field name="treatment_type" optional="hide" />
+                <field name="planned_visit" optional="hide" />
+            </field>
+        </field>
+    </record> -->
+
+</odoo>

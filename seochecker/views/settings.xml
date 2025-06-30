@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--bu bölüm üstteki filtreler gruplar ve custom filtreler ayarları-->
+	<!--
+    <record id="view_sales_order_filter_inherit" model="ir.ui.view">
+        <field name="name">sale.order.search.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="transfer_name" string="transfer Name"/>
+                <filter string="transfer Record" name="transfer_record" domain="[('is_transfer','=', True)]"/>
+                <filter name="transfer_groupby" string="transfer" domain="[]" context="{'group_by':'is_transfer'}"/>
+            </xpath>
+        </field>
+    </record>
+	-->
+
+    <!--field ekleme-->
+    <!-- <record id="view_company_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="priority">1</field>
+            <xpath>
+                <field name="arch" type="xml">
+                    <field name="seo_audit_tool_rapid_api_key" />
+                    <field name="seo_audit_tool_rapid_api_host" />
+                    </field>
+                </field>
+            </xpath>
+    </record> -->
+
+    <record id="view_users_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page name="rapid_integration" string="Rapid Api">
+                    <group>
+                        <group string="Seo Audit Tool Api">
+                            <field name="seo_audit_tool_rapid_api_usage_counter"/>
+                            <field name="seo_audit_tool_rapid_api_credit_number"/>
+                            <field name="seo_audit_tool_rapid_api_key"/>
+                            <field name="seo_audit_tool_rapid_api_host"/>
+                        </group>
+                        <group string="Seo Api">
+                            <field name="seo_api_usage_counter"/>
+                            <field name="seo_api_credit_number"/>
+                            <field name="seo_api_key"/>
+                            <field name="seo_api_host"/>
+                        </group>
+                        <group string="Seo Checker">
+                            <field name="seo_checker_api_usage_counter"/>
+                            <field name="seo_checker_api_credit_number"/>
+                            <field name="seo_checker_api_key"/>
+                            <field name="seo_checker_api_host"/>
+                        </group>
+                        <group string="Seo Fast Extraction">
+                            <field name="seo_fast_extraction_usage_counter"/>
+                            <field name="seo_fast_extraction_credit_number"/>
+                            <field name="seo_fast_extraction_key"/>
+                            <field name="seo_fast_extraction_host"/>
+                        </group>
+                        <group string="Keyword Autosuggest">
+                            <field name="keyword_autosuggest_usage_counter"/>
+                            <field name="keyword_autosuggest_credit_number"/>
+                            <field name="keyword_autosuggest_key"/>
+                            <field name="keyword_autosuggest_host"/>
+                        </group>
+                        <group string="DA/PA and Sapm Api Score">
+                            <field name="da_pa_and_spam_usage_counter"/>
+                            <field name="da_pa_and_spam_credit_number"/>
+                            <field name="da_pa_and_spam_key"/>
+                            <field name="da_pa_and_spam_host"/>
+                        </group>
+                        <group string="Seox">
+                            <field name="seox_usage_counter"/>
+                            <field name="seox_credit_number"/>
+                            <field name="seox_key"/>
+                            <field name="seox_host"/>
+                        </group>
+                        <group string="Google Seo Research Ai">
+                            <field name="google_seo_keyword_research_usage_counter"/>
+                            <field name="google_seo_keyword_research_credit_number"/>
+                            <field name="google_seo_keyword_research_key"/>
+                            <field name="google_seo_keyword_research_host"/>
+                        </group>
+                        <group string="Keyword Suggestion Api">
+                            <field name="keyword_suggestion_api_usage_counter"/>
+                            <field name="keyword_suggestion_api_credit_number"/>
+                            <field name="keyword_suggestion_api_key"/>
+                            <field name="keyword_suggestion_api_host"/>
+                        </group>
+                        <group string="Google Api">
+                            <field name="google_api_usage_counter"/>
+                            <field name="google_api_credit_number"/>
+                            <field name="google_api_key"/>
+                            <field name="google_api_host"/>
+                        </group>
+                        <group string="Scraper-Tech">
+                            <field name="scraper_tech_usage_counter"/>
+                            <field name="scraper_tech_credit_number"/>
+                            <field name="scraper_tech_key"/>
+                            <field name="scraper_tech_host"/>
+                        </group>
+                        <group string="Regim Api">
+                            <field name="regim_usage_counter"/>
+                            <field name="regim_credit_number"/>
+                            <field name="regim_key"/>
+                            <field name="regim_host"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <menuitem id="city_root_menu" name="Settings Arrange" web_icon="city,static/src/img/avatar.png"/>
+    <act_window id="city_list" name="Cities" res_model="agency.city" view_mode="tree,form" context="{}"/>
+    <menuitem id="city_zones" parent="city_root_menu" name="Cities" action="city_list" sequence="2"/> -->
+</odoo>

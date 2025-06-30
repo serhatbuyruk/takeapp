@@ -1,0 +1,36 @@
+<odoo>
+    <record id="survey_user_input_form_custom_inherit" model="ir.ui.view">
+        <field name="name">survey.user_input.custom.form.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Kişisel Bilgiler">
+                    <field name="first_name"/>
+                    <field name="last_name"/>
+                    <field name="tc_number"/>
+                    <field name="phone_number"/>
+                    <field name="birth_date"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record id="survey_survey_survey_view_form_customm_inherit" model="ir.ui.view">
+    <field name="name">survey.survey_survey_view_form.customm.inherit</field>
+    <field name="model">survey.survey</field>
+    <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//sheet" position="inside">
+            <group string="Kişisel Bilgiler">
+                <field name="first_name"/>
+                <field name="last_name"/>
+                <field name="tc_number"/>
+                <field name="phone_number"/>
+                <field name="birth_date"/>
+            </group>
+        </xpath>
+    </field>
+</record> -->
+
+</odoo>

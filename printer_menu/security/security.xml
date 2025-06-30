@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.module.category" id="printer_menu_security_groups">
+            <field name="name">printer_menu</field>
+        </record>
+        <!-- Groups User -->
+        <record model="res.groups" id="printer_menu_group_user">
+            <field name="name">printer_menu User</field>
+            <field name="category_id" ref="printer_menu.printer_menu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('printer_menu.printer_menu_group_user'))]"/>
+        </record>
+
+        <!-- Groups Manager -->
+        <record model="res.groups" id="printer_menu_group_manager">
+            <field name="name">printer_menu Manager</field>
+            <field name="category_id" ref="printer_menu.printer_menu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('printer_menu.printer_menu_group_manager'))]"/>
+        </record>
+        
+        <!-- Groups Admin -->
+        <record model="res.groups" id="printer_menu_group_admin">
+            <field name="name">printer_menu Admin</field>
+            <field name="category_id" ref="printer_menu.printer_menu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('printer_menu.printer_menu_group_admin'))]"/>
+        </record>
+
+        <!-- Groups Dealer -->
+        <record model="res.groups" id="printer_menu_group_dealer">
+            <field name="name">printer_menu Dealer</field>
+            <field name="category_id" ref="printer_menu.printer_menu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('printer_menu.printer_menu_group_dealer'))]"/>
+        </record>
+
+        <!-- Groups Full Access Admin -->
+        <record model="res.groups" id="printer_menu_group_fullaccess">
+            <field name="name">printer_menu Full Access</field>
+            <field name="category_id" ref="printer_menu.printer_menu_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('printer_menu.printer_menu_group_fullaccess'))]"/>
+        </record>
+
+
+
+        <!-- Record Rules User -->
+        <record id="printer_menu_profile_user_rule" model="ir.rule">
+            <field name="name">printer_menu user can access printer_menu.profile (Autoronics)</field>
+            <field ref="printer_menu.model_printer_menu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('printer_menu.printer_menu_group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="printer_menu_profile_manager_rule" model="ir.rule">
+            <field name="name">printer_menu manager can access printer_menu.profile (Autoronics)</field>
+            <field ref="printer_menu.model_printer_menu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('printer_menu.printer_menu_group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="printer_menu_profile_admin_rule" model="ir.rule">
+            <field name="name">printer_menu admin can access printer_menu.profile (Autoronics)</field>
+            <field ref="printer_menu.model_printer_menu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('printer_menu.printer_menu_group_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="printer_menu_profile_dealer_rule" model="ir.rule">
+            <field name="name">printer_menu dealer can access printer_menu.profile (Autoronics)</field>
+            <field ref="printer_menu.model_printer_menu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('printer_menu.printer_menu_group_dealer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="printer_menu_profile_fullaccess_rule" model="ir.rule">
+            <field name="name">printer_menu fullaccess can access printer_menu.profile (Autoronics)</field>
+            <field ref="printer_menu.model_printer_menu_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('printer_menu.printer_menu_group_fullaccess'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

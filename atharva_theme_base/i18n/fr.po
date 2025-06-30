@@ -1,0 +1,1191 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* atharva_theme_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-21 10:57+0000\n"
+"PO-Revision-Date: 2023-07-21 10:57+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.pwa_main_events
+msgid ""
+"'use strict';\n"
+"        var base_cache_ver = 'base-cache-1';\n"
+"        var assets = ['/','/offline/page'];\n"
+"        self.addEventListener('install', function(ev) {\n"
+"            self.skipWaiting();\n"
+"            ev.waitUntil(\n"
+"                caches.open(base_cache_ver).then(cache =&gt;{\n"
+"                    cache.addAll(assets);\n"
+"                })\n"
+"            )\n"
+"        });\n"
+"        self.addEventListener('activate', function(ev) {\n"
+"            ev.waitUntil(\n"
+"                caches.keys().then(function(keys) {\n"
+"                    return Promise.all(keys.map(function(key) {\n"
+"                        if (key !== base_cache_ver) {\n"
+"                            return caches.delete(key);\n"
+"                        }\n"
+"                    }));\n"
+"                })\n"
+"            );\n"
+"        });\n"
+"        self.addEventListener('fetch', function(ev) {\n"
+"            if(ev.request.method != 'GET') {\n"
+"                return false;\n"
+"            }\n"
+"            var getUrl = new URL(ev.request.url);\n"
+"            var ajaxCall = ev.clientId;\n"
+"            var cssFiles = getUrl.href.includes('.css');\n"
+"            var jsFiles = getUrl.href.includes('.js');\n"
+"            var webClient = getUrl.href.includes('/web');\n"
+"            var manifest = getUrl.href.includes('/manifest.json');\n"
+"            var staticFiles = getUrl.href.includes('/static/src');\n"
+"            if(!cssFiles){\n"
+"                if(!jsFiles){\n"
+"                    if(!webClient){\n"
+"                        if(ajaxCall == \"\"){\n"
+"                            if(ev.request.method == \"GET\"){\n"
+"                                if(!manifest){\n"
+"                                    if(!staticFiles){\n"
+"                                        ev.respondWith(\n"
+"                                            fetch(ev.request).then(function (response) {\n"
+"                                                return response;\n"
+"                                            })\n"
+"                                            .catch(error =&gt; {\n"
+"                                                return caches.match('/offline/page');\n"
+"                                        }));\n"
+"                                    }\n"
+"                                }\n"
+"                            }\n"
+"                        }\n"
+"                    }\n"
+"                }\n"
+"            }\n"
+"        });"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_info_form_view
+msgid "<b>Note</b>: Select icon from"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_megamenus
+msgid "<i class=\"fa fa-pencil-square-o\"/> Configure Alan Mega Menu"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "<span class=\"fa fa-lg fa-globe\" title=\"PWA background color\"/>"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "<span class=\"fa fa-lg fa-globe\" title=\"PWA description\"/>"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "<span class=\"fa fa-lg fa-globe\" title=\"PWA icon\"/>"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "<span class=\"fa fa-lg fa-globe\" title=\"PWA name\"/>"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "<span class=\"fa fa-lg fa-globe\" title=\"PWA short name\"/>"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "<span class=\"fa fa-lg fa-globe\" title=\"PWA theme color\"/>"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_form
+msgid "<span class=\"o_stat_text\"> Products</span>"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_info_form_view
+msgid ""
+"<span class=\"o_stat_value\">\n"
+"                                    Design Dialog\n"
+"                                </span>"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__active
+msgid "Active"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__active_mega_tabs
+msgid "Active Megamenu Tabs"
+msgstr "Onglets actifs du mégamenu"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "Active Progressive Web Application"
+msgstr "Application Web progressive active"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.website_menus_form_view_inherit_website
+msgid "Add Tag"
+msgstr "Ajouter une étiquette"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__product_offer_ids
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__product_offer_ids
+msgid "Advance Information"
+msgstr "Informations préalables"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_configuration
+msgid "Alan Product Configuration"
+msgstr "Configuration du produit Alan"
+
+#. module: atharva_theme_base
+#: model:ir.actions.server,name:atharva_theme_base.ir_cron_data_frame_ir_actions_server
+#: model:ir.cron,cron_name:atharva_theme_base.ir_cron_data_frame
+msgid "Alan Snippet Data Frame Cleaner"
+msgstr "Alan Snippet Data Frame Cleaner"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "Atharva Progressive Web Application"
+msgstr "Application Web progressive Atharva"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields.selection,name:atharva_theme_base.selection__as_product_extra_info__types__attrib
+msgid "Attribute"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_b2b_mode
+msgid "B2B Mode"
+msgstr "Mode B2B"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_res_config_settings__pwa_bg_color
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__pwa_bg_color
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__hlt_menu_bg_color
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "Background Color"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_blog_post
+msgid "Blog Post"
+msgstr "Article de blog"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__product_brand_id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__product_brand_id
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.product_template_form_brand_add
+msgid "Brand"
+msgstr "Marque"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_brand_info
+msgid "Brand Info"
+msgstr "Informations sur la marque"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_form
+msgid "Brand Name"
+msgstr "Marque"
+
+#. module: atharva_theme_base
+#: model:ir.model.constraint,message:atharva_theme_base.constraint_as_product_brand_name_uniqe
+msgid "Brand name already exists.!"
+msgstr "Le nom de la marque existe déjà.!"
+
+#. module: atharva_theme_base
+#: model:ir.actions.act_window,name:atharva_theme_base.action_product_brand
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_tree
+msgid "Brands"
+msgstr "Marques"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__label_color
+msgid "Color"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__have_color_attribute
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__have_color_attribute
+msgid "Color Attribute"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_color_variant
+msgid "Color Variant"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_blog_post__cover_background
+msgid "Cover Background"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__create_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_ppg__create_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__create_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__create_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__create_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line__create_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__create_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame__create_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame_config__create_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__create_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_ppg__create_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__create_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__create_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__create_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line__create_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__create_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame__create_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame_config__create_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__description
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__short_description
+#: model:ir.model.fields,field_description:atharva_theme_base.field_res_config_settings__pwa_description
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__pwa_description
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_info_form_view
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "Description"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_as_product_tab__website_ids
+msgid "Description For specific website."
+msgstr "Description Pour un site Web spécifique."
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__product_tab_description
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__product_tab_description
+msgid "Description Tab"
+msgstr "Onglet Description"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__description
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__detail_description
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_form
+msgid "Detail Description"
+msgstr "Description détaillée"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_attribute__attribute_extra_info_id
+msgid "Details Information"
+msgstr "Détails Informations"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_info_form_view
+msgid "Dialog"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__display_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_ppg__display_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__display_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__display_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__display_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line__display_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__display_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame__display_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame_config__display_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_pricelist_item__show_timer
+msgid "Display Timer"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__doc_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__doc_name
+msgid "Document Name"
+msgstr "Nom du document"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__doc_attachments
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__doc_attachments
+msgid "Documents"
+msgstr "Documents"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_res_config_settings__is_pwa_active
+msgid "Enable PWA"
+msgstr "Activer PWA"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_website__is_pwa_active
+msgid "Enable PWA."
+msgstr "Activer PWA"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.website_menus_form_view_inherit_website
+msgid "Ex. fa-tag"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__hlt_menu_icon
+msgid "Fav Icon"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_info_form_view
+msgid "Font Awesome"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__hlt_menu_ft_col
+msgid "Font Color"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_info_form_view
+msgid "For example: write 'tags'"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_product_tab_line__sequence
+msgid "Gives the sequence order when displaying."
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__hlt_menu
+msgid "Highlight Menu"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__hover_image
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__hover_image
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_hover_image
+msgid "Hover Image"
+msgstr "Survoler l'image"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_ppg__id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line__id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame__id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame_config__id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__id
+msgid "ID"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__icon
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__icon
+#: model:ir.model.fields,field_description:atharva_theme_base.field_res_config_settings__pwa_big_image
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__pwa_big_image
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "Icon"
+msgstr "Icône"
+
+#. module: atharva_theme_base
+#. odoo-python
+#: code:addons/atharva_theme_base/models/pwa.py:0
+#, python-format
+msgid "Icon must be of square shape!"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__image_1920
+msgid "Image"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__image_1024
+msgid "Image 1024"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__image_128
+msgid "Image 128"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__image_256
+msgid "Image 256"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__image_512
+msgid "Image 512"
+msgstr ""
+
+#. module: atharva_theme_base
+#. odoo-python
+#: code:addons/atharva_theme_base/models/pwa.py:0
+#, python-format
+msgid "Image pixel should not less then 512x512!"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__types
+msgid "Information For"
+msgstr "Information pour"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "It is used in a display name in application pop-up"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "It is used in a display shortcut name in application pop-up"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "It is used to add description for PWA"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "It is used to customize background color of your PWA"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "It is used to customize color of your PWA"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line__label
+msgid "Label"
+msgstr "Étiqueter"
+
+#. module: atharva_theme_base
+#: model:ir.model.constraint,message:atharva_theme_base.constraint_as_product_label_line_product_tmpl_id
+msgid "Label website must be unique!"
+msgstr "Le site du label doit être unique !"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_configuration
+msgid "Labels"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs____last_update
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_ppg____last_update
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand____last_update
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info____last_update
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label____last_update
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line____last_update
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab____last_update
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame____last_update
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame_config____last_update
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__write_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_ppg__write_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__write_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__write_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__write_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line__write_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__write_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame__write_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame_config__write_uid
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__write_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_ppg__write_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__write_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__write_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__write_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line__write_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__write_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame__write_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame_config__write_date
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_login_popup
+msgid "Login Popup"
+msgstr "Fenêtre contextuelle de connexion"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__logo
+msgid "Logo"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.website_menus_form_view_inherit_website
+msgid "Mega-Menu Tabs"
+msgstr "Onglets de méga-menu"
+
+#. module: atharva_theme_base
+#: model:ir.actions.act_window,name:atharva_theme_base.megamenu_tabs_ppg
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__megamenu_tabs
+#: model:ir.ui.menu,name:atharva_theme_base.megamenu_tab_menu
+msgid "Megamenu Tabs"
+msgstr "Onglets du mégamenu"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.website_menus_form_view_inherit_website
+msgid "Menu Highlightor"
+msgstr "Surligneur de menu"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__is_tag_active
+msgid "Menu Tag"
+msgstr "Balise de menu"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_mini_cart
+msgid "Mini Cart"
+msgstr "Mini chariot"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame__name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame_config__name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_res_config_settings__pwa_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__pwa_name
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "Name"
+msgstr "Nom"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_as_product_label__name
+msgid "Name of the label"
+msgstr "Nom de l'étiquette"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_as_product_label_line__label
+msgid "Name of the product label"
+msgstr "Nom de l'étiquette du produit"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.offline_pwa
+msgid "No Internet Connection!"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.actions.act_window,help:atharva_theme_base.action_product_label_menu
+msgid "No Labels Available!"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.actions.act_window,help:atharva_theme_base.megamenu_tabs_ppg
+msgid "No Megamenu Tabs Available!"
+msgstr "Aucun onglet Megamenu disponible!"
+
+#. module: atharva_theme_base
+#: model_terms:ir.actions.act_window,help:atharva_theme_base.action_product_info_menu
+msgid "No offers Available!"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__products_count
+msgid "Number of products"
+msgstr "Nombre de produits"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_offer_timer
+msgid "Offer timer"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields.selection,name:atharva_theme_base.selection__as_product_label__label_option__option_1
+msgid "Option 1"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields.selection,name:atharva_theme_base.selection__as_product_label__label_option__option_2
+msgid "Option 2"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields.selection,name:atharva_theme_base.selection__as_product_label__label_option__option_3
+msgid "Option 3"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields.selection,name:atharva_theme_base.selection__as_product_label__label_option__option_4
+msgid "Option 4"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields.selection,name:atharva_theme_base.selection__as_product_label__label_option__option_5
+msgid "Option 5"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_ppg__name
+msgid "PPG"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_res_config_settings__is_pwa_active
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__is_pwa_active
+msgid "PWA"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid ""
+"Pixels of icon must be (512x512) as well as icon type should be of PNG "
+"Format"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_template_kanban_brand
+msgid "Price:"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_product_template
+#: model:ir.model.fields.selection,name:atharva_theme_base.selection__as_product_extra_info__types__offer
+msgid "Product"
+msgstr "Produit"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_accessory
+msgid "Product Accessory"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.actions.act_window,name:atharva_theme_base.action_product_info_menu
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_advance_info
+#: model:ir.ui.menu,name:atharva_theme_base.menu_action_product_info
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_configuration
+msgid "Product Advance Info"
+msgstr "Informations préalables sur le produit"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_alternative
+msgid "Product Alternative"
+msgstr "Alternative de produit"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_product_attribute
+msgid "Product Attribute"
+msgstr "Attribut de produit"
+
+#. module: atharva_theme_base
+#: model:ir.actions.act_window,name:atharva_theme_base.action_product_brand_kanban
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_brand
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.product_brand_search_form_view
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_form
+msgid "Product Brand"
+msgstr "Marque de produit"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_as_product_brand
+#: model:ir.ui.menu,name:atharva_theme_base.menu_product_brand
+msgid "Product Brands"
+msgstr "Marques de produits"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_product_pricelist_item
+msgid "Product Discount Countdown"
+msgstr "Règle des listes des prix"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_configuration
+msgid "Product Hover Image"
+msgstr "IMAGE DE SURVOL DU PRODUIT"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_as_product_label
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_label
+msgid "Product Label"
+msgstr "Étiquette du produit"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_product_tab_line
+msgid "Product Label Line"
+msgstr "Ligne d'étiquette de produit"
+
+#. module: atharva_theme_base
+#: model:ir.actions.act_window,name:atharva_theme_base.action_product_label_menu
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__pro_label_line_ids
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__pro_label_line_ids
+#: model:ir.ui.menu,name:atharva_theme_base.menu_action_product_label
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_configuration
+msgid "Product Labels"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_offer_timer
+msgid "Product Offer Timer"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_as_product_extra_info
+msgid "Product Offer and Attributes Information"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_pager
+msgid "Product Pager"
+msgstr "Téléavertisseur de produit"
+
+#. module: atharva_theme_base
+#: model:ir.actions.act_window,name:atharva_theme_base.action_ppg
+msgid "Product Per Page"
+msgstr "Produit par page"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_as_ppg
+msgid "Product Per Page Dropdown Shop"
+msgstr "Produit par page boutique déroulante"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__product_rating
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__product_rating
+msgid "Product Rating"
+msgstr "Évaluation du produit"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_reference
+msgid "Product Reference"
+msgstr "Référence de produit"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_sticky
+msgid "Product Stocky"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_configuration
+msgid "Product Tab"
+msgstr "Onglet Produit"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_as_product_tab
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__pro_tab_ids
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__pro_tab_ids
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_configuration
+msgid "Product Tabs"
+msgstr "ONGLETS PRODUITS"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_tag
+msgid "Product Tag"
+msgstr "Étiquette de produit"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__product_id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__product_id
+msgid "Product Template"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_product_template_attribute_value
+msgid "Product Template Attribute Value"
+msgstr "Valeur caratéristique du modèle produit"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line__product_tmpl_id
+msgid "Product Template Id"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_as_product_label_line
+msgid "Product Template Label Line"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_product_product
+msgid "Product Variant"
+msgstr "Variante de produit"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_product_variant_info
+msgid "Product Variant Info"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__brand_product_ids
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__product_ids
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_info_form_view
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_form
+msgid "Products"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_res_config_settings__pwa_small_image
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__pwa_small_image
+msgid "Pwa Small Image"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_quick_view
+msgid "Quick View"
+msgstr "Aperçu rapide"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_rating
+msgid "Rating"
+msgstr "Notation"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_megamenu_tabs__redirect
+msgid "Redirect Link"
+msgstr "Lien de redirection"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_as_product_brand__website_id
+msgid "Restrict publishing to this website."
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_scroll_top
+msgid "Scroll Top"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_as_product_label__label_text_color
+msgid ""
+"Select a Individual HTML Color code (e.g. #ff0000) to display the color of "
+"label text."
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_as_product_label__label_color
+msgid ""
+"Select a Individual HTML Color code (e.g. #ff0000) to display the color of "
+"label."
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_product_product__product_brand_id
+#: model:ir.model.fields,help:atharva_theme_base.field_product_template__product_brand_id
+msgid "Select a brand for this product"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__label_option
+msgid "Select the Option for label"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_ppg__sequence
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__sequence
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_extra_info__sequence
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__sequence
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_as_product_tab__sequence
+msgid "Sequence order for display."
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__set_image_mixin
+msgid "Set Image Mixin"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_product_product__pro_label_line_ids
+#: model:ir.model.fields,help:atharva_theme_base.field_product_template__pro_label_line_ids
+msgid "Set the product labels"
+msgstr "Définir les étiquettes des produits"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_product_product__pro_tab_ids
+#: model:ir.model.fields,help:atharva_theme_base.field_product_template__pro_tab_ids
+msgid "Set the product tabs"
+msgstr "Définir les onglets du produit"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_attribute_count
+msgid "Shop Attribute Counter"
+msgstr "Compteur d'attributs de magasin"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_attribute_search
+msgid "Shop Attribute Search"
+msgstr "Recherche par attribut de magasin"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_brand_filter
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_rating_filter
+msgid "Shop Brand Filter"
+msgstr "Magasiner le filtre de marque"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_clear_filter
+msgid "Shop Clear Filter"
+msgstr "Magasiner Effacer le filtre"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_label
+msgid "Shop Label"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_load_more
+msgid "Shop Load More"
+msgstr "Magasiner Charger plus"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_ppg
+#: model:ir.ui.menu,name:atharva_theme_base.menu_ppg
+msgid "Shop PPG"
+msgstr "Boutique PPG"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__shop_special_offer
+msgid "Shop Special Offer"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_stock_only
+msgid "Shop Stock Only"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_tag_filter
+msgid "Shop Tag Filter"
+msgstr "Filtrer les balises de la boutique"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__brand_description
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_form
+msgid "Short Description"
+msgstr "brève description"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_res_config_settings__pwa_short_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__pwa_short_name
+msgid "Short Name"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "Short name"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__is_active_doc
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__is_active_doc
+msgid "Show Document"
+msgstr "Afficher le document"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_similar_product
+msgid "Similar Product"
+msgstr "Produit similaire"
+
+#. module: atharva_theme_base
+#: model:ir.actions.act_window,name:atharva_theme_base.as_snippet_frame_action
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame__snippet_frame
+#: model:ir.ui.menu,name:atharva_theme_base.menu_as_snippet_frame
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_snippet_frame_view_form
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_snippet_frame_view_tree
+msgid "Snippet Frame"
+msgstr "Produit similaire"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame_config__snippet_frame_config
+msgid "Snippet Frame Config"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.actions.act_window,name:atharva_theme_base.as_snippet_frame_config_action
+#: model:ir.ui.menu,name:atharva_theme_base.menu_as_snippet_frame_config
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_snippet_frame_config_view_form
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_snippet_frame_config_view_tree
+msgid "Snippet Frame Configuration"
+msgstr "Configuration du cadre d'extrait de code"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_as_snippet_frame_config
+msgid "Snippet Frame Configure Data"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_snippet_frame__snippet_frame_html
+msgid "Snippet Frame Html"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_as_snippet_frame
+msgid "Snippet Frames"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__active_shop_stock_info
+msgid "Stock Info"
+msgstr "Informations boursières"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__tab_content
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__tab_content
+msgid "Tab Content"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_configuration
+msgid "Tab Description"
+msgstr "Description de l'onglet"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__tab_name
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__tab_name
+msgid "Tab Name"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__tag_bg_color
+msgid "Tag Background Color"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__tag_text
+msgid "Tag Text"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website_menu__tag_text_color
+msgid "Tag Text Color"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label__label_text_color
+msgid "Text Color"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_res_config_settings__pwa_theme_color
+#: model:ir.model.fields,field_description:atharva_theme_base.field_website__pwa_theme_color
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.res_config_settings_view_form_inherit_pwa
+msgid "Theme Color"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_product__is_unavailable_in_stock
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template__is_unavailable_in_stock
+msgid "Unavailable in Stock"
+msgstr "Non disponible en stock"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.as_product_configuration
+msgid "User Documents"
+msgstr "DOCUMENTS UTILISATEURS"
+
+#. module: atharva_theme_base
+#: model:ir.model.constraint,message:atharva_theme_base.constraint_as_ppg_name_uniqe
+msgid "Value already exists.!"
+msgstr "La valeur existe déjà.!"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_template_attribute_value__pv_thumbnail
+msgid "Variant Image"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_ir_ui_view
+msgid "View"
+msgstr "Vue"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_website
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_brand__website_id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_label_line__website_id
+#: model:ir.model.fields,field_description:atharva_theme_base.field_as_product_tab__website_ids
+#: model:ir.model.fields,field_description:atharva_theme_base.field_product_tab_line__website_ids
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_form
+msgid "Website"
+msgstr "Site web"
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_form
+msgid "Website Description"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model_terms:ir.ui.view,arch_db:atharva_theme_base.view_product_brand_form
+msgid "Website Filter"
+msgstr ""
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_website_menu
+msgid "Website Menu"
+msgstr "Menu du site web"
+
+#. module: atharva_theme_base
+#: model:ir.model,name:atharva_theme_base.model_as_megamenu_tabs
+msgid "Website Menu Tabs"
+msgstr "Onglets du menu du site Web"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_product_product__product_offer_ids
+#: model:ir.model.fields,help:atharva_theme_base.field_product_template__product_offer_ids
+msgid ""
+"You can display some offer or discount with product advance information "
+"object."
+msgstr ""
+
+#. module: atharva_theme_base
+#. odoo-python
+#: code:addons/atharva_theme_base/models/pwa.py:0
+#, python-format
+msgid "You can only upload PNG format image!"
+msgstr "Vous ne pouvez télécharger qu'une image au format PNG !"
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_product_tab_line__website_ids
+msgid "You can set the description in particular website."
+msgstr "Vous pouvez définir la description sur un site Web particulier."
+
+#. module: atharva_theme_base
+#: model:ir.model.fields,help:atharva_theme_base.field_product_attribute__attribute_extra_info_id
+msgid ""
+"You can show detail information about the attribute by selecting product "
+"advance information object."
+msgstr ""

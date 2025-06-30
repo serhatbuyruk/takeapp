@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.module.category" id="qrmenu_kurye_security_groups">
+            <field name="name">qrmenu_kurye</field>
+        </record>
+        <!-- Groups User -->
+        <record model="res.groups" id="qrmenu_kurye_group_user">
+            <field name="name">qrmenu_kurye User</field>
+            <field name="category_id" ref="qrmenu_kurye.qrmenu_kurye_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_user'))]"/>
+        </record>
+
+        <!-- Groups Manager -->
+        <record model="res.groups" id="qrmenu_kurye_group_manager">
+            <field name="name">qrmenu_kurye Manager</field>
+            <field name="category_id" ref="qrmenu_kurye.qrmenu_kurye_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_manager'))]"/>
+        </record>
+        
+        <!-- Groups Admin -->
+        <record model="res.groups" id="qrmenu_kurye_group_admin">
+            <field name="name">qrmenu_kurye Admin</field>
+            <field name="category_id" ref="qrmenu_kurye.qrmenu_kurye_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_admin'))]"/>
+        </record>
+
+        <!-- Groups Dealer -->
+        <record model="res.groups" id="qrmenu_kurye_group_dealer">
+            <field name="name">qrmenu_kurye Dealer</field>
+            <field name="category_id" ref="qrmenu_kurye.qrmenu_kurye_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_dealer'))]"/>
+        </record>
+
+        <!-- Groups Full Access Admin -->
+        <record model="res.groups" id="qrmenu_kurye_group_fullaccess">
+            <field name="name">qrmenu_kurye Full Access</field>
+            <field name="category_id" ref="qrmenu_kurye.qrmenu_kurye_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_fullaccess'))]"/>
+        </record>
+
+
+
+        <!-- Record Rules User -->
+        <record id="qrmenu_kurye_profile_user_rule" model="ir.rule">
+            <field name="name">qrmenu_kurye user can access qrmenu_kurye.profile (Autoronics)</field>
+            <field ref="qrmenu_kurye.model_qrmenu_kurye_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="qrmenu_kurye_profile_manager_rule" model="ir.rule">
+            <field name="name">qrmenu_kurye manager can access qrmenu_kurye.profile (Autoronics)</field>
+            <field ref="qrmenu_kurye.model_qrmenu_kurye_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="qrmenu_kurye_profile_admin_rule" model="ir.rule">
+            <field name="name">qrmenu_kurye admin can access qrmenu_kurye.profile (Autoronics)</field>
+            <field ref="qrmenu_kurye.model_qrmenu_kurye_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="qrmenu_kurye_profile_dealer_rule" model="ir.rule">
+            <field name="name">qrmenu_kurye dealer can access qrmenu_kurye.profile (Autoronics)</field>
+            <field ref="qrmenu_kurye.model_qrmenu_kurye_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_dealer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="qrmenu_kurye_profile_fullaccess_rule" model="ir.rule">
+            <field name="name">qrmenu_kurye fullaccess can access qrmenu_kurye.profile (Autoronics)</field>
+            <field ref="qrmenu_kurye.model_qrmenu_kurye_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('qrmenu_kurye.qrmenu_kurye_group_fullaccess'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

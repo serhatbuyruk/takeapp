@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_story_user_1,Story User,model_story_profile,story.story_group_user,1,0,0,0
+access_story_user_2,Story Manager,model_story_profile,story.story_group_manager,1,1,0,0
+access_story_user_3,Story Admin,model_story_profile,story.story_group_admin,1,1,1,1
+access_story_user_4,Story Dealer,model_story_profile,story.story_group_dealer,1,1,1,1
+access_story_user_5,Story Access Rigths Full Access,model_story_profile,base.group_erp_manager,1,1,1,1
+access_story_user_6,Story Settings Full Access,model_story_profile,base.group_system,1,1,1,1
+

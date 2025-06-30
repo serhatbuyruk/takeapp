@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="stoktakibi_tree" model="ir.ui.view">
+        <field name="name">stoktakibi.profile.tree</field>
+        <field name="model">stoktakibi.profile</field>
+        <field name="arch" type="xml">
+            <tree string="stoktakibi">
+                <field name="name"/>
+                <field name="sequence"/>
+            </tree>
+        </field>
+    </record>  
+    <record id="stoktakibi_form_view" model="ir.ui.view">
+        <field name="name">stoktakibi.profile.form.view</field>
+        <field name="model">stoktakibi.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>                     
+                    <group>
+                        <group collapsible="1">
+                            <field name="name"/>
+                            <field name="products"/>
+                            <field name="suppliers"/>                                              
+                            <field name="number"/>
+                            <field name="price"/>
+                            <field name="total"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="stoktakibi_kanban" model="ir.ui.view">
+        <field name="name">stoktakibi.profile.kanban</field>
+        <field name="model">stoktakibi.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" sample="1" default_order="sequence desc">
+                <field name="id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <div class="o_kanban_image_fill_left" t-attf-style="background-image: url(#{kanban_image('stoktakibi.profile', 'stoktakibi_image', record.id.raw_value)})" role="img"/>
+                         
+                            <div class="oe_kanban_details d-flex flex-column">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <strong>
+                                                <field name="name"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                   
+                                </strong>                                
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="stoktakibi_search" model="ir.ui.view">
+        <field name="name">stoktakibi.profile.search</field>
+        <field name="model">stoktakibi.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_stoktakibi_profile" model="ir.actions.act_window">
+        <field name="name">stoktakibi</field>
+        <field name="res_model">stoktakibi.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="stoktakibi_root_menu" name="Stok Takibi" web_icon="stoktakibi,static/src/img/47.png"/>
+    <act_window id="stoktakibi_list" name="Stok Takibi" res_model="stoktakibi.profile" view_mode="tree,form" context="{}"/>
+    <menuitem id="stoktakibi_zones" parent="stoktakibi_root_menu" name="Stok Takibi" action="stoktakibi_list" sequence="2"/>
+
+</odoo>

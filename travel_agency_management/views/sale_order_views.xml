@@ -1,0 +1,315 @@
+<odoo>
+    <!-- Arama Görünümü -->
+    <record id="view_order_search_travel" model="ir.ui.view">
+        <field name="name">sale.order.search.travel</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <search string="Search Sales Orders">
+                <field name="name" string="Order or Customer"/>
+                <field name="partner_id" operator="child_of"/>
+                <field name="ticket_number"/>
+                <field name="ticket_company_id"/>
+                <field name="hotel_company_id"/>
+                <field name="transfer_company_id"/>
+                <field name="insurance_company_id"/>
+                <field name="tour_company_id"/>
+                <field name="visa_company_id"/>
+                <separator/>
+                <filter name="my_orders" string="My Orders" domain="[('user_id', '=', uid)]"/>
+                <filter name="unconfirmed" string="Quotations" domain="[('state', 'in', ('draft', 'sent'))]"/>
+                <separator/>
+                <filter name="filter_order_date" string="Order Date" date="date_order"/>
+                <filter name="filter_departure_date" string="Departure Date" date="departure_date"/>
+                <filter name="filter_return_date" string="Return Date" date="return_date"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_customer" string="Customer" context="{'group_by': 'partner_id'}"/>
+                    <filter name="groupby_salesperson" string="Salesperson" context="{'group_by': 'user_id'}"/>
+                    <filter name="groupby_order_date" string="Order Date" context="{'group_by': 'date_order'}"/>
+                </group>
+           </search>
+        </field>
+    </record>
+
+    <!-- Liste Görünümü -->
+    <record id="view_order_tree_travel" model="ir.ui.view">
+        <field name="name">sale.order.tree.travel</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="state == 'cancel'" decoration-info="state in ('draft', 'sent')">
+                
+                <!-- Invisible fields required for logic -->
+                <field name="state" invisible="1"/>
+                <field name="invoice_status" invisible="1"/>
+                <field name="invoice_count" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="invoice_payment_state" invisible="1"/>
+
+                <!-- Visible Columns -->
+                <field name="state" invisible="1"/>
+                <field name="invoice_status" invisible="1"/>
+                <field name="invoice_count" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="name" string="Sales ID"/>
+                <field name="partner_id" string="Customer"/>
+                <field name="date_order" string="Sale Date"/>
+                <field name="departure_date" string="Flight Date"/>
+                <field name="total_purchase_price" string="Total Purchase" sum="Total"/>
+                <field name="total_sale_price" string="Total Sales" sum="Total"/>
+                <field name="total_profit" string="Total Profit" sum="Total"/>
+                <field name="ticket_fare" string="Ticket Fare" optional="hide"/>
+                <field name="ticket_tax" string="Ticket Tax" optional="hide"/>
+                <field name="ticket_purchase_total" string="Ticket Purchase Total" optional="hide"/>
+                <field name="ticket_sale_price" string="Ticket Sale" optional="hide"/>
+                <field name="hotel_purchase_price" string="Hotel Purchase" optional="hide"/>
+                <field name="hotel_sale_price" string="Hotel Sale" optional="hide"/>
+                <field name="transfer_purchase_price" string="Transfer Purchase" optional="hide"/>
+                <field name="transfer_sale_price" string="Transfer Sale" optional="hide"/>
+                <field name="insurance_purchase_price" string="Insurance Purchase" optional="hide"/>
+                <field name="insurance_sale_price" string="Insurance Sale" optional="hide"/>
+                <field name="tour_purchase_price" string="Tour Purchase" optional="hide"/>
+                <field name="tour_sale_price" string="Tour Sale" optional="hide"/>
+                <field name="visa_purchase_price" string="Visa Purchase" optional="hide"/>
+                <field name="visa_sale_price" string="Visa Sale" optional="hide"/>
+                <field name="other_purchase_price" string="Other Purchase" optional="hide"/>
+                <field name="other_sale_price" string="Other Sale" optional="hide"/>
+                <field name="state" string="Status" widget="badge" decoration-success="state == 'sale'" decoration-info="state in ('draft', 'sent')"/>
+
+                <!-- Optional Columns -->
+                <!-- ... other optional fields ... -->
+
+                <!-- === Buttons Column === -->
+                <button name="action_confirm"
+                        string="Confirm Sale"
+                        type="object"
+                        class="btn-info"
+                        attrs="{'invisible': [('state', 'not in', ('draft', 'sent'))]}"/>
+                <button name="%(sale.action_view_sale_advance_payment_inv)d"
+                        string="Create Invoice"
+                        type="action"
+                        class="btn-primary"
+                        attrs="{'invisible': ['|', ('state', '!=', 'sale'), ('invoice_status', 'in', ['invoiced', 'no'])]}"/>
+                
+                <!-- === DYNAMIC INVOICE BUTTONS USING 'in_payment' FOR PARTIAL === -->
+                <!-- Red Button for "Not Paid" -->
+                <button name="action_view_invoice"
+                        string="View Invoice"
+                        type="object"
+                        class="btn-danger"
+                        attrs="{'invisible': ['|', ('invoice_count', '=', 0), ('invoice_payment_state', '!=', 'not_paid')]}"/>
+
+                <!-- Yellow Button for "In Payment" (Partial) -->
+                <button name="action_view_invoice"
+                        string="View Invoice"
+                        type="object"
+                        class="btn-warning"
+                        attrs="{'invisible': ['|', ('invoice_count', '=', 0), ('invoice_payment_state', '!=', 'partial')]}"/>
+
+                <!-- Yellow Button for "In Payment" (Partial) -->
+                <button name="action_view_invoice"
+                        string="View Invoice"
+                        type="object"
+                        class="btn-warning"
+                        attrs="{'invisible': ['|', ('invoice_count', '=', 0), ('invoice_payment_state', '!=', 'in_payment')]}"/>
+
+                <!-- Green Button for "Paid" -->
+                <button name="action_view_invoice"
+                        string="View Invoice"
+                        type="object"
+                        class="btn-success"
+                        attrs="{'invisible': ['|', ('invoice_count', '=', 0), ('invoice_payment_state', '!=', 'paid')]}"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form Görünümü -->
+    <record id="view_order_form_travel" model="ir.ui.view">
+        <field name="name">sale.order.form.travel</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="replace">
+                <sheet>
+                    <header>
+                        <!-- <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice" type="action" class="btn-primary" attrs="{'invisible': ['|', ('state', '!=', 'sale'), ('invoice_status', 'in', ['invoiced', 'no'])]}"/>
+                        <button name="action_confirm" string="Confirm" class="btn-primary" type="object" attrs="{'invisible': [('state', 'not in', ['draft', 'sent'])]}"/>
+                        <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': [('state', 'in', ['done', 'cancel'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale,done"/> -->
+                    </header>
+                    <div class="oe_button_box" name="button_box">
+                         <button type="object"
+                            name="action_view_invoice"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o"
+                            attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <!--
+                        ========================================================================
+                        FINAL FIX: Re-added ALL invisible fields required for dependencies.
+                        ========================================================================
+                    -->
+                    <group invisible="1">
+                        <field name="order_line"/>
+                        <field name="invoice_status"/>
+                        <field name="is_abandoned_cart"/>
+                        <field name="cart_recovery_email_sent"/>
+                        <field name="company_id"/>
+                        <field name="user_id"/>
+                        <field name="team_id"/>
+                    </group>
+                    
+                    <group>
+                        <group>
+                            <field name="date_order" string="Order Date"/>
+                            <field name="departure_date"/>
+                            <field name="return_date"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"
+                                   context="{'search_default_customer': 1, 'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                            <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="currency_id" readonly="1" force_save="1"/>
+                        </group>
+                    </group>
+                    <group>
+                         <group>
+                            <field name="from_country_id"/>
+                            <field name="from_airport_id" domain="[('country_id', '=', from_country_id)]" options="{'no_create': True}"/>
+                        </group>
+                         <group>
+                            <field name="to_country_id"/>
+                            <field name="to_airport_id" domain="[('country_id', '=', to_country_id)]" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <group string="Ticket">
+                        <group>
+                            <field name="ticket_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                            <field name="ticket_purchase_date"/>
+                            <field name="ticket_adults"/>
+                            <field name="ticket_children"/>
+                            <field name="ticket_infants"/>
+                        </group>
+                        <group>
+                            <field name="ticket_number"/>
+                            <field name="ticket_note"/>
+                        </group>
+                    </group>
+                    <group string="Ticket Pricing">
+                        <group>
+                            <field name="ticket_fare"/>
+                            <field name="ticket_tax"/>
+                            <field name="ticket_purchase_total" string="Purchase Total"/>
+                        </group>
+                        <group>
+                            <field name="ticket_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            <label for="ticket_profit_percent"/>
+                            <div class="o_row">
+                                <field name="ticket_profit_percent"/>
+                                <button name="button_calculate_profit_percent" string="Calculate" type="object" class="oe_link"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <group string="Hotel">
+                        <group>
+                            <field name="hotel_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                            <field name="hotel_room_count"/>
+                            <field name="hotel_adults"/>
+                            <field name="hotel_children"/>
+                            <field name="hotel_infants"/>
+                        </group>
+                        <group>
+                            <label for="hotel_meal_breakfast" string="Meal Plan"/>
+                            <div>
+                                <field name="hotel_meal_breakfast" class="oe_inline"/><label for="hotel_meal_breakfast" string="Breakfast"/>
+                                <field name="hotel_meal_lunch" class="oe_inline"/><label for="hotel_meal_lunch" string="Lunch"/>
+                                <field name="hotel_meal_dinner" class="oe_inline"/><label for="hotel_meal_dinner" string="Dinner"/>
+                            </div>
+                            <field name="hotel_note"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group><field name="hotel_purchase_price"/><field name="hotel_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/></group>
+                        <group><field name="hotel_deadline"/></group>
+                    </group>
+
+                    <separator string="Transfer"/>
+                            <group>
+                                <field name="transfer_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                                <field name="transfer_type" widget="radio" options="{'horizontal': true}"/>
+                                <field name="transfer_from"/>
+                                <field name="transfer_to"/>
+                                <field name="transfer_datetime"/>
+                                <field name="transfer_deadline"/>
+                                <field name="transfer_note"/>
+                                <field name="transfer_purchase_price"/>
+                                <field name="transfer_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            </group>
+                            <separator string="Insurance"/>
+                            <group>
+                                <field name="insurance_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                                <field name="insurance_country_id"/>
+                                <field name="insurance_date"/>
+                                <field name="insurance_note"/>
+                                <field name="insurance_purchase_price"/>
+                                <field name="insurance_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            </group>
+                            <separator string="Tour Package"/>
+                            <group>
+                                <field name="tour_package_id"/>
+                                <field name="tour_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                                <field name="tour_deadline"/>
+                                <field name="tour_note"/>
+                                <field name="tour_purchase_price"/>
+                                <field name="tour_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            </group>
+                            <separator string="Visa"/>
+                            <group>
+                                <field name="visa_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                                <field name="visa_note"/>
+                                <field name="visa_purchase_price"/>
+                                <field name="visa_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            </group>
+                            <separator string="Other"/>
+                            <group>
+                                <field name="other_service_name"/>
+                                <field name="other_note"/>
+                                <field name="other_purchase_price"/>
+                                <field name="other_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            </group>
+
+                    <notebook>
+                        
+                    </notebook>
+                    
+                    <group class="oe_subtotal_footer oe_right" style="margin-top: 20px;">
+                        <field name="total_purchase_price"/>
+                        <field name="total_sale_price"/>
+                        <field name="total_profit" class="oe_subtotal_footer_separator"/>
+                    </group>
+                </sheet>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Pencere Aksiyonu -->
+    <record id="action_travel_sale_orders" model="ir.actions.act_window">
+        <field name="name">Sales</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_order_search_travel"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_order_tree_travel')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_order_form_travel')})]"/>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Create a new sales order!</p></field>
+    </record>
+</odoo>

@@ -1,0 +1,35 @@
+.o_kanban_view.o_kanban_ungrouped {
+/* 
+    background-color: #ffffff !important;
+
+    background-image: url(https://panel.xsarj.com/web/image/2438);
+    background-repeat: no-repeat;
+    background-position: center; */
+}
+
+.o_kanban_view .o_kanban_ungrouped .o_kanban_record {
+    /*  border: 1px; */
+    /* border-color: #000; */
+    /*  border-style: ridge; */
+
+}
+
+
+.o_kanban_view .o_kanban_record .o_kanban_record_title {
+    /* font-size: 14px;
+    font-weight: 800;
+    color: #ff0000; */
+
+}
+
+
+.o_kanban_view.o_kanban_ungrouped .o_kanban_record {
+
+    /* border: 2px solid rgba(255, 0, 0, .5);
+    border-color: #512e80;
+    border-style: ridge;
+    border-radius: 10px;
+    background-image: radial-gradient(circle at 43.41% 46.19%, #ffffff 0, #ffffff 25%, #f2f0f5 50%, #d8d4e2 75%, #c1bbd1 100%);
+ */
+
+}

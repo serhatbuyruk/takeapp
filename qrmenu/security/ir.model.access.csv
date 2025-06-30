@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_qrmenu_user_1,qrmenu User,model_qrmenu_profile,qrmenu.qrmenu_group_user,1,0,0,0
+access_qrmenu_user_2,qrmenu Manager,model_qrmenu_profile,qrmenu.qrmenu_group_manager,1,1,0,0
+access_qrmenu_user_3,qrmenu Admin,model_qrmenu_profile,qrmenu.qrmenu_group_admin,1,1,1,1
+access_qrmenu_user_4,qrmenu Dealer,model_qrmenu_profile,qrmenu.qrmenu_group_dealer,1,1,1,1
+access_qrmenu_user_5,qrmenu Access Rigths Full Access,model_qrmenu_profile,base.group_erp_manager,1,1,1,1
+access_qrmenu_user_6,qrmenu Settings Full Access,model_qrmenu_profile,base.group_system,1,1,1,1
+access_qrmenu_profile_public,access.qrmenu.profile.public,model_qrmenu_profile,,1,0,0,0
+

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="ttsigortaelementer_tree" model="ir.ui.view">
+        <field name="name">ttsigortaelementer.profile.tree</field>
+        <field name="model">ttsigortaelementer.profile</field>
+        <field name="arch" type="xml">
+            <tree string="ttsigortaelementer">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="elementer_selection" />
+            </tree>
+        </field>
+    </record>  
+    <record id="ttsigortaelementer_form_view" model="ir.ui.view">
+        <field name="name">ttsigortaelementer.profile.form.view</field>
+        <field name="model">ttsigortaelementer.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>                     
+                    <group>
+                        <group collapsible="1" style="flex-direction: column; width: 100%;">
+                            <group name="name" style="flex-direction: column; width: 100%;">
+                                <field name="name"/> 
+                                <field name="description"/>                            
+                                <field name="elementer_selection" widget="radio" options="{'horizontal': true}"/>                            
+                            </group> 
+                            
+                            <group name="oto" string="Araç Sigortalrı" attrs="{'invisible': [('elementer_selection', '!=', 'oto')]}" style="flex-direction: column; width: 100%;">
+                                <field name="ruhsat"/>
+                                <field name="phone"/>
+                                <field name="plaka"/>
+                                <field name="seri_no"/>
+                                <field name="marka"/>
+                                <field name="model"/>
+                            </group>
+
+                            <group name="konut" string="Konut" attrs="{'invisible': [('elementer_selection', '!=', 'konut')]}" style="flex-direction: column; width: 100%;">
+                               
+                                <field name="konutselection" widget="radio" options="{'horizontal': true}"/>      
+                               
+                                <group name="dask" string="Dask" attrs="{'invisible': [('konutselection', '!=', 'dask')]}" style="flex-direction: column; width: 100%;">
+                                    <field name="dask_tc"/>
+                                    <field name="dask_adress"/>
+                                    <field name="dask_daire_metrekare"/>
+                                    <field name="dask_bina_yas"/> 
+                                    <field name="dask_bina_kat_adet"/>
+                                    <field name="dask_bina_kat"/> 
+                                </group>   
+
+                                <group name="sbinasigortasi" string="Sadece Bina Sigortası" attrs="{'invisible': [('konutselection', '!=', 'sbinasigortasi')]}" style="flex-direction: column; width: 100%;">
+                                    <field name="bina_tc"/>
+                                    <field name="bina_adress"/>
+                                    <field name="bina_daire_metrekare"/>
+                                    <field name="bina_yas"/> 
+                                    <field name="bina_kat_adet"/>
+                                    <field name="bina_kat"/> 
+                                    
+                                </group>
+
+                                <group name="sesyasigortasi" string="Sadece Eşya Sigortası" attrs="{'invisible': [('konutselection', '!=', 'sesyasigortasi')]}" style="flex-direction: column; width: 100%;">
+                                    <field name="esya_tc"/>
+                                    <field name="esya_adress"/>
+                                    <field name="esya_daire_metrekare"/>
+                                    <field name="esya_bina_yas"/> 
+                                    <field name="esya_bina_kat_adet"/>
+                                    <field name="esya_bina_kat"/>  
+                                    <field name="esya_raic_bedel"/> 
+                                </group>
+
+                                <group name="konutpaketsigortasi" string="Konut Paket Sigortası(Herşe dahil pakit)" attrs="{'invisible': [('konutselection', '!=', 'konutpaketsigortasi')]}" style="flex-direction: column; width: 100%;">
+                                    <field name="paket_tc"/>
+                                    <field name="paket_adress"/>
+                                    <field name="paket_daire_metrekare"/>
+                                    <field name="paket_bina_yas"/> 
+                                    <field name="paket_bina_kat_adet"/>
+                                    <field name="paket_bina_kat"/>  
+                                    <field name="paket_raic_bedel"/>                                      
+                                </group>
+                                 
+                            </group>
+                            <group name="isyeri" string="iş Yeri" attrs="{'invisible': [('elementer_selection', '!=', 'isyeri')]}" style="flex-direction: column; width: 100%;">
+                                <field name="is_tc"/>
+                                <field name="is_adress"/>
+                                <field name="is_daire_metrekare"/>
+                                <field name="is_bina_yas"/> 
+                                <field name="is_bina_kat_adet"/>
+                                <field name="is_bina_kat"/>  
+                                <field name="is_kira_mal_sahibi"/> 
+                                <field name="is_ne_is_yapiyor"/> 
+                                <field name="is_satmak_istedigi_mal"/> 
+                                <field name="is_demirbas_bedeli"/> 
+                                <field name="is_guvenlik_onlemleri"/> 
+                                <field name="is_yangin_onlemleri"/>
+                                <field name="is_calisan_sayisi"/>
+                            </group>
+
+                                
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ttsigortaelementer_kanban" model="ir.ui.view">
+        <field name="name">ttsigortaelementer.profile.kanban</field>
+        <field name="model">ttsigortaelementer.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" sample="1" default_order="sequence desc">
+                <field name="id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <div class="o_kanban_image_fill_left" t-attf-style="background-image: url(#{kanban_image('ttsigortaelementer.profile', 'ttsigortaelementer_image', record.id.raw_value)})" role="img"/>
+                         
+                            <div class="oe_kanban_details d-flex flex-column">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <strong>
+                                                <field name="name"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                   
+                                </strong>                                
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="ttsigortaelementer_search" model="ir.ui.view">
+        <field name="name">ttsigortaelementer.profile.search</field>
+        <field name="model">ttsigortaelementer.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ttsigortaelementer_profile" model="ir.actions.act_window">
+        <field name="name">ttsigortaelementer</field>
+        <field name="res_model">ttsigortaelementer.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="ttsigortaelementer_root_menu" name="Elementer" web_icon="ttsigortaelementer,static/src/img/58.png"/>
+    <act_window id="ttsigortaelementer_list" name="Elementer" res_model="ttsigortaelementer.profile" view_mode="tree,form" context="{}"/>
+    <menuitem id="ttsigortaelementer_zones" parent="ttsigortaelementer_root_menu" name="Elementer" action="ttsigortaelementer_list" sequence="2"/>
+
+</odoo>

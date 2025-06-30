@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_citizenships_user_1,Citizenships User,model_citizenships_profile,citizenships.citizenships_group_user,1,0,0,0
+access_citizenships_user_2,Citizenships Manager,model_citizenships_profile,citizenships.citizenships_group_manager,1,1,1,1
+access_citizenships_user_3,Citizenships Admin,model_citizenships_profile,citizenships.citizenships_group_admin,1,1,1,1
+access_citizenships_user_4,Citizenships Dealer,model_citizenships_profile,citizenships.citizenships_group_dealer,1,1,1,1
+access_citizenships_user_5,Citizenships Access Rigths Full Access,model_citizenships_profile,base.group_erp_manager,1,1,1,1
+access_citizenships_user_6,Citizenships Settings Full Access,model_citizenships_profile,base.group_system,1,1,1,1
+access_customer_payment_lines_user_1,Customer Payment Lines Full Access,model_customer_payment_lines,base.group_user,1,1,1,1
+access_documents_tracker_lines_user_1,Documents Tracker Lines Full Access,model_documents_tracker_lines,base.group_user,1,1,1,1
+access_documents_tracker_user_1,Documents Tracker Full Access,model_documents_tracker,base.group_user,1,1,1,1

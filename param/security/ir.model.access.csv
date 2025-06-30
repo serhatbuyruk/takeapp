@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_param_admin,Param Admin,model_param_profile,base.group_system,1,1,1,1
+access_param_user,Param User,model_param_profile,base.group_user,1,0,0,0

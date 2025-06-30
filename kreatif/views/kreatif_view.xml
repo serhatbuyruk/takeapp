@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>    
+    <record id="kreatif_tree" model="ir.ui.view">
+        <field name="name">kreatif.profile.tree</field>
+        <field name="model">kreatif.profile</field>
+        <field name="arch" type="xml">
+            <tree string="kreatif" default_order="create_date desc">
+                <field name="name" />
+                <field name="sequence" />
+                <field name="image_type" />
+                <field name="title" />
+                <field name="description" />
+                <field name="upload_date" />
+                <field name="start_date" />
+                <field name="end_date" />
+                <field name="paid" />
+            </tree>
+        </field>
+    </record>
+    <record id="kreatif_form_view" model="ir.ui.view">
+        <field name="name">kreatif.profile.form.view</field>
+        <field name="model">kreatif.profile</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="kreatif_image" widget="image" class="oe_avatar" />
+                    <div class="oe_title mb24">
+                        <label for="name" />
+                        <h1>
+                            <field class="o_text_overflow" name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sequence" />
+                            <field name="visibility" />
+                            <field name="image_type" />
+                            <field name="title" />
+                            <field name="description" />                        
+                            <field name="start_date" />
+                            <field name="end_date" />
+                            
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="kreatif_search" model="ir.ui.view">
+        <field name="name">kreatif.profile.search</field>
+        <field name="model">kreatif.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="title" />
+                <field name="description" />
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="kreatif" string="Name Group" domain="[]"
+                        context="{'group_by' : 'name'}" />
+                </group>                 
+            </search>
+        </field>
+    </record>
+    <record id="action_kreatif_profile" model="ir.actions.act_window">
+        <field name="name">kreatif</field>
+        <field name="res_model">kreatif.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="kreatif_root_menu" name="kreatif" web_icon="kreatif,static/src/img/avatar.png" />
+    <act_window id="kreatif_list" name="kreatif" res_model="kreatif.profile" view_mode="tree,form"
+        context="{}" />
+    <menuitem id="kreatif_zones" parent="kreatif_root_menu" name="kreatif" action="kreatif_list"
+        sequence="2" />
+
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_voip_crm_call_wizard" model="ir.ui.view">
+            <field name="name">crm_voip.crm.call_wizard.form</field>
+            <field name="model">crm_voip.crm.call_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Call Phone Wizard">
+                    <sheet>
+                        <group>
+                            <field name="pbx_id" options="{'no_create':True,'no_edit':True,'no_open':True}"/>
+                            <field name="seller_id" options="{'no_create':True,'no_edit':True,'no_open':True}"/>
+                            <field name="internal_num"/>
+                            <field name="phone_id" options="{'no_create':True,'no_edit':True,'no_open':True}"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Call" name="call_phone"
+                                icon="fa-phone" class="btn-success"
+                                type="object"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

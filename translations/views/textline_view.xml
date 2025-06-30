@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--tree view of the text model-->
+    <record id="text_tree" model="ir.ui.view">
+        <field name="name">text.profile.tree</field>
+        <field name="model">text.profile</field>
+        <field name="arch" type="xml">
+            <tree string="Cities">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--form view of the text model-->
+    <record id="text_form" model="ir.ui.view">
+        <field name="name">text.profile.form</field>
+        <field name="model">text.profile</field>
+        <field name="arch" type="xml">
+            <form string="Cities">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="text_line_tree" model="ir.ui.view">
+        <field name="name">translation.profile.lines.tree</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <tree string="Lines">
+                <field name="sequence" invisible="1"/>
+                <field name="parent_id" optional="hide"/>
+                <field name="name" optional="hide"/>
+                <field name="lang" optional="show"/>
+                <field name="source" optional="show"/>
+                <field name="value" optional="show"/>
+                <field name="aciklama" optional="hide"/>
+                <button name="translate_text" type="object" string="Translate" class="btn-primary" icon="fa-globe"/>
+                <button name="save_text" type="object" string="Save" class="btn-primary" icon="fa-floppy-o"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="text_line_form" model="ir.ui.view">
+        <field name="name">translation.profile.lines.form</field>
+        <field name="model">translation.profile.lines</field>
+        <field name="arch" type="xml">
+            <form string="Translation Lines">
+                <header>
+                    <button name="translate_text" type="object" string="Translate" class="btn-primary" icon="fa-globe"/>
+                    <button name="save_text" type="object" string="Save" class="btn-primary" icon="fa-floppy-o"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="sequence" invisible="1"/>
+                        <field name="parent_id" optional="hide"/>
+                        <field name="name"/>
+                        <field name="key"/>
+                        <field name="xml_id"/>
+                        <field name="view_type"/>
+                        <field name="lang"/>
+                        <field name="source"/>
+                        <field name="value"/>
+                        <field name="aciklama"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="translation_text_tree" model="ir.ui.view">
+        <field name="name">ir.ui.view.inherit</field>
+        <field name="model">ir.ui.view</field>
+        <field name="inherit_id" ref="base.view_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='inherit_children']" position="after">
+                <page name="text_lines_page" string="Text Lines">
+                    <group>
+                        <group>
+                            <button name="get_all_translations" type="object" string="Get Translations"
+                                    class="btn-primary" icon="fa-globe"/>
+                            <button name="translate_all" type="object" string="Translate All" class="btn-primary"
+                                    icon="fa-globe"/>
+                        </group>
+                    </group>
+                    <field name="text_profile_lines" widget="one2many">
+                        <tree string="Sipariş Satırları" editable="bottom">
+                            <field name="sequence" invisible="1"/>
+                            <field name="parent_id" optional="hide"/>
+                            <field name="name" optional="hide"/>
+                            <field name="lang" optional="show"/>
+                            <field name="source" optional="show"/>
+                            <field name="value" optional="show"/>
+                            <field name="aciklama" optional="hide"/>
+                            <button name="translate_text" type="object" string="Translate" class="btn-primary"
+                                    icon="fa-globe"/>
+                            <button name="save_text" type="object" string="Save" class="btn-primary"
+                                    icon="fa-floppy-o"/>
+                            <!-- <field name="start_date" optional="hide"/>
+                            <field name="end_date" optional="hide"/>
+                            <field name="kurye_yoklamasi" optional="hide"/>
+                            <field name="gecikme_durumu" optional="hide"/>
+                            <field name="gecikme_dakikasi" optional="hide"/>
+                            <field name="erken_kapatma" optional="hide"/>
+                            <field name="bitise_kalan_dakika" optional="hide"/> -->
+                            <!-- <field name="currency_id"/>
+                            <field name="date"/>
+                            <field name="description"/>
+                            <field name="customer_text_status"/>
+                            <button readonly="True" string="" class="oe_inline oe_stat_button"
+                                icon="/web/content/2566?download=true"
+                                attrs="{'invisible': [('customer_text_status', '!=', 'paid')]}" type="object"
+                                name="from_profile" />
+                            <button readonly="True" string="" class="oe_inline oe_stat_button"
+                                icon="/web/content/2565?download=true"
+                                attrs="{'invisible': [('customer_text_status', '!=', 'not_paid')]}" type="object"
+                                name="from_profile" />
+                            <button readonly="True" string="" class="oe_inline oe_stat_button"
+                                icon="/web/content/2565?download=true"
+                                attrs="{'invisible': [('customer_text_status', '!=', 'partial')]}" type="object"
+                                name="from_profile" /> -->
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ir_model_fields_text_tree_inherit" model="ir.ui.view">
+        <field name="name">ir.model.fields.inherit</field>
+        <field name="model">ir.model.fields</field>
+        <field name="inherit_id" ref="base.view_model_fields_tree"/>
+        <field name="arch" type="xml">
+            <field name="relation" position="after">
+                <button name="translate_text" type="object" string="Translate" class="btn-primary" icon="fa-globe"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_translate_field_server" model="ir.actions.server">
+        <field name="name">Translate Field</field>
+        <field name="model_id" ref="base.model_ir_model_fields"/>
+        <field name="binding_model_id" ref="base.model_ir_model_fields"/>
+        <field name="state">code</field>
+        <field name="code">
+            env['ir.model.fields'].browse(env.context.get('active_ids')).action_translate_selected_fields()
+        </field>
+    </record>
+<record id="action_translate_selected_lines" model="ir.actions.server">
+    <field name="name">Translate Selected</field>
+    <field name="model_id" ref="model_text_profile_lines"/>
+    <field name="binding_model_id" ref="model_text_profile_lines"/>
+    <field name="state">code</field>
+    <field name="code">
+records.action_translate_selected()
+    </field>
+</record>
+    <act_window id="text_lines_list" name="Translates" res_model="translation.profile.lines" view_mode="tree,form"
+                context="{'group_by': 'name'}"/>
+    <menuitem id="text_root_menu" name="Translates" web_icon="translations,static/src/img/translate.png"/>
+    <menuitem id="text_zones" parent="text_root_menu" name="Translates" action="text_lines_list" sequence="2"/>
+    <!-- <record id="translation.profile.common.form" model="ir.ui.view">
+        <field name="name">translation.profile.common.form.inherit</field>
+        <field name="model">translation.profile.common.form</field>
+        <field name="inherit_id" ref="product.translation.profile.common.form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@string='Product Name']" position="after">
+                <group name="text_select" string="string">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!-- <record id="view_text_form_inherit" model="ir.ui.view">
+        <field name="name">translation.profile.common.form.inherit</field>
+        <field name="model">translation.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']/group" position="before">
+                <group col="2" colspan="2">
+                    <field name="from_id"/>
+                    <field name="to_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+    <!--field ekleme-->
+    <!--
+    <record id="product_template_inherit" model="ir.ui.view">
+        <field name="name">translation.profile.inherit</field>
+        <field name="model">translation.profile</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <field name="image_1920" position="after">
+			<group>
+                <field name="from_id"/>
+                <field name="to_id"/>
+			</group>
+            </field>
+        </field>
+    </record>
+	-->
+    <!--action of the text menu-->
+    <!-- <record id="action_text_profile" model="ir.actions.act_window">
+        <field name="name">text</field>
+        <field name="res_model">text.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="text_root_menu" name="Cities" web_icon="text,static/src/img/avatar.png"/>
+    <act_window id="text_list" name="Cities" res_model="text.profile" view_mode="tree,form" context="{}"/>
+    <menuitem id="text_zones" parent="text_root_menu" name="Cities" action="text_list" sequence="2"/> -->
+</odoo>

@@ -1,0 +1,272 @@
+<div style=" min-height: 600px; width: 100%; padding: 15px; position: relative;">
+    <!-- TITLE BAR -->
+    <div
+            style=" padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <div style="color: #7372c9; font-size: 14px; font-family: 'Montserrat', sans-serif; font-weight: bold; background-color: white; display: inline-block; padding: 3px 10px; border-radius: 50px;"
+                 class="mr-2">
+                <i class="fa fa-check mr-1"></i>Community
+            </div>
+            <div style="color: #6199d2; font-size: 14px; font-family: 'Montserrat', sans-serif; font-weight: bold; background-color: white; display: inline-block; padding: 3px 10px; border-radius: 50px;"
+                 class="mr-2">
+                <i class="fa fa-check mr-1"></i>Enterprise
+            </div>
+            <div style="color: #017E84; font-size: 14px; font-family: 'Montserrat', sans-serif; font-weight: bold; background-color: white; display: inline-block; padding: 3px 10px; border-radius: 50px;"
+                 class="mr-2">
+                <i class="fa fa-check mr-1"></i>Odoo.sh
+            </div>
+        </div>
+    </div>
+    <!-- END OF TITLE BAR -->
+
+    <!-- APP HERO -->
+    <h1 style="color: #714B67; font-weight: bolder; font-size: 50px; text-align: center; margin-top: 10px;">PayTR
+        Payment Provider
+    </h1>
+    <p style="color:#714B67; padding: 8px 15px; text-align: center; font-size: 24px;">Easily get paid by
+        credit card.
+    </p>
+    <!-- END OF APP HERO -->
+    <img src="assets/images/hero.gif"
+         style="width: 75%; height: auto; position: absolute; margin-left: auto; margin-right: auto; top: 35%; left: 12%; right: auto;"
+         alt=""/>
+
+</div>
+<!-- NAVIGATION SECTION -->
+<div class="d-flex align-items-center" style="border-bottom: 2px solid #714B67; padding: 15px 0; margin-top: 350px;">
+    <div class="d-flex justify-content-center align-items-center mr-2"
+         style="background-color: #F5F5F5; border-radius: 0; width: 40px; height: 40px;">
+        <i class="fa fa-compass fa-2x"></i>
+    </div>
+    <h2 class="m-2" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: bold;">Explore This
+        Module
+    </h2>
+</div>
+<div class="row my-4" style="font-family: 'Montserrat', sans-serif;">
+    <div class="col-sm-12 col-md-6 my-3">
+        <a href="#overview">
+            <div class="d-flex justify-content-between align-items-center"
+                 style="background-color: #f5f5f5; padding: 30px; width: 100%;">
+                <div>
+                    <span style="color: #714B67; font-size: 24px; font-weight: 500; display: block;">Overview</span>
+                    <span
+                            style="color: #714B67; font-size: 16px; font-weight: 400; display: block;">
+                        Learn
+                        more about this
+                        module
+                    </span>
+                </div>
+                <img src="assets/misc/right-arrow.png" width="36" height="36" alt=""/>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-12 col-md-6 my-3">
+        <a href="#features">
+            <div class="d-flex justify-content-between align-items-center"
+                 style="background-color: #f5f5f5; padding: 30px; width: 100%;">
+                <div>
+                    <span style="color: #714B67; font-size: 24px; font-weight: 500; display: block;">Features</span>
+                    <span
+                            style="color: #714B67; font-size: 16px; font-weight: 400;display: block;">
+                        View
+                        features of this
+                        module
+                    </span>
+                </div>
+                <img src="assets/misc/right-arrow.png" width="36" height="36" alt=""/>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-12 col-md-6 my-3">
+        <a href="#screenshots">
+            <div class="d-flex justify-content-between align-items-center"
+                 style="background-color: #f5f5f5; padding: 30px; width: 100%;">
+                <div>
+                    <span style="color: #714B67; font-size: 24px; font-weight: 500; display: block;">Screenshots</span>
+                    <span
+                            style="color: #714B67; font-size: 16px; font-weight: 400; display: block;">
+                        View
+                        screenshots for this
+                        module
+                    </span>
+                </div>
+                <img src="assets/misc/right-arrow.png" width="36" height="36" alt=""/>
+            </div>
+        </a>
+    </div>
+</div>
+<!-- END OF NAVIGATION SECTION -->
+
+<!-- OVERVIEW SECTION -->
+<div class="d-flex align-items-center" style="border-bottom: 2px solid #714B67; padding: 15px 0;" id="overview">
+    <div class="d-flex justify-content-center align-items-center mr-2"
+         style="background-color: #F5F5F5; border-radius: 0; width: 40px; height: 40px;">
+         <i class="fa fa-dashboard fa-2x"></i>
+    </div>
+    <h2 class="m-2" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: bold;">Overview
+    </h2>
+</div>
+<div class="row" style="font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 14px; line-height: 200%;">
+    <div class="col-sm-12 py-4">
+        This module allows you to receive payments using PayTr payment provider.<br/>
+        <div class="alert alert-warning " role="alert">
+            <i class="fa fa-warning fa-2x"></i>
+            This module needs <a href="https://pypi.org/project/phonenumbers" class="alert-link" target="_blank"> phonenumbers python module </a>
+            .Before installing the module make sure it is loaded
+        </div>
+        <div class="alert alert-warning " role="alert">
+            <i class="fa fa-warning fa-2x"></i>
+            Paytr Notification URL Should be:  <strong>https://<i>yourdomain</i>/payment/trpay/webhook </strong>
+        </div>
+    </div>
+</div>
+<!-- END OF OVERVIEW SECTION -->
+
+<!-- FEATURES SECTION -->
+<div class="d-flex align-items-center" style="border-bottom: 2px solid #714B67; padding: 15px 0px;" id="features">
+    <div class="d-flex justify-content-center align-items-center mr-2"
+         style="background-color: #F5F5F5; border-radius: 0; width: 40px; height: 40px;">
+         <i class="fa fa-list-ul fa-2x"></i>
+    </div>
+    <h2 class="m-2" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: bold;">Features
+    </h2>
+</div>
+<div class="row" style="font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 14px; line-height: 200%;">
+    <div class="col-sm-12 col-md-6">
+        <div class="d-flex align-items-center" style="margin-top: 40px; margin-bottom: 40px">
+            <img src="assets/misc/check-box.png" class="mr-2" alt=""/>
+            <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">Receive payment by
+                credit card
+            </span>
+        </div>
+        <div class="d-flex align-items-center" style="margin-top: 30px; margin-bottom: 30px">
+            <img src="assets/misc/check-box.png" class="mr-2" alt=""/>
+            <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">
+                Advantage,Axess,Bankkart,Bonus,CardFinans,maximum,Paraf,World
+            </span>
+        </div>
+        <div class="d-flex align-items-center" style="margin-top: 30px; margin-bottom: 30px">
+            <img src="assets/misc/check-box.png" class="mr-2" alt=""/>
+            <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">MasterPass,Bkm
+                express,ptt,troy
+            </span>
+        </div>
+        <div class="d-flex align-items-center" style="margin-top: 30px; margin-bottom: 30px">
+            <img src="assets/misc/check-box.png" class="mr-2" alt=""/>
+            <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">Currency wise
+                amount specification.
+            </span>
+        </div>
+        <div class="d-flex align-items-center" style="margin-top: 30px; margin-bottom: 30px">
+            <img src="assets/misc/check-box.png" class="mr-2" alt=""/>
+            <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">Partial Refund.
+            </span>
+        </div>
+    </div>
+</div>
+<!-- END OF FEATURES SECTION -->
+
+<!-- SCREENSHOTS SECTION -->
+<div class="d-flex align-items-center" style="border-bottom: 2px solid #714B67; padding: 15px 0;" id="screenshots">
+    <div class="d-flex justify-content-center align-items-center mr-2"
+         style="background-color: #F5F5F5; border-radius: 0; width: 40px; height: 40px;">
+        <i class="fa fa-image fa-2x"></i>
+    </div>
+    <h2 class="m-2" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: bold;">Screenshots
+    </h2>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div style="display: block; margin: 30px auto;">
+            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">
+                <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">Goto
+                    <b>Payment paroviders</b>
+                    and click on
+                    <b>Paytr payment provider</b>
+                </span>
+            </h3>
+            <img src="assets/images/1.png" class="img-thumbnail" alt="paytr">
+        </div>
+        <div style="display: block; margin: 30px auto;">
+            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">Enter the merchant
+                information provided by Paytr and enable it.
+            </h3>
+            <img src="assets/images/2.png" class="img-thumbnail" alt="paytr">
+        </div>
+
+        <div style="display: block; margin: 30px auto;">
+            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">Adjust paytr payment
+                plugin settings.
+            </h3>
+            <img src="assets/images/3.png" class="img-thumbnail" alt="paytr">
+        </div>
+
+        <div style="display: block; margin: 30px auto;">
+            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">
+                <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">Can pay without
+                    installments.
+                </span>
+            </h3>
+            <img src="assets/images/4.png" class="img-thumbnail" alt="paytr">
+        </div>
+        <div style="display: block; margin: 30px auto;">
+            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">
+                <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">Or you can pay
+                    in installments (if activated in the settings).
+                </span>
+            </h3>
+            <img src="assets/images/5.png" class="img-thumbnail" alt="paytr">
+        </div>
+        <div style="display: block; margin: 30px auto;">
+            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">
+                <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">Or you can pay
+                    with other payment methods.
+                </span>
+            </h3>
+            <img src="assets/images/6.png" class="img-thumbnail" alt="paytr">
+        </div>
+        <div style="display: block; margin: 30px auto;">
+            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">
+                <span style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: bold;">If you want,
+                    you can make a full or partial refund.
+                </span>
+            </h3>
+            <img src="assets/images/7.png" class="img-thumbnail" alt="paytr">
+        </div>
+
+    </div>
+</div>
+<!-- END OF SCREENSHOTS SECTION -->
+
+
+<!-- SUPPORT -->
+<div class="d-flex align-items-center" style="border-bottom: 2px solid #714B67; padding: 15px 0;">
+    <div class="d-flex justify-content-center align-items-center mr-2"
+         style="background-color: #F5F5F5; border-radius: 0; width: 40px; height: 40px;">
+          <i class="fa fa-support fa-2x"></i>
+    </div>
+    <h2 class="m-2" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: bold;">Support
+    </h2>
+</div>
+<div class="container mt-5">
+    <div class="row">
+
+        <div style="background-color: #F6F8F9; padding: 30px; display: flex; align-items: center;">
+            <div class="mx-5"
+                 style="background-color: #714B67; height: 70px; width: 70px; display: flex; align-items: center; justify-content: center;">
+                <i class="fa fa-support text-white fa-3x"></i>
+            </div>
+            <div>
+                <h4>Need Help?</h4>
+                <p style="line-height: 100%;">You can ask any question.</p>
+                <a href="mailto:ceremy@gmail.com">
+                    <p style="font-weight: 400; font-size: 28px; line-height: 80%; color: #714B67;">
+                        ceremy@gmail.com
+                    </p>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- END OF SUPPORT -->

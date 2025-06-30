@@ -1,0 +1,144 @@
+<odoo>
+    <template id="etkin_promosyon_varyant_urunler_page" name="Ürünler ve Varyantlar">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="mb-5 text-center">Ürün Listesi</h1>
+                <!-- Hata Mesajı -->
+                <t t-if="'error' in data">
+                    <div class="alert alert-danger text-center">
+                        <strong>Hata:</strong>
+                        <t t-esc="data['error']"/>
+                    </div>
+                </t>
+                <!-- Ürün Listesi -->
+                <t t-else="">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <t t-foreach="data" t-as="urun">
+                            <div class="col">
+                                <div class="card h-100 shadow-lg border-0 d-flex flex-column">
+                                    <!-- Ürün Resmi -->
+                                    <img t-att-src="urun.get('resim1', '/web/static/src/img/placeholder.png')" 
+                                         class="card-img-top rounded-top" 
+                                         t-att-alt="urun.get('urun_isim', 'Ürün Resmi')" 
+                                         style="height: 480px; object-fit: cover;"
+                                         onerror="this.src='/web/static/src/img/placeholder.png';"/>
+                                    <!-- Ürün Detayları -->
+                                    <div class="card-body d-flex flex-column">
+                                        <!-- <h5 class="card-title text-truncate fw-bold text-center">
+                                            <t t-esc="urun.get('urun_isim', 'İsim Yok')"/>
+                                        </h5> -->
+                                        <p class="text-success fs-5 text-center mb-4">
+                                            <strong>Ürün Kodu:</strong>
+                                            <t t-esc="urun.get('urun_kodu', '-')"/>
+                                        </p>
+                                        <p class="card-text text-muted text-center flex-grow-1">
+                                            <t t-esc="urun.get('urun_aciklama', 'Açıklama Yok')"/>
+                                        </p>
+                                        <p class="text-success fs-5 text-center mb-4">
+                                            <!-- <strong><t t-esc="urun.get('urun_fiyat', 'Fiyat Yok')"/> TL</strong> -->
+                                            <!-- <strong>
+                                                <t t-esc="urun.get('urun_fiyat_virgul', '-').rstrip('0').rstrip(',')"/> TL
+                                            </strong> -->
+                                            <strong>
+                                                <t t-esc="urun.get('urun_fiyat_virgul', '-').rsplit(',', 1)[0] + ',' + urun.get('urun_fiyat_virgul', '-').rsplit(',', 1)[1][:2]"/> ₺ + KDV
+                                            </strong>
+                                        </p>
+                                        <a t-att-href="'/turuncu/varyant/urun-detay?kategori_id=' + str(urun.get('kategori_id', '')) + '&amp;urun_id=' + str(urun.get('urun_id', ''))"
+                                           class="btn btn-primary btn-lg mt-auto w-100">
+                                            Detaylı İncele
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+<!-- <odoo>
+    <template id="etkin_promosyon_varyant_urunler_page" name="Ürünler ve Varyantlar">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1 class="mb-4 text-center">Ürün Listesi</h1>
+                  Hata Mesajı 
+                <t t-if="'error' in data">
+                    <p class="text-danger text-center">
+                        <t t-esc="data['error']"/>
+                    </p>
+                </t>
+                 Ürün Listesi  
+                <t t-else="">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <t t-foreach="data" t-as="urun">
+                            <div class="col">
+                                <div class="card h-100 shadow-sm">
+                                      Ürün Resmi  
+                                    <img t-att-src="urun.get('resim1', '/web/static/src/img/placeholder.png')" class="card-img-top" t-att-alt="urun.get('urun_isim', 'Ürün Resmi')" style="height: 200px; object-fit: cover;"/>
+
+                                     Ürün Detayları  
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">
+                                            <t t-esc="urun.get('urun_isim', 'İsim Yok')"/>
+                                        </h5>
+                                        <p class="text-success">
+                                            <strong>
+                                                <t t-esc="urun.get('urun_fiyat', 'Fiyat Yok')"/>
+ TL</strong>
+                                        </p>  
+                                        <a t-att-href="'/turuncu/varyant/urun-detay?kategori_id=' + str(urun.get('kategori_id', '')) + '&amp;urun_id=' + str(urun.get('urun_id', ''))"
+                                        class="btn btn-primary btn-sm">
+                                            Detaylı İncele
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+ -->
+<!-- <odoo>
+    <template id="etkin_promosyon_varyant_urunler_page" name="Ürünler">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>Ürünler</h1>
+           
+                <t t-if="'error' in data">
+                    <p class="text-danger">
+                        <t t-esc="data['error']"/>
+                    </p>
+                </t>
+               
+                <t t-else="">
+                    <div class="row">
+                        <t t-foreach="data.get('data', [])" t-as="urun">
+                            <div class="col-md-4">
+                                <div class="card mb-4">
+                                   
+                                    <img t-att-src="urun.get('resim1', '/web/static/src/img/placeholder.png')" class="card-img-top" alt="Ürün Resmi"/>
+                                    <div class="card-body">
+                                        <h5 class="card-title"><t t-esc="urun.get('urun_isim', 'İsim Yok')"/></h5>
+                                        <p class="card-text">
+                                            <t t-esc="urun.get('urun_aciklama', 'Açıklama Yok')"/>
+                                        </p>
+                                        <p class="text-success">
+                                            <strong><t t-esc="urun.get('urun_fiyat', 'Fiyat Yok')"/> TL</strong>
+                                        </p>
+                                        <p class="text-muted">
+                                            Stok: <t t-esc="urun.get('toplam_stok', 0)"/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo> -->

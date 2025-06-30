@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="stage_tree" model="ir.ui.view">
+        <field name="name">stage.app.tree</field>
+        <field name="model">stage.app</field>
+        <field name="arch" type="xml">
+            <tree string="stage">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="color"/>
+            </tree>
+        </field>
+    </record>
+    <!--
+    <record model="ir.ui.view" id="stage_graph">
+        <field name="name">stage.app.graph</field>
+        <field name="model">stage.app</field>
+        <field name="arch" type="xml">
+            <graph string="stage">
+                <field name="name"/>
+                <field name="stage_degree" type="measure"/>
+            </graph>
+        </field>
+    </record>
+	-->
+    <record id="stage_form_view" model="ir.ui.view">
+        <field name="name">stage.app.form.view</field>
+        <field name="model">stage.app</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <!--
+                    <field name="stage_image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title mb24">
+                        <label for="name"/>
+                        <h1>
+                            <field class="o_text_overflow" name="name"/>
+                        </h1>
+                    </div>
+                    -->
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="color" widget="color"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="stage_search" model="ir.ui.view">
+        <field name="name">stage.app.search</field>
+        <field name="model">stage.app</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <!-- <group expand="0" name="group_by" string="Group By">
+                    <filter name="stage" string="Stage" domain="[]" context="{'group_by' : 'partner_id'}"/>
+                </group> -->
+                <!-- <filter string="Archived" name="active" domain="[('active', '=', False)]"/> -->
+            </search>
+        </field>
+    </record>
+    <record id="action_stage_app" model="ir.actions.act_window">
+        <field name="name">Stage</field>
+        <field name="res_model">stage.app</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="stage_root_menu" name="Stage" web_icon="stage,static/src/img/avatar.png"/>box
+    <act_window id="stage_list" name="Stage" res_model="stage.app" view_mode="tree,form" context="{}"/>
+    <menuitem id="stage_zones" parent="stage_root_menu" name="stage" action="stage_list" sequence="2"/>
+    <!-- <act_window id="stage_quotations" name="Transfer Request" res_model="sale.order" view_mode="tree,kanban,form,calendar,pivot,graph,activity" context="{}"/>
+    <menuitem id="stage_request" parent="stage_root_menu" name="Transfer Requests" action="stage_quotations" sequence="1"/>
+
+    <menuitem id="stage_general_settings" parent="stage_root_menu" name="General Settings" sequence="5" />
+    <menuitem id="stage_currency" parent="stage_general_settings" name="Currency Config" action="website_sale.website_product_pricelist3" sequence="9"/>
+    <menuitem id="stage_website_config" parent="stage_general_settings" name="Website Configration" action="website.action_website_configuration" sequence="11"/>
+    <menuitem id="stage_website_list" parent="stage_general_settings" name="Websites" action="website.action_website_list" sequence="10"/>
+    <menuitem id="stage_queries" parent="stage_general_settings" name="Transfer Queries" action="action_stage_app" sequence="8"/>
+    <menuitem id="stage_pages" parent="stage_general_settings" name="Page List" action="website.action_website_pages_list" sequence="1"/>
+    <menuitem id="stage_city_menu" parent="stage_general_settings" name="Cities" action="action_city_app" sequence="2"/>
+    <menuitem id="stage_car_menu" parent="stage_general_settings" name="Car List" action="action_car_app" sequence="3"/>
+    <menuitem id="stage_extra_menu" parent="stage_general_settings" name="Extras" action="action_extra_app" sequence="4"/>
+
+    <menuitem id="stage_marketing" name="Marketing" parent="stage_root_menu" sequence="3"/>
+    <menuitem id="stage_crm" parent="stage_marketing" name="Potential Customers" action="crm.crm_lead_all_leads"/>
+    <menuitem id="stage_livechat" parent="stage_marketing" name="Customer Live Chat" action="im_livechat.im_livechat_channel_action" />
+
+    <menuitem id="stage_statistics" parent="stage_root_menu" name="Web Statistics" sequence="4" />
+    <menuitem id="stage_visitors" parent="stage_statistics" name="Visitors" action="website.website_visitors_action"/>
+    <act_window id="stage_page_view_act" name="Page Views" res_model="website.track" view_mode="tree,graph" context="{'search_default_type_url': 1, 'create': False, 'edit': False, 'copy': False}"/>
+    <menuitem id="stage_page_views" parent="stage_statistics" name="Page Views" action="stage_page_view_act"/>
+    <menuitem id="stage_google" parent="stage_statistics" name="Google Analytics" action="website.backend_dashboard"/> -->
+    <!--
+	<menuitem id="stage_app_menu" name="stage" action="action_stage_app" parent="stage_sub_menu"/>
+	-->
+</odoo>

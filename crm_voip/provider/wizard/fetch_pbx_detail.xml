@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_voip_crm_fetch_wizard_form" model="ir.ui.view">
+            <field name="name">crm_voip.crm.fetch_wizard.form</field>
+            <field name="model">crm_voip.crm.fetch_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Fetch Call Detail">
+                    <sheet>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Fetch" name="fetch"
+                                icon="fa-angle-double-down" class="btn-info"
+                                type="object"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+
+    </data>
+</odoo>

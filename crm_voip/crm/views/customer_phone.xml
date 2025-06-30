@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_voip_crm_customer_phone_form" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.phone.form</field>
+            <field name="model">crm_voip.crm.customer.phone</field>
+            <field name="arch" type="xml">
+                <form string="Customer Phone">
+                    <header>
+                        <button string="Call Phone" name="call_phone" icon="fa-phone" type="object"
+                                class="btn-success"/>
+                        <button string="Send SMS" name="send_sms_wizard" icon="fa-envelope" type="object"
+                                class="btn-primary"/>
+                        <!--                        <button string="Open Wizard" name="open_wizard" type="object"-->
+                        <!--                                class="btn-primary"/>-->
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="partner_id"
+                                   groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                            <field name="customer_id"/>
+                            <field name="name"/>
+                            <field name="surname"/>
+                            <field name="note"/>
+                        </group>
+                        <hr/>
+                        <group>
+                            <field name="phone"/>
+                            <field name="phone_type"/>
+                            <field name="description"/>
+                        </group>
+                        <notebook>
+                            <page string="Calls">
+                                <field name="call_ids">
+                                    <form string="Calls">
+                                        <group>
+                                            <field name="seller_id"/>
+                                            <field name="type"/>
+                                            <field name="phone"/>
+                                            <field name="start"/>
+                                            <field name="duration_show"/>
+                                            <field name="unique_id"/>
+                                        </group>
+                                    </form>
+                                    <tree>
+                                        <field name="call_icon" widget="image" string=""/>
+                                        <field name="seller_id"/>
+                                        <field name="type"/>
+                                        <field name="phone"/>
+                                        <field name="start"/>
+                                        <field name="duration_show"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_customer_phone_tree" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.phone.tree</field>
+            <field name="model">crm_voip.crm.customer.phone</field>
+            <field name="arch" type="xml">
+                <tree string="Customer Phone">
+                    <field name="partner_id"
+                           groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                    <field name="name"/>
+                    <field name="surname"/>
+                    <field name="phone"/>
+                    <field name="phone_type"/>
+                    <field name="description"/>
+                    <button string="Call" name="call_phone" type="object"
+                            class="btn-success"/>
+                    <button string="SMS" name="send_sms_wizard" type="object"
+                            class="btn-primary"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_customer_phone_search" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.phone.search</field>
+            <field name="model">crm_voip.crm.customer.phone</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id"
+                           groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                    <field name="full_name"/>
+                    <field name="phone"/>
+                    <field name="name"/>
+                    <field name="surname"/>
+                    <field name="note"/>
+                    <field name="phone_type"/>
+                    <field name="description"/>
+                    <group expand="1" string="Group by">
+                        <filter string="Type" name="phone_type" context="{'group_by': 'phone_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="crm_voip_crm_customer_phone_action" model="ir.actions.act_window">
+            <field name="name">Customer Phone</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm_voip.crm.customer.phone</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

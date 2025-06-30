@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_carwash_user_1,carwash User,model_carwash_profile,carwash.carwash_group_user,1,0,0,0
+access_carwash_user_2,carwash Manager,model_carwash_profile,carwash.carwash_group_manager,1,1,1,0
+access_carwash_user_3,carwash Admin,model_carwash_profile,carwash.carwash_group_admin,1,1,1,1
+access_carwash_user_4,carwash Dealer,model_carwash_profile,carwash.carwash_group_dealer,1,1,1,1
+access_carwash_user_5,carwash Access Rigths Full Access,model_carwash_profile,base.group_erp_manager,1,1,1,1
+access_carwash_user_6,carwash Settings Full Access,model_carwash_profile,base.group_system,1,1,1,1
+access_carwash_showdetails,carwash showdetails Wizard,model_carwash_showdetails,base.group_system,1,1,1,1

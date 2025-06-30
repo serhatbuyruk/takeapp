@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--tree view of the vehicles model-->
+    <record id="vehicles_tree" model="ir.ui.view">
+        <field name="name">vehicles.profile.tree</field>
+        <field name="model">vehicles.profile</field>
+        <field name="arch" type="xml">
+            <tree string="Cities">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <!--form view of the vehicles model-->
+    <record id="vehicles_form" model="ir.ui.view">
+        <field name="name">vehicles.profile.form</field>
+        <field name="model">vehicles.profile</field>
+        <field name="arch" type="xml">
+            <form string="Cities">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vehicles_profile_lines_tree" model="ir.ui.view">
+        <field name="name">vehicles.profile.lines.tree</field>
+        <field name="model">vehicles.profile.lines</field>
+        <field name="arch" type="xml">
+            <tree string="Lines">
+                <field name="name" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="res_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='contact_addresses']" position="before">
+                <field name="user_role" invisible="1"/>
+                <page name="vehicles_lines_page" string="Vehicle Lines" attrs="{'invisible': [('user_role', '!=', 'kurye')]}">
+                    <field name="vehicles_profile_lines" widget="one2many">
+                        <tree string="Vehicle Lines" editable="bottom">
+                            <field name="line_sequence" invisible="1"/>
+                            <field name="name" optional="hide"/>
+                            <field name="partner_id" optional="show"/>
+                            <field name="type" optional="show"/>
+                            <field name="vehicle" optional="show"/>
+                            <field name="seat_count" optional="show"/>
+                            <field name="fuel_type" optional="hide"/>
+                            <field name="model_year" optional="show"/>
+                            <field name="vehicle_color" optional="show"/>
+                            <field name="license_plate" optional="hide"/>
+                            <field name="vehicle_photo" optional="show"/>
+                            <field name="is_owner" optional="hide"/>
+                            <field name="owner_name" optional="hide"/>
+                            <field name="vin_number" optional="hide"/>
+                            <field name="registration_document" optional="hide"/>
+                            <field name="insurance_document" optional="hide"/>
+                            <field name="inspection_document" optional="hide"/>
+                            <field name="registration_document" optional="hide"/>
+                            <field name="current_vehicle" optional="hide"/>
+                            <field name="accepted" optional="show"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    
+    <!--action of the vehicles menu-->
+    <record id="action_vehicles_profile_lines" model="ir.actions.act_window">
+        <field name="name">vehicles_profile_lines</field>
+        <field name="res_model">vehicles.profile.lines</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="vehicle_lines_root_menu" name="Sürücü Araçları" web_icon="vehicles,static/src/img/avatar.png"/>
+    <act_window id="vehicle_line_list" name="Sürücü Araçları" res_model="vehicles.profile.lines" view_mode="tree,form" context="{}"/>
+    <menuitem id="vehicle_lines_zones" parent="vehicle_lines_root_menu" name="Sürücü Araçları" action="vehicle_line_list" sequence="2"/>
+</odoo>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.module.category" id="carwash_security_groups">
+            <field name="name">carwash</field>
+        </record>
+        <!-- Groups User -->
+        <record model="res.groups" id="carwash_group_user">
+            <field name="name">carwash User</field>
+            <field name="category_id" ref="carwash.carwash_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('carwash.carwash_group_user'))]"/>
+        </record>
+
+        <!-- Groups Manager -->
+        <record model="res.groups" id="carwash_group_manager">
+            <field name="name">carwash Manager</field>
+            <field name="category_id" ref="carwash.carwash_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('carwash.carwash_group_manager'))]"/>
+        </record>
+        
+        <!-- Groups Admin -->
+        <record model="res.groups" id="carwash_group_admin">
+            <field name="name">carwash Admin</field>
+            <field name="category_id" ref="carwash.carwash_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('carwash.carwash_group_admin'))]"/>
+        </record>
+
+        <!-- Groups Dealer -->
+        <record model="res.groups" id="carwash_group_dealer">
+            <field name="name">carwash Dealer</field>
+            <field name="category_id" ref="carwash.carwash_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('carwash.carwash_group_dealer'))]"/>
+        </record>
+
+        <!-- Groups Full Access Admin -->
+        <record model="res.groups" id="carwash_group_fullaccess">
+            <field name="name">carwash Full Access</field>
+            <field name="category_id" ref="carwash.carwash_security_groups"/>
+        </record>
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('carwash.carwash_group_fullaccess'))]"/>
+        </record>
+
+
+
+        <!-- Record Rules User -->
+        <record id="carwash_profile_user_rule" model="ir.rule">
+            <field name="name">carwash user can access carwash.profile (Autoronics)</field>
+            <field ref="carwash.model_carwash_profile" name="model_id"/>
+            <!-- <field name="domain_force">[('partner_id', 'in', [user.partner_id.id])]</field> -->
+            <field name="groups" eval="[(4, ref('carwash.carwash_group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="carwash_profile_manager_rule" model="ir.rule">
+            <field name="name">carwash manager can access carwash.profile (Autoronics)</field>
+            <field ref="carwash.model_carwash_profile" name="model_id"/>
+            <!-- <field name="domain_force">['|',('partner_id', '=', [user.partner_id.id]),('parent_id', '=', [user.partner_id.parent_id.id])]</field> -->
+            <field name="groups" eval="[(4, ref('carwash.carwash_group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="carwash_profile_admin_rule" model="ir.rule">
+            <field name="name">carwash admin can access carwash.profile (Autoronics)</field>
+            <field ref="carwash.model_carwash_profile" name="model_id"/>
+            <!-- <field name="domain_force">['|',('partner_id', '=', [user.partner_id.id]),('parent_id', '=', [user.partner_id.parent_id.id])]</field> -->
+            <field name="groups" eval="[(4, ref('carwash.carwash_group_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="carwash_profile_dealer_rule" model="ir.rule">
+            <field name="name">carwash dealer can access carwash.profile (Autoronics)</field>
+            <field ref="carwash.model_carwash_profile" name="model_id"/>
+            <!-- <field name="domain_force">['|',('partner_id', '=', [user.partner_id.id]),('parent_id', '=', [user.partner_id.parent_id.id])]</field> -->
+            <field name="groups" eval="[(4, ref('carwash.carwash_group_dealer'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="carwash_profile_fullaccess_rule" model="ir.rule">
+            <field name="name">carwash fullaccess can access carwash.profile (Autoronics)</field>
+            <field ref="carwash.model_carwash_profile" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('carwash.carwash_group_fullaccess'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

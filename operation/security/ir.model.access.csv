@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_operation_user_1,Operation User,model_operation_profile,operation.operation_group_user,1,0,0,0
+access_operation_user_2,Operation Manager,model_operation_profile,operation.operation_group_manager,1,1,0,0
+access_operation_user_3,Operation Admin,model_operation_profile,operation.operation_group_admin,1,1,1,1
+access_operation_user_4,Operation Dealer,model_operation_profile,operation.operation_group_dealer,1,1,1,1
+access_operation_user_5,Operation Access Rigths Full Access,model_operation_profile,base.group_erp_manager,1,1,1,1
+access_operation_user_6,Operation Settings Full Access,model_operation_profile,base.group_system,1,1,1,1
+access_appointment_app_lines_1,Appointment App Lines,model_appointment_app_lines,base.group_user,1,1,1,1
+access_box_app_lines_1,Box Manager,model_box_app,base.group_user,1,1,1,1
+access_stage_app_lines_1,Stage Manager,model_stage_app,base.group_user,1,1,1,1
+access_operation_profile_manager,operation_profile_manager,model_operation_profile,base.group_user,1,1,1,1

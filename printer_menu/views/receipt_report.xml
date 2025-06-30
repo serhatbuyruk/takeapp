@@ -1,0 +1,25 @@
+<template id="receipt_report">
+    <t t-name="printer_menu.receipt_report">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Fiş Başlığı</h2>
+                <p>Tarih: <t t-esc="fields.Date.today()"/></p>
+                <table>
+                    <tr>
+                        <th>Ürün</th>
+                        <th>Miktar</th>
+                        <th>Fiyat</th>
+                    </tr>
+                    <t t-foreach="doc.order_line" t-as="line">
+                        <tr>
+                            <td><t t-esc="line.product_id.name"/></td>
+                            <td><t t-esc="line.product_uom_qty"/></td>
+                            <td><t t-esc="line.price_unit"/></td>
+                        </tr>
+                    </t>
+                </table>
+                <p>Toplam: <t t-esc="doc.amount_total"/></p>
+            </div>
+        </t>
+    </t>
+</template>

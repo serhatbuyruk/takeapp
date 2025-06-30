@@ -1,0 +1,46 @@
+<odoo>
+    <template id="kategoriler_hiyerasi_template" name="Kategori Hiyerasi">
+        <t t-call="website.layout">
+            <div class="container mt-4">
+                <h1>Kategoriler ve Alt Kategoriler</h1>
+                <div class="row">
+                    <!-- Üst Kategorileri Listeleme -->
+                    <t t-foreach="kategoriler" t-as="kategori">
+                        <div class="col-md-12 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <!-- Üst Kategori Bilgileri -->
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <img t-att-src="kategori.get('kat_icon')" alt="Category Icon" class="img-fluid" t-if="kategori.get('kat_icon')"/>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <h2 t-esc="kategori.get('isim')"></h2>
+                                            <p><t t-esc="kategori.get('aciklama')" /></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <!-- Alt Kategoriler -->
+                                    <div class="row">
+                                        <t t-foreach="kategori.get('alt_kategoriler', [])" t-as="altkategori">
+                                            <div class="col-md-4 mb-3">
+                                                <div class="card">
+                                                    <img t-att-src="altkategori.get('resim')" alt="Alt Kategori Resim" class="card-img-top" t-if="altkategori.get('resim')"/>
+                                                    <div class="card-body">
+                                                        <h5 class="card-title" t-esc="altkategori.get('isim')"></h5>
+                                                        <p><t t-esc="altkategori.get('aciklama')" /></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

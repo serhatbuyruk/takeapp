@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <!-- 🔹 Yeni Kanban Görünümü -->
+    <record id="survey_survey_custom_kanban_view" model="ir.ui.view">
+        <field name="name">survey.survey.custom.kanban.view</field>
+        <field name="model">survey.survey</field>
+        <field name="priority" eval="20"/> <!-- Orijinalden sonra yüklenmesi için -->
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <field name="title"/>
+                            <field name="description"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- 🔹 Yeni Form Görünümü -->
+    <record id="survey_survey_custom_form_view" model="ir.ui.view">
+        <field name="name">survey.survey.custom.form.view</field>
+        <field name="model">survey.survey</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <form string="Custom Survey Form">
+                <sheet>
+                    <group>
+                        <field name="title"/>
+                        <field name="description"/>
+                        <field name="user_input_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 🔹 Yeni Tree Görünümü -->
+    <record id="survey_survey_custom_tree_view" model="ir.ui.view">
+        <field name="name">survey.survey.custom.tree.view</field>
+        <field name="model">survey.survey</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="title"/>
+                <field name="create_date"/>
+                <field name="user_input_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 🔹 Yeni Action (Orijinali Bozmadan) -->
+    <record id="action_survey_survey_custom" model="ir.actions.act_window">
+        <field name="name">Custom Surveys</field>
+        <field name="res_model">survey.survey</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                      (0, 0, {'view_mode': 'kanban', 'view_id': ref('survey_survey_custom_kanban_view')}), 
+                                      (0, 0, {'view_mode': 'tree', 'view_id': ref('survey_survey_custom_tree_view')}), 
+                                      (0, 0, {'view_mode': 'form', 'view_id': ref('survey_survey_custom_form_view')})]"/>
+    </record>
+
+    <!-- 🔹 Yeni Menü (Orijinal Menüden Bağımsız) -->
+    <menuitem id="menu_survey_custom_root" name="Custom Surveys" sequence="10"/>
+
+    <menuitem id="menu_survey_custom" name="Custom Surveys List" action="action_survey_survey_custom"
+              parent="menu_survey_custom_root"/>
+</odoo>
+
+
+
+
+ 
+<!-- <odoo>
+    <record id="survey_survey_custom_kanban_view" model="ir.ui.view">
+        <field name="name">survey.survey.custom.kanban.view</field>
+        <field name="model">survey.survey</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <field name="title"/>
+                            <field name="description"/>
+                             
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="survey_survey_custom_form_view" model="ir.ui.view">
+        <field name="name">survey.survey.custom.form.view</field>
+        <field name="model">survey.survey</field>
+        <field name="arch" type="xml">
+            <form string="Custom Survey Form">
+                <sheet>
+                    <group>
+                        <field name="title"/>
+                        <field name="description"/>
+                        <field name="user_input_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+     <record id="survey_survey_custom_tree_view" model="ir.ui.view">
+        <field name="name">survey.survey.custom.tree.view</field>
+        <field name="model">survey.survey</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="title"/>
+                <field name="create_date"/>
+                <field name="user_input_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_survey_survey_custom" model="ir.actions.act_window">
+        <field name="name">Custom Surveys</field>
+        <field name="res_model">survey.survey</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                      (0, 0, {'view_mode': 'kanban', 'view_id': ref('survey_survey_custom_kanban_view')}),
+                                      (0, 0, {'view_mode': 'tree', 'view_id': ref('survey_survey_custom_tree_view')}),
+                                      (0, 0, {'view_mode': 'form', 'view_id': ref('survey_survey_custom_form_view')})]"/>
+    </record>
+    <menuitem id="menu_survey_custom" name="Custom Surveys" action="action_survey_survey_custom" />
+
+
+    <menuitem id="menu_survey_custom" name="Custom Surveys"
+              action="action_survey_survey_custom"
+              parent="survey.menu_survey_root"/> 
+</odoo>
+ -->

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--tree view of the model-->
+    <record id="box_tree" model="ir.ui.view">
+        <field name="name">box.app.tree</field>
+        <field name="model">box.app</field>
+        <field name="arch" type="xml">
+            <tree string="box">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <!--
+    <record model="ir.ui.view" id="box_graph">
+        <field name="name">box.app.graph</field>
+        <field name="model">box.app</field>
+        <field name="arch" type="xml">
+            <graph string="box">
+                <field name="name"/>
+                <field name="box_degree" type="measure"/>
+            </graph>
+        </field>
+    </record>
+	-->
+    <record id="box_form_view" model="ir.ui.view">
+        <field name="name">box.app.form.view</field>
+        <field name="model">box.app</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <!--
+                    <field name="box_image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title mb24">
+                        <label for="name"/>
+                        <h1>
+                            <field class="o_text_overflow" name="name"/>
+                        </h1>
+                    </div>
+                    -->
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="box_search" model="ir.ui.view">
+        <field name="name">box.app.search</field>
+        <field name="model">box.app</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <!-- <group expand="0" name="group_by" string="Group By">
+                    <filter name="box" string="Box" domain="[]" context="{'group_by' : 'partner_id'}"/>
+                </group> -->
+                <!-- <filter string="Archived" name="active" domain="[('active', '=', False)]"/> -->
+            </search>
+        </field>
+    </record>
+    <record id="action_box_app" model="ir.actions.act_window">
+        <field name="name">Box</field>
+        <field name="res_model">box.app</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="box_root_menu" name="Box" web_icon="box,static/src/img/avatar.png"/>
+    <act_window id="box_list" name="Box" res_model="box.app" view_mode="tree,form" context="{}"/>
+    <menuitem id="box_zones" parent="box_root_menu" name="box" action="box_list" sequence="2"/>
+    <!-- <act_window id="box_quotations" name="Transfer Request" res_model="sale.order" view_mode="tree,kanban,form,calendar,pivot,graph,activity" context="{}"/>
+    <menuitem id="box_request" parent="box_root_menu" name="Transfer Requests" action="box_quotations" sequence="1"/>
+
+    <menuitem id="box_general_settings" parent="box_root_menu" name="General Settings" sequence="5" />
+    <menuitem id="box_currency" parent="box_general_settings" name="Currency Config" action="website_sale.website_product_pricelist3" sequence="9"/>
+    <menuitem id="box_website_config" parent="box_general_settings" name="Website Configration" action="website.action_website_configuration" sequence="11"/>
+    <menuitem id="box_website_list" parent="box_general_settings" name="Websites" action="website.action_website_list" sequence="10"/>
+    <menuitem id="box_queries" parent="box_general_settings" name="Transfer Queries" action="action_box_app" sequence="8"/>
+    <menuitem id="box_pages" parent="box_general_settings" name="Page List" action="website.action_website_pages_list" sequence="1"/>
+    <menuitem id="box_city_menu" parent="box_general_settings" name="Cities" action="action_city_app" sequence="2"/>
+    <menuitem id="box_car_menu" parent="box_general_settings" name="Car List" action="action_car_app" sequence="3"/>
+    <menuitem id="box_extra_menu" parent="box_general_settings" name="Extras" action="action_extra_app" sequence="4"/>
+
+    <menuitem id="box_marketing" name="Marketing" parent="box_root_menu" sequence="3"/>
+    <menuitem id="box_crm" parent="box_marketing" name="Potential Customers" action="crm.crm_lead_all_leads"/>
+    <menuitem id="box_livechat" parent="box_marketing" name="Customer Live Chat" action="im_livechat.im_livechat_channel_action" />
+
+    <menuitem id="box_statistics" parent="box_root_menu" name="Web Statistics" sequence="4" />
+    <menuitem id="box_visitors" parent="box_statistics" name="Visitors" action="website.website_visitors_action"/>
+    <act_window id="box_page_view_act" name="Page Views" res_model="website.track" view_mode="tree,graph" context="{'search_default_type_url': 1, 'create': False, 'edit': False, 'copy': False}"/>
+    <menuitem id="box_page_views" parent="box_statistics" name="Page Views" action="box_page_view_act"/>
+    <menuitem id="box_google" parent="box_statistics" name="Google Analytics" action="website.backend_dashboard"/> -->
+    <!--
+	<menuitem id="box_app_menu" name="box" action="action_box_app" parent="box_sub_menu"/>
+	-->
+</odoo>

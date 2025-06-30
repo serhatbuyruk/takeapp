@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_translation_profile_user,translation.profile.user,model_translation_profile,base.group_user,1,1,1,0
+access_translation_profile_manager,translation.profile.manager,model_translation_profile,base.group_system,1,1,1,1
+access_translation_profile_lines_user,translation.profile.lines.user,model_translation_profile_lines,base.group_user,1,1,1,0
+access_translation_profile_lines_manager,translation.profile.lines.manager,model_translation_profile_lines,base.group_system,1,1,1,1
+access_translation_quality_check_user,translation.quality.check.user,model_translation_quality_check,base.group_user,1,1,1,0
+access_translation_quality_check_manager,translation.quality.check.manager,model_translation_quality_check,base.group_system,1,1,1,1
+access_translation_cache_user,translation.cache.user,model_translation_cache,base.group_user,1,0,0,0
+access_translation_cache_manager,translation.cache.manager,model_translation_cache,base.group_system,1,1,1,1
+access_translation_batch_wizard_user,translation.batch.wizard.user,model_translation_batch_wizard,base.group_user,1,1,1,0

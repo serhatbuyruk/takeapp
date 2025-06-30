@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_kreatif_user_1,kreatif User,model_kreatif_profile,kreatif.kreatif_group_user,1,0,0,0
+access_kreatif_user_2,kreatif Manager,model_kreatif_profile,kreatif.kreatif_group_manager,1,1,0,0
+access_kreatif_user_3,kreatif Admin,model_kreatif_profile,kreatif.kreatif_group_admin,1,1,1,1
+access_kreatif_user_4,kreatif Dealer,model_kreatif_profile,kreatif.kreatif_group_dealer,1,1,1,1
+access_kreatif_user_5,kreatif Access Rigths Full Access,model_kreatif_profile,base.group_erp_manager,1,1,1,1
+access_kreatif_user_6,kreatif Settings Full Access,model_kreatif_profile,base.group_system,1,1,1,1
+

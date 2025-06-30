@@ -1,0 +1,72 @@
+<odoo>
+    <template id="etkin_promosyon_urunler_page" name="Ürünler">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>Ürünler</h1>
+                <!-- Hata Mesajı -->
+                <t t-if="'error' in data">
+                    <p class="text-danger">
+                        <t t-esc="data['error']"/>
+                    </p>
+                </t>
+                <!-- Ürün Listesi -->
+                <t t-else="">
+                    <div class="row">
+                        <t t-foreach="data.get('data', [])" t-as="urun">
+                            <div class="col-md-4">
+                                <div class="card mb-4">
+                                    <!-- Ürün Resmi -->
+                                    <img t-att-src="urun.get('resim1', '/web/static/src/img/placeholder.png')" class="card-img-top" alt="Ürün Resmi"/>
+                                    <div class="card-body">
+                                        <h5 class="card-title"><t t-esc="urun.get('urun_isim', 'İsim Yok')"/></h5>
+                                        <p class="card-text">
+                                            <t t-esc="urun.get('urun_aciklama', 'Açıklama Yok')"/>
+                                        </p>
+                                        <p class="text-success">
+                                            <strong><t t-esc="urun.get('urun_fiyat', 'Fiyat Yok')"/> TL</strong>
+                                        </p>
+                                        <p class="text-muted">
+                                            Stok: <t t-esc="urun.get('toplam_stok', 0)"/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+
+
+
+
+
+<!-- <odoo>
+    <template id="etkin_promosyon_urunler_page" name="Ürünler">
+        <t t-call="website.layout">
+        <div class="container">
+            <h1>Ürünler</h1>
+              Hata Mesajı  
+            <t t-if="'error' in data">
+                <p class="text-danger">
+                    <t t-esc="data['error']"/>
+                </p>
+            </t>
+              Ürün Listesi  
+            <t t-else="">
+                <ul>
+                    <t t-foreach="data.get('data', [])" t-as="urun">
+                        <li>
+                            <strong><t t-esc="urun.get('urun_isim', 'İsim Yok')"/></strong> - 
+                            <t t-esc="urun.get('urun_fiyat', 'Fiyat Yok')"/> TL
+                        </li>
+                    </t>
+                </ul>
+            </t>
+        </div>
+    </t>
+    </template>
+</odoo>
+ -->

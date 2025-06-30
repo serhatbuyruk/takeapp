@@ -1,0 +1,31 @@
+<odoo>
+    <template id="ustkategoriler_template" name="Ust Kategoriler">
+        <t t-call="website.layout">
+            <div class="container mt-4">
+                <h1>Üst Kategoriler</h1>
+                <div class="row">
+                    <!-- Üst Kategorileri Listeleme -->
+                    <t t-foreach="ustkategoriler" t-as="ustkategori">
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <!-- Kategori İkonu -->
+                                    <img t-att-src="ustkategori.get('kat_icon')" alt="Category Icon" class="img-fluid mb-3" style="max-width: 100px; max-height: 100px;" />
+                                    <!-- Kategori İsmi -->
+                                    <h5 class="card-title" t-esc="ustkategori.get('isim')"></h5>
+                                    <!-- Kategori Açıklaması -->
+                                    <p class="card-text">
+                                        <t t-esc="ustkategori.get('aciklama')" />
+                                    </p>
+                                </div>
+                                <div class="card-footer text-muted text-center">
+                                    <strong>Category ID:</strong> <t t-esc="ustkategori.get('kategori_id')" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

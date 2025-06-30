@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_voip_crm_create_customer_wizard" model="ir.ui.view">
+            <field name="name">crm_voip.crm.create_customer_wizard.form</field>
+            <field name="model">crm_voip.crm.create_customer_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Create Customer">
+                    <sheet>
+                        <group>
+                            <field name="customer_id"
+                                   options="{'no_create':True,'no_edit':True,'no_open':True}"
+                                   attrs="{'invisible':[('new_customer', '=', True)]}"/>
+                            <field name="new_customer" widget="boolean_toggle"/>
+                            <field name="name" attrs="{'invisible':[('new_customer', '=', False)]}"/>
+                            <field name="surname" attrs="{'invisible':[('new_customer', '=', False)]}"/>
+                            <field name="same_customer_exist" invisible="1"/>
+                            <field name="same_customer_id"
+                                   domain="[('name', '=ilike', name), ('surname', '=ilike', surname)]"
+                                   attrs="{'invisible':['|', ('new_customer', '=', False), ('same_customer_exist', '=', False)]}"/>
+                            <button string="Select this customer" name="select_same_customer" type="object"
+                                    attrs="{'invisible':['|', ('new_customer', '=', False), ('same_customer_exist', '=', False)]}"
+                                    class="btn-primary"/>
+
+                            <field name="sex" attrs="{'invisible':[('new_customer', '=', False)]}"/>
+                            <field name="nationality" attrs="{'invisible':[('new_customer', '=', False)]}"/>
+                            <field name="note" attrs="{'invisible':[('new_customer', '=', False)]}"/>
+                            <field name="black_list" attrs="{'invisible':[('new_customer', '=', False)]}"/>
+                            <field name="permit_communication" attrs="{'invisible':[('new_customer', '=', False)]}"/>
+
+                            <field name="existing_name" readonly="1"
+                                   attrs="{'invisible':[('customer_id', '=', False)]}"/>
+                            <field name="existing_surname" readonly="1"
+                                   attrs="{'invisible':[('customer_id', '=', False)]}"/>
+                            <field name="existing_sex" readonly="1"
+                                   attrs="{'invisible':[('customer_id', '=', False)]}"/>
+                            <field name="existing_nationality" readonly="1"
+                                   attrs="{'invisible':[('customer_id', '=', False)]}"/>
+                            <field name="existing_note" readonly="1"
+                                   attrs="{'invisible':[('customer_id', '=', False)]}"/>
+                        </group>
+                        <notebook attrs="{'invisible':[('new_customer', '=', False)]}">
+                             <page string="Questions">
+                                <field name="questions_ids">
+                                    <tree default_order='id asc' editable="bottom">
+                                        <field name="name"/>
+                                        <field name="question_id" invisible="1"/>
+                                        <field name="answer"/>
+                                        <field name="answer_id" domain="[('question_id', '=', question_id)]"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button string="Save &amp; Open Customer Detail" name="open_customer" icon="fa-plus-square-o " type="object"
+                                attrs="{'invisible':[('customer_id', '=', False)]}" class="btn-info"/>
+                        <button string="Create &amp; Open Customer Detail" name="create_and_open"
+                                icon="fa-external-link-square" class="btn-success"
+                                type="object" attrs="{'invisible':[('new_customer', '=', False)]}"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

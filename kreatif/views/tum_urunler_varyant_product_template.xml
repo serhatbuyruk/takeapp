@@ -1,0 +1,41 @@
+<odoo>
+    <template id="tum_urunler_varyant_product_template" name="Product List with Variants">
+        <t t-call="website.layout">
+            <div class="container mt-4">
+                <h1>Product List with Variants</h1>
+                <div class="row">
+                    <t t-foreach="products" t-as="product">
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <!-- Ana ürün görseli -->
+                                <img t-att-src="product.get('resim1')" alt="Product Image" class="card-img-top" />
+                                <div class="card-body">
+                                    <h5 class="card-title" t-esc="product.get('urun_baslik')" />
+                                    <p class="card-text">
+                                        <strong>Description:</strong> <t t-esc="product.get('urun_aciklama')" /><br/>
+                                        <strong>Price:</strong> <t t-esc="product.get('urun_fiyat_virgul')" /> TL<br/>
+                                        <strong>Stock:</strong> <t t-esc="product.get('toplam_stok')" />
+                                    </p>
+                                </div>
+                                <!-- Varyantları listeleme -->
+                                <div class="card-footer">
+                                    <h6>Variants:</h6>
+                                    <ul>
+                                        <t t-foreach="product.get('varyantlar', [])" t-as="variant">
+                                            <li>
+                                                <img t-att-src="variant.get('resim1')" alt="Variant Image" class="img-thumbnail" width="50" />
+                                                <strong t-esc="variant.get('urun_renk')" />: 
+                                                <t t-esc="variant.get('urun_fiyat_virgul')" /> TL, 
+                                                Stock: <t t-esc="variant.get('toplam_stok')" />
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

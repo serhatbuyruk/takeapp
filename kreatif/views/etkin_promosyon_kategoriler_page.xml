@@ -1,0 +1,219 @@
+<odoo>
+    <template id="etkin_promosyon_kategoriler_page" name="Kategoriler">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="mb-5 text-center">Kategoriler</h1>
+
+                <!-- Hata Mesajı -->
+                <t t-if="'error' in data">
+                    <div class="alert alert-danger text-center">
+                        <t t-esc="data['error']"/>
+                    </div>
+                </t>
+
+                <!-- Kategori Listesi -->
+                <t t-else="">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <t t-foreach="data.get('data', [])" t-as="kategori">
+                            <div class="col">
+                                <div class="card h-100 shadow-sm">
+                                    <!-- Kategori Resmi -->
+                                    <img t-att-src="kategori.get('resim', '/web/static/src/img/placeholder.png')" 
+                                         class="card-img-top" 
+                                         t-att-alt="kategori.get('isim', 'Kategori Resmi')" 
+                                         style="height: 350px; object-fit: cover;"
+                                         onerror="this.src='/web/static/src/img/placeholder.png';"/>
+
+                                    <!-- Kategori Detayları -->
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title mb-3">
+                                            <a t-att-href="'/turuncu/varyant/urunler?kategori_id=' + str(kategori.get('kategori_id'))"
+                                               class="btn btn-outline-primary fw-bold text-uppercase px-3 py-2">
+                                                <t t-esc="kategori.get('isim', 'Kategori İsmi')"/>
+                                            </a>
+                                        </h5>
+                                        <p class="card-text text-muted">
+                                            <t t-esc="kategori.get('aciklama', 'Açıklama Yok')"/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+
+
+
+<!-- <odoo>
+    <template id="etkin_promosyon_kategoriler_page_twooo" name="Kategoriler">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="mb-5 text-center">Kategoriler</h1>
+
+                 
+                <t t-if="'error' in data">
+                    <div class="alert alert-danger text-center">
+                        <t t-esc="data['error']"/>
+                    </div>
+                </t>
+
+                
+                <t t-else="">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <t t-foreach="data.get('data', [])" t-as="kategori">
+                            <div class="col">
+                                <div class="card h-100 shadow-sm">
+                                     
+                                    <img t-att-src="kategori.get('resim', '/web/static/src/img/placeholder.png')" 
+                                         class="card-img-top" 
+                                         t-att-alt="kategori.get('isim', 'Kategori Resmi')" 
+                                         style="height: 350px; object-fit: cover;"
+                                         onerror="this.src='/web/static/src/img/placeholder.png';"/>
+
+                                     
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">
+                                            <t t-esc="kategori.get('isim', 'Kategori İsmi')"/>
+                                        </h5>
+                                        <p class="card-text text-muted">
+                                            <t t-esc="kategori.get('aciklama', 'Açıklama Yok')"/>
+                                        </p>
+                                    </div>
+                                    
+                                     
+                                    <div class="card-footer text-center">
+                                        <a t-att-href="'/turuncu/varyant/urunler?kategori_id=' + str(kategori.get('kategori_id'))" 
+                                           class="btn btn-primary">
+                                            <t t-esc="kategori.get('isim')"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+ -->
+
+
+
+
+
+<!-- <odoo>
+    <template id="etkin_promosyon_kategoriler_page" name="Kategoriler">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="mb-5 text-center">Kategoriler</h1>
+
+                
+                <t t-if="'error' in data">
+                    <div class="alert alert-danger text-center">
+                        <t t-esc="data['error']"/>
+                    </div>
+                </t>
+
+                 
+                <t t-else="">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <t t-foreach="data.get('data', [])" t-as="kategori">
+                            <div class="col">
+                                <div class="card h-100 shadow-sm">
+                                     
+                                    <img t-att-src="kategori.get('resim', '/web/static/src/img/placeholder.png')" 
+                                         class="card-img-top" 
+                                         t-att-alt="kategori.get('isim', 'Kategori Resmi')" 
+                                         style="height: 350px; object-fit: cover;"/>
+
+                                     
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">
+                                            <t t-esc="kategori.get('isim', 'Kategori İsmi')"/>
+                                        </h5>
+                                        <p class="card-text text-muted">
+                                            <t t-esc="kategori.get('aciklama', 'Açıklama Yok')"/>
+                                        </p>
+                                    </div>
+                                    
+                                    
+                                    <div class="card-footer text-center">
+                                        <a t-att-href="'/turuncu/varyant/urunler?kategori_id=' + str(kategori.get('kategori_id'))" 
+                                           class="btn btn-primary">
+                                            <t t-esc="kategori.get('isim')"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo> -->
+
+
+<!-- <odoo>
+    <template id="etkin_promosyon_kategoriler_page" name="Kategoriler">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>Kategoriler</h1>
+                 Hata Mesajı  
+                <t t-if="'error' in data">
+                    <p class="text-danger">
+                        <t t-esc="data['error']"/>
+                    </p>
+                </t>
+                  Kategori Listesi  
+                <t t-else="">
+                    <ul>
+                        <t t-foreach="data.get('data', [])" t-as="kategori">
+                            <li>
+                                <a t-att-href="'/turuncu/varyant/urunler?kategori_id=' + str(kategori.get('kategori_id'))">
+                                    <t t-esc="kategori.get('isim')"/>
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+ -->
+
+<!-- <odoo>
+    <template id="etkin_promosyon_kategoriler_page" name="Kategoriler">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>Kategoriler</h1>
+                <t t-if="'error' in data">
+                    <p class="text-danger">
+                        <t t-esc="data['error']"/>
+                    </p>
+                </t>
+                <t t-elif="'data' in data">
+                    <ul>
+                        <t t-foreach="data['data']" t-as="kategori">
+                            <li>
+                                <a t-att-href="'/turuncu/urunler?kategori_id=' + str(kategori.get('kategori_id'))">
+                                    <t t-esc="kategori.get('isim')"/>
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                </t>
+                <t t-else="">
+                    <p>Veri bulunamadı.</p>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
+ -->

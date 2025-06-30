@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="crm_voip_crm_customer_form" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.form</field>
+            <field name="model">crm_voip.crm.customer</field>
+            <field name="arch" type="xml">
+                <form string="Customer">
+                    <sheet>
+                        <group>
+                            <field name="partner_id"
+                                   groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                            <field name="contact_id"/>
+                            <field name="name"/>
+                            <field name="surname"/>
+                            <field name="birthdate"/>
+                            <field name="sex"/>
+                            <field name="nationality"/>
+                            <field name="note"/>
+                            <field name="source_id"/>
+                            <field name="permit_communication"/>
+                            <field name="black_list"/>
+                        </group>
+                        <notebook attrs="{'invisible':[('id', '=', False)]}">
+                            <page string="Questions">
+                                <field name="questions_ids">
+                                    <tree default_order='id asc' editable="bottom">
+                                        <field name="name"/>
+                                        <field name="question_id" invisible="1"/>
+                                        <field name="answer"/>
+                                        <field name="answer_id" domain="[('question_id', '=', question_id)]"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Phone Numbers">
+                                <field name="phone_ids">
+                                    <form string="Phone Numbers">
+                                        <header>
+                                            <button string="Call Phone" name="call_phone" icon="fa-phone" type="object"
+                                                    class="btn-success"/>
+                                            <button string="Send SMS" name="send_sms_wizard" icon="fa-envelope"
+                                                    type="object"
+                                                    class="btn-primary"/>
+                                        </header>
+                                        <group>
+                                            <field name="phone"/>
+                                            <field name="phone_type"/>
+                                            <field name="description"/>
+                                        </group>
+                                    </form>
+                                    <tree>
+                                        <field name="phone"/>
+                                        <field name="phone_type"/>
+                                        <field name="description"/>
+                                        <button string="Call" name="call_phone" type="object"
+                                                class="btn-success"/>
+                                        <button string="SMS" name="send_sms_wizard" type="object"
+                                                class="btn-primary"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Calls">
+                                <field name="call_ids">
+                                    <form string="Calls">
+                                        <header>
+                                            <button string="Call Phone" name="call_phone" icon="fa-phone" type="object"
+                                                    class="btn-success"/>
+                                            <button string="Send SMS" name="send_sms_wizard" icon="fa-envelope"
+                                                    type="object"
+                                                    class="btn-primary"/>
+                                        </header>
+                                        <group>
+                                            <field name="seller_id"/>
+                                            <field name="type"/>
+                                            <field name="phone"/>
+                                            <field name="start"/>
+                                            <field name="duration_show"/>
+                                            <field name="unique_id"/>
+                                        </group>
+                                    </form>
+                                    <tree>
+                                        <field name="call_icon" widget="image" string=" "/>
+                                        <field name="seller_id"/>
+                                        <field name="type"/>
+                                        <field name="phone"/>
+                                        <field name="start"/>
+                                        <field name="duration_show"/>
+                                        <button string="Call" name="call_phone" type="object"
+                                                class="btn-success"/>
+                                        <button string="SMS" name="send_sms_wizard" type="object"
+                                                class="btn-primary"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Sms">
+                                <field name="sms_ids">
+                                    <form string="Sms">
+                                        <group>
+                                            <field name="mobile_number"/>
+                                            <field name="sms_content"/>
+                                            <field name="create_date"/>
+                                            <field name="result"/>
+                                            <field name="result_text"/>
+                                        </group>
+                                    </form>
+                                    <tree>
+                                        <field name="mobile_number"/>
+                                        <field name="sms_content"/>
+                                        <field name="create_date"/>
+                                        <field name="result"/>
+                                        <field name="result_text"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter" attrs="{'invisible':[('id', '=', False)]}">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_customer_tree" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.tree</field>
+            <field name="model">crm_voip.crm.customer</field>
+            <field name="arch" type="xml">
+                <tree string="Customer">
+                    <field name="partner_id"
+                           groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                    <field name="sex_html"/>
+                    <field name="name"/>
+                    <field name="surname"/>
+                    <field name="birthdate"/>
+                    <field name="sex"/>
+                    <field name="nationality"/>
+                    <field name="note"/>
+                    <field name="source_id"/>
+                    <field name="permit_communication"/>
+                    <field name="black_list"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_customer_kanban" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.kanban</field>
+            <field name="model">crm_voip.crm.customer</field>
+            <field name="arch" type="xml">
+                <kanban string="Customer">
+                    <field name="partner_id"
+                           groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                    <field name="sex_html"/>
+                    <field name="name"/>
+                    <field name="surname"/>
+                    <field name="nationality"/>
+                    <field name="note"/>
+                    <field name="source_id"/>
+                    <field name="permit_communication"/>
+                    <field name="black_list"/>
+                    <field name="kanban_last_call_seller_name"/>
+                    <field name="kanban_last_call_phone"/>
+                    <field name="kanban_activity_color"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_content oe_kanban_global_click" t-attf-style="border: 2px solid #{record.kanban_activity_color.raw_value};">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <t t-raw="record.sex_html.value"/>
+                                    </div>
+                                    <div class="col-md-10 text-bold text-info"
+                                         style="text-align:center;font-weight: bold;">
+                                        <field name="name"/>
+                                        <field name="surname"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align:center;">
+                                        <span class="text-danger">
+                                            <field name="nationality"/>
+                                        </span>
+                                        -
+                                        <span class="text-warning">
+                                            <field name="source_id"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="row" style="min-height:40px;">
+                                    <div class="col-md-12 text-info" style="font-weight: bold;text-align:center;">
+                                        <h5>
+                                            <field name="kanban_last_call_seller_name"/>
+                                        </h5>
+                                    </div>
+                                    <div class="col-md-12 text-danger" style="font-weight: bold;text-align:center;">
+                                        <h5>
+                                            <field name="kanban_last_call_phone"/>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text_center">Permit Com.</th>
+                                                    <th class="text_center">Black List</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <t t-if="record.permit_communication.raw_value">
+                                                            <i title="success" class="fa fa-check text-success"/>
+                                                        </t>
+                                                        <t t-if="!record.permit_communication.raw_value">
+                                                            <i title="success" class="fa fa-times text-danger"/>
+                                                        </t>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <t t-if="record.black_list.raw_value">
+                                                            <i title="success" class="fa fa-check text-success"/>
+                                                        </t>
+                                                        <t t-if="!record.black_list.raw_value">
+                                                            <i title="success" class="fa fa-times text-danger"/>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <field name="note"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_customer_action" model="ir.actions.act_window">
+            <field name="name">Customer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm_voip.crm.customer</field>
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+
+        <record id="crm_voip_crm_customer_search" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.search</field>
+            <field name="model">crm_voip.crm.customer</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="full_name"/>
+                    <field name="name"/>
+                    <field name="surname"/>
+                    <field name="birthdate"/>
+                    <field name="sex"/>
+                    <field name="nationality"/>
+                    <field name="note"/>
+                    <separator/>
+                    <filter string="My Activities" name="activities_my"
+                            domain="[('activity_ids.user_id', '=', uid)]"/>
+                    <separator/>
+                    <filter string="Late Activities" name="activities_overdue"
+                            domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                            help="Show all records which has next action date is before today"/>
+                    <filter string="Today Activities" name="activities_today"
+                            domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Future Activities" name="activities_upcoming_all"
+                            domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))
+                        ]"/>
+                    <group expand="1" string="Group by">
+                        <filter string="Operator" name="partner_id" context="{'group_by': 'partner_id'}"
+                                groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                        <filter string="Source" name="source_id" context="{'group_by': 'source_id'}"/>
+                        <filter string="Sex" name="sex" context="{'group_by': 'sex'}"/>
+                        <filter string="Nationality" name="nationality" context="{'group_by': 'nationality'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

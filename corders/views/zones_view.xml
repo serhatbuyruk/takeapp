@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--tree view of the zones model-->
+    <record id="zones_tree" model="ir.ui.view">
+        <field name="name">zones.profile.tree</field>
+        <field name="model">zones.profile</field>
+        <field name="arch" type="xml">
+            <tree string="Cities">
+                <field name="name"/>
+                <field name="sale_price_currency_id" invisible="1"/>
+                <field name="base_price"/>
+                <field name="per_mile_price"/>
+                <field name="is_active" optional="hide"/>
+                <field name="out_of_area" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <!--form view of the zones model-->
+    <record id="zones_form" model="ir.ui.view">
+        <field name="name">zones.profile.form</field>
+        <field name="model">zones.profile</field>
+        <field name="arch" type="xml">
+            <form string="Cities">
+                <sheet>
+                    <group>
+                        <group string="Adres">
+                            <field name="name"/>
+                            <field name="polygons_char"/>
+                            <field name="polygons_json" invisible="1"/>
+                        </group>
+                        <group string="Fiyatlandırma">
+                            <field name="sale_price_currency_id" invisible="1"/>
+                            <field name="base_price"/>
+                            <field name="per_mile_price"/>
+                            <field name="is_active"/>
+                            <field name="out_of_area"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <!--action of the zones menu-->
+    <record id="action_zones_profile" model="ir.actions.act_window">
+        <field name="name">zones_profile</field>
+        <field name="res_model">zones.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="zones_root_menu" name="Zones" web_icon="corders,static/src/img/route.png"/>
+    <act_window id="zones_list" name="Zones" res_model="zones.profile" view_mode="tree,form" context="{}"/>
+    <menuitem id="zones_zones" parent="zones_root_menu" name="Zones" action="zones_list" sequence="2"/>
+</odoo>

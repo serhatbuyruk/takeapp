@@ -1,0 +1,14 @@
+<odoo>
+    <template id="custom_whatsapp_location_snippet" >
+        <t t-name="custom.whatsapp_location_snippet">
+            <t t-if="qrmenu.whatsapp_location_button_visibility == True">
+                <div id="whatsapplocation" class="whatsapp-share">
+                    <a href="#" class="btn btn-success" id="shareLocationButton" t-att-data-whatsapp-phone="qrmenu.whatsapp_location_phone or '90xxxxxxxxxx'">
+                        <i class="fa fa-whatsapp"></i>
+                        <span style="margin-left: 10px;">Konum Paylaş</span>
+                    </a>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

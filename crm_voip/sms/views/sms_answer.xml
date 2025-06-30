@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_voip_sms_answer_form" model="ir.ui.view">
+            <field name="name">crm_voip.sms.answer.form</field>
+            <field name="model">crm_voip.sms.answer</field>
+            <field name="arch" type="xml">
+                <form string="Sms Answer">
+                    <sheet>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="name"/>
+                            <field name="content"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_voip_sms_answer_tree" model="ir.ui.view">
+            <field name="name">crm_voip.sms.answer.tree</field>
+            <field name="model">crm_voip.sms.answer</field>
+            <field name="arch" type="xml">
+                <tree string="Sms Answer">
+                    <field name="partner_id"/>
+                    <field name="name"/>
+                    <field name="content"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_voip_sms_answer_action" model="ir.actions.act_window">
+            <field name="name">Sms Answer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm_voip.sms.answer</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+    </data>
+</odoo>

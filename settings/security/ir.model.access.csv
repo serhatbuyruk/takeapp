@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_settings_user_1,Settings User,model_settings_profile,settings.settings_group_user,1,0,0,0
+access_settings_user_2,Settings Manager,model_settings_profile,settings.settings_group_manager,1,1,1,1
+access_settings_user_3,Settings Admin,model_settings_profile,settings.settings_group_admin,1,1,1,1
+access_settings_user_4,Settings Dealer,model_settings_profile,settings.settings_group_dealer,1,1,1,1
+access_settings_user_5,Settings Access Rigths Full Access,model_settings_profile,base.group_erp_manager,1,1,1,1
+access_settings_user_6,Settings Full Access,model_settings_profile,base.group_system,1,1,1,1

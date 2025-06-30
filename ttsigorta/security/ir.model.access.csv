@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ttsigorta_admin,ttsigorta Admin,model_ttsigorta_profile,base.group_system,1,1,1,1
+access_ttsigorta_user,ttsigorta User,model_ttsigorta_profile,base.group_user,1,0,0,0
+access_ttsigorta_profile_manager,ttsigorta_profile_manager,model_ttsigorta_profile,,1,1,1,1

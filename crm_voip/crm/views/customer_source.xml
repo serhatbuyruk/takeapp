@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_voip_crm_customer_source_form" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.source.form</field>
+            <field name="model">crm_voip.crm.customer.source</field>
+            <field name="arch" type="xml">
+                <form string="Customer Source">
+                    <sheet>
+                        <group>
+                            <field name="partner_id"
+                                   groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_customer_source_tree" model="ir.ui.view">
+            <field name="name">crm_voip.crm.customer.source.tree</field>
+            <field name="model">crm_voip.crm.customer.source</field>
+            <field name="arch" type="xml">
+                <tree string="Customer Source">
+                    <field name="partner_id"
+                           groups="crm_voip.crm_voip_manager,crm_voip.crm_voip_full_access"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="crm_voip_crm_customer_source_action" model="ir.actions.act_window">
+            <field name="name">Customer Source</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm_voip.crm.customer.source</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

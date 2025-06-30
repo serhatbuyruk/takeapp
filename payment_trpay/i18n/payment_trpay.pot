@@ -1,0 +1,297 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* payment_trpay
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-20 18:34+0000\n"
+"PO-Revision-Date: 2023-11-20 18:34+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: payment_trpay
+#: model:ir.model.fields.selection,name:payment_trpay.selection__payment_provider__paytr_max_installmentt__10
+msgid "10"
+msgstr ""
+
+#. module: payment_trpay
+#: model:ir.model.fields.selection,name:payment_trpay.selection__payment_provider__paytr_max_installmentt__11
+msgid "11"
+msgstr ""
+
+#. module: payment_trpay
+#: model:ir.model.fields.selection,name:payment_trpay.selection__payment_provider__paytr_max_installmentt__12
+msgid "12"
+msgstr ""
+
+#. module: payment_trpay
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__code
+msgid "Code"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_transaction.py:0
+#, python-format
+msgid "Could not connect to Payment Provider. Please try again later"
+msgstr ""
+
+#. module: payment_trpay
+#: model:payment.provider,display_as:payment_trpay.payment_payment_provider_paytr
+msgid "Credit Card (PayTr)"
+msgstr ""
+
+#. module: payment_trpay
+#: model:product.template,description_sale:payment_trpay.payment_paytr_vade_farki
+msgid "Credit Card Interest"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_currency_id
+#, python-format
+msgid "Currency"
+msgstr ""
+
+#. module: payment_trpay
+#: model_terms:account.payment.term,note:payment_trpay.payment_paytr_term_credit_interest_paytr
+msgid "Deferred Payment by Credit Card (Paytr)"
+msgstr ""
+
+#. module: payment_trpay
+#: model:account.payment.term,name:payment_trpay.payment_paytr_term_credit_interest_paytr
+msgid "Deferred Payment by Credit Card(Paytr)"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,help:payment_trpay.field_payment_provider__paytr_timeout_limit
+#, python-format
+msgid ""
+"If a value other than zero is sent, the payment \n"
+"                                             transaction must be completed within this period. \n"
+"                                             (You can use it for security purposes in case \n"
+"                                             there is a price update in your system during payment)"
+msgstr ""
+
+#. module: payment_trpay
+#: model:product.template,name:payment_trpay.payment_paytr_vade_farki
+msgid "Interest"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_payment_interest_product_id
+#, python-format
+msgid "Interest rate service for installment transactions"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_no_installment
+#, python-format
+msgid "Is it in installments?"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields.selection,name:payment_trpay.selection__payment_provider__paytr_max_installmentt__0
+#, python-format
+msgid "Maximum installment allowed"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_merchant_id
+#, python-format
+msgid "Merchant Id"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_merchant_key
+#, python-format
+msgid "Merchant Key"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_merchant_salt
+#, python-format
+msgid "Merchant Salt"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields.selection,name:payment_trpay.selection__payment_provider__paytr_no_installment__1
+#, python-format
+msgid "No"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_transaction.py:0
+#, python-format
+msgid "No transaction found matching reference %s."
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_max_installmentt
+#, python-format
+msgid "Number of installments"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/controllers/controllers.py:0
+#, python-format
+msgid "PAYTR notification failed: bad hash"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/controllers/controllers.py:0
+#, python-format
+msgid "PAYTR notification failed: missing hash"
+msgstr ""
+
+#. module: payment_trpay
+#: model:ir.model.fields.selection,name:payment_trpay.selection__payment_provider__code__paytr
+#: model:payment.provider,name:payment_trpay.payment_payment_provider_paytr
+msgid "PayTr"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_payment_interest_term_id
+#, python-format
+msgid "Payment Condition Installment transaction"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_payment_term_id
+#, python-format
+msgid "Payment Condition Installment-free transaction"
+msgstr ""
+
+#. module: payment_trpay
+#: model:ir.model,name:payment_trpay.model_payment_provider
+msgid "Payment Provider"
+msgstr ""
+
+#. module: payment_trpay
+#: model:ir.model,name:payment_trpay.model_payment_transaction
+msgid "Payment Transaction"
+msgstr ""
+
+#. module: payment_trpay
+#: model:account.payment.term,name:payment_trpay.payment_paytr_term_credit_paytr
+#: model_terms:account.payment.term,note:payment_trpay.payment_paytr_term_credit_paytr
+msgid "Payment by Credit Card (Paytr)"
+msgstr ""
+
+#. module: payment_trpay
+#: model:ir.model,name:payment_trpay.model_account_payment
+msgid "Payments"
+msgstr ""
+
+#. module: payment_trpay
+#: model_terms:ir.ui.view,arch_db:payment_trpay.payment_provider_paytr_form
+msgid ""
+"Paytr Notification URL should be: "
+"<b>https://domain/payment/trpay/webhook</b>"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_transaction.py:0
+#, python-format
+msgid "Received data with missing reference %(ref)s."
+msgstr ""
+
+#. module: payment_trpay
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_transaction__refund_amount
+msgid "Refund Amount"
+msgstr ""
+
+#. module: payment_trpay
+#: model:ir.model.fields,help:payment_trpay.field_payment_provider__code
+msgid "The technical code of this payment provider."
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields.selection,name:payment_trpay.selection__payment_provider__paytr_no_installment__0
+#, python-format
+msgid "Yes"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_transaction.py:0
+#, python-format
+msgid "Your email address was not found!"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_transaction.py:0
+#, python-format
+msgid "Your phone number is not in the desired format"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_transaction.py:0
+#, python-format
+msgid "Your phone number was not found!"
+msgstr ""
+
+#. module: payment_trpay
+#. odoo-python
+#: code:addons/payment_trpay/models/payment_provider.py:0
+#: model:ir.model.fields,field_description:payment_trpay.field_payment_provider__paytr_timeout_limit
+#, python-format
+msgid "timeout"
+msgstr ""
+
+#. module: payment_trpay
+#: model_terms:payment.provider,done_msg:payment_trpay.payment_payment_provider_paytr
+msgid "Ödemeniz başarıyla işleme alındı. Teşekkür ederiz!"
+msgstr ""
+
+#. module: payment_trpay
+#: model_terms:payment.provider,pending_msg:payment_trpay.payment_payment_provider_paytr
+msgid "Ödemeniz başarıyla işleme koyuldu, ancak onay bekliyor."
+msgstr ""
+
+#. module: payment_trpay
+#: model_terms:payment.provider,cancel_msg:payment_trpay.payment_payment_provider_paytr
+msgid "Ödemeniz iptal edildi."
+msgstr ""
+
+#. module: payment_trpay
+#: model_terms:payment.provider,auth_msg:payment_trpay.payment_payment_provider_paytr
+msgid "Ödemeniz onaylandı."
+msgstr ""
