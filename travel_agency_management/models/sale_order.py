@@ -84,6 +84,8 @@ class SaleOrder(models.Model):
         store=True,
     )
 
+    ##
+
     @api.depends('from_airport_id.code', 'to_airport_id.code')
     def _compute_travel_direction(self):
         for order in self:
