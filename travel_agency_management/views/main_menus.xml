@@ -130,4 +130,30 @@
         parent="travel_configuration_menu" 
         action="action_travel_airports" 
         sequence="10"/>
+        
+        <menuitem 
+        id="travel_configuration_menu" 
+        name="Configuration" 
+        parent="travel_agency_root_menu" 
+        sequence="100"/>
+    
+    <!-- YENİ EKLENECEK MENÜ ÖĞESİ -->
+    <menuitem 
+        id="travel_service_types_menu" 
+        name="Service Types" 
+        parent="travel_configuration_menu" 
+        action="action_travel_service_types" 
+        sequence="20"/>
+    
+    <!-- ... (Mevcut Airports menüsü) ... -->
+    <record id="action_travel_airports" model="ir.actions.act_window">
+        <!-- ... -->
+    </record>
+    <menuitem 
+        id="travel_airports_menu" 
+        name="Airports" 
+        parent="travel_configuration_menu" 
+        action="action_travel_airports" 
+        sequence="10"/>
+        
 </odoo>

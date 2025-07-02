@@ -9,21 +9,27 @@
             </field>
             <notebook position="inside">
                 <page string="Travel Information" name="travel_info">
+                    <!-- Sadece pasaport bilgilerini içeren iki sütunlu bölüm -->
                     <group>
                         <group string="Passport">
-                            <field name="passport_image" widget="image" class="oe_avatar"/>
+                            <field name="passport_image" widget="image" options="{'preview_image': 'passport_image', 'zoom': true, 'download': true}" style="width: 150px; height: 150px; object-fit: cover;"/>
                         </group>
-                        <group string="Family Members">
-                            <field name="family_member_ids" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name="name"/>
-                                    <field name="phone"/>
-                                    <field name="email"/>
-                                </tree>
-                            </field>
-                            <field name="main_contact_id" invisible="1"/>
+                        <group string="Passport Download">
+                            <field name="passport_image" widget="binary" string="Passport File"/>
                         </group>
                     </group>
+                </page>
+                <page string="Family Members" name="family_members">
+                    <!-- Aile üyeleri için tam genişlikli yeni bölüm -->
+                    <separator string="Family Members"/>
+                    <field name="family_member_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </tree>
+                    </field>
+                    <field name="main_contact_id" invisible="1"/>
                 </page>
             </notebook>
         </field>

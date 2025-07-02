@@ -1,0 +1,37 @@
+<odoo>
+    <!-- travel.service.type için Liste Görünümü -->
+    <record id="view_travel_service_type_tree" model="ir.ui.view">
+        <field name="name">travel.service.type.tree</field>
+        <field name="model">travel.service.type</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_index" options="{'no_create_edit': True}"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- travel.service.type için Form Görünümü (İsteğe bağlı, ama iyi bir pratik) -->
+    <record id="view_travel_service_type_form" model="ir.ui.view">
+        <field name="name">travel.service.type.form</field>
+        <field name="model">travel.service.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_index" options="{'no_create_edit': True}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- travel.service.type için Pencere Aksiyonu -->
+    <record id="action_travel_service_types" model="ir.actions.act_window">
+        <field name="name">Service Types</field>
+        <field name="res_model">travel.service.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

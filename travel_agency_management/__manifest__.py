@@ -21,11 +21,12 @@
         'data/travel_service_type_data.xml',
         'data/travel_airport_data.xml',
         'data/travel_product_data.xml',
+        'views/travel_service_type_views.xml',  # <-- BU SATIRI EKLEYİN
         'views/travel_views.xml',
         'views/res_partner_views.xml',
         'views/sale_order_views.xml',
         'views/main_menus.xml',
-        'report/travel_reports.xml',  # <-- BU YENİ SATIR
+        'report/travel_reports.xml',
     ],
     'assets': {},
     'installable': True,

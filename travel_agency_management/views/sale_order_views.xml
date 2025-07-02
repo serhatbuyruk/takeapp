@@ -57,6 +57,10 @@
                 <field name="total_purchase_price" string="Total Purchase" sum="Total"/>
                 <field name="total_sale_price" string="Total Sales" sum="Total"/>
                 <field name="total_profit" string="Total Profit" sum="Total"/>
+                
+                <!-- YENİ EKLENEN ALAN -->
+                <field name="invoice_amount_residual" string="Amount Due" sum="Total Due" optional="hide"/>
+
                 <field name="ticket_fare" string="Ticket Fare" optional="hide"/>
                 <field name="ticket_tax" string="Ticket Tax" optional="hide"/>
                 <field name="ticket_purchase_total" string="Ticket Purchase Total" optional="hide"/>
@@ -118,6 +122,12 @@
                         type="object"
                         class="btn-success"
                         attrs="{'invisible': ['|', ('invoice_count', '=', 0), ('invoice_payment_state', '!=', 'paid')]}"/>
+                
+                <button name="action_view_payments"
+                        string="View Payments"
+                        type="object"
+                        class="btn-info"
+                        attrs="{'invisible': ['|', ('invoice_count', '=', 0), ('invoice_payment_state', 'not in', ('in_payment', 'paid', 'partial'))]}"/>
 
             </tree>
         </field>

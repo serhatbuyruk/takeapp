@@ -1,5 +1,9 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+import json
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -14,7 +18,7 @@ class SaleOrder(models.Model):
     
     travel_direction = fields.Char(string="Direction", compute='_compute_travel_direction', store=True)
 
-    ticket_company_id = fields.Many2one('res.partner', string="Airline", domain="[('supplier_rank', '>', 0)]")
+    ticket_company_id = fields.Many2one('res.partner', string="Airline", domain="[('service_type_ids.name', '=', 'Ticket')]")
     ticket_purchase_date = fields.Date(string="Ticket Purchase Date")
     ticket_number = fields.Char(string="Ticket Number")
     ticket_adults = fields.Integer(string="Adults (Ticket)", default=0)
@@ -27,7 +31,7 @@ class SaleOrder(models.Model):
     ticket_sale_price = fields.Float(string="Sale Price (Ticket)")
     ticket_profit_percent = fields.Float(string="Profit % (Ticket)")
 
-    hotel_company_id = fields.Many2one('res.partner', string="Hotel", domain="[('supplier_rank', '>', 0)]")
+    hotel_company_id = fields.Many2one('res.partner', string="Hotel", domain="[('service_type_ids.name', '=', 'Hotel')]")
     hotel_room_count = fields.Integer(string="Room Count", default=0)
     hotel_adults = fields.Integer(string="Adults (Hotel)", default=0)
     hotel_children = fields.Integer(string="Children (Hotel)", default=0)
@@ -40,7 +44,7 @@ class SaleOrder(models.Model):
     hotel_sale_price = fields.Float(string="Sale Price (Hotel)")
     hotel_deadline = fields.Date(string="Deadline (Hotel)")
 
-    transfer_company_id = fields.Many2one('res.partner', string="Transfer Company", domain="[('supplier_rank', '>', 0)]")
+    transfer_company_id = fields.Many2one('res.partner', string="Transfer Company", domain="[('service_type_ids.name', '=', 'Transfer')]")
     transfer_type = fields.Selection([('individual', 'Individual'), ('group', 'Group')], string="Transfer Type", default='individual')
     transfer_from = fields.Char(string="Transfer From")
     transfer_to = fields.Char(string="Transfer To")
@@ -50,7 +54,7 @@ class SaleOrder(models.Model):
     transfer_sale_price = fields.Float(string="Sale Price (Transfer)")
     transfer_deadline = fields.Date(string="Deadline (Transfer)")
 
-    insurance_company_id = fields.Many2one('res.partner', string="Insurance Company", domain="[('supplier_rank', '>', 0)]")
+    insurance_company_id = fields.Many2one('res.partner', string="Insurance Company", domain="[('service_type_ids.name', '=', 'Insurance')]")
     insurance_date = fields.Date(string="Insurance Date")
     insurance_country_id = fields.Many2one('res.country', string="Insurance Country")
     insurance_note = fields.Text(string="Note (Insurance)")
@@ -58,13 +62,13 @@ class SaleOrder(models.Model):
     insurance_sale_price = fields.Float(string="Sale Price (Insurance)")
     
     tour_package_id = fields.Many2one('product.product', string="Tour Package", domain="[('type', '=', 'service')]")
-    tour_company_id = fields.Many2one('res.partner', string="Tour Company", domain="[('supplier_rank', '>', 0)]")
+    tour_company_id = fields.Many2one('res.partner', string="Tour Company", domain="[('service_type_ids.name', '=', 'Tour')]")
     tour_note = fields.Text(string="Note (Tour)")
     tour_purchase_price = fields.Float(string="Purchase Price (Tour)")
     tour_sale_price = fields.Float(string="Sale Price (Tour)")
     tour_deadline = fields.Date(string="Deadline (Tour)")
 
-    visa_company_id = fields.Many2one('res.partner', string="Visa Service Company", domain="[('supplier_rank', '>', 0)]")
+    visa_company_id = fields.Many2one('res.partner', string="Visa Service Company", domain="[('service_type_ids.name', '=', 'Visa')]")
     visa_note = fields.Text(string="Note (Visa)")
     visa_purchase_price = fields.Float(string="Purchase Price (Visa)")
     visa_sale_price = fields.Float(string="Sale Price (Visa)")
@@ -84,7 +88,25 @@ class SaleOrder(models.Model):
         store=True,
     )
 
-    ##
+    # ========================================================================
+    # YENİ EKLENEN ALAN VE HESAPLAMA METODU
+    # ========================================================================
+    invoice_amount_residual = fields.Monetary(
+        string="Amount Due",
+        compute='_compute_invoice_residual',
+        currency_field='currency_id',
+        help="The total amount remaining to be paid on related invoices."
+    )
+
+    @api.depends('invoice_ids.amount_residual')
+    def _compute_invoice_residual(self):
+        for order in self:
+            # Sum the residual amount from all related invoices.
+            # The mapped() function is an efficient way to get a list of values from a recordset.
+            order.invoice_amount_residual = sum(order.invoice_ids.mapped('amount_residual'))
+    # ========================================================================
+    # YENİ EKLEME SONU
+    # ========================================================================
 
     @api.depends('from_airport_id.code', 'to_airport_id.code')
     def _compute_travel_direction(self):
@@ -191,3 +213,43 @@ class SaleOrder(models.Model):
         It finds and displays the invoices associated with this sales order.
         """
         return super().action_view_invoice()
+    
+    def action_view_payments(self):
+        """
+        Finds payments related to the sales order's invoices by looking at the reconciled journal items.
+        This is a more robust method than parsing the JSON widget.
+        """
+        self.ensure_one()
+
+        # Siparişe bağlı tüm faturaları al (sadece müşteri faturaları)
+        invoices = self.invoice_ids.filtered(lambda inv: inv.move_type == 'out_invoice')
+        if not invoices:
+            raise UserError(_("No customer invoices found for this order."))
+
+        # Fatura satırlarından (receivable lines) ilgili ödemelerin ID'lerini toplayacağız
+        # receivable_account_id, bir müşterinin şirkete borçlu olduğu parayı takip eden hesaptır.
+        receivable_lines = invoices.line_ids.filtered(
+            lambda line: line.account_id.account_type == 'asset_receivable'
+        )
+        
+        # Bu fatura satırlarıyla eşleşen (reconciled) tüm diğer satırları bul
+        reconciled_lines = receivable_lines.mapped('matched_debit_ids.debit_move_id') + \
+                           receivable_lines.mapped('matched_credit_ids.credit_move_id')
+
+        # Eşleşen satırların ait olduğu ödeme kayıtlarını (account.payment) bul
+        # Bir ödeme kaydı oluşturulduğunda, kendine ait bir muhasebe fişi (account.move) oluşturur.
+        # Bu fiş üzerinden ödemeye ulaşıyoruz.
+        payment_ids = reconciled_lines.mapped('payment_id').ids
+
+        if not payment_ids:
+            raise UserError(_("No payments found for this order."))
+
+        # Bulunan ödemeleri gösterecek bir pencere aksiyonu oluştur ve döndür.
+        return {
+            'name': _('Payments for Order %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.payment',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', list(set(payment_ids)))], # Yinelenen ID'leri kaldır
+            'target': 'current',
+        }

@@ -5,6 +5,7 @@ class TravelServiceType(models.Model):
     _description = 'Travel Service Type'
 
     name = fields.Char(string="Service Name", required=True, translate=True)
+    color = fields.Integer(string='Color Index') # <-- BU SATIRI EKLEYİN
 
 class TravelAirport(models.Model):
     _name = 'travel.airport'
