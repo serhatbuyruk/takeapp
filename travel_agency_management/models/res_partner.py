@@ -4,8 +4,10 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     passport_image = fields.Image(string="Passport Image", max_width=512, max_height=512)
+    passport_filename = fields.Char(string="Passport Filename")
     family_member_ids = fields.One2many('res.partner', 'main_contact_id', string="Family Members")
     main_contact_id = fields.Many2one('res.partner', string="Main Contact", index=True, ondelete='cascade')
+    
     
     service_type_ids = fields.Many2many(
         'travel.service.type', 

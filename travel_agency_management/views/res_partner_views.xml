@@ -9,24 +9,25 @@
             </field>
             <notebook position="inside">
                 <page string="Travel Information" name="travel_info">
-                    <!-- Sadece pasaport bilgilerini içeren iki sütunlu bölüm -->
                     <group>
                         <group string="Passport">
                             <field name="passport_image" widget="image" options="{'preview_image': 'passport_image', 'zoom': true, 'download': true}" style="width: 150px; height: 150px; object-fit: cover;"/>
                         </group>
                         <group string="Passport Download">
-                            <field name="passport_image" widget="binary" string="Passport File"/>
+                            <field name="passport_image" widget="binary" string="Passport File" filename="passport_filename"/>
+                            <field name="passport_filename" invisible="1"/>
                         </group>
                     </group>
                 </page>
                 <page string="Family Members" name="family_members">
-                    <!-- Aile üyeleri için tam genişlikli yeni bölüm -->
                     <separator string="Family Members"/>
                     <field name="family_member_ids" nolabel="1">
                         <tree editable="bottom">
                             <field name="name"/>
                             <field name="phone"/>
                             <field name="email"/>
+                            <field name="passport_image" widget="binary" string="Passport File" filename="passport_filename"/>
+                            <field name="passport_filename" invisible="1"/>
                         </tree>
                     </field>
                     <field name="main_contact_id" invisible="1"/>
@@ -35,20 +36,49 @@
         </field>
     </record>
 
+    <!-- 
+        ========================================================================
+        GÜNCELLENDİ: MÜŞTERİ LİSTE GÖRÜNÜMÜ
+        'debit' ve 'credit' alanları eklendi ve varsayılan olarak gizlendi.
+        ========================================================================
+    -->
+    <record id="view_customer_tree_travel" model="ir.ui.view">
+        <field name="name">res.partner.tree.customer.travel</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" string="Name"/>
+                <field name="phone" string="Phone"/>
+                <field name="mobile" string="Mobile"/>
+                <field name="email" string="Email"/>
+                <field name="debit" string="Debit" sum="Total Debit" optional="hide"/>
+                <field name="credit" string="Credit" sum="Total Credit" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 
+        ========================================================================
+        GÜNCELLENDİ: TEDARİKÇİ LİSTE GÖRÜNÜMÜ
+        'debit' ve 'credit' alanları eklendi ve varsayılan olarak gizlendi.
+        ========================================================================
+    -->
     <record id="view_vendor_tree_travel" model="ir.ui.view">
         <field name="name">res.partner.tree.vendor.travel</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <tree><field name="name" string="Name"/><field name="phone" string="Phone"/><field name="mobile" string="Mobile"/><field name="email" string="Email"/><field name="service_type_ids" string="Service" widget="many2many_tags"/></tree>
+            <tree>
+                <field name="name" string="Name"/>
+                <field name="phone" string="Phone"/>
+                <field name="mobile" string="Mobile"/>
+                <field name="email" string="Email"/>
+                <field name="service_type_ids" string="Service" widget="many2many_tags"/>
+                <field name="debit" string="Debit" sum="Total Debit" optional="hide"/>
+                <field name="credit" string="Credit" sum="Total Credit" optional="hide"/>
+            </tree>
         </field>
     </record>
 
-    <!--
-        ========================================================================
-        BUGFIX: Replaced 'total_receivable' with standard 'debit' and 'credit'
-        fields which are guaranteed to exist when 'account' module is installed.
-        ========================================================================
-    -->
     <record id="view_financial_summary_tree" model="ir.ui.view">
         <field name="name">res.partner.tree.financial.summary</field>
         <field name="model">res.partner</field>
@@ -74,10 +104,12 @@
         <field name="domain">[('supplier_rank', '>', 0)]</field>
         <field name="context">{'default_is_company': True, 'default_supplier_rank': 1}</field>
     </record>
+    
     <record id="action_travel_customers" model="ir.actions.act_window">
         <field name="name">Customers</field>
         <field name="res_model">res.partner</field>
         <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="view_customer_tree_travel"/>
         <field name="domain">[('customer_rank', '>', 0)]</field>
         <field name="context">{'default_customer_rank': 1}</field>
     </record>

@@ -88,21 +88,107 @@ class SaleOrder(models.Model):
         store=True,
     )
 
+    family_member_ids = fields.Many2many(
+        'res.partner', 
+        string="Family Members",
+        help="Main contact and their family members, automatically populated. Can be edited manually."
+    )
+
     # ========================================================================
     # YENİ EKLENEN ALAN VE HESAPLAMA METODU
     # ========================================================================
     invoice_amount_residual = fields.Monetary(
-        string="Amount Due",
-        compute='_compute_invoice_residual',
-        currency_field='currency_id',
-        help="The total amount remaining to be paid on related invoices."
+        string='Amount Due',
+        compute='_compute_invoice_amount_residual',
+        store=True,  # <-- GRUPLAMA İÇİN EN ÖNEMLİ KISIM!
+        currency_field='currency_id' # Monetary alanlar için gereklidir
     )
 
-    @api.depends('invoice_ids.amount_residual')
-    def _compute_invoice_residual(self):
+    # Alan tanımı aynı kalıyor
+    partner_credit_balance = fields.Monetary(
+        string='Customer Credit',
+        compute='_compute_partner_credit',
+        help="Shows the outstanding credit amount for this customer. This is the money the customer has paid in excess."
+    )
+
+    has_draft_invoice = fields.Boolean(
+        string="Has Draft Invoice", 
+        compute='_compute_has_draft_invoice',
+        help="True if the sales order has at least one invoice in draft state."
+    )
+
+    def action_confirm_and_view_invoice(self):
+        self.ensure_one()
+        
+        # Siparişe bağlı taslak durumundaki faturaları bul.
+        draft_invoices = self.invoice_ids.filtered(lambda inv: inv.state == 'draft')
+        
+        # Eğer taslak fatura varsa, onu onayla (post et).
+        if draft_invoices:
+            draft_invoices.action_post()
+            
+        # Faturayı/faturaları görüntülemek için standart metodu çağır.
+        return self.action_view_invoice()
+
+    # ========================================================================
+    # YENİ EKLENEN HESAPLAMA METODU
+    # ========================================================================
+    @api.depends('invoice_ids.state')
+    def _compute_has_draft_invoice(self):
         for order in self:
-            # Sum the residual amount from all related invoices.
-            # The mapped() function is an efficient way to get a list of values from a recordset.
+            # Siparişe bağlı faturalar içinde state'i 'draft' olan var mı diye kontrol et.
+            # .filtered() metodu eşleşen kayıtları bulur, bool() ise sonuç boş değilse True döner.
+            order.has_draft_invoice = bool(order.invoice_ids.filtered(lambda inv: inv.state == 'draft'))
+
+        # travel_agency_management/models/sale_order.py içindeki bu fonksiyonu güncelleyin
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id_set_family_members(self):
+        if self.partner_id:
+            # SADECE aile üyelerini al, müşterinin kendisini DAHİL ETME.
+            members = self.partner_id.family_member_ids
+            # Alanı yeni liste ile güncelle
+            self.family_member_ids = [(6, 0, members.ids)]
+        else:
+            # Müşteri yoksa alanı temizle
+            self.family_member_ids = [(5, 0, 0)]
+
+    # HATA VEREN FONKSİYONUN DÜZELTİLMİŞ HALİ
+    # Depend'i daha spesifik hale getirerek performansı artırıyoruz.
+    @api.depends('total_sale_price')
+    def _compute_partner_credit(self):
+        """
+        Calculates the selected customer's total outstanding credit.
+        This function is triggered whenever the customer (partner_id) on the sales order is changed.
+        """
+        for order in self:
+            # Eğer bir müşteri seçilmişse
+            if order.partner_id:
+                # Müşterinin toplam borcunu (debit) ve toplam alacağını (credit) al.
+                # Bu alanlar her zaman pozitif değerlerdir.
+                partner = order.partner_id
+                
+                # Bakiye = Borçlar - Alacaklar
+                # Eğer alacaklar borçlardan fazlaysa, sonuç negatif olur ve bu bir kredi demektir.
+                balance = partner.debit - partner.credit
+                
+                # Eğer bakiye negatifse (yani müşterinin bizden alacağı varsa)
+                if balance < 0:
+                    # Kredi miktarını pozitif bir sayı olarak göstermek için -1 ile çarpıyoruz.
+                    # Örneğin, balance -500 ise, müşterinin 500 TL kredisi var demektir.
+                    order.partner_credit_balance = 0.0
+                else:
+                    # Müşterinin kredisi yoksa (ya borcu var ya da bakiye sıfır)
+                    order.partner_credit_balance = -balance
+            else:
+                # Müşteri seçilmemişse kredi bakiyesi sıfırdır.
+                order.partner_credit_balance = 0.0
+
+
+    @api.depends('invoice_ids.amount_residual')
+    def _compute_invoice_amount_residual(self):
+        for order in self:
+            # Satış siparişine bağlı tüm faturaların kalan tutarlarını topla
             order.invoice_amount_residual = sum(order.invoice_ids.mapped('amount_residual'))
     # ========================================================================
     # YENİ EKLEME SONU
