@@ -1,3 +1,4 @@
+<!-- travel_agency_management/views/sale_order_views.xml -->
 <odoo>
     <!-- Arama Görünümü -->
     <record id="view_order_search_travel" model="ir.ui.view">
@@ -34,16 +35,13 @@
         </field>
     </record>
 
-    <!-- travel_agency_management/views/sale_order_views.xml -->
-
     <!-- Liste Görünümü -->
-    <!-- travel_agency_management/views/sale_order_views.xml -->
     <record id="view_order_tree_travel" model="ir.ui.view">
         <field name="name">sale.order.tree.travel</field>
         <field name="model">sale.order</field>
         <field name="arch" type="xml">
             <tree decoration-muted="state == 'cancel'" decoration-info="state in ('draft', 'sent')">
-                
+
                 <field name="state" invisible="1"/>
                 <field name="invoice_status" invisible="1"/>
                 <field name="invoice_count" invisible="1"/>
@@ -60,6 +58,17 @@
                 <field name="total_profit" string="Total Profit" sum="Total"/>
                 <field name="invoice_amount_residual" string="Amount Due" sum="Total Due" optional="hide"/>
                 <field name="state" string="Status" widget="badge" decoration-success="state == 'sale'" decoration-info="state in ('draft', 'sent')"/>
+
+                <!-- ======================================================= -->
+                <!-- YENİ EKLENDİ: Hizmet bazında kâr alanları (gizli)         -->
+                <!-- ======================================================= -->
+                <field name="ticket_profit" string="Ticket Profit" sum="Total" optional="hide"/>
+                <field name="hotel_profit" string="Hotel Profit" sum="Total" optional="hide"/>
+                <field name="transfer_profit" string="Transfer Profit" sum="Total" optional="hide"/>
+                <field name="insurance_profit" string="Insurance Profit" sum="Total" optional="hide"/>
+                <field name="tour_profit" string="Tour Profit" sum="Total" optional="hide"/>
+                <field name="visa_profit" string="Visa Profit" sum="Total" optional="hide"/>
+                <field name="other_profit" string="Other Profit" sum="Total" optional="hide"/>
 
                 <field name="ticket_company_id" string="Airline" optional="hide"/>
                 <field name="ticket_fare" string="Ticket Fare" optional="hide"/>
@@ -87,25 +96,10 @@
                 <!-- === Buttons Column === -->
                 <button name="action_confirm" string="Confirm Sale" type="object" class="btn-info" attrs="{'invisible': [('state', 'not in', ('draft', 'sent'))]}"/>
                 <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice" type="action" class="btn-primary" attrs="{'invisible': ['|', ('state', '!=', 'sale'), ('invoice_status', 'in', ['invoiced', 'no'])]}"/>
-                
-                <!-- ============================================= -->
-                <!-- GÜNCELLENEN BUTON                             -->
-                <!-- ============================================= -->
-                <button name="action_confirm_and_view_invoice"
-                        string="Confirm Invoice"
-                        type="object"
-                        class="btn-warning"
-                        attrs="{'invisible': [('has_draft_invoice', '=', False)]}"/>
-
-                <!-- Kırmızı "Not Paid" Butonu -->
+                <button name="action_confirm_and_view_invoice" string="Confirm Invoice" type="object" class="btn-warning" attrs="{'invisible': [('has_draft_invoice', '=', False)]}"/>
                 <button name="action_view_invoice" string="View Invoice" type="object" class="btn-danger" attrs="{'invisible': ['|', '|', ('invoice_count', '=', 0), ('invoice_payment_state', '!=', 'not_paid'), ('has_draft_invoice', '=', True)]}"/>
-
-                <!-- Sarı "In Payment" (Partial) Butonu -->
                 <button name="action_view_invoice" string="View Invoice" type="object" class="btn-warning" attrs="{'invisible': ['|', '|', ('invoice_count', '=', 0), ('invoice_payment_state', 'not in', ['partial', 'in_payment']), ('has_draft_invoice', '=', True)]}"/>
-
-                <!-- Yeşil "Paid" Butonu -->
                 <button name="action_view_invoice" string="View Invoice" type="object" class="btn-success" attrs="{'invisible': ['|', '|', ('invoice_count', '=', 0), ('invoice_payment_state', '!=', 'paid'), ('has_draft_invoice', '=', True)]}"/>
-                
                 <button name="action_view_payments" string="View Payments" type="object" class="btn-info" attrs="{'invisible': ['|', ('invoice_count', '=', 0), ('invoice_payment_state', 'not in', ('in_payment', 'paid', 'partial'))]}"/>
             </tree>
         </field>
@@ -121,28 +115,15 @@
             <xpath expr="//sheet" position="replace">
                 <sheet>
                     <header>
-                        <!-- <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice" type="action" class="btn-primary" attrs="{'invisible': ['|', ('state', '!=', 'sale'), ('invoice_status', 'in', ['invoiced', 'no'])]}"/>
-                        <button name="action_confirm" string="Confirm" class="btn-primary" type="object" attrs="{'invisible': [('state', 'not in', ['draft', 'sent'])]}"/>
-                        <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': [('state', 'in', ['done', 'cancel'])]}"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale,done"/> -->
                     </header>
                     <div class="oe_button_box" name="button_box">
-                         <button type="object"
-                            name="action_view_invoice"
-                            class="oe_stat_button"
-                            icon="fa-pencil-square-o"
-                            attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                         <button type="object" name="action_view_invoice" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('invoice_count', '=', 0)]}">
                             <field name="invoice_count" widget="statinfo" string="Invoices"/>
                         </button>
                     </div>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
-                    <!--
-                        ========================================================================
-                        FINAL FIX: Re-added ALL invisible fields required for dependencies.
-                        ========================================================================
-                    -->
                     <group invisible="1">
                         <field name="order_line"/>
                         <field name="invoice_status"/>
@@ -152,7 +133,7 @@
                         <field name="user_id"/>
                         <field name="team_id"/>
                     </group>
-                    
+
                     <group>
                         <group>
                             <field name="date_order" string="Order Date"/>
@@ -160,8 +141,7 @@
                             <field name="return_date"/>
                         </group>
                         <group>
-                            <field name="partner_id"
-                                   context="{'search_default_customer': 1, 'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                            <field name="partner_id" context="{'search_default_customer': 1, 'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
                             <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
                             <field name="currency_id" readonly="1" force_save="1"/>
                         </group>
@@ -204,6 +184,8 @@
                         </group>
                         <group>
                             <field name="ticket_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            <!-- YENİ EKLENDİ: Bilet Karı Alanı -->
+                            <field name="ticket_profit" string="Profit"/>
                             <label for="ticket_profit_percent"/>
                             <div class="o_row">
                                 <field name="ticket_profit_percent"/>
@@ -231,59 +213,93 @@
                         </group>
                     </group>
                     <group>
-                        <group><field name="hotel_purchase_price"/><field name="hotel_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/></group>
-                        <group><field name="hotel_deadline"/></group>
+                        <group>
+                            <field name="hotel_purchase_price"/>
+                            <field name="hotel_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            <!-- YENİ EKLENDİ: Otel Karı Alanı -->
+                            <field name="hotel_profit" string="Profit"/>
+                        </group>
+                        <group>
+                            <field name="hotel_first_date"/>
+                            <field name="hotel_deadline"/>
+                        </group>
                     </group>
 
                     <separator string="Transfer"/>
-                            <group>
-                                <field name="transfer_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
-                                <field name="transfer_type" widget="radio" options="{'horizontal': true}"/>
-                                <field name="transfer_from"/>
-                                <field name="transfer_to"/>
-                                <field name="transfer_datetime"/>
-                                <field name="transfer_deadline"/>
-                                <field name="transfer_note"/>
-                                <field name="transfer_purchase_price"/>
-                                <field name="transfer_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            </group>
-                            <separator string="Insurance"/>
-                            <group>
-                                <field name="insurance_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
-                                <field name="insurance_country_id"/>
-                                <field name="insurance_date"/>
-                                <field name="insurance_note"/>
-                                <field name="insurance_purchase_price"/>
-                                <field name="insurance_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            </group>
-                            <separator string="Tour Package"/>
-                            <group>
-                                <field name="tour_package_id"/>
-                                <field name="tour_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
-                                <field name="tour_deadline"/>
-                                <field name="tour_note"/>
-                                <field name="tour_purchase_price"/>
-                                <field name="tour_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            </group>
-                            <separator string="Visa"/>
-                            <group>
-                                <field name="visa_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
-                                <field name="visa_note"/>
-                                <field name="visa_purchase_price"/>
-                                <field name="visa_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            </group>
-                            <separator string="Other"/>
-                            <group>
-                                <field name="other_service_name"/>
-                                <field name="other_note"/>
-                                <field name="other_purchase_price"/>
-                                <field name="other_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            </group>
+                    <group>
+                        <group>
+                            <field name="transfer_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                            <field name="transfer_type" widget="radio" options="{'horizontal': true}"/>
+                            <field name="transfer_from"/>
+                            <field name="transfer_to"/>
+                            <field name="transfer_datetime"/>
+                        </group>
+                        <group>
+                            <field name="transfer_deadline"/>
+                            <field name="transfer_note"/>
+                            <field name="transfer_purchase_price"/>
+                            <field name="transfer_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            <!-- YENİ EKLENDİ: Transfer Karı Alanı -->
+                            <field name="transfer_profit" string="Profit"/>
+                        </group>
+                    </group>
+                    <separator string="Insurance"/>
+                    <group>
+                         <group>
+                            <field name="insurance_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                            <field name="insurance_country_id"/>
+                            <field name="insurance_date"/>
+                        </group>
+                        <group>
+                            <field name="insurance_note"/>
+                            <field name="insurance_purchase_price"/>
+                            <field name="insurance_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            <!-- YENİ EKLENDİ: Sigorta Karı Alanı -->
+                            <field name="insurance_profit" string="Profit"/>
+                        </group>
+                    </group>
+                    <separator string="Tour Package"/>
+                    <group>
+                         <group>
+                            <field name="tour_package_id"/>
+                            <field name="tour_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                        </group>
+                        <group>
+                             <field name="tour_deadline"/>
+                             <field name="tour_note"/>
+                             <field name="tour_purchase_price"/>
+                             <field name="tour_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                             <!-- YENİ EKLENDİ: Tur Karı Alanı -->
+                             <field name="tour_profit" string="Profit"/>
+                        </group>
+                    </group>
+                    <separator string="Visa"/>
+                    <group>
+                        <group>
+                            <field name="visa_company_id" options="{'no_create': True}" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
+                        </group>
+                        <group>
+                            <field name="visa_note"/>
+                            <field name="visa_purchase_price"/>
+                            <field name="visa_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                             <!-- YENİ EKLENDİ: Vize Karı Alanı -->
+                            <field name="visa_profit" string="Profit"/>
+                        </group>
+                    </group>
+                    <separator string="Other"/>
+                    <group>
+                        <group>
+                            <field name="other_service_name"/>
+                        </group>
+                        <group>
+                            <field name="other_note"/>
+                            <field name="other_purchase_price"/>
+                            <field name="other_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
+                            <!-- YENİ EKLENDİ: Diğer Kar Alanı -->
+                            <field name="other_profit" string="Profit"/>
+                        </group>
+                    </group>
 
-                    <notebook>
-                        
-                    </notebook>
-                    
                     <group class="oe_subtotal_footer oe_right" style="margin-top: 20px;">
                         <field name="total_purchase_price"/>
                         <field name="total_sale_price"/>
@@ -293,7 +309,7 @@
             </xpath>
         </field>
     </record>
-    
+
     <!-- Pencere Aksiyonu -->
     <record id="action_travel_sale_orders" model="ir.actions.act_window">
         <field name="name">Sales</field>

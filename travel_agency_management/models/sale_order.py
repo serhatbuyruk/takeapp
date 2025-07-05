@@ -1,3 +1,5 @@
+# travel_agency_management/models/sale_order.py
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 import json
@@ -15,10 +17,10 @@ class SaleOrder(models.Model):
     from_airport_id = fields.Many2one('travel.airport', string="From Airport")
     to_country_id = fields.Many2one('res.country', string="To Country")
     to_airport_id = fields.Many2one('travel.airport', string="To Airport")
-    
+
     travel_direction = fields.Char(string="Direction", compute='_compute_travel_direction', store=True)
 
-    ticket_company_id = fields.Many2one('res.partner', string="Airline", domain="[('service_type_ids.name', '=', 'Ticket')]")
+    ticket_company_id = fields.Many2one('res.partner', string="Airline", domain="[('service_type_ids', 'in', [1])]")
     ticket_purchase_date = fields.Date(string="Ticket Purchase Date")
     ticket_number = fields.Char(string="Ticket Number")
     ticket_adults = fields.Integer(string="Adults (Ticket)", default=0)
@@ -30,8 +32,10 @@ class SaleOrder(models.Model):
     ticket_purchase_total = fields.Float(string="Purchase Total (Ticket)", compute='_compute_ticket_purchase_total', store=True)
     ticket_sale_price = fields.Float(string="Sale Price (Ticket)")
     ticket_profit_percent = fields.Float(string="Profit % (Ticket)")
+    # YENİ EKLENDİ: Bilet Karı
+    ticket_profit = fields.Float(string="Profit (Ticket)", compute='_compute_service_profits', store=True)
 
-    hotel_company_id = fields.Many2one('res.partner', string="Hotel", domain="[('service_type_ids.name', '=', 'Hotel')]")
+    hotel_company_id = fields.Many2one('res.partner', string="Hotel", domain="[('service_type_ids', 'in', [2])]")
     hotel_room_count = fields.Integer(string="Room Count", default=0)
     hotel_adults = fields.Integer(string="Adults (Hotel)", default=0)
     hotel_children = fields.Integer(string="Children (Hotel)", default=0)
@@ -42,9 +46,12 @@ class SaleOrder(models.Model):
     hotel_note = fields.Text(string="Note (Hotel)")
     hotel_purchase_price = fields.Float(string="Purchase Price (Hotel)")
     hotel_sale_price = fields.Float(string="Sale Price (Hotel)")
+    hotel_first_date = fields.Date(string="First Date (Hotel)")
     hotel_deadline = fields.Date(string="Deadline (Hotel)")
+    # YENİ EKLENDİ: Otel Karı
+    hotel_profit = fields.Float(string="Profit (Hotel)", compute='_compute_service_profits', store=True)
 
-    transfer_company_id = fields.Many2one('res.partner', string="Transfer Company", domain="[('service_type_ids.name', '=', 'Transfer')]")
+    transfer_company_id = fields.Many2one('res.partner', string="Transfer Company", domain="[('service_type_ids', 'in', [3])]")
     transfer_type = fields.Selection([('individual', 'Individual'), ('group', 'Group')], string="Transfer Type", default='individual')
     transfer_from = fields.Char(string="Transfer From")
     transfer_to = fields.Char(string="Transfer To")
@@ -53,31 +60,41 @@ class SaleOrder(models.Model):
     transfer_purchase_price = fields.Float(string="Purchase Price (Transfer)")
     transfer_sale_price = fields.Float(string="Sale Price (Transfer)")
     transfer_deadline = fields.Date(string="Deadline (Transfer)")
+    # YENİ EKLENDİ: Transfer Karı
+    transfer_profit = fields.Float(string="Profit (Transfer)", compute='_compute_service_profits', store=True)
 
-    insurance_company_id = fields.Many2one('res.partner', string="Insurance Company", domain="[('service_type_ids.name', '=', 'Insurance')]")
+    insurance_company_id = fields.Many2one('res.partner', string="Insurance Company", domain="[('service_type_ids', 'in', [5])]")
     insurance_date = fields.Date(string="Insurance Date")
     insurance_country_id = fields.Many2one('res.country', string="Insurance Country")
     insurance_note = fields.Text(string="Note (Insurance)")
     insurance_purchase_price = fields.Float(string="Purchase Price (Insurance)")
     insurance_sale_price = fields.Float(string="Sale Price (Insurance)")
-    
+    # YENİ EKLENDİ: Sigorta Karı
+    insurance_profit = fields.Float(string="Profit (Insurance)", compute='_compute_service_profits', store=True)
+
     tour_package_id = fields.Many2one('product.product', string="Tour Package", domain="[('type', '=', 'service')]")
-    tour_company_id = fields.Many2one('res.partner', string="Tour Company", domain="[('service_type_ids.name', '=', 'Tour')]")
+    tour_company_id = fields.Many2one('res.partner', string="Tour Company", domain="[('service_type_ids', 'in', [6])]")
     tour_note = fields.Text(string="Note (Tour)")
     tour_purchase_price = fields.Float(string="Purchase Price (Tour)")
     tour_sale_price = fields.Float(string="Sale Price (Tour)")
     tour_deadline = fields.Date(string="Deadline (Tour)")
+    # YENİ EKLENDİ: Tur Karı
+    tour_profit = fields.Float(string="Profit (Tour)", compute='_compute_service_profits', store=True)
 
-    visa_company_id = fields.Many2one('res.partner', string="Visa Service Company", domain="[('service_type_ids.name', '=', 'Visa')]")
+    visa_company_id = fields.Many2one('res.partner', string="Visa Service Company", domain="[('service_type_ids', 'in', [4])]")
     visa_note = fields.Text(string="Note (Visa)")
     visa_purchase_price = fields.Float(string="Purchase Price (Visa)")
     visa_sale_price = fields.Float(string="Sale Price (Visa)")
+    # YENİ EKLENDİ: Vize Karı
+    visa_profit = fields.Float(string="Profit (Visa)", compute='_compute_service_profits', store=True)
     
     other_service_name = fields.Char(string="Other Service Name")
     other_note = fields.Text(string="Note (Other)")
     other_purchase_price = fields.Float(string="Purchase Price (Other)")
     other_sale_price = fields.Float(string="Sale Price (Other)")
-    
+    # YENİ EKLENDİ: Diğer Kar
+    other_profit = fields.Float(string="Profit (Other)", compute='_compute_service_profits', store=True)
+
     total_purchase_price = fields.Monetary(string="Total Purchase", compute='_compute_travel_totals', store=True, currency_field='currency_id')
     total_sale_price = fields.Monetary(string="Total Sales", compute='_compute_travel_totals', store=True, currency_field='currency_id')
     total_profit = fields.Monetary(string="Total Profit", compute='_compute_travel_totals', store=True, currency_field='currency_id')
@@ -89,22 +106,18 @@ class SaleOrder(models.Model):
     )
 
     family_member_ids = fields.Many2many(
-        'res.partner', 
+        'res.partner',
         string="Family Members",
         help="Main contact and their family members, automatically populated. Can be edited manually."
     )
 
-    # ========================================================================
-    # YENİ EKLENEN ALAN VE HESAPLAMA METODU
-    # ========================================================================
     invoice_amount_residual = fields.Monetary(
         string='Amount Due',
         compute='_compute_invoice_amount_residual',
-        store=True,  # <-- GRUPLAMA İÇİN EN ÖNEMLİ KISIM!
-        currency_field='currency_id' # Monetary alanlar için gereklidir
+        store=True,
+        currency_field='currency_id'
     )
 
-    # Alan tanımı aynı kalıyor
     partner_credit_balance = fields.Monetary(
         string='Customer Credit',
         compute='_compute_partner_credit',
@@ -112,87 +125,48 @@ class SaleOrder(models.Model):
     )
 
     has_draft_invoice = fields.Boolean(
-        string="Has Draft Invoice", 
+        string="Has Draft Invoice",
         compute='_compute_has_draft_invoice',
         help="True if the sales order has at least one invoice in draft state."
     )
 
     def action_confirm_and_view_invoice(self):
         self.ensure_one()
-        
-        # Siparişe bağlı taslak durumundaki faturaları bul.
         draft_invoices = self.invoice_ids.filtered(lambda inv: inv.state == 'draft')
-        
-        # Eğer taslak fatura varsa, onu onayla (post et).
         if draft_invoices:
             draft_invoices.action_post()
-            
-        # Faturayı/faturaları görüntülemek için standart metodu çağır.
         return self.action_view_invoice()
 
-    # ========================================================================
-    # YENİ EKLENEN HESAPLAMA METODU
-    # ========================================================================
     @api.depends('invoice_ids.state')
     def _compute_has_draft_invoice(self):
         for order in self:
-            # Siparişe bağlı faturalar içinde state'i 'draft' olan var mı diye kontrol et.
-            # .filtered() metodu eşleşen kayıtları bulur, bool() ise sonuç boş değilse True döner.
             order.has_draft_invoice = bool(order.invoice_ids.filtered(lambda inv: inv.state == 'draft'))
-
-        # travel_agency_management/models/sale_order.py içindeki bu fonksiyonu güncelleyin
 
     @api.onchange('partner_id')
     def _onchange_partner_id_set_family_members(self):
         if self.partner_id:
-            # SADECE aile üyelerini al, müşterinin kendisini DAHİL ETME.
             members = self.partner_id.family_member_ids
-            # Alanı yeni liste ile güncelle
             self.family_member_ids = [(6, 0, members.ids)]
         else:
-            # Müşteri yoksa alanı temizle
             self.family_member_ids = [(5, 0, 0)]
 
-    # HATA VEREN FONKSİYONUN DÜZELTİLMİŞ HALİ
-    # Depend'i daha spesifik hale getirerek performansı artırıyoruz.
     @api.depends('total_sale_price')
     def _compute_partner_credit(self):
-        """
-        Calculates the selected customer's total outstanding credit.
-        This function is triggered whenever the customer (partner_id) on the sales order is changed.
-        """
         for order in self:
-            # Eğer bir müşteri seçilmişse
             if order.partner_id:
-                # Müşterinin toplam borcunu (debit) ve toplam alacağını (credit) al.
-                # Bu alanlar her zaman pozitif değerlerdir.
                 partner = order.partner_id
-                
-                # Bakiye = Borçlar - Alacaklar
-                # Eğer alacaklar borçlardan fazlaysa, sonuç negatif olur ve bu bir kredi demektir.
                 balance = partner.debit - partner.credit
-                
-                # Eğer bakiye negatifse (yani müşterinin bizden alacağı varsa)
                 if balance < 0:
-                    # Kredi miktarını pozitif bir sayı olarak göstermek için -1 ile çarpıyoruz.
-                    # Örneğin, balance -500 ise, müşterinin 500 TL kredisi var demektir.
                     order.partner_credit_balance = 0.0
                 else:
-                    # Müşterinin kredisi yoksa (ya borcu var ya da bakiye sıfır)
                     order.partner_credit_balance = -balance
             else:
-                # Müşteri seçilmemişse kredi bakiyesi sıfırdır.
                 order.partner_credit_balance = 0.0
-
 
     @api.depends('invoice_ids.amount_residual')
     def _compute_invoice_amount_residual(self):
         for order in self:
-            # Satış siparişine bağlı tüm faturaların kalan tutarlarını topla
             order.invoice_amount_residual = sum(order.invoice_ids.mapped('amount_residual'))
-    # ========================================================================
-    # YENİ EKLEME SONU
-    # ========================================================================
 
     @api.depends('from_airport_id.code', 'to_airport_id.code')
     def _compute_travel_direction(self):
@@ -209,8 +183,28 @@ class SaleOrder(models.Model):
         for order in self:
             order.ticket_purchase_total = order.ticket_fare + order.ticket_tax
 
+    # YENİ EKLENDİ: Tüm hizmet karlarını hesaplayan compute metodu
     @api.depends(
-        'ticket_sale_price', 'hotel_sale_price', 'transfer_sale_price', 
+        'ticket_sale_price', 'ticket_purchase_total',
+        'hotel_sale_price', 'hotel_purchase_price',
+        'transfer_sale_price', 'transfer_purchase_price',
+        'insurance_sale_price', 'insurance_purchase_price',
+        'tour_sale_price', 'tour_purchase_price',
+        'visa_sale_price', 'visa_purchase_price',
+        'other_sale_price', 'other_purchase_price'
+    )
+    def _compute_service_profits(self):
+        for order in self:
+            order.ticket_profit = order.ticket_sale_price - order.ticket_purchase_total
+            order.hotel_profit = order.hotel_sale_price - order.hotel_purchase_price
+            order.transfer_profit = order.transfer_sale_price - order.transfer_purchase_price
+            order.insurance_profit = order.insurance_sale_price - order.insurance_purchase_price
+            order.tour_profit = order.tour_sale_price - order.tour_purchase_price
+            order.visa_profit = order.visa_sale_price - order.visa_purchase_price
+            order.other_profit = order.other_sale_price - order.other_purchase_price
+
+    @api.depends(
+        'ticket_sale_price', 'hotel_sale_price', 'transfer_sale_price',
         'insurance_sale_price', 'tour_sale_price', 'visa_sale_price', 'other_sale_price',
         'ticket_purchase_total', 'hotel_purchase_price', 'transfer_purchase_price',
         'insurance_purchase_price', 'tour_purchase_price', 'visa_purchase_price', 'other_purchase_price'
@@ -219,7 +213,7 @@ class SaleOrder(models.Model):
         for order in self:
             purchase_price = (order.ticket_purchase_total + order.hotel_purchase_price + order.transfer_purchase_price + order.insurance_purchase_price + order.tour_purchase_price + order.visa_purchase_price + order.other_purchase_price)
             sale_price = (order.ticket_sale_price + order.hotel_sale_price + order.transfer_sale_price + order.insurance_sale_price + order.tour_sale_price + order.visa_sale_price + order.other_sale_price)
-            
+
             order.total_purchase_price = purchase_price
             order.total_sale_price = sale_price
             order.total_profit = sale_price - purchase_price
@@ -259,7 +253,7 @@ class SaleOrder(models.Model):
     def write(self, vals):
         res = super().write(vals)
         price_fields = [
-            'ticket_sale_price', 'hotel_sale_price', 'transfer_sale_price', 
+            'ticket_sale_price', 'hotel_sale_price', 'transfer_sale_price',
             'insurance_sale_price', 'tour_sale_price', 'visa_sale_price', 'other_sale_price',
             'ticket_fare', 'ticket_tax', 'hotel_purchase_price', 'transfer_purchase_price',
             'insurance_purchase_price', 'tour_purchase_price', 'visa_purchase_price', 'other_purchase_price'
@@ -278,64 +272,32 @@ class SaleOrder(models.Model):
         return True
 
     def action_create_travel_invoice(self):
-        """
-        This is the method our "Invoice" button will call.
-        """
         self.ensure_one()
-        # Ensure the line is up-to-date before creating the invoice
         self._update_travel_order_line()
-
-        # Call the standard Odoo method to create invoices
         invoices = self._create_invoices()
-        
-        # Odoo's standard action to view the created invoices.
         return self.action_view_invoice()
-        
 
-    # --- NEW METHOD to view existing invoices ---
     def action_view_invoice(self):
-        """
-        This is the method our "View Invoice" button will call.
-        It finds and displays the invoices associated with this sales order.
-        """
         return super().action_view_invoice()
-    
-    def action_view_payments(self):
-        """
-        Finds payments related to the sales order's invoices by looking at the reconciled journal items.
-        This is a more robust method than parsing the JSON widget.
-        """
-        self.ensure_one()
 
-        # Siparişe bağlı tüm faturaları al (sadece müşteri faturaları)
+    def action_view_payments(self):
+        self.ensure_one()
         invoices = self.invoice_ids.filtered(lambda inv: inv.move_type == 'out_invoice')
         if not invoices:
             raise UserError(_("No customer invoices found for this order."))
-
-        # Fatura satırlarından (receivable lines) ilgili ödemelerin ID'lerini toplayacağız
-        # receivable_account_id, bir müşterinin şirkete borçlu olduğu parayı takip eden hesaptır.
         receivable_lines = invoices.line_ids.filtered(
             lambda line: line.account_id.account_type == 'asset_receivable'
         )
-        
-        # Bu fatura satırlarıyla eşleşen (reconciled) tüm diğer satırları bul
         reconciled_lines = receivable_lines.mapped('matched_debit_ids.debit_move_id') + \
                            receivable_lines.mapped('matched_credit_ids.credit_move_id')
-
-        # Eşleşen satırların ait olduğu ödeme kayıtlarını (account.payment) bul
-        # Bir ödeme kaydı oluşturulduğunda, kendine ait bir muhasebe fişi (account.move) oluşturur.
-        # Bu fiş üzerinden ödemeye ulaşıyoruz.
         payment_ids = reconciled_lines.mapped('payment_id').ids
-
         if not payment_ids:
             raise UserError(_("No payments found for this order."))
-
-        # Bulunan ödemeleri gösterecek bir pencere aksiyonu oluştur ve döndür.
         return {
             'name': _('Payments for Order %s') % self.name,
             'type': 'ir.actions.act_window',
             'res_model': 'account.payment',
             'view_mode': 'tree,form',
-            'domain': [('id', 'in', list(set(payment_ids)))], # Yinelenen ID'leri kaldır
+            'domain': [('id', 'in', list(set(payment_ids)))],
             'target': 'current',
         }
