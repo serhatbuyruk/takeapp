@@ -29,10 +29,10 @@ class SaleOrder(models.Model):
     ticket_note = fields.Text(string="Note (Ticket)")
     ticket_fare = fields.Float(string="Fare")
     ticket_tax = fields.Float(string="Tax")
+    extra_fare = fields.Float(string="Extra")
     ticket_purchase_total = fields.Float(string="Purchase Total (Ticket)", compute='_compute_ticket_purchase_total', store=True)
     ticket_sale_price = fields.Float(string="Sale Price (Ticket)")
     ticket_profit_percent = fields.Float(string="Profit % (Ticket)")
-    # YENİ EKLENDİ: Bilet Karı
     ticket_profit = fields.Float(string="Profit (Ticket)", compute='_compute_service_profits', store=True)
 
     hotel_company_id = fields.Many2one('res.partner', string="Hotel", domain="[('service_type_ids', 'in', [2])]")
@@ -48,7 +48,6 @@ class SaleOrder(models.Model):
     hotel_sale_price = fields.Float(string="Sale Price (Hotel)")
     hotel_first_date = fields.Date(string="First Date (Hotel)")
     hotel_deadline = fields.Date(string="Deadline (Hotel)")
-    # YENİ EKLENDİ: Otel Karı
     hotel_profit = fields.Float(string="Profit (Hotel)", compute='_compute_service_profits', store=True)
 
     transfer_company_id = fields.Many2one('res.partner', string="Transfer Company", domain="[('service_type_ids', 'in', [3])]")
@@ -60,7 +59,6 @@ class SaleOrder(models.Model):
     transfer_purchase_price = fields.Float(string="Purchase Price (Transfer)")
     transfer_sale_price = fields.Float(string="Sale Price (Transfer)")
     transfer_deadline = fields.Date(string="Deadline (Transfer)")
-    # YENİ EKLENDİ: Transfer Karı
     transfer_profit = fields.Float(string="Profit (Transfer)", compute='_compute_service_profits', store=True)
 
     insurance_company_id = fields.Many2one('res.partner', string="Insurance Company", domain="[('service_type_ids', 'in', [5])]")
@@ -69,7 +67,6 @@ class SaleOrder(models.Model):
     insurance_note = fields.Text(string="Note (Insurance)")
     insurance_purchase_price = fields.Float(string="Purchase Price (Insurance)")
     insurance_sale_price = fields.Float(string="Sale Price (Insurance)")
-    # YENİ EKLENDİ: Sigorta Karı
     insurance_profit = fields.Float(string="Profit (Insurance)", compute='_compute_service_profits', store=True)
 
     tour_package_id = fields.Many2one('product.product', string="Tour Package", domain="[('type', '=', 'service')]")
@@ -78,26 +75,26 @@ class SaleOrder(models.Model):
     tour_purchase_price = fields.Float(string="Purchase Price (Tour)")
     tour_sale_price = fields.Float(string="Sale Price (Tour)")
     tour_deadline = fields.Date(string="Deadline (Tour)")
-    # YENİ EKLENDİ: Tur Karı
     tour_profit = fields.Float(string="Profit (Tour)", compute='_compute_service_profits', store=True)
 
     visa_company_id = fields.Many2one('res.partner', string="Visa Service Company", domain="[('service_type_ids', 'in', [4])]")
     visa_note = fields.Text(string="Note (Visa)")
     visa_purchase_price = fields.Float(string="Purchase Price (Visa)")
     visa_sale_price = fields.Float(string="Sale Price (Visa)")
-    # YENİ EKLENDİ: Vize Karı
     visa_profit = fields.Float(string="Profit (Visa)", compute='_compute_service_profits', store=True)
     
     other_service_name = fields.Char(string="Other Service Name")
     other_note = fields.Text(string="Note (Other)")
     other_purchase_price = fields.Float(string="Purchase Price (Other)")
     other_sale_price = fields.Float(string="Sale Price (Other)")
-    # YENİ EKLENDİ: Diğer Kar
     other_profit = fields.Float(string="Profit (Other)", compute='_compute_service_profits', store=True)
 
     total_purchase_price = fields.Monetary(string="Total Purchase", compute='_compute_travel_totals', store=True, currency_field='currency_id')
     total_sale_price = fields.Monetary(string="Total Sales", compute='_compute_travel_totals', store=True, currency_field='currency_id')
     total_profit = fields.Monetary(string="Total Profit", compute='_compute_travel_totals', store=True, currency_field='currency_id')
+
+    purchase_order_ids = fields.One2many('purchase.order', 'origin_sale_order_id', string='Purchase Orders')
+    purchase_count = fields.Integer(string='PO Count', compute='_compute_purchase_count', store=True)
 
     invoice_payment_state = fields.Selection(
         related='invoice_ids.payment_state',
@@ -113,7 +110,17 @@ class SaleOrder(models.Model):
 
     invoice_amount_residual = fields.Monetary(
         string='Amount Due',
-        compute='_compute_invoice_amount_residual',
+        compute='_compute_invoice_amounts', # Metot ismi daha genel olacak şekilde değiştirildi
+        store=True,
+        currency_field='currency_id'
+    )
+    
+    # =======================================================
+    # YENİ EKLENDİ: Ödenen tutar alanı
+    # =======================================================
+    invoice_amount_paid = fields.Monetary(
+        string='Amount Paid',
+        compute='_compute_invoice_amounts', # Aynı metot ile hesaplanacak
         store=True,
         currency_field='currency_id'
     )
@@ -130,11 +137,110 @@ class SaleOrder(models.Model):
         help="True if the sales order has at least one invoice in draft state."
     )
 
+    
+    @api.depends('purchase_order_ids')
+    def _compute_purchase_count(self):
+        for order in self:
+            order.purchase_count = len(order.purchase_order_ids)
+
+    def _create_vendor_purchase_orders(self):
+        """
+        Tedarikçiler için Satınalma Siparişlerini ve faturalarını oluşturur.
+        Bu metot, müşteri faturası onaylandığında tetiklenir.
+        """
+        self.ensure_one()
+        _logger.info(f"Attempting to create vendor POs for Sale Order {self.name}.")
+
+        if self.purchase_count > 0:
+            _logger.warning(f"Purchase orders already exist for {self.name}. Aborting.")
+            return
+
+        purchase_product = self.env.ref('travel_agency_management.product_service_purchase')
+        
+        services_to_process = {
+            'Ticket': (self.ticket_company_id, self.ticket_purchase_total),
+            'Hotel': (self.hotel_company_id, self.hotel_purchase_price),
+            'Transfer': (self.transfer_company_id, self.transfer_purchase_price),
+            'Insurance': (self.insurance_company_id, self.insurance_purchase_price),
+            'Tour': (self.tour_company_id, self.tour_purchase_price),
+            'Visa': (self.visa_company_id, self.visa_purchase_price),
+        }
+
+        vendor_lines = {}
+
+        for service_name, (vendor, price) in services_to_process.items():
+            if vendor and price > 0:
+                if vendor.id not in vendor_lines: vendor_lines[vendor.id] = []
+                
+                line_vals = {
+                    'product_id': purchase_product.id,
+                    'name': f"{service_name} service for SO {self.name}",
+                    'product_qty': 1,
+                    'price_unit': price,
+                    'date_planned': self.departure_date or fields.Date.today(),
+                }
+                vendor_lines[vendor.id].append((0, 0, line_vals))
+        
+        if not vendor_lines:
+            _logger.info(f"No valid vendor services to create POs for {self.name}.")
+            return
+
+        created_pos = self.env['purchase.order']
+        for vendor_id, lines in vendor_lines.items():
+            po_vals = {
+                'partner_id': vendor_id,
+                'currency_id': self.currency_id.id,  # <-- YENİ EKLENEN SATIR
+                'origin': self.name,
+                'origin_sale_order_id': self.id,
+                'order_line': lines,
+            }
+            try:
+                po = self.env['purchase.order'].create(po_vals)
+                po.button_confirm()
+                _logger.info(f"Confirmed Purchase Order {po.name}.")
+
+                po.action_create_invoice()
+                
+                draft_bill = po.invoice_ids.filtered(lambda inv: inv.state == 'draft')
+                if draft_bill:
+                    # =======================================================
+                    # GÜNCELLENEN SATIR BURASI
+                    # Direkt atama yerine Odoo'nun write() metodunu kullanıyoruz.
+                    # =======================================================
+                    draft_bill.write({'invoice_date': fields.Date.today()})
+                    
+                    draft_bill.action_post()
+                    _logger.info(f"Posted Vendor Bill {draft_bill.name} for PO {po.name}.")
+                else:
+                    _logger.warning(f"Could not find a draft bill to post for PO {po.name}.")
+
+                created_pos |= po
+            except Exception as e:
+                _logger.error(f"Failed to create/process PO/Bill for vendor {vendor_id} from SO {self.name}: {e}")
+                self.message_post(body=_("Failed to create purchase order/bill for vendor ID %s. Error: %s") % (vendor_id, e))
+        
+        if created_pos:
+            self.message_post(body=_("Created %s Purchase Order(s): %s") % (len(created_pos), ", ".join(created_pos.mapped('name'))))
+
+    def action_view_purchase_orders(self):
+        self.ensure_one()
+        return {
+            'name': _('Purchase Orders'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'purchase.order',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', self.purchase_order_ids.ids)],
+        }
+
+
     def action_confirm_and_view_invoice(self):
         self.ensure_one()
         draft_invoices = self.invoice_ids.filtered(lambda inv: inv.state == 'draft')
         if draft_invoices:
             draft_invoices.action_post()
+        
+        self._create_vendor_purchase_orders() # <-- BU SATIRI EKLEYİN
+        
         return self.action_view_invoice()
 
     @api.depends('invoice_ids.state')
@@ -163,10 +269,17 @@ class SaleOrder(models.Model):
             else:
                 order.partner_credit_balance = 0.0
 
-    @api.depends('invoice_ids.amount_residual')
-    def _compute_invoice_amount_residual(self):
+    # =======================================================
+    # GÜNCELLENDİ: Hem ödenen hem de kalan tutarı hesaplayan
+    # tek bir metot oluşturuldu.
+    # =======================================================
+    @api.depends('invoice_ids.amount_residual', 'invoice_ids.amount_total')
+    def _compute_invoice_amounts(self):
         for order in self:
-            order.invoice_amount_residual = sum(order.invoice_ids.mapped('amount_residual'))
+            total_invoiced = sum(order.invoice_ids.mapped('amount_total'))
+            amount_residual = sum(order.invoice_ids.mapped('amount_residual'))
+            order.invoice_amount_residual = amount_residual
+            order.invoice_amount_paid = total_invoiced - amount_residual
 
     @api.depends('from_airport_id.code', 'to_airport_id.code')
     def _compute_travel_direction(self):
@@ -178,12 +291,11 @@ class SaleOrder(models.Model):
                 direction_parts.append(order.to_airport_id.code)
             order.travel_direction = ' / '.join(direction_parts) if direction_parts else ''
 
-    @api.depends('ticket_fare', 'ticket_tax')
+    @api.depends('ticket_fare', 'ticket_tax', 'extra_fare')
     def _compute_ticket_purchase_total(self):
         for order in self:
-            order.ticket_purchase_total = order.ticket_fare + order.ticket_tax
+            order.ticket_purchase_total = order.ticket_fare + order.ticket_tax + order.extra_fare
 
-    # YENİ EKLENDİ: Tüm hizmet karlarını hesaplayan compute metodu
     @api.depends(
         'ticket_sale_price', 'ticket_purchase_total',
         'hotel_sale_price', 'hotel_purchase_price',
@@ -255,7 +367,7 @@ class SaleOrder(models.Model):
         price_fields = [
             'ticket_sale_price', 'hotel_sale_price', 'transfer_sale_price',
             'insurance_sale_price', 'tour_sale_price', 'visa_sale_price', 'other_sale_price',
-            'ticket_fare', 'ticket_tax', 'hotel_purchase_price', 'transfer_purchase_price',
+            'ticket_fare', 'ticket_tax', 'extra_fare', 'hotel_purchase_price', 'transfer_purchase_price',
             'insurance_purchase_price', 'tour_purchase_price', 'visa_purchase_price', 'other_purchase_price'
         ]
         if any(field in vals for field in price_fields):

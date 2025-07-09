@@ -16,6 +16,7 @@
                         <group string="Passport Download">
                             <field name="passport_image" widget="binary" string="Passport File" filename="passport_filename"/>
                             <field name="passport_filename" invisible="1"/>
+                            <field name="passport_attachment_ids" widget="many2many_binary" string="Passport(s)"/>
                         </group>
                     </group>
                 </page>
@@ -28,6 +29,7 @@
                             <field name="email"/>
                             <field name="passport_image" widget="binary" string="Passport File" filename="passport_filename"/>
                             <field name="passport_filename" invisible="1"/>
+                            <field name="passport_attachment_ids" widget="many2many_binary" string="Passport(s)"/>
                         </tree>
                     </field>
                     <field name="main_contact_id" invisible="1"/>

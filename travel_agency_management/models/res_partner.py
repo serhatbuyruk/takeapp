@@ -5,6 +5,14 @@ class ResPartner(models.Model):
 
     passport_image = fields.Image(string="Passport Image", max_width=512, max_height=512)
     passport_filename = fields.Char(string="Passport Filename")
+    passport_attachment_ids = fields.Many2many(
+        comodel_name='ir.attachment',
+        relation='res_partner_passport_attachment_rel',
+        column1='partner_id',
+        column2='attachment_id',
+        string='Passport Attachments',
+        help="Upload multiple passport images or other related documents."
+    )
     family_member_ids = fields.One2many('res.partner', 'main_contact_id', string="Family Members")
     main_contact_id = fields.Many2one('res.partner', string="Main Contact", index=True, ondelete='cascade')
     

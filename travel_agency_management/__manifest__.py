@@ -15,6 +15,7 @@
         'sale_management',
         'contacts',
         'account',
+        'purchase',
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -25,6 +26,8 @@
         'views/travel_views.xml',
         'views/res_partner_views.xml',
         'views/sale_order_views.xml',
+        'views/purchase_order_views.xml', # <-- YENİ VIEW DOSYASI EKLENDİ
+        'views/account_move_views.xml',
         'views/main_menus.xml',
         'report/travel_reports.xml',
     ],

@@ -56,11 +56,17 @@
                 <field name="total_purchase_price" string="Total Purchase" sum="Total"/>
                 <field name="total_sale_price" string="Total Sales" sum="Total"/>
                 <field name="total_profit" string="Total Profit" sum="Total"/>
-                <field name="invoice_amount_residual" string="Amount Due" sum="Total Due" optional="hide"/>
+                
+                <!-- ======================================================= -->
+                <!-- GÜNCELLENDİ: Ödenen ve Kalan Tutar alanları eklendi.      -->
+                <!-- ======================================================= -->
+                <field name="invoice_amount_paid" string="Amount Paid" sum="Total Paid" optional="show"/>
+                <field name="invoice_amount_residual" string="Amount Due" sum="Total Due" optional="show"/>
+
                 <field name="state" string="Status" widget="badge" decoration-success="state == 'sale'" decoration-info="state in ('draft', 'sent')"/>
 
                 <!-- ======================================================= -->
-                <!-- YENİ EKLENDİ: Hizmet bazında kâr alanları (gizli)         -->
+                <!-- HİZMET BAZINDA KÂR ALANLARI (GİZLİ)                      -->
                 <!-- ======================================================= -->
                 <field name="ticket_profit" string="Ticket Profit" sum="Total" optional="hide"/>
                 <field name="hotel_profit" string="Hotel Profit" sum="Total" optional="hide"/>
@@ -105,7 +111,8 @@
         </field>
     </record>
 
-    <!-- Form Görünümü -->
+    <!-- Diğer view kayıtları (form, action vb.) aynı kalabilir -->
+    <!-- Form Görünümü (Değişiklik yok) -->
     <record id="view_order_form_travel" model="ir.ui.view">
         <field name="name">sale.order.form.travel</field>
         <field name="model">sale.order</field>
@@ -119,6 +126,9 @@
                     <div class="oe_button_box" name="button_box">
                          <button type="object" name="action_view_invoice" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('invoice_count', '=', 0)]}">
                             <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                        <button type="object" name="action_view_purchase_orders" class="oe_stat_button" icon="fa-shopping-cart" attrs="{'invisible': [('purchase_count', '=', 0)]}">
+                            <field name="purchase_count" widget="statinfo" string="POs"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -180,11 +190,11 @@
                         <group>
                             <field name="ticket_fare"/>
                             <field name="ticket_tax"/>
+                            <field name="extra_fare"/>
                             <field name="ticket_purchase_total" string="Purchase Total"/>
                         </group>
                         <group>
                             <field name="ticket_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            <!-- YENİ EKLENDİ: Bilet Karı Alanı -->
                             <field name="ticket_profit" string="Profit"/>
                             <label for="ticket_profit_percent"/>
                             <div class="o_row">
@@ -216,7 +226,6 @@
                         <group>
                             <field name="hotel_purchase_price"/>
                             <field name="hotel_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            <!-- YENİ EKLENDİ: Otel Karı Alanı -->
                             <field name="hotel_profit" string="Profit"/>
                         </group>
                         <group>
@@ -239,7 +248,6 @@
                             <field name="transfer_note"/>
                             <field name="transfer_purchase_price"/>
                             <field name="transfer_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            <!-- YENİ EKLENDİ: Transfer Karı Alanı -->
                             <field name="transfer_profit" string="Profit"/>
                         </group>
                     </group>
@@ -254,7 +262,6 @@
                             <field name="insurance_note"/>
                             <field name="insurance_purchase_price"/>
                             <field name="insurance_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            <!-- YENİ EKLENDİ: Sigorta Karı Alanı -->
                             <field name="insurance_profit" string="Profit"/>
                         </group>
                     </group>
@@ -269,7 +276,6 @@
                              <field name="tour_note"/>
                              <field name="tour_purchase_price"/>
                              <field name="tour_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                             <!-- YENİ EKLENDİ: Tur Karı Alanı -->
                              <field name="tour_profit" string="Profit"/>
                         </group>
                     </group>
@@ -282,7 +288,6 @@
                             <field name="visa_note"/>
                             <field name="visa_purchase_price"/>
                             <field name="visa_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                             <!-- YENİ EKLENDİ: Vize Karı Alanı -->
                             <field name="visa_profit" string="Profit"/>
                         </group>
                     </group>
@@ -295,7 +300,6 @@
                             <field name="other_note"/>
                             <field name="other_purchase_price"/>
                             <field name="other_sale_price" attrs="{'readonly': [('state', 'in', ('sale', 'done', 'cancel'))]}"/>
-                            <!-- YENİ EKLENDİ: Diğer Kar Alanı -->
                             <field name="other_profit" string="Profit"/>
                         </group>
                     </group>

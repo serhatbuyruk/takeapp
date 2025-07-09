@@ -1,0 +1,38 @@
+<odoo>
+    <record id="view_move_tree_inherit_travel" model="ir.ui.view">
+        <field name="name">account.move.tree.inherit.travel</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_total_signed']" position="after">
+                <field name="amount_residual_signed" string="Amount Due" sum="Total Due"/>
+            </xpath>
+            
+            <xpath expr="//field[@name='payment_state']" position="after">
+                <field name="payment_state" invisible="1"/>
+                <field name="state" invisible="1"/>
+                <field name="move_type" invisible="1"/>
+
+                <!-- 1. "Register Payment" Butonu (Ödenmemiş veya Kısmi Ödenmiş) -->
+                <button name="action_register_payment" type="object" string="Register Payment"
+                    class="btn-danger" 
+                    attrs="{'invisible': ['|',('state', '!=', 'posted'),('payment_state', '!=', 'not_paid')]}"/>
+                
+                <button name="action_register_payment" type="object" string="Register Payment"
+                    class="btn-warning"
+                    attrs="{'invisible': [('payment_state', '!=', 'partial')]}"/>
+
+                <!-- 2. "View Bill" Butonu (Ödenmiş veya Ödeme Sürecinde - Müşteri Faturası için) -->
+                <button name="action_open_business_doc" type="object" string="View Bill"
+                    class="btn-success"
+                    attrs="{'invisible': [('payment_state', 'not in', ('in_payment', 'paid'))]}"/>
+                
+                <!-- 3. YENİ BUTON: "View Payments" (Sadece ödeme yapılmış Tedarikçi Faturaları için) -->
+                <button name="action_view_vendor_payments" type="object" string="View Payments"
+                    class="btn-info"
+                    attrs="{'invisible': ['|', ('move_type', '!=', 'in_invoice'), ('payment_state', 'not in', ('in_payment', 'paid', 'partial'))]}"/>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>
