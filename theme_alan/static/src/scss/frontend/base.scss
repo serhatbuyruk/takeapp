@@ -1,0 +1,44 @@
+*:focus-visible {
+    outline: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+
+.as_scroll_to_top {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    border: none;
+    z-index: 111;
+    opacity: 0;
+    transition: ease all 0.35s;
+    &.as_scroll_show {
+        bottom: 30px;
+        right: 30px;
+        opacity: 1;
+    }
+    @include media-breakpoint-down(lg) {
+        bottom: 120px !important;
+    }
+}
+
+
+.oe_cart {
+    .js_cart_lines {
+        .td-product_name {
+            a {
+                color: $dark;
+            }
+        }
+    }
+}

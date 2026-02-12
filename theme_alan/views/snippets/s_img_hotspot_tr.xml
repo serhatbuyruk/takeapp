@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="as_hotspot_tr" name="hotspot translation">
+        <div class="container">
+            <form class='request_form' action="#" method="post">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Language Code</th>
+                            <th scope="col">Language Name</th>
+                            <th scope="col">Custom Translation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="lang_code_name.items()" t-as="lang">
+                            <tr>
+                                <td class="o_field_translation_code" t-att-value="lang[0]">
+                                    <t t-esc="lang[0]" />
+                                </td>
+                                <td>
+                                    <t t-esc="lang[1]" />
+                                </td>
+                                <td>
+                                    <t t-if="key_data == 'title_translation'">
+                                        <t t-set="custom" t-value="'data-lang-'+lang[0]"/>
+                                    </t>
+                                    <t t-elif="key_data == 'desc_translation'">
+                                        <t t-set="custom" t-value="'data-description-lang-'+lang[0]"/>
+                                    </t>
+                                    <t t-else=" ">
+                                        <t t-set="custom" t-value="'data-btn-lang-'+lang[0]"/>
+                                    </t>
+                                    <t t-if="defaultAtt.get(custom.lower())">
+                                        <input class="form-control o_field_translation_field"  t-att-value="defaultAtt.get(custom.lower())" type="text" placeholder="Custom Translation" />
+                                    </t>
+                                    <t t-else="">
+                                        <input class="form-control o_field_translation_field"  t-att-value="defaultTitle" type="text" placeholder="Custom Translation" />
+                                    </t>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </template>
+</odoo>

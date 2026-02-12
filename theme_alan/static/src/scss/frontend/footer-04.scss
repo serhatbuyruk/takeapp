@@ -1,0 +1,67 @@
+$-footer-color: o-color('footer-custom') or o-color('footer');
+
+/* Header Option 14
+-----------------------------------------------*/
+@if o-website-value('footer-template')=='alan_footer4' {
+    #footer {
+        .footer-col-bg {
+            @if ($-footer-color and color-contrast($-footer-color) != $color-contrast-light) {
+                background-color: rgba($dark, 0.1);
+            }
+            @if ($-footer-color and color-contrast($-footer-color) != $color-contrast-dark) {
+                background-color: rgba($white, 0.1);
+            }
+            .footer-title {
+                text-align: left;
+            }
+        }
+
+        .footer-address {
+            li {
+                align-items: center;
+                + li {
+                    padding-top: 16px;
+                }
+            }
+            .f-icon {
+                max-width: 40px;
+                height: 40px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex: 0 0 40px;
+                border-radius: 50%;
+                @if ($-footer-color and color-contrast($-footer-color) != $color-contrast-light) {
+                    background-color: rgba($dark, 0.1);
+                    color: $dark;
+                }
+                @if ($-footer-color and color-contrast($-footer-color) != $color-contrast-dark) {
+                    background-color: rgba($white, 0.1);
+                    color: $white;
+                }
+            }
+            .f-text {
+                padding-left: 15px;
+            }
+        }
+
+        .footer-title {
+            text-align: center;
+            h5 {
+                margin: 0;
+                padding: 0 0 20px;
+                font-size: 0.95rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+        }
+        .footer-link {
+            text-align: center;
+            li {
+                + li {
+                    padding-top: 12px;
+                }
+            }
+        }
+    }
+}

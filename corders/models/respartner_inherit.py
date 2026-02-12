@@ -4,12 +4,12 @@ class ResPartnersInherit(models.Model):
     _inherit = 'res.partner'
 
     contact_color = fields.Char(string="Contact Color")
-    user_role = fields.Selection([('kurye','Sürücü'),('yolcu','Yolcu'),('magaza','Mağaza'),('satici','Satıcı'),('kurye_firmasi','Sürücü firması')],
+    user_role = fields.Selection([('kurye','Kurye'),('magaza','Mağaza'),('kurye_firmasi','Kurye firması')],
                                     string="Kullanıcı Tipi"
                                     )
 
     player_id = fields.Char(string="Player Id")
-    tc = fields.Char(string="Vatandaşlık No")
+    tc = fields.Char(string="TC No")
     passport_no = fields.Char(string="Passport No")
     passport_attachment = fields.Many2many('ir.attachment','attachment_rel_2','pro_id_2','attach_id_2', string='Passport Attachments',)
     id_card_attachment = fields.Many2many('ir.attachment','attachment_rel_idcard','pro_id_idcard','attach_id_idcard', string='Id Card Attachments',)
@@ -18,13 +18,13 @@ class ResPartnersInherit(models.Model):
     psikoteknik_attachment = fields.Many2many('ir.attachment','attachment_rel_psikoteknik','pro_id_psikoteknik','attach_id_psikoteknik', string='Psikoteknik Ekleri',)
     src4_belgesi_attachment = fields.Many2many('ir.attachment','attachment_rel_src4_belgesi','pro_id_src4_belgesi','attach_id_src4_belgesi', string='SRC 4 Ekleri',)
     sozlesme_attachment = fields.Many2many('ir.attachment','attachment_rel_sozlesme_attachment','pro_id_sozlesme_attachment','attach_id_sozlesme_attachment', string='Sözleşme Ekleri',)
-    courier_emergency_contact_info = fields.Char(string="Sürücü Acil Durum Ulaşılacak Bilgisi")
+    courier_emergency_contact_info = fields.Char(string="Kurye Acil Durum Ulaşılacak Bilgisi")
     dogum_tarihi = fields.Date(string="Doğum Tarihi")
     egitim_durumu = fields.Selection([('ilkogretim','İlköğretim'),('lise','Lise'),('universite','Üniversite')],
                                     string="Eğitim Durumu"
                                     )
     kurye_arac_tipi = fields.Selection([('bisiklet','Bisiklet'),('motorsiklet','Motorsiklet'),('araba','Araba')],
-                                    string="Sürücü Araç tipi"
+                                    string="Kurye Araç tipi"
                                     )
     faaliyet_gostermek_istedigi_il = fields.Many2one('res.country.state', string="Faaliyet Göstermek İstediği İl", domain="[('country_id.id', '=', 224)]")
     faaliyet_gostermek_istedigi_ilce = fields.Char(string="Faaliyet Göstermek İstediği İlçe")
@@ -32,7 +32,7 @@ class ResPartnersInherit(models.Model):
                                     string="Şirket Türü"
                                     )
     efaura_mukellefi_mi = fields.Boolean(string="E-Fatura Mükellefi Mi?")
-    cinsiyet = fields.Selection([('erkek','Erkek'),('kadın','Kadın')],
+    cinsiyet = fields.Selection([('erkek','erkek'),('kadın','Kadın')],
                                     string="Cinsiyet"
                                     )
     arac_durumu = fields.Selection([('var','Var'),('yok','Yok'),('yok_ama_alabilirim','Yok Ama Alabilirim')],
@@ -42,7 +42,7 @@ class ResPartnersInherit(models.Model):
                                     string="Dağıtım Faaliyeti Tecrübesi"
                                     )
     
-    courier_mobile_info = fields.Char(string="Sürücü Cihaz Bilgisi")
+    courier_mobile_info = fields.Char(string="Kurye Cihaz Bilgisi")
     lat = fields.Float(string="Latitude", digits=(12, 6))
     lng = fields.Float(string="Longitude", digits=(12, 6))
     konum_dogrulugu = fields.Float(string="Konum Doğruluğu")
@@ -52,22 +52,28 @@ class ResPartnersInherit(models.Model):
     otomatik_onay = fields.Char(string="Otomatik Onay")
 
     slot_repeat_status = fields.Boolean(string="Slot Tekrarı")
-    slot_ucretlendirme_tipi = fields.Selection([('paket','Yolcu Başı'),('saatlik','Saatlik'),('paket_saat','Yolcu Başı + Saatlik'),('paket_saat_km','Yolcu Başı + Saatlik + Km')],
+    slot_ucretlendirme_tipi = fields.Selection([('paket','Paket Başı'),('saatlik','Saatlik'),('paket_saat','Paket Başı + Saatlik'),('paket_saat_km','Paket Başı + Saatlik + Km')],
                                     string="Slot Ücretlendirme Tipi", default="paket_saat", tracking=True
                                     )
     currency_id = fields.Many2one('res.currency', string='Currency',default=32, tracking=True)
-    paket_basi_ucret = fields.Monetary(string="Yolculuk Başı Ücret", currency_field='currency_id', tracking=True)
+    paket_basi_ucret = fields.Monetary(string="Paket Başı Ücret", currency_field='currency_id', tracking=True)
     saatlik_ucret = fields.Monetary(string="Saatlik Ücret", currency_field='currency_id', tracking=True)
     kmlik_ucret = fields.Monetary(string="Km Ücreti", currency_field='currency_id', tracking=True)
     yuzdelik_kar_orani = fields.Float(string="Yüzdelik Kar Oranı %", tracking=True)
 
-    kurye_firmasi = fields.Many2one('res.partner', string="Sürücü Firması", domain="[('user_role', '=', 'kurye_firmasi')]")
+    restoran_paket_basi_ucret = fields.Monetary(string="Restoran Paket Başı Ücret", currency_field='currency_id', tracking=True)
+    restoran_saatlik_ucret = fields.Monetary(string="Restoran Saatlik Ücret", currency_field='currency_id', tracking=True)
+    restoran_kmlik_ucret = fields.Monetary(string="Restoran Km Ücreti", currency_field='currency_id', tracking=True)
+    restoran_yuzdelik_kar_orani = fields.Float(string="Restoran Yüzdelik Kar Oranı %", tracking=True)
+    
+
+    kurye_firmasi = fields.Many2one('res.partner', string="Kurye Firması", domain="[('user_role', '=', 'kurye_firmasi')]")
     
     code = fields.Char(string="Code")
-    kurye_durumu = fields.Selection([('musait','Müsait'),('mesgul','Meşgul'),('pakette','Yolda'),('molada','Molada')],
-                                    string="Sürücü Durumu"
+    kurye_durumu = fields.Selection([('musait','Müsait'),('mesgul','Meşgul'),('pakette','Pakette'),('molada','Molada')],
+                                    string="Kurye Durumu"
                                     )
-    kurye_siparis_puani = fields.Integer(string="Sürücü Sipariş Puanı")
+    kurye_siparis_puani = fields.Integer(string="Kurye Sipariş Puanı")
     bank_name = fields.Char(string="Banka Adı")
     iban = fields.Char(string="Iban")
 
@@ -77,23 +83,23 @@ class ResPartnersInherit(models.Model):
     restaurant_status = fields.Selection([('acik','Açık'),('kapali','Kapalı'),('yogun','Yoğun')],
                                     string="Restoran Durumu", default="kapali"
                                     )
-    kurye_paketi_reddetmebilsin = fields.Boolean(string="Sürücü Yolculuğu Reddebilsin", default=False)
-    baska_kuryeye_atama_yapabilsin = fields.Boolean(string="Başka Sürücüye Atayabilsin", default=True)
+    kurye_paketi_reddetmebilsin = fields.Boolean(string="Kurye Paketi Reddebilsin", default=False)
+    baska_kuryeye_atama_yapabilsin = fields.Boolean(string="Başka Kuryeye Atayabilsin", default=True)
     odeme_degisikligi_yapabilsin = fields.Boolean(string="Ödeme Değişikliği Yapabilsin", default=True)
     atama_bekleyenleri_gorebilsin = fields.Boolean(string="Atama Bekleyenleri Görebilsin")
     mola_alabilsin_mi = fields.Boolean(string="Mola Alabilsin Mi?", default=True)
     max_mola_suresi = fields.Integer(string="Mola Süresi (DK)", default=30)
-    kurye_mola_durumu = fields.Boolean(string="Sürücü Mola Durumu", default=False)
+    kurye_mola_durumu = fields.Boolean(string="Kurye Mola Durumu", default=False)
     mola_kalan_sure = fields.Integer(string="Mola Kalan Süre (DK)")
-    anlik_tasinan_paket_sayisi = fields.Integer(string="Sürücü Anlık Yolculuk Sayısı")
-    uzerindeki_paket_sayisi = fields.Integer(string="Sürücünün Üzerindeki Yolculuk Sayısı")
-    toplam_tasinan_paket = fields.Integer(string="Sürücü Toplam Yolculuk Sayısı")
+    anlik_tasinan_paket_sayisi = fields.Integer(string="Anlık Taşınan Paket Sayısı")
+    uzerindeki_paket_sayisi = fields.Integer(string="Üzerindeki Paket Sayısı")
+    toplam_tasinan_paket = fields.Integer(string="Toplam Taşınan Paket Sayısı")
 
-    akilli_paket_atama = fields.Boolean(string="Akıllı Yolculuk Atama", default=True)
-    paketleri_gruplama_suresi = fields.Integer(string="Yolculuk Gruplama Süresi (DK)", default=20)
-    atanacak_paketler_arasi_yaricap_mesafesi = fields.Integer(string="Atanacak Yolculuklar Arası Yarıçap Mesafesi (M)", default=1000)
-    kurye_max_paket_sayisi = fields.Integer(string="Sürücünin Aynı Anda Yapabileceği Maks Yolculuk Sayısı", default=3)
-    yol_uzeri_paket_alma_mesafesi = fields.Integer(string="Yol Üzeri Yolcu Alma Metresi", default=500)
+    akilli_paket_atama = fields.Boolean(string="Akıllı Paket Atama", default=True)
+    paketleri_gruplama_suresi = fields.Integer(string="Paket Gruplama Süresi (DK)", default=20)
+    atanacak_paketler_arasi_yaricap_mesafesi = fields.Integer(string="Atanacak Paketler Arası Yarıçap Mesafesi (M)", default=1000)
+    kurye_max_paket_sayisi = fields.Integer(string="Kuryenin Aynı Anda Taşıyabileceği Maks Paket Sayısı", default=3)
+    yol_uzeri_paket_alma_mesafesi = fields.Integer(string="Yol Üzeri Paket Alma Metresi", default=500)
 
     pos_entegrasyon_firmasi = fields.Selection([('adisyo','Adisyo'),('sepettakip','SepetTakip'),('pagate','Pagate'),('yeppos','YepPos')],
                                     string="Pos Entegrasyon Firması"
@@ -103,7 +109,7 @@ class ResPartnersInherit(models.Model):
     adisyo_x_api_key = fields.Char(string="Adisyo x-api-key")
     adisyo_x_api_consumer = fields.Char(string="Adisyo x-api-consumer")
     last_integration_time = fields.Datetime(string="Last Integration Time")
-    adisyo_kurye_id = fields.Char(string="Adisyo Sürücü Id")
+    adisyo_kurye_id = fields.Char(string="Adisyo Kurye Id")
 
     sepettakip_bayi_id = fields.Char(string="Sepettakip Bayi Id")
     sepettakip_password = fields.Char(string="Sepettakip Password")
@@ -117,7 +123,7 @@ class ResPartnersInherit(models.Model):
 
     kullanici_sozlesmesi = fields.Boolean(string="Kullanıcı Sözleşmesi")
 
-    slot_tipi = fields.Selection([('sabit','Sabit Sürücüli'),('bolge','Bölge Tanımlamalı')],
+    slot_tipi = fields.Selection([('sabit','Sabit Kuryeli'),('bolge','Bölge Tanımlamalı')],
                                     string="Slot Tipi", tracking=True
                                     )
     
@@ -152,7 +158,7 @@ class ResPartnersInherit(models.Model):
     cumartesi_end_date = fields.Datetime(string="Cumartesi Bitiş")
     pazar_end_date = fields.Datetime(string="Pazar Bitiş")
 
-    kuryeler = fields.Many2many('res.partner','res_partner_many2many_1','rel_res_partner_many2many_1','res_partner_id_many2many_1', string='Sabit Sürücüler', domain="[('user_role', '=', 'kurye')]")
+    kuryeler = fields.Many2many('res.partner','res_partner_many2many_1','rel_res_partner_many2many_1','res_partner_id_many2many_1', string='Sabit Kuryeler', domain="[('user_role', '=', 'kurye')]")
     yetkili_contacts = fields.Many2many('res.partner','res_partner_many2many_yetkili','rel_res_partner_many2many_yetkili','res_partner_id_many2many_yetkili', string='Yetkili Contacts')
     yetkili_users = fields.Many2many('res.users','res_users_many2many_yetkili','rel_res_users_many2many_yetkili','res_users_id_many2many_yetkili', string='Yetkili Kişiler')
     

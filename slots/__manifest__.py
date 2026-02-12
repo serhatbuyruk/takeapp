@@ -7,7 +7,7 @@
     'description':'This is slots home management system software suppored in Odoo',
     'category':'slots',
     'website':'https://www.autoronics.com',
-    'depends':['base','website','product','corders'],
+    'depends':['base','website','product'],
 
     'data':[
         'security/security.xml',

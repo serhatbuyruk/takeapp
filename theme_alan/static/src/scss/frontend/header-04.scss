@@ -1,0 +1,227 @@
+$-menu-color: o-color('menu-custom') or o-color('menu');
+
+/* Header Option 1
+-----------------------------------------------*/
+
+@if o-website-value('header-template')=='as_header4' {
+    .as-main-header {
+
+        .as-header-navbar {
+            padding: 0;
+            flex-wrap: wrap;
+        }
+        .header-top {
+            padding-top: 25px;
+            padding-bottom: 15px;
+            width: 100%;
+            .as-brand-logo {
+                display: flex;
+            }
+        }
+
+        .header-end {
+            position: relative;
+            .nav {
+                justify-content: flex-end;
+                li {
+                    margin-left: 20px;
+                }
+            }
+            .hm-icon {
+                color: inherit;
+                text-decoration: none;
+                position: relative;
+                font-size: 1.6rem;
+                width: 30px;
+                height: 30px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: inherit !important;
+                &:hover {
+                    color: inherit !important;
+                }
+                sup {
+                    position: absolute;
+                    right: -4px;
+                    top: -4px;
+                    background: $dark !important;
+                    color: $white !important;
+                    border-radius: 6.25rem;
+                    padding: 0;
+                    font-size: .625rem;
+                    z-index: 1;
+                    min-width: 18px;
+                    height: 18px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: normal;
+                    border: 1px solid $white;
+                }
+            }
+            .fa-heart {
+                &:before {
+                    content: "\e879";
+                    font-family: 'feather';
+                }
+            }
+            .fa-shopping-cart {
+                &:before {
+                    content: "\e905";
+                    font-family: 'feather';
+                }
+            }
+            .hm-icon-user {
+                font-size: 0px;
+                &:before {
+                    content: "\e8e9";
+                    font-family: 'feather';
+                    font-size: 1.6rem;
+                }
+                img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+            .as_login_popup {
+                font-size: 0px;
+                &:before {
+                    font-size: 1.6rem;
+                }
+            }
+
+            .hm-user {
+                .dropdown-toggle {
+                    &:after {
+                        display: none;
+                    }
+                }
+                .dropdown-menu {
+                    .text-muted {
+                        color: inherit !important;
+                    }
+                }
+            }
+
+            .dropdown-menu {
+                box-shadow: $box-shadow;
+            }
+        }
+
+        .header-search {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: $white;
+            width: 350px;
+            box-shadow: $box-shadow;
+            z-index: 2;
+            .o_searchbar_form {
+                padding: 15px;
+                margin: 0;
+            }
+            .search-query {
+                border-radius: 0;
+                padding: 0.675rem 0.75rem;
+            }
+            .oe_search_button {
+                border-radius: 0;
+            }
+        }
+
+
+
+        @include media-breakpoint-up(lg) {
+            #top_menu_container {
+                border-radius: 10px;
+                top: 8px;
+                position: relative;
+                @if ($-menu-color and color-contrast($-menu-color) != $color-contrast-dark) {
+                    box-shadow: 0 -0.1rem 1rem rgba(255,255,255, 0.15) !important;
+                }
+                .dropdown-menu {
+                    box-shadow: $box-shadow;
+                }
+            }
+            .navbar-nav {
+                > .nav-item {
+                    padding: 0 10px;
+                    > .nav-link {
+                        padding: 1rem 0.8rem;
+                        margin: 0;
+                    }
+                }
+            }
+
+            .js_language_selector,
+            .o_pricelist_dropdown {
+                .btn {
+                    background: transparent !important;
+                    box-shadow: none;
+                    padding: 8px 10px;
+                    border-radius: 5px;
+                    color: $white !important;
+                    font-size: 0.85rem;
+                    @if ($-menu-color and color-contrast($-menu-color) != $color-contrast-light) {
+                        color: $dark !important;
+                    }
+                }
+            }
+        }
+
+
+        // Mobile
+        @include media-breakpoint-down(lg) {
+            .navbar-toggler {
+                padding: 0;
+            }
+            .js_language_selector,
+            .o_pricelist_dropdown {
+                display: none !important;
+            }
+        }
+        
+        @include media-breakpoint-down(md) {
+            .header-top {
+                padding-top: 10px;
+                padding-bottom: 0;
+                .header-search {
+                    width: 100%;
+                }
+            }
+            .navbar-brand {
+                margin: 0 auto;
+            }
+            .header-end {
+                width: 100%;
+                position: relative;
+                margin-top: 15px;
+                padding-top: 15px;
+                padding-bottom: 15px;
+                &:after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 1px;
+                    background: currentColor;
+                    opacity: 0.08;
+                    pointer-events: none;
+                }
+                .nav {
+                    justify-content: space-between;
+                    li {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}

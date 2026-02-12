@@ -126,7 +126,7 @@
                 <field name="user_role"/>
             </field>
             <xpath expr="//page[@name='contact_addresses']" position="before">
-                <page name="courier_details" autofocus="autofocus" string="Sürücü Detayları" attrs="{'invisible': [('user_role', '!=', 'kurye')]}">
+                <page name="courier_details" autofocus="autofocus" string="kurye Detayları" attrs="{'invisible': [('user_role', '!=', 'kurye')]}">
                     <group>
                         <group name="personal_info" string="Kişisel Bilgiler">
                             <field name="kullanici_sozlesmesi" groups="base.group_system,base.group_erp_manager"/>
@@ -150,7 +150,7 @@
                             <field name="dagitim_faaliyeti_tecrubesi"/>
                             <field name="katilim_tarihi" groups="corders.corders_group_fullaccess,corders.corders_group_admin"/>
                         </group>
-                        <group string="Sürücü Çalışma Günleri ve Saatleri">
+                        <group string="Kurye Çalışma Günleri ve Saatleri">
                             <field name="today_slot_status" invisible="1"/>
                             <label for="pazartesi_status" />
                             <div class="d-flex align-items-center">
@@ -209,7 +209,7 @@
                                 <field name="pazar_end_date" attrs="{'invisible': [('pazar_status', '=', False)]}"/>
                             </div>
                         </group>
-                        <group name="notification_info" string="Sürücü Bildirim Durumları">
+                        <group name="notification_info" string="Kurye Bildirim Durumları">
                             <field name="siparis_bildirim_status" />
                             <field name="siparis_sms_status" />
                             <field name="siparis_aramasi_status" />
@@ -219,7 +219,7 @@
                             <field name="bank_name" />
                             <field name="iban" />
                         </group>
-                        <group name="kurye_ayarlari" string="Sürücü Uygulama Detayları">
+                        <group name="kurye_ayarlari" string="Kurye Uygulama Detayları">
                             <field name="kurye_durumu" />
                             <field name="kurye_paketi_reddetmebilsin" />
                             <field name="baska_kuryeye_atama_yapabilsin" />
@@ -229,7 +229,7 @@
                             <field name="uzerindeki_paket_sayisi" />
                             <field name="toplam_tasinan_paket" />
                         </group>
-                        <group name="mola_ayarlari" string="Sürücü Mola Detayları">
+                        <group name="mola_ayarlari" string="Kurye Mola Detayları">
                             <field name="mola_alabilsin_mi" />
                             <field name="kurye_mola_durumu" groups="corders.corders_group_fullaccess,corders.corders_group_admin"/>
                             <field name="max_mola_suresi" />
@@ -252,7 +252,7 @@
                         </group>
                     </group>
                 </page>
-                <!-- <page name="restaurant_details" autofocus="autofocus" string="Restoran Detayları" attrs="{'invisible': [('user_role', '!=', 'magaza')]}">
+                <page name="restaurant_details" autofocus="autofocus" string="Restoran Detayları" attrs="{'invisible': [('user_role', '!=', 'magaza')]}">
                     <group>
                         <group name="akilli_ayarlar" string="Akıllı Paket Atama Sistemi">
                             <field name="slot_tipi" />
@@ -332,13 +332,18 @@
                             <field name="lng" />
                             <field name="contact_puan" />
                         </group>
-                        <group string="Slot Ücretleri">
+                        <group string="Kurye Ücretleri">
                             <field name="slot_ucretlendirme_tipi" invisible="1"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="paket_basi_ucret"/>
                             <field name="saatlik_ucret"/>
                             <field name="kmlik_ucret"/>
-                            <field name="yuzdelik_kar_orani"/>
+                        </group>
+                        <group string="Restoran Ücretleri">
+                            <field name="restoran_paket_basi_ucret"/>
+                            <field name="restoran_saatlik_ucret"/>
+                            <field name="restoran_kmlik_ucret"/>
+                            <field name="restoran_yuzdelik_kar_orani"/>
                         </group>
                         <group name="location_info" string="Konum Detayları" groups="base.group_system,base.group_erp_manager">
                             <field name="lat" />
@@ -349,8 +354,8 @@
                             <field name="today_slot_status"/>
                         </group>
                     </group>
-                </page> -->
-                <!-- <page name="restaurant_integration" string="Restoran Pos Entegrasyonu" groups="corders.corders_group_fullaccess,corders.corders_group_admin,corders.corders_group_dealer" attrs="{'invisible': [('user_role', '!=', 'magaza')]}">
+                </page>
+                <page name="restaurant_integration" string="Restoran Pos Entegrasyonu" groups="corders.corders_group_fullaccess,corders.corders_group_admin,corders.corders_group_dealer" attrs="{'invisible': [('user_role', '!=', 'magaza')]}">
                     <group>
                         <group name="pos_entegrasyon_ayarlari" string="Pos Entegrasyon Seçeneği">
                             <field name="pos_entegrasyon_firmasi" />
@@ -376,7 +381,7 @@
                             <field name="yeppos_api_key" />
                         </group>
                     </group>
-                </page> -->
+                </page>
             </xpath>
             <!--sale
             order form görünümünün içine buton koyma-->

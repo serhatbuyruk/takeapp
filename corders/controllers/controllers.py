@@ -23,25 +23,6 @@ class CustomSnippets(http.Controller):
 
 class cordersProfileReq(http.Controller):
 
-    @http.route('/select_vehicle/<kurye_id>/<vehicle_line_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
-    def select_vehicle(self, kurye_id, vehicle_line_id):
-        result = "not found"
-        user_id = request.session.uid
-        user = request.env['res.users'].browse(user_id)
-        partner = user.partner_id
-        reason = ""
-        # ID'yi int'e çevir
-        vehicle_line_id = int(vehicle_line_id)
-        # Uygun kayıt filtrele
-        vehicle_profile_line = partner.vehicles_profile_lines.filtered(lambda l: l.id == vehicle_line_id)
-        if vehicle_profile_line:
-            # Önce tüm current_vehicle'ları False yap
-            partner.vehicles_profile_lines.sudo().write({'current_vehicle': False})
-            # Seçilen kaydı True yap
-            vehicle_profile_line.sudo().write({'current_vehicle': True})
-        return request.render("website.kurye-anasayfa", {'obj': result, 'reason': reason})
-
-
     @http.route('/mola_active/<kurye_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
     def mola_active(self, kurye_id):
         result = "not found"
@@ -103,58 +84,57 @@ class cordersProfileReq(http.Controller):
         user = request.env['res.users'].browse(user_id)
         partner_id = user.partner_id.id
         reason = ""
-        # slot = http.request.env['slots.profile'].sudo().search(["&","&",["skurye_profile_lines.partner_id.id","=",kurye_id],["start_date","<=",datetime.now()],["end_date",">=",datetime.now()]],limit=1)
-        # if len(slot) > 0:
-        #     result = slot
-        #     for kurye_line in slot.skurye_profile_lines:
-        #         if kurye_line.partner_id.id == int(kurye_id):
-        #             mesafe = http.request.env['corders.profile'].find_distance(slot.lat, slot.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
-        #             create_ir_logging = (
-        #                         request.env['ir.logging']
-        #                         .sudo()
-        #                         .create(
-        #                             {
-        #                                 'dbname': "Last Server",
-        #                                 'type': 'server',
-        #                                 'name': 'odoo.addons.base.models.ir_actions',
-        #                                 'level': 'info',
-        #                                 'path': 'action',
-        #                                 'line': '489',
-        #                                 'func': 'make_available',
-        #                                 'message': str(kurye_line.partner_id.id) + " - " + str(kurye_line.partner_id.name) + " konumu: " + str(kurye_line.partner_id.lat) + "," + str(kurye_line.partner_id.lng) + " slot uzaklığı: " + str(mesafe) + " metre ",
-        #                             }
-        #                         )
-        #                     )
-        #             if kurye_line.kurye_start_date == False and kurye_line.kurye_end_date == False and kurye_line.kurye_active == True:
-        #                 if mesafe <= 2000:
-        #                     kurye_line["partner_id"]["kurye_durumu"] = "musait"
-        #                     if kurye_line.start_date == False: 
-        #                         kurye_line["start_date"] = datetime.now()
-        #                         kurye_line["kurye_yoklamasi"] = True
-        #                         if kurye_line.kurye_start_date == False:
-        #                             kurye_line["gecikme_dakikasi"] = abs((slot.start_date - datetime.now()).total_seconds() / 60)
-        #                             if kurye_line.gecikme_dakikasi > 15:
-        #                                 kurye_line["gecikme_durumu"] = True
+        slot = http.request.env['slots.profile'].sudo().search(["&","&",["skurye_profile_lines.partner_id.id","=",kurye_id],["start_date","<=",datetime.now()],["end_date",">=",datetime.now()]],limit=1)
+        if len(slot) > 0:
+            result = slot
+            for kurye_line in slot.skurye_profile_lines:
+                if kurye_line.partner_id.id == int(kurye_id):
+                    mesafe = http.request.env['corders.profile'].find_distance(slot.lat, slot.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+                    create_ir_logging = (
+                                request.env['ir.logging']
+                                .sudo()
+                                .create(
+                                    {
+                                        'dbname': "Last Server",
+                                        'type': 'server',
+                                        'name': 'odoo.addons.base.models.ir_actions',
+                                        'level': 'info',
+                                        'path': 'action',
+                                        'line': '489',
+                                        'func': 'make_available',
+                                        'message': str(kurye_line.partner_id.id) + " - " + str(kurye_line.partner_id.name) + " konumu: " + str(kurye_line.partner_id.lat) + "," + str(kurye_line.partner_id.lng) + " slot uzaklığı: " + str(mesafe) + " metre ",
+                                    }
+                                )
+                            )
+                    if kurye_line.kurye_start_date == False and kurye_line.kurye_end_date == False and kurye_line.kurye_active == True:
+                        if mesafe <= 2000:
+                            kurye_line["partner_id"]["kurye_durumu"] = "musait"
+                            if kurye_line.start_date == False: 
+                                kurye_line["start_date"] = datetime.now()
+                                kurye_line["kurye_yoklamasi"] = True
+                                if kurye_line.kurye_start_date == False:
+                                    kurye_line["gecikme_dakikasi"] = abs((slot.start_date - datetime.now()).total_seconds() / 60)
+                                    if kurye_line.gecikme_dakikasi > 15:
+                                        kurye_line["gecikme_durumu"] = True
                     
-        #             if kurye_line.kurye_start_date != False and kurye_line.kurye_end_date != False and kurye_line.kurye_active == True:
-        #                 if kurye_line.kurye_start_date <= datetime.now() and kurye_line.kurye_end_date > datetime.now():
-        #                     if mesafe <= 2000:
-        #                         kurye_line["partner_id"]["kurye_durumu"] = "musait"
-        #                         if kurye_line.start_date == False: 
-        #                             kurye_line["start_date"] = datetime.now()
-        #                             kurye_line["kurye_yoklamasi"] = True
-        #                             if kurye_line.kurye_start_date != False:
-        #                                 kurye_line["gecikme_dakikasi"] = abs((kurye_line.kurye_start_date - datetime.now()).total_seconds() / 60)
-        #                                 if kurye_line.gecikme_dakikasi > 15:
-        #                                     kurye_line["gecikme_durumu"] = True
-        #             if kurye_line.kurye_active == False:
-        #                 reason = "Bu slottaki aktiflik durumun kapanmıştır!"
-        #             if kurye_line.kurye_start_date != False and kurye_line.kurye_end_date != False:
-        #                 if kurye_line.kurye_start_date > datetime.now() and kurye_line.kurye_end_date > datetime.now():
-        #                     reason = "Slottaki mesai zamanın henüz başlamamış!"
-        # if len(slot) == 0:
-        #     result = "not found"
-        user["partner_id"]["kurye_durumu"] = "musait"
+                    if kurye_line.kurye_start_date != False and kurye_line.kurye_end_date != False and kurye_line.kurye_active == True:
+                        if kurye_line.kurye_start_date <= datetime.now() and kurye_line.kurye_end_date > datetime.now():
+                            if mesafe <= 2000:
+                                kurye_line["partner_id"]["kurye_durumu"] = "musait"
+                                if kurye_line.start_date == False: 
+                                    kurye_line["start_date"] = datetime.now()
+                                    kurye_line["kurye_yoklamasi"] = True
+                                    if kurye_line.kurye_start_date != False:
+                                        kurye_line["gecikme_dakikasi"] = abs((kurye_line.kurye_start_date - datetime.now()).total_seconds() / 60)
+                                        if kurye_line.gecikme_dakikasi > 15:
+                                            kurye_line["gecikme_durumu"] = True
+                    if kurye_line.kurye_active == False:
+                        reason = "Bu slottaki aktiflik durumun kapanmıştır!"
+                    if kurye_line.kurye_start_date != False and kurye_line.kurye_end_date != False:
+                        if kurye_line.kurye_start_date > datetime.now() and kurye_line.kurye_end_date > datetime.now():
+                            reason = "Slottaki mesai zamanın henüz başlamamış!"
+        if len(slot) == 0:
+            result = "not found"
         return request.render("website.kurye-anasayfa", {'obj': result, 'mesafe': mesafe, 'reason': reason})
 
     @http.route('/busy/<kurye_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
@@ -170,35 +150,6 @@ class cordersProfileReq(http.Controller):
             result = "not found"
         return request.render("website.kurye-anasayfa")
 
-
-    @http.route('/kurye/onay/<corder_id>/<current_user_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
-    def get_kurye_onay(self, corder_id, current_user_id):
-        user_id = request.session.uid
-        corder = http.request.env['corders.profile'].sudo().search([["id","=",corder_id]],limit=1) 
-        if int(current_user_id) == int(user_id):
-            if len(corder) > 0:
-                corder["kurye_siparis_durumu"] = "onaylandi"
-        return request.render("website.kurye-anasayfa")
-
-    #Yolcuya ulaşma
-    @http.route('/kurye/restorana-ulasti/<corder_id>/<current_user_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
-    def get_kurye_restorana_ulasti(self, corder_id, current_user_id):
-        user_id = request.session.uid
-        corder = http.request.env['corders.profile'].sudo().search([["id","=",corder_id]],limit=1)
-        if len(corder) > 0:
-            company = http.request.env['res.company'].sudo().search([["id","=",1]],limit=1)
-            corder["kurye_siparis_durumu"] = "restorana_ulasti"
-        return request.render("website.kurye-anasayfa")
-
-    #Yolcuyu buluşma noktasından alma
-    @http.route('/kurye/siparisi-teslim-al/<corder_id>/<current_user_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
-    def get_kurye_siparisi_teslim_aldi(self, corder_id, current_user_id):
-        user_id = request.session.uid
-        corder = http.request.env['corders.profile'].sudo().search([('id', '=', corder_id)])
-        if len(corder) > 0:
-            corder["kurye_siparis_durumu"] = "siparisi_teslim_aldi"
-        return request.render("website.kurye-anasayfa")
-    
     @http.route('/cash/payment/<corder_id>/<current_user_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
     def get_payment_cash(self, corder_id, current_user_id):
         user_id = request.session.uid
@@ -223,14 +174,438 @@ class cordersProfileReq(http.Controller):
                 result = "not found"
         return request.render("website.kurye-anasayfa")
 
-    #Yolcuyu bırakma
+    @http.route('/kurye/onay/<corder_id>/<current_user_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
+    def get_kurye_onay(self, corder_id, current_user_id):
+        user_id = request.session.uid
+        corder = http.request.env['corders.profile'].sudo().search([["id","=",corder_id]],limit=1) 
+        if int(current_user_id) == int(user_id):
+            if len(corder) > 0:
+                corder["kurye_siparis_durumu"] = "onaylandi"
+                if corder.pos_entegrasyon_firmasi == "sepettakip":
+                    company = http.request.env['res.company'].sudo().search([["id","=",1]],limit=1)
+                    current_time = datetime.now(timezone.utc)
+                    time_plus_5_minutes = current_time + timedelta(minutes=5)
+                    formatted_time = time_plus_5_minutes.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+                    url = company.x_sepettakip_url + "/courier-company/order"
+                    payload = {
+                        "order_id": corder.sepettakip_order_id,
+                        "status": "on_way",
+                        "courier_eta": formatted_time
+                    }
+                    headers = {
+                        'Courier-Company': company.x_sepettakip_courier_company,
+                        'Api-Key': company.x_sepettakip_api_key,
+                        'Content-Type': 'application/json'
+                    }
+                    response = requests.patch(url, verify=True, headers=headers, json=payload, timeout=5)
+                    create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_onay',
+                                    'message': "sepettakip kurye on_way response: " + str(corder.id) + " - " + str(response),
+                                }
+                            )
+                        )
+                result = "ok"
+            if len(corder) == 0:
+                result = "not found"
+        return request.render("website.kurye-anasayfa")
+
+    @http.route('/kurye/restorana-ulasti/<corder_id>/<current_user_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
+    def get_kurye_restorana_ulasti(self, corder_id, current_user_id):
+        user_id = request.session.uid
+        corder = http.request.env['corders.profile'].sudo().search([["id","=",corder_id]],limit=1)
+        if len(corder) > 0:
+            diger_baglantili_corders = http.request.env['corders.profile'].sudo().search(["&","&","&","&","&",["kurye.id","=",corder.kurye.id],["sonra_teslim_durumu","!=",True],["siparis_durumu","!=","iptal_edildi"],["siparis_durumu","!=","teslim_edildi"],["magaza.id","=",corder.magaza.id],"|",["kurye_siparis_durumu","=","onay_bekliyor"],["kurye_siparis_durumu","=","onaylandi"]])  
+            company = http.request.env['res.company'].sudo().search([["id","=",1]],limit=1)
+            for diger_baglantili_corder in diger_baglantili_corders:
+                diger_baglantili_corder["kurye_siparis_durumu"] = "restorana_ulasti"
+                if diger_baglantili_corder.pos_entegrasyon_firmasi == "sepettakip":
+                    current_time = datetime.now(timezone.utc)
+                    time_plus_5_minutes = current_time + timedelta(minutes=5)
+                    formatted_time = time_plus_5_minutes.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+                    url = company.x_sepettakip_url + "/courier-company/order"
+                    payload = {
+                        "order_id": diger_baglantili_corder.sepettakip_order_id,
+                        "status": "on_way",
+                        "courier_eta": formatted_time
+                    }
+                    headers = {
+                        'Courier-Company': company.x_sepettakip_courier_company,
+                        'Api-Key': company.x_sepettakip_api_key,
+                        'Content-Type': 'application/json'
+                    }
+                    response = requests.patch(url, verify=True, headers=headers, json=payload, timeout=5)
+                    create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_onay',
+                                    'message': "sepettakip kurye on_way response: " + str(diger_baglantili_corder.id) + " - " + str(response),
+                                }
+                            )
+                        )
+        if int(current_user_id) == int(user_id):
+            if len(corder) > 0:
+                corder["kurye_siparis_durumu"] = "restorana_ulasti"
+                result = "ok"
+            if len(corder) == 0:
+                result = "not found"
+        return request.render("website.kurye-anasayfa")
+
+    @http.route('/kurye/siparisi-teslim-al/<corder_id>/<current_user_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
+    def get_kurye_siparisi_teslim_aldi(self, corder_id, current_user_id):
+        user_id = request.session.uid
+        siparis = http.request.env['corders.profile'].sudo().search([('id', '=', corder_id)])
+        if len(siparis) > 0:
+            if int(current_user_id) == int(user_id):
+                if siparis.pos_entegrasyon_firmasi == False:
+                    siparis["kurye_siparis_durumu"] = "siparisi_teslim_aldi"
+                if siparis.pos_entegrasyon_firmasi == "yeppos":
+                    url = ""
+                    api_key = ""
+                    if siparis.magaza.yeppos_url == False:
+                        company = http.request.env['res.company'].sudo().search([["id","=",1]],limit=1)
+                        url = company.x_yeppos_url + "/v1/couries/" + str(siparis.yeppos_order_id)
+                        api_key = company.x_yeppos_api_key
+                    if siparis.magaza.yeppos_url != False:
+                        url = siparis.magaza.yeppos_url
+                        api_key = siparis.magaza.yeppos_api_key
+                    payload = {
+                        "order_status": 3
+                    }
+                    headers = {
+                        'x-api-key': str(api_key),
+                        'Content-Type': 'application/json'
+                    }
+                    response = requests.post(url, verify=True, headers=headers, json=payload, timeout=5)
+                    #if response.json().get("code") == "ok":
+                    siparis["kurye_siparis_durumu"] = "siparisi_teslim_aldi"
+                    create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_siparisi_teslim_aldi',
+                                    'message': "yeppos kurye picked_up response: " + str(siparis.id) + " - " + str(response),
+                                }
+                            )
+                        )
+                if siparis.pos_entegrasyon_firmasi == "sepettakip":
+                    siparis["kurye_siparis_durumu"] = "siparisi_teslim_aldi"
+                    company = http.request.env['res.company'].sudo().search([["id","=",1]],limit=1)
+                    url = company.x_sepettakip_url + "/courier-company/order"
+                    payload = {
+                        "order_id": siparis.sepettakip_order_id,
+                        "status": "picked_up"
+                    }
+                    headers = {
+                        'Courier-Company': company.x_sepettakip_courier_company,
+                        'Api-Key': company.x_sepettakip_api_key,
+                        'Content-Type': 'application/json'
+                    }
+                    response = requests.patch(url, verify=True, headers=headers, json=payload, timeout=5)
+                    create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_siparisi_teslim_aldi',
+                                    'message': "sepettakip kurye picked_up response: " + str(siparis.id) + " - " + str(response),
+                                }
+                            )
+                        )
+                if siparis.pos_entegrasyon_firmasi == "pagate":
+                    orderId = (siparis.remoteId)
+                    url = "https://possiweb.com/api/v2/provider/update-order"
+                    payload = {
+                        "created_by": "kuryetec",
+                        "order_id": str(orderId),
+                        "status_code": "shipped"
+                    }
+                    headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': siparis.magaza.token
+                    }
+                    kurye_response = requests.put(url, headers=headers, json=payload)
+                    create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_siparisi_teslim_aldi',
+                                    'message': "pagate kurye response: " + str(siparis.id) + " - " + str(kurye_response.text),
+                                }
+                            )
+                        )
+                    
+                    siparis["kurye_siparis_durumu"] = "siparisi_teslim_aldi"
+                    
+                    
+                if siparis.pos_entegrasyon_firmasi == "adisyo" and siparis.pos_entegrasyon_id != False:
+                    adisyo_kurye_id = int(siparis.magaza.adisyo_kurye_id)
+                    if adisyo_kurye_id == False:
+                        url = "https://ext.adisyo.com/api/External/v2/Couriers"
+                        payload = ""
+                        headers = {
+                        'x-api-key': siparis.magaza.adisyo_x_api_key,
+                        'x-api-secret': siparis.magaza.adisyo_x_api_secret,
+                        'x-api-consumer': siparis.magaza.adisyo_x_api_consumer,
+                        'Content-Type': 'application/json'
+                        }
+                        kurye_response = requests.get(url, headers=headers, json=payload)
+                        create_ir_logging = (
+                                request.env['ir.logging']
+                                .sudo()
+                                .create(
+                                    {
+                                        'dbname': "Last Server",
+                                        'type': 'server',
+                                        'name': 'odoo.addons.base.models.ir_actions',
+                                        'level': 'info',
+                                        'path': 'action',
+                                        'line': '489',
+                                        'func': 'get_kurye_siparisi_teslim_aldi',
+                                        'message': "adisyo kurye response: " + str(siparis.id) + " - " + str(kurye_response.json()),
+                                    }
+                                )
+                            )
+                        if kurye_response.json().get("status") == 100:
+                            if kurye_response.json().get("couriers") and len(kurye_response.json()["couriers"]) > 0:
+                                siparis["magaza"]["adisyo_kurye_id"] = str(kurye_response.json().get("couriers")[0]["id"])
+                                adisyo_kurye_id = int(siparis.magaza.adisyo_kurye_id)
+                    
+                    if adisyo_kurye_id > 0:
+                        url = "https://ext.adisyo.com/api/External/v2/OnDelivery"
+                        payload = {
+                            "OrderId": int(siparis.pos_entegrasyon_id),
+                            "CourierId": adisyo_kurye_id
+                        }
+                        headers = {
+                            'x-api-key': siparis.magaza.adisyo_x_api_key,
+                            'x-api-secret': siparis.magaza.adisyo_x_api_secret,
+                            'x-api-consumer': siparis.magaza.adisyo_x_api_consumer,
+                            'Content-Type': 'application/json'
+                        }
+                        response = requests.post(url, verify=True, headers=headers, json=payload)
+                        # print the response text (the content of the requested file):
+                        # return str(x.content)
+                        # response = x.json()
+                        # return str(response['jsonrpc'])
+                        # aşağıdaki işlemle önce json parse edildi sonra 0-52 ye kadar substring yapıldı
+                        create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_siparisi_teslim_aldi',
+                                    'message': "adisyo hazırlanıyor response: " + str(siparis.id) + " - " + str(response.json()),
+                                }
+                            )
+                        )
+                        if response.json().get("status"):
+                            if response.json().get("status") == 100:
+                                siparis["kurye_siparis_durumu"] = "siparisi_teslim_aldi"
+                                return request.render("website.kurye-anasayfa")
+        return request.render("website.kurye-anasayfa")
+
     @http.route('/kurye/siparisi-teslim-et/<corder_id>/<current_user_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
     def get_kurye_siparisi_teslim_etti(self, corder_id, current_user_id):
         user_id = request.session.uid
-        corder = http.request.env['corders.profile'].sudo().search([('id', '=', corder_id)])
-        if len(corder) > 0:
+        siparis = http.request.env['corders.profile'].sudo().search([('id', '=', corder_id)])
+        if len(siparis) > 0:
             if int(current_user_id) == int(user_id):
-                corder["kurye_siparis_durumu"] = "siparisi_teslim_etti"
+                if siparis.pos_entegrasyon_firmasi == False:
+                    siparis["kurye_siparis_durumu"] = "siparisi_teslim_etti"
+
+                if siparis.pos_entegrasyon_firmasi == "yeppos":
+                    #if siparis.paket_baslangic_tarihi > datetime.now() - timedelta(seconds=65):
+                    url = ""
+                    api_key = ""
+                    if siparis.magaza.yeppos_url == False:
+                        company = http.request.env['res.company'].sudo().search([["id","=",1]],limit=1)
+                        url = company.x_yeppos_url + "/v1/couries/" + str(siparis.yeppos_order_id)
+                        api_key = company.x_yeppos_api_key
+                    if siparis.magaza.yeppos_url != False:
+                        url = siparis.magaza.yeppos_url
+                        api_key = siparis.magaza.yeppos_api_key
+                    payload = {
+                        "order_status": 4
+                    }
+                    headers = {
+                        'x-api-key': str(api_key),
+                        'Content-Type': 'application/json'
+                    }
+                    response = requests.post(url, verify=True, headers=headers, json=payload, timeout=5)
+                    siparis["kurye_siparis_durumu"] = "siparisi_teslim_etti"
+                    if response.status_code == 200:
+                        siparis["kurye_siparis_durumu"] = "siparisi_teslim_etti"
+                    create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_siparisi_teslim_etti',
+                                    'message': "yeppos kurye delivered response: " + str(siparis.id) + " - " + str(response),
+                                }
+                            )
+                        )
+
+                if siparis.pos_entegrasyon_firmasi == "sepettakip":
+                    siparis["kurye_siparis_durumu"] = "siparisi_teslim_etti"
+                    company = http.request.env['res.company'].sudo().search([["id","=",1]],limit=1)
+                    url = company.x_sepettakip_url + "/courier-company/order"
+                    payload = {
+                        "order_id": siparis.sepettakip_order_id,
+                        "status": "delivered"
+                    }
+                    headers = {
+                        'Courier-Company': company.x_sepettakip_courier_company,
+                        'Api-Key': company.x_sepettakip_api_key,
+                        'Content-Type': 'application/json'
+                    }
+                    response = requests.patch(url, verify=True, headers=headers, json=payload, timeout=5)
+                    create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_siparisi_teslim_etti',
+                                    'message': "sepettakip kurye delivered response: " + str(siparis.id) + " - " + str(response),
+                                }
+                            )
+                        )
+                
+                if siparis.pos_entegrasyon_firmasi == "pagate":
+                    orderId = (siparis.remoteId)
+                    url = "https://possiweb.com/api/v2/provider/update-order"
+                    payload = {
+                        "created_by": "kuryetec",
+                        "order_id": str(orderId),
+                        "status_code": "delivered"
+                    }
+                    headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': siparis.magaza.token
+                    }
+                    kurye_response = requests.put(url, headers=headers, json=payload)
+                    create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_siparisi_teslim_etti',
+                                    'message': "pagate kurye response: " + str(siparis.id) + " - " + str(kurye_response.text),
+                                }
+                            )
+                        )
+                    
+                    siparis["kurye_siparis_durumu"] = "siparisi_teslim_etti"
+                    if siparis.odeme_yontemi == "online_odendi":
+                        siparis["kurye_odeme_alma_yontemi"] = "online_odendi"
+
+
+                if siparis.pos_entegrasyon_firmasi == "adisyo" and siparis.pos_entegrasyon_id != False:
+                    odeme_yontemi = siparis.odeme_yontemi
+                    platform = siparis.platform
+                    adisyo_odeme_id = int(siparis.adisyo_payment_method_id)
+                    if adisyo_odeme_id > 0:
+                        url = "https://ext.adisyo.com/api/External/v2/Deliver"
+                        payload = {
+                            "OrderId": int(siparis.pos_entegrasyon_id),
+                            "PaymentType": adisyo_odeme_id
+                        }
+                        headers = {
+                            'x-api-key': siparis.magaza.adisyo_x_api_key,
+                            'x-api-secret': siparis.magaza.adisyo_x_api_secret,
+                            'x-api-consumer': siparis.magaza.adisyo_x_api_consumer,
+                            'Content-Type': 'application/json'
+                        }
+                        response = requests.post(url, verify=True, headers=headers, json=payload)
+                        # print the response text (the content of the requested file):
+                        # return str(x.content)
+                        # response = x.json()
+                        # return str(response['jsonrpc'])
+                        # aşağıdaki işlemle önce json parse edildi sonra 0-52 ye kadar substring yapıldı
+                        create_ir_logging = (
+                            request.env['ir.logging']
+                            .sudo()
+                            .create(
+                                {
+                                    'dbname': "Last Server",
+                                    'type': 'server',
+                                    'name': 'odoo.addons.base.models.ir_actions',
+                                    'level': 'info',
+                                    'path': 'action',
+                                    'line': '489',
+                                    'func': 'get_kurye_siparisi_teslim_etti',
+                                    'message': "adisyo siparis tamamlandı response: " + str(siparis.id) + " - " + str(response.json()),
+                                }
+                            )
+                        )
+                        if response.json().get("status"):
+                            if response.json().get("status") == 100 or response.json().get("status") == 756:
+                                siparis["kurye_siparis_durumu"] = "siparisi_teslim_etti"
+                                if siparis.odeme_yontemi == "online_odendi":
+                                    siparis["kurye_odeme_alma_yontemi"] = "online_odendi"
+                                return request.render("website.kurye-anasayfa")
         return request.render("website.kurye-anasayfa")
 
     # @http.route('/kurye/siparisi-teslim-et/<corder_id>/<current_user_id>', type='http', auth="user", methods=["GET"], cors='*', website=True)
@@ -339,7 +714,8 @@ class cordersProfileReq(http.Controller):
                         'path': 'action',
                         'line': '489',
                         'func': 'pagate_post_order_callback',
-                        'message':  str(data)
+                        'message':  str(data),
+                        'x_raw_json':  data
                     })
             return "{'code': 200, 'message': 'Order Created Successfull'}"
         except Exception as e:
@@ -351,7 +727,8 @@ class cordersProfileReq(http.Controller):
                         'path': 'action',
                         'line': '489',
                         'func': 'pagate_post_order_error_callback',
-                        'message':  str(data)
+                        'message':  str(data),
+                        'x_raw_json':  data
                     })
             return "{'code': 200, 'message': 'Order Creation Error Successfull'}"
 

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="brand_list" name="Brand Page">
+        <t t-call="website.layout">
+            <div class="as-brand-breadcrumb">
+                <div class="container">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-6 text-center text-md-start">
+                            <h3 class="as-all-brand-title m-0">Brands</h3>
+                        </div>
+                        <div class="col-md-6">
+                            <ol class="breadcrumb justify-content-center justify-content-md-end m-0 p-0">
+                                <li class="breadcrumb-item">
+                                    <a href="/shop">All Products</a>
+                                </li>
+                                <li class="breadcrumb-item active">
+                                    <span>Brand</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="as-all-brand-page">
+                <div class="container">
+                    <div class="oe_structure" id="as_brands_page1" data-editor-message="Drag and drop the snippet"/>
+                    <div class="row as-letter-container-box g-3">
+                        <t t-foreach="brands" t-as="brand">
+                            <div class="col-6 col-sm-6 col-md-4 col-lg-3">
+                                <div class="as-lp-brand-box">
+                                    <span class="brand-img" t-field="brand.logo" t-options="{'widget': 'image', 'class': 'img-rounded'}" />
+                                    <div class="as-lp-brand-info">
+                                        <h6>
+                                            <a t-att-href="'/shop?brand=%s' % brand.id" target="new">
+                                                <t t-esc="brand.name"/>
+                                            </a>
+                                        </h6>
+                                        <span class="brand-count">
+                                            <t t-if="len(brand.brand_product_ids) == 1">
+                                                <t t-esc="len(brand.brand_product_ids)" /> Product
+                                            </t>
+                                            <t t-else="">
+                                                <t t-esc="len(brand.brand_product_ids)" /> Products
+                                            </t>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                    <t t-call="website.pager"/>
+                    
+                    <div class="oe_structure" id="as_brands_page2" data-editor-message="Drag and drop the snippet"/>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

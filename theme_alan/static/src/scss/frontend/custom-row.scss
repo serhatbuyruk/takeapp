@@ -1,0 +1,63 @@
+.s_dynamic_snippets {
+    .as-frame-data {
+        > .row {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            --gutter-y: 1rem;
+            --gutter-x: 1rem;
+        }
+    }
+}
+
+
+
+.as-snippets-row {
+
+    //Col 5
+    .col-lg-2 {
+        @include media-breakpoint-down(xl) {
+            @include media-breakpoint-up(lg) {
+                max-width: calc(100% / 4);
+                flex: 0 0 calc(100% / 4);
+            }
+        }
+        @include media-breakpoint-down(lg) {
+            @include media-breakpoint-up(md) {
+                max-width: calc(100% / 3);
+                flex: 0 0 calc(100% / 3);
+            }
+        }
+    }
+
+
+    //Col 5
+    .col-lg-five {
+        @include media-breakpoint-up(md) {
+            flex: 0 0 calc(100% / 3);
+            max-width: calc(100% / 3);
+        }
+        @include media-breakpoint-up(lg) {
+            flex: 0 0 calc(100% / 4);
+            max-width: calc(100% / 4);
+        }
+        @include media-breakpoint-up(xl) {
+            flex: 0 0 calc(100% / 5);
+            max-width: calc(100% / 5);
+        }
+    }
+
+    // Mobile
+    @include media-breakpoint-down(md) {
+        .mob-col-2 {
+            max-width: calc(100% / 2);
+            flex: 0 0 calc(100% / 2);
+        }
+        .mob-col-1 {
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+    }
+
+}
+
+

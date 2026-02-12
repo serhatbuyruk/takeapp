@@ -1,0 +1,196 @@
+$-menu-color: o-color('menu-custom') or o-color('menu');
+
+/* Header Option 1
+-----------------------------------------------*/
+
+@if o-website-value('header-template')=='as_header11' {
+
+    .as-main-header {
+
+        .as-header-navbar {
+            padding: 10px 0;
+            @include media-breakpoint-down(md) {
+                padding: 15px 0 0;
+            }
+        }
+
+        .header-logo {
+            display: flex;
+            @include media-breakpoint-down(md) {
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                .navbar-brand {
+                    margin: 0;
+                }
+            }
+        }
+
+        .dropdown-menu {
+            @include media-breakpoint-up(lg) {
+                box-shadow: $box-shadow;
+            }
+        }
+
+        .header-end {
+            display: flex;
+            align-items: center;
+            @include media-breakpoint-down(md) {
+                width: 100%;
+                padding-top: 15px;
+            }
+            @include media-breakpoint-up(lg) {
+                padding-left: 35px;
+            }
+            .nav {
+                justify-content: flex-end;
+                flex-wrap: nowrap;
+                @include media-breakpoint-down(md) {
+                    justify-content: space-between;
+                    width: 100%;
+                }
+                li {
+                    @include media-breakpoint-up(md) {
+                        margin-left: 15px;
+                    }
+                }
+            }
+
+            .hm-icon {
+                color: inherit;
+                text-decoration: none;
+                position: relative;
+                font-size: 1.6rem;
+                width: 36px;
+                height: 36px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: inherit !important;
+                @include media-breakpoint-down(md) {
+                    width: 42px;
+                    height: 42px;
+                }
+                &:hover {
+                    color: inherit !important;
+                }
+                sup {
+                    position: absolute;
+                    right: -4px;
+                    top: -4px;
+                    background: $dark !important;
+                    color: $white !important;
+                    border-radius: 6.25rem;
+                    padding: 0;
+                    font-size: .625rem;
+                    z-index: 1;
+                    min-width: 18px;
+                    height: 18px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: normal;
+                    border: 1px solid $white;
+                }
+            }
+            .fa-heart {
+                &:before {
+                    content: "\e879";
+                    font-family: 'feather';
+                }
+            }
+            .fa-shopping-cart {
+                &:before {
+                    content: "\e905";
+                    font-family: 'feather';
+                }
+            }
+            .hm-icon-user {
+                font-size: 0px;
+                &:before {
+                    content: "\e8e9";
+                    font-family: 'feather';
+                    font-size: 1.6rem;
+                }
+                img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+            .as_login_popup {
+                font-size: 0px;
+                &:before {
+                    font-size: 1.6rem;
+                }
+            }
+
+            .hm-user {
+                .dropdown-toggle {
+                    &:after {
+                        display: none;
+                    }
+                }
+                .dropdown-menu {
+                    .text-muted {
+                        color: inherit !important;
+                    }
+                }
+            }
+        }
+
+
+        @include media-breakpoint-up(lg) {
+            .navbar-nav {
+                > .nav-item {
+                    padding: 0 6px;
+                    > .nav-link {
+                        padding: 1rem 0.8rem;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+
+    }
+
+    // Header Search
+    .header-11-search-offcanvas {
+        max-width: 100%;
+        width: 700px;
+        .offcanvas-header {
+            border-bottom: 1px solid $gray-300;
+        }
+        .offcanvas-title {
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: $dark;
+        }
+
+        .o_searchbar_form {
+            .input-group {
+                .search-query {
+                    border-radius: 0;
+                    padding: 10px 20px;
+                }
+            }
+            .oe_search_button {
+                border: none;
+                border-radius: 0;
+                padding: 0 20px;
+            }
+        }
+        .as-search-result-dropdown {
+            box-shadow: none;
+            border: 1px solid $gray-300;
+            border-top: none;
+            max-height: calc(100vh - 130px);
+        }
+    }
+}

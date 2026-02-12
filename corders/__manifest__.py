@@ -7,7 +7,7 @@
     'description':'This is corders home management system software suppored in Odoo',
     'category':'corders',
     'website':'https://www.autoronics.com',
-    'depends':['base','contacts','website','product','sale'],
+    'depends':['base','contacts','website','product'],
 
     'data':[
         'security/security.xml',
@@ -27,8 +27,6 @@
         'views/orderline_view.xml',
         'views/corders_wizard.xml',
         'views/inherit_view.xml',
-        'views/personalize_lines.xml',
-        'views/zones_view.xml',
         # 'views/snippets/s_car_select.xml',
         # 'views/snippets/s_reservation_form.xml',
         # 'reports/links_report_views.xml',
@@ -49,8 +47,6 @@
             'corders/static/src/css/leaflet.css',
             'corders/static/src/js/leaflet.js',
             'corders/static/src/js/thunkableWebviewerExtension.js',
-            'corders/static/src/js/polygon_map.js',
-            'corders/static/src/css/polygon_map.css',
         ],
         'web.assets_backend': [
             #'corders/static/src/js/thunkableWebviewerExtension.js',

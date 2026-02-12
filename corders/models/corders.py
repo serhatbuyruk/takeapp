@@ -31,82 +31,48 @@ class cordersProfile(models.Model):
                                     )
     siparis_no = fields.Char(string="Sipariş No")
     magaza = fields.Many2one('res.partner', string="Restoran", domain="[('user_role', '=', 'magaza')]")
-    vendor = fields.Many2one('res.partner', string="Satıcı", domain="[('user_role', '=', 'magaza')]")
-    sale_id = fields.Many2one('sale.order', string="Bağlantılı Satış")
     siparis_tarihi = fields.Datetime(string="Siparis Tarihi", tracking=True)
     siparis_notu = fields.Char(string="Sipariş Notu", tracking=True)
     otomatik_onay = fields.Boolean(string="Otomatik Onay", tracking=True)
-    yolcu = fields.Many2one('res.partner', string="Yolcu")
     musteri_adi = fields.Char(string="Müşteri Adı", tracking=True)
     musteri_telefonu = fields.Char(string="Müşteri Telefonu", tracking=True)
     musteri_email = fields.Char(string="Müşteri Email", tracking=True)
     adres = fields.Char(string="Adres", tracking=True)
     adres_tarifi = fields.Char(string="Adres Tarifi", tracking=True)
-    hedef_adres = fields.Char(string="Hedef Adres", tracking=True)
-    hedef_adres_tarifi = fields.Char(string="Hedef Adres Tarifi", tracking=True)
     bolge = fields.Char(string="Bölge", tracking=True)
-    kurye = fields.Many2one('res.partner', string="Sürücü", domain="[('user_role', '=', 'kurye')]", tracking=True, copy=False)
-    kurye_telefonu = fields.Char(string="Sürücü Telefonu", tracking=True, copy=False)
-    kurye_siparis_durumu = fields.Selection([('onay_bekliyor','Onay Bekliyor'),('onaylandi','Onaylandi'),('restorana_ulasti','Yolcuya Ulaştı'),('siparisi_teslim_aldi','Yolcuyu Teslim Aldı'),('siparisi_teslim_etti','Yolcuyu Teslim Etti'),('siparisi_iptal_etti','İşlemi İptal Etti'),('yonlendirildi','Yönlendirildi')],
-                                    string="Sürücü Sipariş Durumu", default="onay_bekliyor", tracking=True, copy=False
+    kurye = fields.Many2one('res.partner', string="Kurye", domain="[('user_role', '=', 'kurye')]", tracking=True, copy=False)
+    kurye_telefonu = fields.Char(string="Kurye Telefonu", tracking=True, copy=False)
+    kurye_siparis_durumu = fields.Selection([('onay_bekliyor','Onay Bekliyor'),('onaylandi','Onaylandi'),('restorana_ulasti','Restorana Ulaştı'),('siparisi_teslim_aldi','Siparişi Teslim Aldı'),('siparisi_teslim_etti','Siparişi Teslim Etti'),('siparisi_iptal_etti','Siparişi İptal Etti'),('yonlendirildi','Yönlendirildi')],
+                                    string="Kurye Sipariş Durumu", default="onay_bekliyor", tracking=True, copy=False
                                     )
     siparis_durumu_zamani = fields.Datetime(string="Siparis Durumu Zamanı", tracking=True)
-    siparis_durumu = fields.Selection([('onay_bekliyor','Onay Bekliyor'),('onaylandi','Onaylandi'),('hazirlaniyor','Yolcuya Ulaştı'),('yola_cikti','Yola Çıktı'),('teslim_edildi','Yolcu Teslim Edildi'),('iptal_edildi','İşlem İptal Edildi')],
+    siparis_durumu = fields.Selection([('onay_bekliyor','Onay Bekliyor'),('onaylandi','Onaylandi'),('hazirlaniyor','Hazirlaniyor'),('yola_cikti','Yola Çıktı'),('teslim_edildi','Teslim Edildi'),('iptal_edildi','İptal Edildi')],
                                     string="Sipariş Durumu", default="onay_bekliyor", tracking=True, copy=False
                                     )
-    surucu_atama_tarihi = fields.Datetime(string="Sürücü Atama Tarihi")
-    paket_baslangic_tarihi = fields.Datetime(string="Yolculuk Başlangıç Tarihi")
-    yolcuya_ulasma_tarihi = fields.Datetime(string="Yolcuya Ulaşma Tarihi")
-    paket_teslim_alma_tarihi = fields.Datetime(string="Yolcuyu Teslim Alma Tarihi")
-    paket_bitis_tarihi = fields.Datetime(string="Yolcuyu Bırakma Tarihi")
-    paket_suresi_dakika = fields.Integer(string="Toplam Yolculuk Süresi (Dk)")
-    yolcuyu_bekleme_suresi_dakika = fields.Integer(string="Yolcuyu Bekleme Süresi (Dk)")
+    paket_baslangic_tarihi = fields.Datetime(string="Pakete Başlangıç Tarihi")
+    paket_bitis_tarihi = fields.Datetime(string="Paketi Teslim Tarihi")
+    paket_suresi_dakika = fields.Integer(string="Paket Süresi (Dk)")
     iptal_nedeni = fields.Char(string="İptal Nedeni", tracking=True)
-    odeme_yontemi = fields.Selection([('kapida_nakit','Araçta Nakit Ödeme'),('kapida_kredi_karti','Araçta Kredi Kartı'),('online_odendi','Online Ödendi'),('uygulamadan_odendi','Uygulamadan Ödendi')],
+    odeme_yontemi = fields.Selection([('kapida_nakit','Kapıda Nakit Ödeme'),('kapida_kredi_karti','Kapıda Kredi Kartı'),('online_odendi','Online Ödendi'),('uygulamadan_odendi','Uygulamadan Ödendi')],
                                     string="Ödeme Yöntemi", tracking=True
                                     )
-    kurye_odeme_alma_yontemi = fields.Selection([('kapida_nakit','Araçta Nakit Ödeme'),('kapida_kredi_karti','Araçta Kredi Kartı'),('online_odendi','Online Ödendi'),('uygulamadan_odendi','Uygulamadan Ödendi')],
-                                    string="Sürücü Ödeme Alma", tracking=True
+    kurye_odeme_alma_yontemi = fields.Selection([('kapida_nakit','Kapıda Nakit Ödeme'),('kapida_kredi_karti','Kapıda Kredi Kartı'),('online_odendi','Online Ödendi'),('uygulamadan_odendi','Uygulamadan Ödendi')],
+                                    string="Kurye Ödeme Alma", tracking=True
                                     )
-    toplam_siparis_currency = fields.Many2one('res.currency', string='Toplam Sipariş Currency',default=2, tracking=True)
+    toplam_siparis_currency = fields.Many2one('res.currency', string='Toplam Sipariş Currency',default=32, tracking=True)
     toplam_siparis_tutari = fields.Monetary(string="Toplam Sipariş Tutarı", currency_field='toplam_siparis_currency', tracking=True)
     indirim_tutari = fields.Monetary(string="İndirim Tutarı", currency_field='toplam_siparis_currency', tracking=True)
     vergi_tutari = fields.Monetary(string="Vergi Tutarı", currency_field='toplam_siparis_currency', tracking=True)
 
     diger_odeme_yontemi = fields.Char(string="Diğer Ödeme Yöntemi", tracking=True)
     onay_kodu = fields.Char(string="Onay Kodu", tracking=True)
-    yolcu_lat = fields.Float(string="Yolcu Lat", digits=(12, 6))
-    yolcu_lng = fields.Float(string="Yolcu Lon", digits=(12, 6))
-    lat = fields.Float(string="Hedef Lat", digits=(12, 6))
-    lng = fields.Float(string="Hedef Lon", digits=(12, 6))
-    driver_first_lat = fields.Float(string="Driver First Latitude", digits=(12, 6))
-    driver_first_lng = fields.Float(string="Driver First Longitude", digits=(12, 6))
-    driver_last_lat = fields.Float(string="Driver Last Latitude", digits=(12, 6))
-    driver_last_lng = fields.Float(string="Driver Last Longitude", digits=(12, 6))
-    tahmini_mesafe = fields.Float(string="Tahmini Mesafe")
-    mesafe = fields.Float(string="Mesafe")
+    lat = fields.Float(string="Latitude", digits=(12, 6))
+    lng = fields.Float(string="Longitude", digits=(12, 6))
+    mesafe = fields.Float(string="Mesafe (M)")
     yon = fields.Char(string="Yönü")
-    restoran_paket_mesafesi = fields.Float(string="Restoran-Paket Mesafesi")
+    restoran_paket_mesafesi = fields.Float(string="Restoran-Paket Mesafesi (M)")
+    sonra_teslim_durumu = fields.Boolean(string="Sonra Teslim Edilecek", tracking=True)
     
-    tahmini_arac_yolcu_mesafesi = fields.Float(string="Tahmini Araç-Yolcu Mesafesi")
-    tahmini_arac_yolcu_suresi = fields.Float(string="Tahmini Araç-Yolcu Süresi")
-    arac_yolcu_mesafesi = fields.Float(string="Araç-Yolcu Mesafesi")
-    arac_yolcu_suresi = fields.Float(string="Araç-Yolcu Süresi")
-    
-    tahmini_yolcu_hedef_mesafesi = fields.Float(string="Tahmini Yolcu-Hedef Mesafesi")
-    tahmini_yolcu_hedef_suresi = fields.Float(string="Tahmini Yolcu-Hedef Süresi")
-    yolcu_hedef_mesafesi = fields.Float(string="Yolcu-Hedef Mesafesi")
-    yolcu_hedef_suresi = fields.Float(string="Yolcu-Hedef Süresi")
-
-    tahmini_toplam_mesafe = fields.Float(string="Tahmini Toplam Mesafe")
-    tahmini_toplam_sure = fields.Float(string="Tahmini Toplam Süre")
-    toplam_mesafe = fields.Float(string="Toplam Mesafe")
-    toplam_sure = fields.Float(string="Toplam Süre")
-
-    yol_trafik_seviyesi = fields.Float(string="Yol Trafik Seviyesi")
-    
-    sonra_teslim_durumu = fields.Boolean(string="İleri Tarihli Yolculuk Durumu", tracking=True)
-    sonra_teslim_tarihi = fields.Datetime(string="İleri Tarihli Yolculuk Tarihi")
 
 
     visibility = fields.Boolean(string="Visibility", default=True)
@@ -172,27 +138,30 @@ class cordersProfile(models.Model):
     promosyon_price = fields.Monetary(string="Promosyon", currency_field='sale_price_currency_id', tracking=True)
     bahsis_price = fields.Monetary(string="Bahşiş", currency_field='sale_price_currency_id', tracking=True)
     toplam_km_price = fields.Monetary(string="Toplam Km Ücreti", currency_field='sale_price_currency_id', tracking=True)
-    platform_komisyon_orani = fields.Integer(string="Platform Komisyon Oranı %")
-    platform_komisyon_price = fields.Monetary(string="Platform Komisyon Ücreti", currency_field='sale_price_currency_id', tracking=True)
     yuzdelik_kar_orani_price = fields.Monetary(string="Yüzdelik Kar Ücreti", currency_field='sale_price_currency_id', tracking=True)
+    yol_mesafesi = fields.Float(string="Yol Mesafesi(Km)", tracking=True)
+    kurye_odeme_durumu = fields.Selection([('not_paid','Not Paid'),('paid','Paid')],
+                                    string="Kuryeye Ödeme Durumu", default="not_paid", tracking=True
+                                    )
 
-    kurye_puani = fields.Integer(string="Sürücü Yolculuk Puanı")
-    yolcu_puani = fields.Integer(string="Yolcu Yolculuk Puanı")
-    yolcu_sayisi = fields.Integer(string="Yolcu Sayısı")
-    bagaj_sayisi = fields.Integer(string="Bagaj Sayısı")
+    restoran_baz_price = fields.Monetary(string="Restoran Baz", currency_field='sale_price_currency_id', tracking=True)
+    restoran_promosyon_price = fields.Monetary(string="Restoran Promosyon", currency_field='sale_price_currency_id', tracking=True)
+    restoran_bahsis_price = fields.Monetary(string="Restoran Bahşiş", currency_field='sale_price_currency_id', tracking=True)
+    restoran_toplam_km_price = fields.Monetary(string="Restoran Toplam Km Ücreti", currency_field='sale_price_currency_id', tracking=True)
+    restoran_yuzdelik_kar_orani_price = fields.Monetary(string="Restoran Yüzdelik Kar Ücreti", currency_field='sale_price_currency_id', tracking=True)
+    kuryenin_musteriden_aldigi_odeme = fields.Monetary(string="Kuryenin Elindeki Paket Tutarı", currency_field='sale_price_currency_id', tracking=True)
+    kuryeden_alinan_paket_tutari = fields.Monetary(string="Kuryeden Alınan Paket Tutarı", currency_field='sale_price_currency_id', tracking=True)
+    restoran_borc_toplami = fields.Monetary(string="Restoran Borç Toplamı", currency_field='sale_price_currency_id', tracking=True)
+    restoran_borc_durumu = fields.Selection([('not_paid','Not Paid'),('paid','Paid')],
+                                    string="Restoran Borç Durumu", default="not_paid", tracking=True
+                                    )
 
-    incident_reported = fields.Boolean(string="Olay Bildirildi mi?", help="Bu yolculuk sırasında bir olay bildirimi yapıldı mı?")
-    driver_emergency_button_pressed = fields.Boolean(string="Sürücü Panik Butonuna Bastı mı?", help="Yolculuk sırasında sürücü acil durum butonuna bastı mı?")
-    customer_emergency_button_pressed = fields.Boolean(string="Yolcu Panik Butonuna Bastı mı?",help="Yolculuk sırasında yolcu acil durum butonuna bastı mı?")
-    ride_audio_record_url = fields.Char(string="Ses Kaydı URL", help="Yolculuğa ait ses kaydının URL bağlantısı.")
-    camera_snapshot_url = fields.Char(string="Kamera Görüntü URL", help="Yolculuğa ait kameradan alınan görüntü kaydının URL bağlantısı.")
-
-    sale_price_currency_id = fields.Many2one('res.currency', string='Sale Currency',default=2, tracking=True)
-    sale_price = fields.Monetary(string="Sürücü Kazancı", currency_field='sale_price_currency_id', tracking=True)
-    deposit_price_currency_id = fields.Many2one('res.currency', string='Deposit Currency',default=2, tracking=True)
+    sale_price_currency_id = fields.Many2one('res.currency', string='Sale Currency',default=32, tracking=True)
+    sale_price = fields.Monetary(string="Kurye Kazancı", currency_field='sale_price_currency_id', tracking=True)
+    deposit_price_currency_id = fields.Many2one('res.currency', string='Deposit Currency',default=32, tracking=True)
     deposit_price = fields.Monetary(string="Deposit Price", currency_field='deposit_price_currency_id', tracking=True)
     sale_description = fields.Char(string="Ödeme Açıklaması", tracking=True)
-    received_amount_currency_id = fields.Many2one('res.currency', string='Received Amount Currency',default=2, tracking=True)
+    received_amount_currency_id = fields.Many2one('res.currency', string='Received Amount Currency',default=32, tracking=True)
     received_amount = fields.Monetary(string="Ödenen Tutar", currency_field='received_amount_currency_id', tracking=True)
     received_amount_1 = fields.Monetary(string="Ödenen Tutar-1", currency_field='received_amount_currency_id', tracking=True)
     received_amount_2 = fields.Monetary(string="Ödenen Tutar-2", currency_field='received_amount_currency_id', tracking=True)
@@ -204,7 +173,7 @@ class cordersProfile(models.Model):
     received_amount_8 = fields.Monetary(string="Ödenen Tutar-8", currency_field='received_amount_currency_id', tracking=True)
     received_amount_total = fields.Monetary(string="Ödenen Toplam Tutar", currency_field='received_amount_currency_id', tracking=True)
     remaining_amount_currency_id = fields.Many2one('res.currency', string='Remaining Amount Currency',default=32, tracking=True)
-    remaining_amount = fields.Monetary(string="Sürücü Kalan Tutar", currency_field='remaining_amount_currency_id', tracking=True)
+    remaining_amount = fields.Monetary(string="Kurye Kalan Tutar", currency_field='remaining_amount_currency_id', tracking=True)
     commission_rate = fields.Float(string="Commission Rate", tracking=True)
     commission_amount_currency_id = fields.Many2one('res.currency', string='Commission Currency %',default=32, tracking=True)
     commission_amount = fields.Monetary(string="Commission Amount", currency_field='commission_amount_currency_id', tracking=True)
@@ -258,38 +227,38 @@ class cordersProfile(models.Model):
     attachment_ids = fields.Many2many('ir.attachment','attachment_rel_1','pro_id_1','attach_id_1', string='Attachments',) 
     
 
-    # scan_date = fields.Datetime(string="Scan Date")
-    # entry_date = fields.Datetime(string="Entry Date")
-    # exit_date = fields.Datetime(string="Exit Date")
+    scan_date = fields.Datetime(string="Scan Date")
+    entry_date = fields.Datetime(string="Entry Date")
+    exit_date = fields.Datetime(string="Exit Date")
     
-    # email = fields.Char(string="Email")
-    # tc = fields.Char(string="TC")
-    # mobile = fields.Char(string="Mobile")
-    # company_id = fields.Many2one('res.company', string="Company")
-    # parent_id = fields.Many2one('res.partner', string="Related Company")
-    # scan_type = fields.Selection([('entry','Entry'),('exit','Exit'),('mola','Mola')],
-    #                                 string="Scan Type ", default=""
-    #                                 )
-    # lat = fields.Float(string="Latitude", digits=(12, 6))
-    # lng = fields.Float(string="Longitude", digits=(12, 6))
-    # working_hours = fields.Float(string="Working Hours")
-    # working_minutes = fields.Integer(string="Working Minutes")
-    # distance = fields.Integer(string="Distance")
-    # suspect_level = fields.Integer(string="Suspect Level")
-    # suspect_level_entry = fields.Integer(string="Suspect Level Entry")
-    # suspect_level_exit = fields.Integer(string="Suspect Level Exit")
+    email = fields.Char(string="Email")
+    tc = fields.Char(string="TC")
+    mobile = fields.Char(string="Mobile")
+    company_id = fields.Many2one('res.company', string="Company")
+    parent_id = fields.Many2one('res.partner', string="Related Company")
+    scan_type = fields.Selection([('entry','Entry'),('exit','Exit'),('mola','Mola')],
+                                    string="Scan Type ", default=""
+                                    )
+    lat = fields.Float(string="Latitude", digits=(12, 6))
+    lng = fields.Float(string="Longitude", digits=(12, 6))
+    working_hours = fields.Float(string="Working Hours")
+    working_minutes = fields.Integer(string="Working Minutes")
+    distance = fields.Integer(string="Distance")
+    suspect_level = fields.Integer(string="Suspect Level")
+    suspect_level_entry = fields.Integer(string="Suspect Level Entry")
+    suspect_level_exit = fields.Integer(string="Suspect Level Exit")
 
-    # contact_name = fields.Char(string="Contact Name")
-    # company_name = fields.Char(string="Company Name")
-    # street = fields.Char(string="Street")
-    # city = fields.Char(string="City")
-    # state = fields.Many2one('res.country.state', string="State", domain="[('country_id', '=', country_id)]")
-    # country_id = fields.Many2one('res.country', string="Country")
+    contact_name = fields.Char(string="Contact Name")
+    company_name = fields.Char(string="Company Name")
+    street = fields.Char(string="Street")
+    city = fields.Char(string="City")
+    state = fields.Many2one('res.country.state', string="State", domain="[('country_id', '=', country_id)]")
+    country_id = fields.Many2one('res.country', string="Country")
     
-    # acenta = fields.Char(string="Acenta")
+    acenta = fields.Char(string="Acenta")
 
-    # product_type = fields.Selection([('araba','Araba'),('yat','Yat'),('bungolov','Bungalov')],
-    #                                 string="Ürün Tipi", default="", tracking=True) 
+    product_type = fields.Selection([('araba','Araba'),('yat','Yat'),('bungolov','Bungalov')],
+                                    string="Ürün Tipi", default="", tracking=True) 
 
     @api.model
     def generate_random_code(self):
@@ -353,6 +322,7 @@ class cordersProfile(models.Model):
                     'line': '489',
                     'func': 'adisyo_get_last_orders',
                     'message': str(last_result),
+                    'x_raw_json':  last_result,
                 }
             )
         )
@@ -384,6 +354,7 @@ class cordersProfile(models.Model):
                     'line': '489',
                     'func': 'adisyo_get_complated_orders',
                     'message': str(last_result),
+                    'x_raw_json':  last_result,
                 }
             )
         )

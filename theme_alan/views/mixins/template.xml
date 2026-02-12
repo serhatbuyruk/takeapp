@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Default Frame Template -->
+    <template id="s_default_frame" name="User Default Frames">
+        <div class="container">
+            <div class="row g-3">
+                <t t-foreach="frame_ids" t-as="frame">
+                    <div class="col-lg-6 d-flex flex-row as-frame-temp">
+                        <div class="as-edit-history-card">
+                            <div class="as-edit-history-card-body as_frame" t-att-data-frame_id="frame.id">
+                                <div class="container">
+                                    <t t-out="frame.snippet_frame_html"/>
+                                </div>
+                            </div>
+                            <div class="as-edit-history-card-footer">
+                                <h6>
+                                    <t t-esc="frame.name"/>
+                                </h6>
+                                <button class="btn as-e-btn-danger as_delete_frame" t-att-data-frame_id="frame.id"> <i class="fa fa-trash-o"></i> Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <!-- Labels Template -->
+    <template id="product_label" name="Product Label Option">
+        <t t-if="product.sudo().pro_label_line_ids">
+            <t t-as="labels" t-foreach="product.sudo().pro_label_line_ids">
+                <t t-if="labels.website_id.id == website.id">
+                    <t t-call="theme_alan.label_layout_option"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Label Layouts Template -->
+    <template id="label_layout_option">
+        <div class="as-ribbon-wrpa">
+            <div class="ribbon-style-1" t-att-id="labels.label.label_option" t-if="labels.label.label_option == 'option_1'">
+                <span t-attf-style="background-color:#{labels.label.label_color}; color:#{labels.label.label_text_color}" t-field="labels.label.name"/>
+            </div>
+            <div class="ribbon-style-2" t-att-id="labels.label.label_option" t-attf-style="background-color:#{labels.label.label_color}" t-if="labels.label.label_option == 'option_2'">
+                <span t-attf-style="background-color:#{labels.label.label_color}; color:#{labels.label.label_text_color}" t-field="labels.label.name"/>
+            </div>
+            <div class="ribbon-style-3" t-att-id="labels.label.label_option" t-attf-style="color:#{labels.label.label_color}" t-if="labels.label.label_option == 'option_3'">
+                <span t-attf-style="background-color:#{labels.label.label_color}; color:#{labels.label.label_text_color}" t-field="labels.label.name"/>
+            </div>
+            <div class="ribbon-style-4" t-att-id="labels.label.label_option" t-if="labels.label.label_option == 'option_4'">
+                <span t-attf-style="background-color:#{labels.label.label_color} ; color:#{labels.label.label_text_color}" t-field="labels.label.name"/>
+            </div>
+            <div class="ribbon-style-5" t-att-id="labels.label.label_option" t-if="labels.label.label_option == 'option_5'">
+                <span t-attf-style="background-color:#{labels.label.label_color} ; color:#{labels.label.label_text_color}"><i class="fa fa-tag"/> <t t-esc="labels.label.name" /></span>
+            </div>
+        </div>
+    </template>
+
+    <!-- Scroll Top -->
+    <template id="as_frontend_layout" name="template_name" inherit_id="web.frontend_layout">
+        <xpath expr="//div[@id='wrapwrap']" position="inside">
+            <div t-if="website.active_scroll_top" class="as_scroll_to_top btn btn-primary"> <i class="fa fa-chevron-up"/></div>
+        </xpath>
+    </template>
+
+    <!-- Menu Tags -->
+    <template id="as_menu_tags" name="Menu Tags">
+        <span t-if="submenu.sudo().is_tag_active" class="as-menu-tags" t-esc="submenu.sudo().tag_text"
+            t-attf-style="background-color:#{submenu.sudo().tag_bg_color};color:#{submenu.sudo().tag_text_color}"/>
+    </template>
+
+
+    <!-- Menu highlight -->
+    <template id="as_website_menu" name="Website Menu Tags" inherit_id="website.submenu">
+        <xpath expr="//li" position="replace">
+            <li t-if="submenu.is_visible and not (submenu.child_id or submenu.is_mega_menu)" t-attf-class="#{item_class or ''}">
+                <a t-att-href="submenu.clean_url()"
+                    t-attf-style="background-color:{{submenu.hlt_menu_bg_color if submenu.hlt_menu else '' }};color:{{submenu.hlt_menu_ft_col if submenu.hlt_menu else ''}}"
+                    t-attf-class="#{link_class or ''} #{'active' if submenu.clean_url() and unslug_url(request.httprequest.path) == unslug_url(submenu.clean_url()) else ''}"
+                    role="menuitem"
+                    t-ignore="true"
+                    t-att-target="'_blank' if submenu.new_window else None">
+                    <t t-call="theme_alan.as_menu_tags"/>
+                    <span t-if="submenu.hlt_menu" t-attf-class="fa {{submenu.hlt_menu_icon}}"/>
+                    <span t-field="submenu.name"/>
+                </a>
+            </li>
+        </xpath>
+        <xpath expr="//li[@t-elif='show_dropdown']" position="replace">
+            <li t-elif="show_dropdown" t-attf-class="#{item_class or ''} dropdown #{
+                (submenu.clean_url() and submenu.clean_url() != '/' and any(request.httprequest.path == child.url for child in submenu.child_id if child.url) or
+                (submenu.clean_url() and request.httprequest.path == submenu.clean_url())) and 'active'
+                } #{submenu.is_mega_menu and 'position-static'}">
+                <a t-attf-class="#{link_class or ''} dropdown-toggle #{submenu.is_mega_menu and 'o_mega_menu_toggle'}"
+                    t-attf-style="background-color:{{submenu.hlt_menu_bg_color if submenu.hlt_menu else '' }};color:{{submenu.hlt_menu_ft_col if submenu.hlt_menu else ''}}"
+                    data-bs-toggle="dropdown" href="#">
+                    <t t-call="theme_alan.as_menu_tags"/>
+                    <span t-if="submenu.hlt_menu" t-attf-class="fa {{submenu.hlt_menu_icon}}"/>
+                    <span t-field="submenu.name"/>
+                </a>
+                <t t-if="submenu.active_mega_tabs">
+                    <!--   Here is tabs is come  -->
+                    <div t-if="submenu.is_mega_menu"
+                        t-attf-class="dropdown-menu as-mega-tab-menu o_mega_menu #{submenu.mega_menu_classes}"
+                        data-name="Mega Menu">
+
+
+                        <div class="as-mm-tabs-container container">
+                            <div class="as-mm-tabs-levels">
+                                <t t-set="first_count" t-value="0"/>
+                                <t t-foreach="submenu.megamenu_tabs" t-as="mega_tab">
+
+                                    <!-- Loop -->
+                                    <div t-attf-class="as-mm-tabs-level-1 #{'active' if not first_count else ''}">
+                                        <t t-set="first_count" t-value="1"/>
+
+                                        <!-- Title Wrap  -->
+                                        <div class="s-mm-tabs-level-title">
+                                            <a t-att-href="mega_tab.redirect">
+                                                <span class="mm-t-icon"> <image t-att-src="request.website.image_url(mega_tab, 'icon')"/></span>
+                                                <span class="mm-t-title" t-esc="mega_tab.name"/>
+                                            </a>
+                                            <span class="as-mob-tab-menu">
+                                                <span />
+                                            </span>
+                                        </div>
+                                        <!-- End Title Wrap  -->
+                                        <!-- Content Wrap  -->
+                                        <div class="as-mm-tabs-level-2">
+                                            <div class="as-mm-tabs-level-2-in">
+                                                <!-- Content -->
+                                                <span class="mm-t-title" t-field="mega_tab.description"/>
+                                            </div>
+                                        </div>
+                                        <!-- End Content Wrap  -->
+                                    </div>
+                                    <!-- Loop -->
+                                </t>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!--   Here is tabs is come  -->
+                </t>
+                <t t-else="">
+                    <div t-if="submenu.is_mega_menu"
+                        t-attf-class="dropdown-menu o_mega_menu #{submenu.mega_menu_classes}"
+                        data-name="Mega Menu"
+                        t-field="submenu.mega_menu_content"/>
+                    <ul t-else="" class="dropdown-menu" role="menu">
+                        <t t-foreach="submenu.child_id" t-as="submenu">
+                            <t t-call="website.submenu">
+                                <t t-set="item_class" t-value="None"/>
+                                <t t-set="link_class" t-valuef="dropdown-item"/>
+                            </t>
+                        </t>
+                    </ul>
+                </t>
+
+            </li>
+        </xpath>
+    </template>
+
+
+
+    <!-- B2b Mode Compare Template -->
+
+    <template id="b2b_hide_price_product" inherit_id="website_sale_comparison.product_product">
+        <xpath expr="//h6" position="replace">
+            <h6>
+                <a t-att-href="product.website_url"><t t-esc="combination_info['display_name']" /></a><br/>
+                <t t-if="not (request.env.user._is_public() and request.website.active_b2b_mode)">
+                    <div t-attf-class="{{'d-none' if combination_info['prevent_zero_price_sale'] else ''}}">
+                        <del t-attf-class="text-danger mr8 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+                        <span t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                    </div>
+                    <div t-attf-class="{{'' if combination_info['prevent_zero_price_sale'] else 'd-none'}}" t-field="website.prevent_zero_price_sale_text"/>
+                </t>
+            </h6>
+        </xpath>
+    </template>
+
+    <template id="b2b_hide_price_product_compare" inherit_id="website_sale_comparison.product_compare">
+        <xpath expr="//div[hasclass('product_summary')]" position="replace">
+            <div class='product_summary'>
+                <a class="o_product_comparison_table" t-att-href="product.website_url">
+                    <span t-esc="combination_info['display_name']"></span><br/>
+                </a>
+                <t t-if="not (request.env.user._is_public() and request.website.active_b2b_mode)">
+                    <span class="o_comparison_price" t-if="combination_info['prevent_zero_price_sale']">
+                        <strong t-field="website.prevent_zero_price_sale_text"/>
+                    </span>
+                    <span class="o_comparison_price" t-else="">
+                        <strong>Price:</strong>
+                        <del t-attf-class="text-danger mr8 {{'' if combination_info['has_discounted_price'] else 'd-none'}}"
+                                style="white-space: nowrap;" t-esc="combination_info['list_price']"
+                                t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                        <span t-esc="combination_info['price']"
+                                t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                        <small class="d-block text-muted" groups="website_sale.group_show_uom_price" t-if="combination_info['base_unit_price']">
+                            <t t-call='website_sale.base_unit_price'/>
+                        </small>
+                    </span>
+                </t>
+                <form action="/shop/cart/update" method="post" class="text-center o_add_cart_form_compare">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input name="product_id" t-att-value="product.id" type="hidden"
+                            t-att-data-product-tracking-info="json.dumps(request.env['product.template'].get_google_analytics_data(combination_info))"/>
+                    <t t-if="not (request.env.user._is_public() and request.website.active_b2b_mode)">
+                        <a t-if="combination_info['prevent_zero_price_sale']" t-att-href="website.contact_us_button_url" class="btn btn-primary btn_cta">Contact Us</a>
+                        <a t-else="" role="button" class="btn btn-primary d-block a-submit" href="#">
+                            <i class="fa fa-shopping-cart me-2"/>Add to Cart
+                        </a>
+                    </t>
+                    <t t-else="">
+                        <a role="button" t-attf-class="btn btn-primary #{'as_login_popup' if request.website.active_login_popup else ''}" href="/web/login">
+                            Login For Price
+                        </a>
+                    </t>
+                </form>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- b2b wishlist -->
+    <template id="b2b_product_wishlist" name="B2B Mode Wishlist" inherit_id="website_sale_wishlist.product_wishlist" priority="1">
+        <xpath expr="//t[@t-foreach='wishes']" position="replace">
+             <t t-foreach="wishes" t-as="wish">
+                <t t-set="combination_info" t-value="wish.product_id._get_combination_info_variant()"/>
+                <tr t-att-data-wish-id='wish.id' t-att-data-product-id='wish.product_id.id'
+                    t-att-data-product-tracking-info="json.dumps(request.env['product.template'].get_google_analytics_data(combination_info))">
+                    <td class='td-img align-middle'>
+                        <a t-att-href="wish.product_id.website_url">
+                            <img t-attf-src="/web/image/product.product/#{wish.product_id.id}/image_128" class="img img-fluid" style="margin:auto;" alt="Product image"/>
+                        </a>
+                    </td>
+                    <td class='text-start align-middle'>
+                        <strong><a t-att-href="wish.product_id.website_url"><t t-esc="wish.product_id.display_name" /></a></strong>
+                        <small class='d-none d-md-block'><p t-field="wish.product_id.description_sale" class="text-muted"/></small>
+                        <button type="button" class="btn btn-link o_wish_rm no-decoration"><small><i class='fa fa-trash-o'></i> Remove</small></button>
+                    </td>
+                    <t t-if="not (request.env.user._is_public() and request.website.active_b2b_mode)">
+                        <td class="align-middle" t-if="combination_info['prevent_zero_price_sale']">
+                            <span t-field="website.prevent_zero_price_sale_text"/>
+                        </td>
+                        <td class="align-middle o_wish_price" t-else="">
+
+                            <t t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.pricelist_id.currency_id}"/>
+                            <small t-if="combination_info['base_unit_price']" class="cart_product_base_unit_price d-block text-muted" groups="website_sale.group_show_uom_price">
+                                <t t-call='website_sale.base_unit_price'><t t-set='product' t-value='wish.product_id' /></t>
+                            </small>
+                        </td>
+                    </t>
+
+                    <td class='text-center td-wish-btn align-middle'>
+                        <t t-if="not (request.env.user._is_public() and request.website.active_b2b_mode)">
+                            <input name="product_id" t-att-value="wish.product_id.id" type="hidden"/>
+                            <a t-if="combination_info['prevent_zero_price_sale']" t-att-href="website.contact_us_button_url" class="btn btn-primary btn_cta">Contact Us</a>
+                            <button id="add_to_cart_button" t-else="" type="button" role="button" class="btn btn-secondary btn-block o_wish_add mb4" >
+                                Add <span class='d-none d-md-inline'>to Cart</span>
+                            </button>
+                        </t>
+                        <t t-elif="request.env.user._is_public() and request.website.active_b2b_mode">
+                            <a  href="/web/login" role="button" t-attf-class="btn btn-secondary btn-block mb4 #{'as_login_popup' if request.website.active_login_popup else ''}" >
+                                Login for price
+                            </a>
+                        </t>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- b2b price filter -->
+    <template id="b2b_filter_products_price" name="B2B price filter" inherit_id="website_sale.filter_products_price">
+        <xpath expr="//div[@id='o_wsale_price_range_option']" position="attributes">
+            <attribute name="t-if">not (request.env.user._is_public() and request.website.active_b2b_mode)</attribute>
+        </xpath>
+    </template>
+
+    <!-- b2b shop add to cart -->
+    <template id="b2b_products_add_to_cart" name="B2B Add to Cart" inherit_id="website_sale.products_add_to_cart">
+        <xpath expr="//a[hasclass('a-submit')]" position="replace">
+            <a t-if="product._website_show_quick_add() and not (request.env.user._is_public() and request.website.active_b2b_mode)"
+                href="#" role="button" class="btn btn-primary a-submit" aria-label="Shopping cart" title="Shopping cart">
+                <span class="fa fa-shopping-cart"/>
+            </a>
+        </xpath>
+    </template>
+
+    <template id="b2b_product_price" name="B2B Product Price" inherit_id="website_sale.products_item">
+        <xpath expr="//div[hasclass('product_price')]" position="replace">
+            <div t-if="not (request.env.user._is_public() and request.website.active_b2b_mode)" class="product_price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                <t t-if="'base_price' in template_price_vals">
+                    <del t-attf-class="text-muted me-1 h6 mb-0" style="white-space: nowrap;">
+                        <em class="small" t-esc="template_price_vals['base_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+                    </del>
+                </t>
+                <span class="h6 mb-0" t-if="template_price_vals['price_reduce'] or not website.prevent_zero_price_sale" t-esc="template_price_vals['price_reduce']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                <span class="h6 mb-0" t-else="" t-field="website.prevent_zero_price_sale_text"/>
+                <span itemprop="price" style="display:none;" t-esc="template_price_vals['price_reduce']" />
+                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+            </div>
+            <div class="as-b2b-price" t-if="request.env.user._is_public() and request.website.active_b2b_mode">
+                <a role="button" href="/web/login" t-attf-class="#{'as_login_popup' if request.website.active_login_popup else ''}">
+                    <i class="asi asi-lock"></i> <span>Login for price</span>
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="b2b_product" name="B2B Product" inherit_id="website_sale.product">
+        <xpath expr="//div[hasclass('js_main_product')]" position="attributes">
+            <attribute name="t-if">not (request.env.user._is_public() and request.website.active_b2b_mode)</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('js_main_product')]" position="after">
+            <div class="as-b2b-price" t-if="request.env.user._is_public() and request.website.active_b2b_mode">
+                <a href="/web/login" t-attf-class="btn btn-primary #{'as_login_popup' if request.website.active_login_popup else ''}"> <i class="asi asi-lock"></i> <span>Login for Price</span></a>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

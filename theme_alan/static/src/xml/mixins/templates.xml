@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<templates>
+
+    <!-- Select Data Search Return Template Template -->
+    <t t-name="theme_alan.select2_fetch_info">
+        <div class="as-s2-media">
+            <div class="as-s2-img">
+                <img class="card-img o_image_64_contain" t-att-src="data.img"/>
+            </div>
+
+            <div class="as-s2-media-body">
+                <h6 class="mb-1" t-esc="data.text"/>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="theme_alan.s_hotspot_product_selector">
+        <div class="container">
+            <div class="row">
+                <div class="as-edit-search-bar">
+                    <input type="hidden" name="as_search" id="as_search" class="form-control" />
+                </div>
+            </div>
+            <div class="as-hotspot-btn">
+                <button class="btn btn-primary as_btn_save"> Save </button>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="theme_alan.s_static_hotspot_popover">
+        <div t-attf-class="{{ data.pop_style }} {{ data.pop_thm }}">
+            <div class="hp-media">
+                <div class="hp-img">
+                    <img t-attf-src="{{data.img_url}}" alt="Image"/>
+                </div>
+                <div class="hp-media-body">
+                    <h5 class="hp-title"><t t-esc="data.title"/></h5>
+                    <p t-esc="data.description"/>
+                    <a t-att-href="data.btn_url" class="btn btn-primary btn-sm" t-esc="data.btn_txt"/>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

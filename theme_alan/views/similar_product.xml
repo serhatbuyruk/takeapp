@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="as_similar_product" name="Similar Product">
+        <div class="m_c_box as-similar-product-box">
+            <div class="as-modal-header">
+                <h5>Similar Products</h5>
+                <button class="btn-close as_close">
+                </button>
+            </div>
+            <div t-if="not products" class="as-similar-empty">
+                <div class="img">
+                    <svg width="527" height="405" viewBox="0 0 527 405" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 200px;height: auto;">
+                        <path d="M41.634 370.844C54.0624 393.893 80.44 403.787 80.44 403.787C80.44 403.787 86.6671 376.312 74.2387 353.263C61.8103 330.214 35.4327 320.319 35.4327 320.319C35.4327 320.319 29.2056 347.795 41.634 370.844Z" fill="#2F2E41" />
+                        <path d="M419.647 297.511C400.271 315.126 397.022 343.11 397.022 343.11C397.022 343.11 425.188 342.535 444.565 324.921C463.941 307.306 467.19 279.321 467.19 279.321C467.19 279.321 439.024 279.896 419.647 297.511Z" fill="#2F2E41" />
+                        <path d="M50.1765 363.261C72.6149 376.761 81.2567 403.575 81.2567 403.575C81.2567 403.575 53.5186 408.502 31.0802 395.002C8.64174 381.502 0 354.688 0 354.688C0 354.688 27.7381 349.761 50.1765 363.261Z" fill="var(--primary)" />
+                        <path d="M429.065 303.975C421.368 329.005 397.425 343.852 397.425 343.852C397.425 343.852 385.962 318.117 393.659 293.087C401.356 268.058 425.298 253.211 425.298 253.211C425.298 253.211 436.762 278.946 429.065 303.975Z" fill="var(--primary)" />
+                        <path d="M362.06 360.29H125.274V358.587H360.356V275.967H145.18L134.727 254.19L136.263 253.453L146.252 274.263H362.06V360.29Z" fill="#2F2E41" />
+                        <path d="M156.789 402.026C166.667 402.026 174.675 394.018 174.675 384.139C174.675 374.26 166.667 366.252 156.789 366.252C146.91 366.252 138.902 374.26 138.902 384.139C138.902 394.018 146.91 402.026 156.789 402.026Z" fill="#3F3D56" />
+                        <path d="M333.101 402.026C342.979 402.026 350.987 394.018 350.987 384.139C350.987 374.26 342.979 366.252 333.101 366.252C323.222 366.252 315.214 374.26 315.214 384.139C315.214 394.018 323.222 402.026 333.101 402.026Z" fill="#3F3D56" />
+                        <path d="M387.385 247.859H121.237L63.6484 59.6227H446.693L446.344 60.7302L387.385 247.859ZM122.497 246.156H386.136L444.37 61.3262H65.9508L122.497 246.156Z" fill="#2F2E41" />
+                        <path d="M366.61 238.064H132.842L82.26 71.121H418.701L418.395 72.104L366.61 238.064Z" fill="#F2F2F2" />
+                        <path d="M451.465 42.806L449.818 42.369L461.059 0H526.448V1.70398H462.37L451.465 42.806Z" fill="#2F2E41" />
+                        <path d="M427.552 116.69H82.2584V118.393H427.552V116.69Z" fill="#2F2E41" />
+                        <path d="M407.777 179.45H101.459V181.153H407.777V179.45Z" fill="#2F2E41" />
+                        <path d="M256.017 60.4744H254.314V247.007H256.017V60.4744Z" fill="#2F2E41" />
+                        <path d="M332.286 60.421L320.057 246.949L321.758 247.061L333.986 60.5324L332.286 60.421Z" fill="#2F2E41" />
+                        <path d="M178.081 60.419L176.38 60.5298L188.538 247.063L190.238 246.952L178.081 60.419Z" fill="#2F2E41" />
+                    </svg>
+                </div>
+                <p>No Similar Product Found!</p>
+            </div>
+            <div t-else="" class="as-similar-product-list">
+                <t t-foreach="products" t-as="product">
+                    <t t-set="combination_info"
+                    t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
+                    <div class="as-similar-product">
+                        <a class="link-overlay" target='_blank' t-attf-href="/shop/product/#{slug(product)}"/>
+                        <div class="sim-pro-img">
+                            <img t-att-src="website.image_url(product, 'image_512')" title="" alt="" />
+                        </div>
+                        <div class="sim-pro-body">
+                            <h4><t t-esc="product.name"/></h4>
+
+                            <div t-if="product.product_variant_ids and not (request.env.user._is_public() and request.website.active_b2b_mode)" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer" class="product_price">
+                                <del t-attf-class="text-danger mr-2 {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="white-space: nowrap;" t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}" />
+                                <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
+                                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </template>
+</odoo>

@@ -9,8 +9,3 @@ access_corders_user_6,Corders Settings Full Access,model_corders_profile,base.gr
 access_order_lines_user_admin,Skurye Lines Admin,model_order_profile_lines,base.group_user,1,1,1,1
 
 access_corders_wizard_user_1,Corders Wizard Full Access,model_corders_wizard,base.group_user,1,1,1,1
-
-access_personalize_admin,Personalize Admin,model_personalize_profile,base.group_user,1,1,1,1
-access_personalize_lines_admin,Personalize Lines Admin,model_personalize_profile_lines,base.group_user,1,1,1,1
-
-access_zones_admin,Zones Admin,model_zones_profile,base.group_user,1,1,1,1

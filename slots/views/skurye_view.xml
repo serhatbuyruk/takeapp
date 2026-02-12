@@ -49,6 +49,9 @@
                 <field name="slot_paket_sayisi" optional="hide"/>
                 <field name="kurye_calisma_saati" optional="hide"/>
                 <field name="sale_price" optional="hide"/>
+                <field name="kurye_odeme_durumu" widget="badge" decoration-danger="kurye_odeme_durumu == ('not_paid')" decoration-success="kurye_odeme_durumu == ('paid')" optional="hide"/>
+                <field name="restoran_borc_toplami" optional="hide"/>
+                <field name="restoran_borc_durumu" widget="badge" decoration-danger="restoran_borc_durumu == ('not_paid')" decoration-success="restoran_borc_durumu == ('paid')" optional="hide"/>
                 <!-- <field name="baz_price" optional="hide"/>
                 <field name="toplam_km_price" optional="hide"/>
                 <field name="promosyon_price" optional="hide"/>
@@ -63,7 +66,7 @@
         <field name="inherit_id" ref="slots.slots_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='main_page']" position="after">
-                <page name="skurye_lines_page" string="Sürücüler">
+                <page name="skurye_lines_page" string="Kuryeler">
                     <field name="skurye_profile_lines" widget="one2many" context="{'show_attribute': True, 'default_currency_id': 32}">
                         <tree string="Customer Payment" editable="bottom">
                             <field name="id" optional="hide"/>
@@ -86,6 +89,9 @@
                             <field name="slot_paket_sayisi" optional="hide"/>
                             <field name="kurye_calisma_saati" optional="hide"/>
                             <field name="sale_price" optional="hide"/>
+                            <field name="kurye_odeme_durumu" widget="badge" decoration-danger="kurye_odeme_durumu == ('not_paid')" decoration-success="kurye_odeme_durumu == ('paid')" optional="hide"/>
+                            <field name="restoran_borc_toplami" optional="hide"/>
+                            <field name="restoran_borc_durumu" widget="badge" decoration-danger="restoran_borc_durumu == ('not_paid')" decoration-success="restoran_borc_durumu == ('paid')" optional="hide"/>
                             <!-- <field name="baz_price" optional="hide"/>
                             <field name="toplam_km_price" optional="hide"/>
                             <field name="promosyon_price" optional="hide"/>
@@ -188,7 +194,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="skurye_root_menu" name="Sürücü Slotları" web_icon="slots,static/src/img/avatar.png"/>
-    <act_window id="skurye_list" name="Sürücü Slotları" res_model="skurye.profile.lines" view_mode="tree,form" context="{}"/>
-    <menuitem id="skurye_zones" parent="skurye_root_menu" name="Sürücü Slotları" action="skurye_list" sequence="2"/>
+    <menuitem id="skurye_root_menu" name="Kurye Slotları" web_icon="slots,static/src/img/avatar.png"/>
+    <act_window id="skurye_list" name="Kurye Slotları" res_model="skurye.profile.lines" view_mode="tree,form" context="{}"/>
+    <menuitem id="skurye_zones" parent="skurye_root_menu" name="Kurye Slotları" action="skurye_list" sequence="2"/>
 </odoo>

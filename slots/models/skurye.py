@@ -48,6 +48,13 @@ class skuryeProfileLines(models.Model):
     toplam_km_price = fields.Monetary(string="Toplam Km Ücreti", currency_field='sale_price_currency_id', tracking=True)
     promosyon_price = fields.Monetary(string="Promosyon", currency_field='sale_price_currency_id', tracking=True)
     bahsis_price = fields.Monetary(string="Bahşiş", currency_field='sale_price_currency_id', tracking=True)
+    kurye_odeme_durumu = fields.Selection([('not_paid','Not Paid'),('paid','Paid')],
+                                    string="Kuryeye Ödeme Durumu", default="not_paid", tracking=True
+                                    )
+    restoran_borc_toplami = fields.Monetary(string="Restoran Borç Toplamı", currency_field='sale_price_currency_id', tracking=True)
+    restoran_borc_durumu = fields.Selection([('not_paid','Not Paid'),('paid','Paid')],
+                                    string="Restoran Borç Durumu", default="not_paid", tracking=True
+                                    )
     # currency_id = fields.Many2one('res.currency', string='Currency Id')
     # price = fields.Monetary(string="Amount", currency_field='currency_id')
     # description = fields.Text("Description")

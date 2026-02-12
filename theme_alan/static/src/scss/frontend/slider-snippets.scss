@@ -1,0 +1,427 @@
+.as-alan-slider-snippet-01 {
+    .content {
+        min-height: 100vh;
+        padding-top: 125px;
+        padding-bottom: 125px;
+        align-items: center;
+        justify-content: center;
+        @include media-breakpoint-down(md) {
+            min-height: 400px;
+            padding-top: 140px;
+            padding-bottom: 40px;
+        }
+        h6 {
+            color: $white;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 1rem;
+            @include media-breakpoint-down(md) {
+                font-size: 0.8rem;
+            }
+        }
+        .h1 {
+            color: $white;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            @include media-breakpoint-up(lg) {
+                font-size: 3rem;
+            }
+            @include media-breakpoint-down(md) {
+                font-size: calc(0.975rem + 1.5vw);
+            }
+        }
+        .btn-bar {
+            @include media-breakpoint-down(md) {
+                padding-top: 0.7rem !important;
+            }
+            .as-links {
+                text-decoration: none;
+                position: relative;
+                text-transform: uppercase;
+                font-size: 0.9rem;
+                position: relative;
+                color: $white;
+                padding: 4px 0;
+                &:after {
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: auto;
+                    width: 100%;
+                    height: 2px;
+                    background-color: currentColor;
+                    transition: ease all 0.35s;
+                }
+                &:hover {
+                    &:after {
+                        left: auto;
+                        right: 0;
+                        width: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+.alan-feautre-snippet-01 {
+    padding: 30px 0;
+    border-bottom: 1px solid $gray-300;
+    @include media-breakpoint-down(lg) {
+        padding: 10px 0;
+    }
+    .feature-box {
+        display: flex;
+        @include media-breakpoint-down(lg) {
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+        .icon {
+            flex: 0 0 50px;
+            max-width: 50px;
+            @include media-breakpoint-down(sm) {
+                flex: 0 0 30px;
+                max-width: 30px;
+            }
+            img {
+                width: 100%;
+            }
+        }
+        .text {
+            padding-left: 18px;
+            flex: 1;
+            @include media-breakpoint-down(sm) {
+                padding-left: 10px;
+            }
+        }
+        h6 {
+            font-size: 15px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin: 0 0 5px;
+            @include media-breakpoint-down(sm) {
+                font-size: 13px;
+                margin: 0;
+            }
+        }
+        p {
+            margin: 0;
+            font-size: 13px;
+            @include media-breakpoint-down(sm) {
+                display: none;
+            }
+        }
+    }
+}
+
+
+.alan-title-snippet-01 {
+    background-image: none;
+    padding: 60px 0 40px;
+    @include media-breakpoint-down(md) {
+        padding: 30px 0 20px;
+    }
+    .title-snippet-in {
+        text-align: center;
+        .icon {
+            padding: 0 0 15px;
+        }
+        h5 {
+            font-weight: 400;
+            color: $dark;
+            letter-spacing: 5px;
+            margin: 0;
+            @include media-breakpoint-down(md) {
+                letter-spacing: 3px;
+                font-size: 1.05rem;
+            }
+        }
+    }
+}
+
+
+.alan-shop-banner-snippet-01 {
+    padding-top: 50px;
+    .sb-left {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        &:after {
+            content: "";
+            padding-bottom: 600px;
+            display: inline-block;
+            vertical-align: top;
+            background-size: cover;
+            position: relative;
+            @media(min-width: 1600px){
+                padding-bottom: 800px;
+            }
+            @include media-breakpoint-down(md) {
+                padding-bottom: 300px;
+            }
+        }
+    }
+    .sb-inner-box-in {
+        background: rgba($white, 0.70);
+        padding: 43px 30px;
+        -webkit-backdrop-filter: saturate(150%) blur(5px);
+        backdrop-filter: saturate(150%) blur(5px);
+        border-radius: 20px;
+        text-align: center;
+        @include media-breakpoint-up(lg) {
+            transform: scaleY(0);
+            transition: ease all 0.35s;
+            transform-origin: bottom;
+        }
+        @include media-breakpoint-down(md) {
+            padding: 25px;
+        }
+        h6 {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            margin: 0 0 10px;
+            color: $primary;
+        }
+        h3 {
+            font-weight: 600;
+            font-size: 1.9rem;
+            margin: 0;
+            color: $dark;
+            @include media-breakpoint-down(md) {
+                font-size: 1.2rem;
+            }
+        }
+        .btn-bar {
+            margin-top: 20px;
+            @include media-breakpoint-down(md) {
+                margin-top: 10px;
+            }
+        }
+        .sb-links {
+            background: $white;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: $dark;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            &:after {
+                content: "";
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 0px;
+                right: 0;
+                left: auto;
+                transition: ease all 0.35s;
+                background: $primary;
+                z-index: -1;
+            }
+            &:hover {
+                color: $white;
+                &:after {
+                    width: 100%;
+                    right: auto;
+                    left: 0;
+                }
+            }
+        }
+    }
+    .sb-link-01 {
+        text-decoration: none;
+        position: relative;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        position: relative;
+        color: $primary;
+        padding: 4px 0;
+        &:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: auto;
+            right: 0;
+            width: 0;
+            
+            height: 2px;
+            background-color: currentColor;
+            transition: ease all 0.35s;
+        }
+        &:hover {
+            &:after {
+                left: 0;
+                right: auto;
+                width: 100%;
+            }
+        }
+    }
+    .sb-inner-box {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom:0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .sb-inner-box-02 {
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        bottom:0;
+        max-width: 80%;
+        margin: auto;
+        .sb-inner-box-in {
+            padding: 25px;
+            h3 {
+                font-weight: 600;
+                font-size: 1.3rem;
+                margin: 0;
+                @include media-breakpoint-down(md) {
+                    font-size: 1.1rem;
+                }
+            }
+            .btn-bar {
+                margin-top: 10px;
+            }
+        }
+    }
+    .sb-right-top {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        &:after {
+            content: "";
+            padding-bottom: 300px;
+            display: inline-block;
+            vertical-align: top;
+            background-size: cover;
+            position: relative;
+            @media(min-width: 1600px){
+                padding-bottom: 400px;
+            }
+        }
+    }
+    .sb-right-bottom {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        &:after {
+            content: "";
+            padding-bottom: 300px;
+            display: inline-block;
+            vertical-align: top;
+            background-size: cover;
+            position: relative;
+            @media(min-width: 1600px){
+                padding-bottom: 400px;
+            }
+        }
+    }
+
+
+
+    .sb-right-top,
+    .sb-right-bottom,
+    .sb-left {
+        &:hover {
+            .sb-inner-box-in {
+                @include media-breakpoint-up(lg) {
+                    transform: scaleY(1);
+                    transition: ease all 0.35s;
+                    transform-origin: bottom;
+                }
+            }
+        }
+    }
+
+}
+
+
+
+
+.alan-shop-banner-snippet-02 {
+    padding: 30px 0 0;
+    .as-shop-banner-card {
+        position: relative;
+    }
+    .as-shop-banner-card-media {
+        overflow: hidden;
+        img {
+            transform: scale(1);
+            transition: ease all 0.35s;
+        }
+    }
+    .as-shop-banner-card-text {
+        position: absolute;
+        bottom: 30px;
+        left: 50px;
+        display: flex;
+        flex-direction: column;
+        top: 20px;
+        justify-content: center;
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0 0 8px;
+        }
+        a {
+            text-decoration: none;
+            position: relative;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            position: relative;
+            color: currentColor;
+            padding: 4px 0;
+            &:after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: auto;
+                right: 0;
+                width: 0;
+                height: 2px;
+                background-color: currentColor;
+                transition: ease all 0.35s;
+            }
+            &:hover {
+                &:after {
+                    left: 0;
+                    right: auto;
+                    width: 100%;
+                }
+            }
+        }
+    }
+    .as-shop-banner-card {
+        &:hover {
+            .as-shop-banner-card-media {
+                img {
+                    transform: scale(1.05);
+                }
+            }
+        }
+    }
+}
+
+
+.alan-border-bottom-snippet {
+    padding-top: 60px;
+    border-bottom: 1px solid $gray-300;
+}

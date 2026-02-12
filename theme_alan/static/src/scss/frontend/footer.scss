@@ -1,0 +1,83 @@
+$-footer-color: o-color('footer-custom') or o-color('footer');
+
+#footer {
+	@if ($-footer-color and color-contrast($-footer-color) != $color-contrast-light) {
+		color: rgba($dark, 0.8);	
+	}
+	@if ($-footer-color and color-contrast($-footer-color) != $color-contrast-dark) {
+		color: rgba($white, 0.8);
+	}
+
+	a {
+		text-decoration: none;
+		@if ($-footer-color and color-contrast($-footer-color) != $color-contrast-light) {
+			color: rgba($dark, 0.8);	
+			&:hover {
+				color: $dark;
+			}
+		}
+		@if ($-footer-color and color-contrast($-footer-color) != $color-contrast-dark) {
+			color: rgba($white, 0.8);
+			&:hover {
+				color: $white;
+			}
+		}
+	}
+	.footer-title {
+		h5 {
+			@if ($-footer-color and color-contrast($-footer-color) != $color-contrast-light) {
+				color: $dark;	
+			}
+			@if ($-footer-color and color-contrast($-footer-color) != $color-contrast-dark) {
+				color: $white;
+			}
+		}
+	}
+}
+
+
+
+.o_footer_copyright {
+    position: relative;
+    &:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        pointer-events: none;
+        background: currentColor;
+        opacity: 0.1;
+    }
+    .o_footer_copyright_name {
+        color: rgba($dark, 0.8);
+        @if ($-footer-color and color-contrast($-footer-color) != $color-contrast-dark) {
+            color: rgba($white, 0.8);
+        }
+    }
+    .text-sm-end {
+        &.o_not_editable {
+            display: none;
+        }
+    }
+    .o_brand_promotion {
+        display: none;
+    }
+    .o_footer_copyright_name {
+        font-size: 14px;
+    }
+    .row > div {
+        display: flex;
+    }
+    .js_language_selector {
+        margin-left: auto;
+        .btn {
+            background: none;
+            color: rgba($dark, 0.8);
+	        @if ($-footer-color and color-contrast($-footer-color) != $color-contrast-dark) {
+	            color: rgba($white, 0.8);
+	        }
+        }
+    }
+}

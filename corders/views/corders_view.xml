@@ -7,10 +7,10 @@
         <field name="arch" type="xml">
             <tree string="corders" default_order="create_date desc">
                 <field name="name" optional="hide"/>
+                <field name="platform" optional="hide"/>
                 <field name="onay_kodu" optional="hide"/>
                 <field name="siparis_no" optional="show"/>
-                <field name="yolcu" optional="hide"/>
-                <field name="vendor" optional="hide"/>
+                <field name="magaza" optional="show"/>
                 <field name="siparis_tarihi" optional="show"/>
                 <field name="musteri_adi" optional="show"/>
                 <field name="musteri_telefonu" optional="hide"/>
@@ -25,10 +25,15 @@
                 <field name="received_amount_currency_id" invisible="1"/>
                 <field name="toplam_siparis_currency" invisible="1"/>
                 <field name="toplam_siparis_tutari" optional="hide"/>
+                <field name="mesafe" optional="hide"/>
                 <field name="paket_baslangic_tarihi" optional="hide"/>
-                <field name="paket_teslim_alma_tarihi" optional="hide"/>
                 <field name="paket_bitis_tarihi" optional="hide"/>
                 <field name="sale_price" optional="hide"/>
+                <field name="kurye_odeme_durumu" widget="badge" decoration-danger="kurye_odeme_durumu == ('not_paid')" decoration-success="kurye_odeme_durumu == ('paid')" optional="hide"/>
+                <field name="restoran_borc_toplami" optional="hide"/>
+                <field name="restoran_borc_durumu" widget="badge" decoration-danger="restoran_borc_durumu == ('not_paid')" decoration-success="restoran_borc_durumu == ('paid')" optional="hide"/>
+                <field name="kuryenin_musteriden_aldigi_odeme" optional="hide"/>
+                <field name="kuryeden_alinan_paket_tutari" optional="hide"/>
                 <!-- <field name="received_amount_total" optional="hide"/>
                 <field name="remaining_amount" optional="hide"/> -->
                 <field name="activity_ids" widget="list_activity" optional="hide"/>
@@ -85,18 +90,14 @@
                             <field name="sale_price_currency_id" invisible="1"/>
                             <field name="received_amount_currency_id" invisible="1"/>
                             <field name="toplam_siparis_currency" invisible="1"/>
-                            <field name="sale_id" invisible="1"/>
                             <field name="siparis_no"/>
                             <field name="siparis_tarihi"/>
                             <field name="musteri_adi" style="border-width: 2px 2px 2px 2px !important; border-top: 0px solid green; border-right: 0px solid green; border-bottom: 0px solid green; border-left: 0px solid green; border-radius: 60px; padding: 0px;"/>
                             <field name="musteri_telefonu" style="border-width: 2px 2px 2px 2px !important; border-top: 0px solid green; border-right: 0px solid green; border-bottom: 0px solid green; border-left: 0px solid green; border-radius: 60px; padding: 0px;"/>
                         </group>
                         <group string="Adres ve Ödeme Bilgisi">
-                            <field name="yolcu"/>
                             <field name="adres" style="border-width: 2px 2px 2px 2px !important; border-top: 0px solid green; border-right: 0px solid green; border-bottom: 0px solid green; border-left: 0px solid green; border-radius: 60px; padding: 0px;"/>
                             <field name="adres_tarifi"/>
-                            <field name="hedef_adres" style="border-width: 2px 2px 2px 2px !important; border-top: 0px solid green; border-right: 0px solid green; border-bottom: 0px solid green; border-left: 0px solid green; border-radius: 60px; padding: 0px;"/>
-                            <field name="hedef_adres_tarifi"/>
                             <field name="siparis_notu"/>
                             <field name="odeme_yontemi" style="border-width: 2px 2px 2px 2px !important; border-top: 0px solid green; border-right: 0px solid green; border-bottom: 0px solid green; border-left: 0px solid green; border-radius: 60px; padding: 0px;"/>
                             <field name="kurye_odeme_alma_yontemi"/>
@@ -104,17 +105,17 @@
                             <field name="indirim_tutari"/>
                             <field name="vergi_tutari"/>
                         </group>
-                        <group string="Sürücü">
+                        <group string="Kurye">
                             <field name="kurye"/>
                             <field name="kurye_telefonu"/>
                             <field name="kurye_siparis_durumu"/>
                         </group>
                         <group string="Diğer">
-                            <field name="vendor" style="border-width: 2px 2px 2px 2px !important; border-top: 0px solid green; border-right: 0px solid green; border-bottom: 0px solid green; border-left: 0px solid green; border-radius: 60px; padding: 0px;"/>
+                            <field name="platform" style="border-width: 2px 2px 2px 2px !important; border-top: 0px solid green; border-right: 0px solid green; border-bottom: 0px solid green; border-left: 0px solid green; border-radius: 60px; padding: 0px;"/>
+                            <field name="magaza" style="border-width: 2px 2px 2px 2px !important; border-top: 0px solid green; border-right: 0px solid green; border-bottom: 0px solid green; border-left: 0px solid green; border-radius: 60px; padding: 0px;"/>
                             <field name="siparis_durumu"/>
                             <field name="iptal_nedeni" attrs="{'invisible': [('siparis_durumu', '!=','iptal_edildi')]}"/>
                             <field name="sonra_teslim_durumu"/>
-                            <field name="sonra_teslim_tarihi" attrs="{'invisible': [('sonra_teslim_durumu', '!=',True)]}"/>
                         </group>
                         <!-- <group string="Saleperson Commission">
                             <field name="dealer" />
@@ -131,69 +132,55 @@
                             <field name="attachment_ids" widget="many2many_binary"/>
                         </group>
                         <group string="Detaylar" groups="base.group_system,base.group_erp_manager,corders.corders_group_fullaccess,corders.corders_group_admin,corders.corders_group_dealer">
+                            <field name="mesafe"/>
                             <field name="siparis_durumu_zamani"/>
                             <field name="paket_baslangic_tarihi"/>
-                            <field name="paket_teslim_alma_tarihi"/>
                             <field name="paket_bitis_tarihi"/>
-                            <field name="yolcuyu_bekleme_suresi_dakika"/>
                             <field name="paket_suresi_dakika"/>
                         </group>
-                        <group string="Spesific-1" groups="base.group_system">
-                            <field name="sale_id"/>
+                        <group string="Spesific" groups="base.group_system">
                             <field name="customer_payment_status"/>
                             <field name="received_amount_total" invisible="1"/>
                             <field name="total_cash"/>
                             <field name="total_credit_card"/>
                             <field name="total_transfer"/>
-                            <field name="yolcu_lat"/>
-                            <field name="yolcu_lng"/>
                             <field name="lat"/>
                             <field name="lng"/>
+                            <field name="mesafe"/>
                             <field name="yon"/>
                             <field name="siparis_durumu_zamani"/>
-                            <field name="driver_first_lat"/>
-                            <field name="driver_first_lng"/>
-                            <field name="driver_last_lat"/>
-                            <field name="driver_last_lng"/>
-                            <field name="yol_trafik_seviyesi"/>
-                        </group>
-                        <group string="Spesific-2" groups="base.group_system">
-                            <field name="tahmini_arac_yolcu_mesafesi"/>
-                            <field name="tahmini_arac_yolcu_suresi"/>
-                            <field name="arac_yolcu_mesafesi"/>
-                            <field name="arac_yolcu_suresi"/>
-                            <field name="tahmini_yolcu_hedef_mesafesi"/>
-                            <field name="tahmini_yolcu_hedef_suresi"/>
-                            <field name="yolcu_hedef_mesafesi"/>
-                            <field name="yolcu_hedef_suresi"/>
-                            <field name="tahmini_toplam_mesafe"/>
-                            <field name="tahmini_toplam_sure"/>
-                            <field name="toplam_mesafe"/>
-                            <field name="toplam_sure"/>
-                        </group>
-                        <group string="Acil Durum" groups="base.group_system">
-                            <field name="incident_reported"/>
-                            <field name="driver_emergency_button_pressed"/>
-                            <field name="customer_emergency_button_pressed"/>
-                            <field name="ride_audio_record_url"/>
-                            <field name="camera_snapshot_url"/>
+                            <field name="paket_baslangic_tarihi"/>
+                            <field name="paket_bitis_tarihi"/>
+                            <field name="paket_suresi_dakika"/>
                         </group>
                         <notebook>
                             <page name="main_page" invisible="1">
                             </page>
-                            <page name="kuryenin_kazanci" string="Sürücünün Yolculuktan Kazancı" groups="base.group_system,base.group_erp_manager,corders.corders_group_fullaccess,corders.corders_group_admin,corders.corders_group_dealer">
-                                <group name="kuryenin_kazanci" string="Sürücünün Kazancı">
-                                    <field name="baz_price" style="color: green; font-weight: bold;"/>
-                                    <field name="promosyon_price" style="color: green; font-weight: bold;"/>
-                                    <field name="bahsis_price" style="color: green; font-weight: bold;"/>
-                                    <field name="toplam_km_price" style="color: green; font-weight: bold;"/>
-                                    <field name="yuzdelik_kar_orani_price" style="color: green; font-weight: bold;"/>
-                                    <field name="platform_komisyon_orani" style="color: orange; font-weight: bold;"/>
-                                    <field name="platform_komisyon_price" style="color: orange; font-weight: bold;"/>
-                                    <field name="sale_price" style="color: green; font-weight: bold;"/>                               
+                            <page name="kuryenin_kazanci" string="Kuryenin Paketten Kazancı">
+                                <group name="kuryenin_kazanci" string="Kuryenin Kazancı">
+                                    <field name="baz_price" style="color: orange; font-weight: bold;"/>
+                                    <field name="promosyon_price" style="color: orange; font-weight: bold;"/>
+                                    <field name="bahsis_price" style="color: orange; font-weight: bold;"/>
+                                    <field name="toplam_km_price" style="color: orange; font-weight: bold;"/>
+                                    <field name="yuzdelik_kar_orani_price" style="color: orange; font-weight: bold;"/>
+                                    <field name="sale_price" style="color: green; font-weight: bold;"/>
+                                    <field name="kurye_odeme_durumu" style="color: green; font-weight: bold;"/>                               
+                                    <field name="yol_mesafesi" invisible="1"/>
                                 </group>
                             </page>
-                            <!-- <page name="pos_entegrasyon_bilgileri" string="Pos Entegrasyon Bilgileri" groups="base.group_system,base.group_erp_manager,corders.corders_group_fullaccess,corders.corders_group_admin">
+                            <page name="restoranin_borcu" string="Restoranın Paketten Borcu">
+                                <group name="restoranin_borcu" string="Restoranın Borcu">
+                                    <field name="restoran_baz_price" style="color: green; font-weight: bold;"/>
+                                    <field name="restoran_toplam_km_price" style="color: green; font-weight: bold;"/>
+                                    <field name="restoran_yuzdelik_kar_orani_price" style="color: green; font-weight: bold;"/>
+                                    <field name="kuryenin_musteriden_aldigi_odeme" style="color: orange; font-weight: bold;"/>
+                                    <field name="kuryeden_alinan_paket_tutari" style="color: orange; font-weight: bold;"/>
+                                    <field name="restoran_borc_toplami" style="color: green; font-weight: bold;"/>
+                                    <field name="restoran_borc_durumu" style="color: green; font-weight: bold;"/>                               
+                                    <field name="yol_mesafesi" invisible="1"/>
+                                </group>
+                            </page>
+                            <page name="pos_entegrasyon_bilgileri" string="Pos Entegrasyon Bilgileri" groups="base.group_system,base.group_erp_manager,corders.corders_group_fullaccess,corders.corders_group_admin">
                                 <group>
                                     <group name="pos_bilgiler" string="Pos Entegrasyon Bilgileri">
                                         <field name="pos_entegrasyon_firmasi"/>
@@ -226,7 +213,7 @@
                                         <field name="yeppos_order_id"/>
                                     </group>
                                 </group>
-                            </page> -->
+                            </page>
                         </notebook>
                     </group>
                 </sheet>
@@ -468,7 +455,7 @@
                                             </span>
                                             <span t-else="" style="font-weight: bold; font-size: 14px; color: #ff0037;">
                                                 <i class="fa fa-motorcycle"/>
-                                                Sürücü Atanmadı
+                                                Kurye Atanmadı
                                             </span>
                                             <span style="font-size: 10px; color: #535058;"/>
                                         </div>
@@ -527,7 +514,7 @@
                                     <div class="col-6">
                                         <button t-if="record.siparis_durumu.raw_value != 'teslim_edildi'" name="1282" type="action" class="col-12 btn btn-info btn-md">
                                             <i class="fa fa-motorcycle"/>
-                                            Sürücü Ata
+                                            Kurye Ata
                                         </button>
                                     </div>
                                     <div t-if="record.siparis_durumu.raw_value == 'onay_bekliyor'" class="col-6">
@@ -594,9 +581,11 @@ Kabul Et
                 <field name="name" string="Yetkili Kişiye Göre Ara" filter_domain="[('magaza.yetkili_users', 'ilike', self)]"/>
                 <group expand="0" name="group_by" string="Group By">
                     <filter name="magaza" string="Restoran" domain="[]" context="{'group_by' : 'magaza'}" />
-                    <filter name="kurye" string="Sürücü" domain="[]" context="{'group_by' : 'kurye'}" />
+                    <filter name="kurye" string="Kurye" domain="[]" context="{'group_by' : 'kurye'}" />
                     <filter name="group_by_day" string="Tarih" domain="[]" context="{'group_by': 'siparis_tarihi:day'}" />
                 </group>
+                <separator/>
+                <filter string="Oluşturulma Tarihi" name="filter_create_date" date="create_date"/>
                 <!-- <filter string="Archived" name="active" domain="[('active', '=', False)]"/> -->
             </search>
         </field>
@@ -614,40 +603,29 @@ Kabul Et
         </field>
     </record>
     <record id="action_corders_profile" model="ir.actions.act_window">
-        <field name="name">Trips</field>
+        <field name="name">Corders</field>
         <field name="res_model">corders.profile</field>
         <field name="view_mode">tree,kanban,form,calendar</field>
     </record>
-    <menuitem id="corders_root_menu" name="Yolculuklar" web_icon="corders,static/src/img/avatar.png" />
-    <act_window id="corders_list" name="Yolculuklar" res_model="corders.profile" view_mode="tree,kanban,form,calendar" context="{}" />
-    <menuitem id="corders_zones" parent="corders_root_menu" name="Yolculuklar" action="corders_list" sequence="2" />
-    
+    <menuitem id="corders_root_menu" name="Corders" web_icon="corders,static/src/img/avatar.png" />
+    <act_window id="corders_list" name="Corders" res_model="corders.profile" view_mode="tree,kanban,form,calendar" context="{}" />
+    <menuitem id="corders_zones" parent="corders_root_menu" name="Corders" action="corders_list" sequence="2" />
     <!-- Restoranlar için filtreleme yapılacak action tanımlama -->
     <record id="action_restoran_contacts" model="ir.actions.act_window">
-        <field name="name">Satıcılar</field>
+        <field name="name">Restoranlar</field>
         <field name="res_model">res.partner</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="domain">[('user_role', '=', 'satici')]</field>
+        <field name="domain">[('user_role', '=', 'magaza')]</field>
     </record>
-    <menuitem id="menu_restoranlar" name="Satıcılar" action="action_restoran_contacts" sequence="10" web_icon="corders,static/src/img/shop.png"/>
-    
+    <menuitem id="menu_restoranlar" name="Restoranlar" action="action_restoran_contacts" sequence="10" web_icon="corders,static/src/img/shop.png"/>
     <!-- Restoranlar için filtreleme yapılacak action tanımlama -->
     <record id="action_kurye_contacts" model="ir.actions.act_window">
-        <field name="name">Sürücüler</field>
+        <field name="name">Kuryeler</field>
         <field name="res_model">res.partner</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[('user_role', '=', 'kurye')]</field>
     </record>
-    <menuitem id="menu_kuryeler" name="Sürücüler" action="action_kurye_contacts" sequence="10" web_icon="corders,static/src/img/motorcycle.png"/>
-    
-    
-    <record id="action_rider_contacts" model="ir.actions.act_window">
-        <field name="name">Yolcular</field>
-        <field name="res_model">res.partner</field>
-        <field name="view_mode">kanban,tree,form</field>
-        <field name="domain">[('user_role', '=', 'yolcu')]</field>
-    </record>
-    <menuitem id="menu_riders" name="Yolcular" action="action_rider_contacts" sequence="10" web_icon="corders,static/src/img/person_icon.png"/>
+    <menuitem id="menu_kuryeler" name="Kuryeler" action="action_kurye_contacts" sequence="10" web_icon="corders,static/src/img/motorcycle.png"/>
     <!-- <act_window id="corders_quotations" name="Transfer Request" res_model="sale.order" view_mode="tree,kanban,form,calendar,pivot,graph,activity" context="{}"/>
     <menuitem id="corders_request" parent="corders_root_menu" name="Transfer Requests" action="corders_quotations" sequence="1"/>
 

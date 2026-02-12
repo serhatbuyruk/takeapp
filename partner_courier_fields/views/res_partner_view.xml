@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+<record id="view_partner_tree_inherit_courier_fields" model="ir.ui.view">
+    <field name="name">res.partner.tree.courier.fields</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_tree"/>
+
+    <field name="arch" type="xml">
+
+        <!-- courier_id → en başa -->
+        <xpath expr="//tree/field[1]" position="after">
+            <field name="courier_first_name" optional="hide"/>
+            <field name="courier_last_name" optional="hide"/>
+            <field name="courier_id" optional="show"/>
+        </xpath>
+
+        <xpath expr="//tree" position="inside">
+            <!-- 4: Fatura kesecek kişi -->
+            <field name="invoice_person" optional="hide"/>
+
+            <!-- 5: Para yatacak kişi -->
+            <field name="payment_person" optional="hide"/>
+
+            <!-- 6–7: Kullanıcı adı & şifre -->
+            <field name="kullanici_adi" optional="hide"/>
+            <field name="sifre" optional="hide"/>
+
+            <!-- 8: Fatura TC -->
+            <field name="invoice_person_tc" optional="hide"/>
+
+            <!-- 9: Para yatacak TC -->
+            <field name="payment_person_tc" optional="hide"/>
+
+            <!-- 10–13: Banka bilgileri -->
+            <field name="iban" optional="hide"/>
+            <field name="bank_branch" optional="hide"/>
+            <field name="bank_account_no" optional="hide"/>
+            <field name="bank_name" optional="hide"/>
+
+            <!-- 14: Telefon -->
+            <field name="phone" optional="hide"/>
+
+            <!-- 15: Semt/İlçe -->
+            <field name="city" optional="hide"/>
+
+            <!-- 16: Çalıştığı Bölge -->
+            <field name="area" optional="hide"/>
+
+            <!-- 17: Fatura şekli -->
+            <field name="invoice_type" optional="hide"/>
+
+            <!-- 18: Yönetici -->
+            <field name="manager_name" optional="hide"/>
+
+            <!-- Borç bilgisi (opsiyonel) -->
+            <field name="debt_info" optional="hide"/>
+            <field name="borc_aciklamasi" optional="hide"/>
+            <field name="archive_note" optional="hide"/>
+        </xpath>
+
+    </field>
+</record>
+
+
+
+
+
+    <record id="view_partner_form_remove_autofocus" model="ir.ui.view">
+        <field name="name">res.partner.form.remove.autofocus</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+
+        <field name="arch" type="xml">
+
+            <!-- Contacts & Addresses sekmesindeki autofocus kaldırılıyor -->
+            <xpath expr="//page[@name='contact_addresses']" position="attributes">
+                <attribute name="autofocus"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="view_partner_tree_inherit_fix_name" model="ir.ui.view">
+        <field name="name">res.partner.tree.use.name.instead.display</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+
+        <field name="arch" type="xml">
+
+            <!-- translated_display_name tanımlı ise onu da name'e çevir -->
+            <xpath expr="//field[@name='translated_display_name']" position="replace">
+                <field name="name"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_partner_form_hide_fields" model="ir.ui.view">
+        <field name="name">res.partner.form.hide.website.title</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+
+        <field name="arch" type="xml">
+
+            <!-- Website alanını görünmez yap -->
+            <xpath expr="//field[@name='website']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Title alanını görünmez yap -->
+            <xpath expr="//field[@name='title']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_partner_tree_inherit_hide_defaults" model="ir.ui.view">
+        <field name="name">res.partner.tree.hide.defaults</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="phone" optional="hide"/>
+                <field name="user_id" optional="hide"/>
+                <field name="country_id" optional="hide"/>
+                <field name="email" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_partner_form_inherit_courier" model="ir.ui.view">
+        <field name="name">res.partner.form.courier.fields</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+
+        <field name="arch" type="xml">
+
+            <!-- Kurye Bilgileri sekmesini 'Contacts & Addresses' sekmesinden önce ekle -->
+            <xpath expr="//page[@name='contact_addresses']" position="before">
+
+                <page string="Kurye Bilgileri" autofocus="autofocus">
+                    <group>
+                        <field name="courier_id"/>
+                        <field name="courier_first_name"/>
+                        <field name="courier_last_name"/>
+                    </group>
+
+                    <group string="Fatura Bilgileri">
+                        <field name="invoice_person"/>
+                        <field name="invoice_person_tc"/>
+                        <field name="invoice_type"/>
+                    </group>
+
+                    <group string="Ödeme Bilgileri">
+                        <field name="payment_person"/>
+                        <field name="payment_person_tc"/>
+                        <field name="iban"/>
+                        <field name="bank_branch"/>
+                        <field name="bank_account_no"/>
+                        <field name="bank_name"/>
+                    </group>
+
+                    <group string="Çalışma Bilgileri">
+                        <field name="area"/>
+                        <field name="city"/>
+                        <field name="manager_name"/>
+                        <field name="debt_info"/>
+                        <field name="borc_aciklamasi"/>
+                    </group>
+
+                    <group string="Kullanıcı Bilgileri">
+                        <field name="kullanici_adi"/>
+                        <field name="sifre"/>
+                    </group>
+
+                    <group string="Arşivleme Sebebi">
+                        <field name="archive_note"/>
+                    </group>
+
+                    <group string="Ekler">
+                        <field name="p1_yetki_attachment" widget="many2many_binary"/>
+                        <field name="ehliyet_attachment" widget="many2many_binary"/>
+                        <field name="ruhsat_ve_muayene_attachment" widget="many2many_binary"/>
+                        <field name="zorunlu_trafik_sigortasi_attachment" widget="many2many_binary"/>
+                        <field name="vergi_levhasi" widget="many2many_binary"/>
+                        <field name="sgk_belgesi" widget="many2many_binary"/>
+                    </group>
+
+                    <group string="ISG Ekleri">
+                        <field name="isg_attachment" widget="many2many_binary"/>
+                        <field name="kask"/>
+                        <field name="mont"/>
+                        <field name="eldiven"/>
+                        <field name="reflektor"/>
+                    </group>
+
+                </page>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
