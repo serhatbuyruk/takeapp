@@ -902,9 +902,10 @@ class cordersProfileReq(http.Controller):
                     'path': 'action',
                     'line': '489',
                     'func': 'yeppos_cancel_order',
-                    'message':  str(data)
+                    'message':  str(data),
+                    'x_raw_json':  data
                 })
-        return {'message': 'Status Created Successfully'}
+        return {'message': 'Order Canceled Successfully'}
 
     
 
