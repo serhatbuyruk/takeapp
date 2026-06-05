@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_courier_accounting_import_wizard_form" model="ir.ui.view">
+        <field name="name">partner.courier.accounting.import.wizard.form</field>
+        <field name="model">partner.courier.accounting.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Muhasebe Excel Import">
+                <group>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="file" filename="filename"/>
+                    <field name="filename" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_import" string="Import" type="object" class="btn-primary"/>
+                    <button string="İptal" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_partner_courier_accounting_import_wizard" model="ir.actions.act_window">
+        <field name="name">Muhasebe Excel Import</field>
+        <field name="res_model">partner.courier.accounting.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="groups_id" eval="[(4, ref('partner_courier_accounting.group_partner_courier_accounting_admin'))]"/>
+    </record>
+
+    <menuitem
+        id="menu_partner_courier_accounting_import_wizard"
+        name="Muhasebe Excel Import"
+        parent="contacts.menu_contacts"
+        action="action_partner_courier_accounting_import_wizard"
+        groups="partner_courier_accounting.group_partner_courier_accounting_admin"
+        sequence="90"/>
+</odoo>

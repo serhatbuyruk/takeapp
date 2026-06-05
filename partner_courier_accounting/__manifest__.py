@@ -1,0 +1,21 @@
+{
+    'name': 'Partner Courier Accounting',
+    'version': '16.0.1.0.0',
+    'category': 'Contacts',
+    'summary': 'Adds accounting pickup lines to courier contacts',
+    'depends': ['partner_courier_fields', 'website'],
+    'author': 'Esa Teknik',
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'views/res_partner_actions.xml',
+        'views/partner_courier_accounting_line_views.xml',
+        'views/res_partner_views.xml',
+        'views/partner_courier_request_views.xml',
+        'views/courier_accounting_portal_templates.xml',
+        'wizard/partner_courier_accounting_import_wizard_views.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'license': 'LGPL-3',
+}

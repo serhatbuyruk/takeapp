@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_courier_accounting_line_admin,partner.courier.accounting.line.admin,model_partner_courier_accounting_line,partner_courier_accounting.group_partner_courier_accounting_admin,1,1,1,1
+access_partner_courier_accounting_import_wizard_admin,partner.courier.accounting.import.wizard.admin,model_partner_courier_accounting_import_wizard,partner_courier_accounting.group_partner_courier_accounting_admin,1,1,1,1
+access_partner_courier_request_user,partner.courier.request.user,model_partner_courier_request,base.group_user,1,1,1,1

@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="courier_accounting_layout" name="Courier Accounting Layout">
+        <t t-call="website.layout">
+            <style>
+                .ca-portal { min-height: 100vh; background: #f2f2f2; color: #2b2b2f; font-family: Arial, Helvetica, sans-serif; }
+                .ca-shell { width: 100%; max-width: 920px; margin: 0 auto; padding: 32px 18px 42px; }
+                .ca-card, .ca-panel { border-radius: 14px; box-shadow: 0 8px 26px rgba(0, 0, 0, .08); }
+                .ca-card { background: #fff; padding: 28px; }
+                .ca-login-card, .ca-home-card { max-width: 420px; margin: 7vh auto 0; }
+                .ca-card h1, .ca-panel h2 { margin: 0 0 22px; font-weight: 800; }
+                .ca-form { display: grid; gap: 16px; }
+                .ca-form label { display: grid; gap: 7px; font-weight: 700; }
+                .ca-form input { width: 100%; min-height: 46px; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px; }
+                .ca-button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; border: 0; border-radius: 8px; padding: 12px 18px; text-decoration: none; font-weight: 800; cursor: pointer; }
+                .ca-button-primary { background: #e97712; color: #fff !important; }
+                .ca-button-light { background: #ededed; color: #222 !important; }
+                .ca-action-grid { display: grid; gap: 12px; }
+                .ca-back { display: inline-flex; width: 56px; height: 56px; align-items: center; justify-content: center; margin: 0 0 22px; border-radius: 50%; background: #e9e9e9; color: #111 !important; text-decoration: none; font-size: 34px; line-height: 1; }
+                .ca-panel { margin: 0 0 24px; padding: 28px 26px; }
+                .ca-panel-info { background: #ffe2ae; }
+                .ca-panel-note { background: #a9edd7; }
+                .ca-panel-allowance { background: #d8d1fb; }
+                .ca-panel-deduction { background: #dfb4e3; }
+                .ca-panel-total { background: #ffc8b8; }
+                .ca-row { display: grid; grid-template-columns: minmax(0, 1fr) auto 30px; gap: 16px; align-items: start; padding: 14px 0; border-bottom: 2px solid rgba(255, 255, 255, .55); font-size: 24px; }
+                .ca-row:last-child { border-bottom: 0; }
+                .ca-row strong { font-weight: 850; }
+                .ca-row span { text-align: right; overflow-wrap: anywhere; }
+                .ca-row-note { grid-template-columns: 150px minmax(0, 1fr) 30px; }
+                .ca-row-note span { text-align: left; }
+                .ca-info-btn { width: 28px; height: 28px; border: 2px solid #2b2b2f; border-radius: 50%; background: rgba(255,255,255,.45); color: #2b2b2f; font-size: 16px; font-weight: 900; line-height: 1; cursor: pointer; }
+                .ca-modal { position: fixed; inset: 0; z-index: 9999; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(0,0,0,.48); }
+                .ca-modal.is-open { display: flex; }
+                .ca-modal-card { width: 100%; max-width: 520px; border-radius: 14px; background: #fff; padding: 24px; box-shadow: 0 16px 50px rgba(0,0,0,.25); }
+                .ca-modal-card h3 { margin: 0 0 12px; font-size: 24px; font-weight: 850; }
+                .ca-modal-card p { margin: 0 0 20px; font-size: 18px; line-height: 1.45; }
+                .ca-modal-close { width: 100%; min-height: 44px; border: 0; border-radius: 8px; background: #e97712; color: #fff; font-weight: 800; cursor: pointer; }
+                .ca-week-list { display: grid; gap: 12px; }
+                .ca-week-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 16px; border-radius: 8px; background: #f4f4f4; color: #222 !important; text-decoration: none; }
+                .ca-error { margin: 0; color: #b00020; font-weight: 700; }
+                .ca-empty { margin: 0; color: #555; }
+                @media (max-width: 560px) {
+                    .ca-shell { padding: 22px 12px 34px; }
+                    .ca-card, .ca-panel { padding: 22px 18px; border-radius: 12px; }
+                    .ca-row { grid-template-columns: minmax(0, 1fr) auto 28px; gap: 10px; font-size: 18px; }
+                    .ca-row-note { grid-template-columns: 92px minmax(0, 1fr) 28px; }
+                }
+                .ca-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+                .ca-badge-danger { background: #ffebee; color: #b71c1c; }
+                .ca-badge-new { background: #e3f2fd; color: #0d47a1; }
+                .ca-badge-progress { background: #fff3e0; color: #e65100; }
+                .ca-badge-approved { background: #e8f5e9; color: #1b5e20; }
+                .ca-badge-rejected { background: #ffebee; color: #c62828; }
+                
+                .ca-doc-card { display: grid; gap: 20px; background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 8px 26px rgba(0, 0, 0, .08); margin-bottom: 24px; }
+                .ca-doc-item { border-bottom: 1px solid #eee; padding-bottom: 20px; }
+                .ca-doc-item:last-child { border-bottom: 0; padding-bottom: 0; }
+                .ca-doc-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+                .ca-doc-desc { color: #666; font-size: 14px; margin-bottom: 12px; }
+                .ca-file-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+                .ca-file-chip { display: inline-flex; align-items: center; background: #f0f0f0; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #333; }
+                .ca-file-chip a { color: #e97712; text-decoration: none; font-weight: bold; }
+                .ca-file-chip a:hover { text-decoration: underline; }
+                
+                .ca-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: ca-spin 0.8s linear infinite; margin-right: 8px; }
+                @keyframes ca-spin { to { transform: rotate(360deg); } }
+                
+                .ca-request-item { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border-left: 5px solid #e97712; }
+                .ca-request-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+                .ca-request-type { font-size: 18px; font-weight: 800; }
+                .ca-request-date { font-size: 12px; color: #888; }
+                .ca-request-desc { background: #f9f9f9; padding: 12px; border-radius: 6px; font-size: 14px; margin-bottom: 12px; white-space: pre-wrap; }
+                .ca-request-reply { background: #fff8e1; border: 1px solid #ffe082; padding: 12px; border-radius: 6px; font-size: 14px; color: #5d4037; }
+            </style>
+            <div id="wrap" class="ca-portal">
+                <main class="ca-shell">
+                    <t t-out="0"/>
+                </main>
+            </div>
+        </t>
+    </template>
+
+    <template id="courier_accounting_login" name="Courier Accounting Login">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <section class="ca-card ca-login-card">
+                <h1>Kurye Giriş</h1>
+                <form action="/kurye-muhasebe/login" method="post" class="ca-form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <label>
+                        <span>Kurye ID</span>
+                        <input type="text" name="courier_id" required="required" autocomplete="username" id="ca_login_courier_id"/>
+                    </label>
+                    <label>
+                        <span>Kimlik Numarası</span>
+                        <input type="password" name="identity_no" required="required" autocomplete="current-password" id="ca_login_identity_no"/>
+                    </label>
+                    <label style="display:flex; grid-template-columns:none; align-items:center; gap:8px; font-weight:700;">
+                        <input type="checkbox" name="remember_me" id="ca_login_remember" style="width:18px; min-height:18px;"/>
+                        <span>Beni hatırla</span>
+                    </label>
+                    <p t-if="error" class="ca-error">Bilgiler eşleşmedi.</p>
+                    <button type="submit" class="ca-button ca-button-primary">Giriş Yap</button>
+                </form>
+                <script>
+                    (function () {
+                        const key = 'partner_courier_accounting_login';
+                        const form = document.querySelector('.ca-login-card form');
+                        const courierInput = document.getElementById('ca_login_courier_id');
+                        const identityInput = document.getElementById('ca_login_identity_no');
+                        const rememberInput = document.getElementById('ca_login_remember');
+                        if (!form || !courierInput || !identityInput || !rememberInput) return;
+                        try {
+                            const saved = JSON.parse(window.localStorage.getItem(key) || '{}');
+                            if (saved.courier_id || saved.identity_no) {
+                                courierInput.value = saved.courier_id || '';
+                                identityInput.value = saved.identity_no || '';
+                                rememberInput.checked = true;
+                            }
+                        } catch (error) {}
+                        form.addEventListener('submit', function () {
+                            if (rememberInput.checked) {
+                                window.localStorage.setItem(key, JSON.stringify({
+                                    courier_id: courierInput.value || '',
+                                    identity_no: identityInput.value || ''
+                                }));
+                            } else {
+                                window.localStorage.removeItem(key);
+                            }
+                        });
+                    })();
+                </script>
+            </section>
+        </t>
+    </template>
+
+    <template id="courier_accounting_home" name="Courier Accounting Home">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <section class="ca-card ca-home-card">
+                <h1><t t-esc="partner.name"/></h1>
+                <div class="ca-action-grid">
+                    <a href="/kurye-muhasebe/kisisel-bilgiler" class="ca-button ca-button-primary">Kişisel Bilgiler</a>
+                    <a href="/kurye-muhasebe/hakedis" class="ca-button ca-button-primary">Hakediş</a>
+                    
+                    <a href="/kurye-muhasebe/belgeler" class="ca-button ca-button-primary" style="display: flex; flex-direction: column; height: auto; padding: 12px 18px; line-height: 1.2;">
+                        <span>Belgeler</span>
+                        <t t-if="has_missing_documents">
+                            <span class="ca-badge ca-badge-danger" style="margin-top: 4px; font-size: 11px; background: #ffebee; color: #b71c1c; border-radius: 4px; padding: 2px 6px; font-weight: normal; border: 1px solid #b71c1c;">Eksik Evrakların Var</span>
+                        </t>
+                    </a>
+                    
+                    <a href="/kurye-muhasebe/talepler" class="ca-button ca-button-primary">Talepler</a>
+                    
+                    <a href="/kurye-muhasebe/logout" class="ca-button ca-button-light">Çıkış</a>
+                </div>
+            </section>
+        </t>
+    </template>
+
+    <template id="courier_accounting_personal" name="Courier Accounting Personal">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/home" class="ca-back">←</a>
+            <section class="ca-panel ca-panel-info">
+                <h2>Kişisel Bilgiler</h2>
+                <div class="ca-row"><strong>Kurye ID:</strong><span t-esc="partner.courier_id"/></div>
+                <div class="ca-row"><strong>Ad Soyad:</strong><span t-esc="partner.name"/></div>
+                <div class="ca-row"><strong>Telefon:</strong><span t-esc="partner.phone or partner.mobile"/></div>
+                <div class="ca-row"><strong>Bölge:</strong><span t-esc="partner.area"/></div>
+                <div class="ca-row"><strong>Şehir:</strong><span t-esc="partner.city"/></div>
+                <div class="ca-row"><strong>Fatura Tipi:</strong><span t-esc="partner.invoice_type"/></div>
+                <div class="ca-row"><strong>Yönetici:</strong><span t-esc="partner.manager_name"/></div>
+                <div class="ca-row"><strong>IBAN:</strong><span t-esc="partner.iban"/></div>
+            </section>
+        </t>
+    </template>
+
+    <template id="courier_accounting_earnings" name="Courier Accounting Earnings">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/home" class="ca-back">←</a>
+            <section class="ca-card">
+                <h1>Hafta Seçimi</h1>
+                <div class="ca-week-list">
+                    <a t-foreach="lines" t-as="line" t-att-href="'/kurye-muhasebe/hakedis/%s' % line.id" class="ca-week-item">
+                        <span><t t-esc="format_date(line.date_start)"/> - <t t-esc="format_date(line.date_end)"/></span>
+                        <strong t-esc="format_money(line.net_payable_amount, line.currency_id)"/>
+                    </a>
+                    <p t-if="not lines" class="ca-empty">Hakediş kaydı bulunamadı.</p>
+                </div>
+            </section>
+        </t>
+    </template>
+
+    <template id="courier_accounting_earning_detail" name="Courier Accounting Earning Detail">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/hakedis" class="ca-back">←</a>
+
+            <section class="ca-panel ca-panel-info">
+                <h2>Bilgiler</h2>
+                <div class="ca-row"><strong>Rider Id:</strong><span t-esc="partner.courier_id"/><button type="button" class="ca-info-btn" t-att-data-title="'Rider Id'" t-att-data-info="info['rider_id']">i</button></div>
+                <div class="ca-row"><strong>Rider Name:</strong><span t-esc="partner.name"/><button type="button" class="ca-info-btn" t-att-data-title="'Rider Name'" t-att-data-info="info['rider_name']">i</button></div>
+                <div class="ca-row"><strong>Bölge:</strong><span t-esc="line.area"/><button type="button" class="ca-info-btn" t-att-data-title="'Bölge'" t-att-data-info="info['area']">i</button></div>
+                <div class="ca-row"><strong>Şehir:</strong><span t-esc="line.city"/><button type="button" class="ca-info-btn" t-att-data-title="'Şehir'" t-att-data-info="info['city']">i</button></div>
+                <div class="ca-row"><strong>Hafta:</strong><span><t t-esc="format_date(line.date_start)"/> - <t t-esc="format_date(line.date_end)"/></span><button type="button" class="ca-info-btn" t-att-data-title="'Hafta'" t-att-data-info="info['week']">i</button></div>
+            </section>
+
+            <section class="ca-panel ca-panel-note">
+                <h2>Ödeme Notu</h2>
+                <div class="ca-row ca-row-note"><strong>Not:</strong><span t-esc="line.note or ''"/><button type="button" class="ca-info-btn" t-att-data-title="'Ödeme Notu'" t-att-data-info="info['payment_note']">i</button></div>
+            </section>
+
+            <section class="ca-panel ca-panel-allowance">
+                <h2>Ödenekler</h2>
+                <div class="ca-row"><strong>Pick Up:</strong><span t-esc="line.pickup_count"/><button type="button" class="ca-info-btn" t-att-data-title="'Pick Up'" t-att-data-info="info['pickup_count']">i</button></div>
+                <div class="ca-row"><strong>Drop Off:</strong><span t-esc="line.dropoff_count"/><button type="button" class="ca-info-btn" t-att-data-title="'Drop Off'" t-att-data-info="info['dropoff_count']">i</button></div>
+                <div class="ca-row"><strong>Pick Up Tutar:</strong><span t-esc="money['pickup_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Pick Up Tutar'" t-att-data-info="info['pickup_amount']">i</button></div>
+                <div class="ca-row"><strong>Drop Off Tutar:</strong><span t-esc="money['dropoff_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Drop Off Tutar'" t-att-data-info="info['dropoff_amount']">i</button></div>
+                <div class="ca-row"><strong>Kilometre Başı Mesafe Tutarı:</strong><span t-esc="money['distance_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Kilometre Başı Mesafe Tutarı'" t-att-data-info="info['distance_amount']">i</button></div>
+                <div class="ca-row"><strong>Haftalık Ek Paket:</strong><span t-esc="money['weekly_extra_package_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Haftalık Ek Paket'" t-att-data-info="info['weekly_extra_package_amount']">i</button></div>
+                <div class="ca-row"><strong>Bahşiş Tutar (KDV Hariç):</strong><span t-esc="money['tip_amount_tax_excluded']"/><button type="button" class="ca-info-btn" t-att-data-title="'Bahşiş Tutar (KDV Hariç)'" t-att-data-info="info['tip_amount_tax_excluded']">i</button></div>
+            </section>
+
+            <section class="ca-panel ca-panel-deduction">
+                <h2>Mahsup Edilenler</h2>
+                <div class="ca-row"><strong>Cash (Nakit) Kesinti Tutarı:</strong><span t-esc="money['cash_deduction_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'Cash (Nakit) Kesinti Tutarı'" t-att-data-info="info['cash_deduction_tax_included']">i</button></div>
+                <div class="ca-row"><strong>SoftPos (K.K.) Kesinti Tutarı:</strong><span t-esc="money['softpos_deduction_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'SoftPos (K.K.) Kesinti Tutarı'" t-att-data-info="info['softpos_deduction_tax_included']">i</button></div>
+                <div class="ca-row"><strong>Sigorta Kesintisi:</strong><span t-esc="money['insurance_deduction_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Sigorta Kesintisi'" t-att-data-info="info['insurance_deduction_amount']">i</button></div>
+                <div class="ca-row"><strong>İXOPAY (Nakit Yatırılan Tutar):</strong><span t-esc="money['ixopay_cash_deposit_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'İXOPAY (Nakit Yatırılan Tutar)'" t-att-data-info="info['ixopay_cash_deposit_amount']">i</button></div>
+                <div class="ca-row"><strong>Toplam Kesinti:</strong><span t-esc="money['total_deduction_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Toplam Kesinti'" t-att-data-info="info['total_deduction_amount']">i</button></div>
+                <div class="ca-row"><strong>Kuryetec Bonus'u (KDV Hariç):</strong><span t-esc="money['kuryetec_bonus_tax_excluded']"/><button type="button" class="ca-info-btn" t-att-data-title="'Kuryetec Bonusu (KDV Hariç)'" t-att-data-info="info['kuryetec_bonus_tax_excluded']">i</button></div>
+                <div class="ca-row"><strong>Toplam Ödeme (KDV Hariç):</strong><span t-esc="money['total_payment_tax_excluded']"/><button type="button" class="ca-info-btn" t-att-data-title="'Toplam Ödeme (KDV Hariç)'" t-att-data-info="info['total_payment_tax_excluded']">i</button></div>
+                <div class="ca-row ca-row-note"><strong>Ödeme Notu:</strong><span t-esc="line.note or ''"/><button type="button" class="ca-info-btn" t-att-data-title="'Ödeme Notu'" t-att-data-info="info['payment_note']">i</button></div>
+            </section>
+
+            <section class="ca-panel ca-panel-total">
+                <h2>Toplam</h2>
+                <div class="ca-row"><strong>Bonus Dahil Toplam Ödeme (KDV Hariç):</strong><span t-esc="money['bonus_included_total_payment_tax_excluded']"/><button type="button" class="ca-info-btn" t-att-data-title="'Bonus Dahil Toplam Ödeme (KDV Hariç)'" t-att-data-info="info['bonus_included_total_payment_tax_excluded']">i</button></div>
+                <div class="ca-row"><strong>Bonus Dahil Hak Ediş (KDV Dahil):</strong><span t-esc="money['bonus_included_earning_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'Bonus Dahil Hak Ediş (KDV Dahil)'" t-att-data-info="info['bonus_included_earning_tax_included']">i</button></div>
+                <div class="ca-row"><strong>Tevkifat Vergisi Tutarı:</strong><span t-esc="money['withholding_tax_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Tevkifat Vergisi Tutarı'" t-att-data-info="info['withholding_tax_amount']">i</button></div>
+                <div class="ca-row"><strong>Toplam Ödenecek Net Tutar (Kesintiler Düşürülmüştür):</strong><span t-esc="money['net_payable_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Toplam Ödenecek Net Tutar'" t-att-data-info="info['net_payable_amount']">i</button></div>
+            </section>
+            <div class="ca-modal" id="caInfoModal" aria-hidden="true">
+                <div class="ca-modal-card" role="dialog" aria-modal="true">
+                    <h3 id="caInfoTitle"></h3>
+                    <p id="caInfoText"></p>
+                    <button type="button" class="ca-modal-close">Kapat</button>
+                </div>
+            </div>
+            <script>
+                (function () {
+                    const modal = document.getElementById('caInfoModal');
+                    const title = document.getElementById('caInfoTitle');
+                    const text = document.getElementById('caInfoText');
+                    if (!modal || !title || !text) return;
+                    const close = () => {
+                        modal.classList.remove('is-open');
+                        modal.setAttribute('aria-hidden', 'true');
+                    };
+                    document.querySelectorAll('.ca-info-btn').forEach((button) => {
+                        button.addEventListener('click', () => {
+                            title.textContent = button.dataset.title || '';
+                            text.textContent = button.dataset.info || '';
+                            modal.classList.add('is-open');
+                            modal.setAttribute('aria-hidden', 'false');
+                        });
+                    });
+                    modal.querySelector('.ca-modal-close').addEventListener('click', close);
+                    modal.addEventListener('click', (event) => {
+                        if (event.target === modal) close();
+                    });
+                    document.addEventListener('keydown', (event) => {
+                        if (event.key === 'Escape') close();
+                    });
+                })();
+            </script>
+        </t>
+    </template>
+
+    <template id="courier_accounting_documents" name="Courier Accounting Documents">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/home" class="ca-back">←</a>
+            
+            <section class="ca-card" style="margin-bottom: 24px;">
+                <h1>Belgelerim</h1>
+                <p style="color: #666; margin-bottom: 0;">Lütfen eksik evraklarınızı yükleyin. Yüklenen belgeler güvenlik sebebiyle ilk 5 dakika sonrasında silinemez.</p>
+                <div t-if="error == 'invalid_extension'" class="ca-error" style="margin-top: 10px; padding: 8px 12px; background: #ffebee; border-radius: 6px; color: #b71c1c;">Geçersiz dosya uzantısı! Yalnızca PDF, PNG ve JPG/JPEG formatları desteklenmektedir.</div>
+                <div t-if="error == 'file_too_large'" class="ca-error" style="margin-top: 10px; padding: 8px 12px; background: #ffebee; border-radius: 6px; color: #b71c1c;">Dosya çok büyük! Maksimum dosya boyutu 5MB'dır.</div>
+                <div t-if="error == 'no_file'" class="ca-error" style="margin-top: 10px; padding: 8px 12px; background: #ffebee; border-radius: 6px; color: #b71c1c;">Lütfen yüklemek için en az bir dosya seçin.</div>
+                <div t-if="error == 'timeout'" class="ca-error" style="margin-top: 10px; padding: 8px 12px; background: #ffebee; border-radius: 6px; color: #b71c1c;">Belge yüklenmesinin üzerinden 5 dakikadan fazla süre geçtiği için silinemez!</div>
+                <div t-if="success == '1'" style="margin-top: 10px; padding: 8px 12px; background: #e8f5e9; color: #1b5e20; font-weight: 700; border-radius: 6px;">Dosyalar başarıyla yüklendi!</div>
+                <div t-if="success == '2'" style="margin-top: 10px; padding: 8px 12px; background: #e8f5e9; color: #1b5e20; font-weight: 700; border-radius: 6px;">Belge başarıyla silindi!</div>
+            </section>
+
+            <section class="ca-doc-card">
+                <!-- 1. Ehliyet Görseli -->
+                <div class="ca-doc-item">
+                    <div class="ca-doc-title">
+                        Ehliyet Belgeleri
+                        <t t-if="not partner.ehliyet_attachment">
+                            <span class="ca-badge ca-badge-danger" style="font-size: 11px;">Eksik</span>
+                        </t>
+                    </div>
+                    <div class="ca-doc-desc">Mevcut ehliyetinizin ön ve arka yüz görseli.</div>
+                    <div class="ca-file-list" t-if="partner.ehliyet_attachment">
+                        <t t-foreach="partner.ehliyet_attachment" t-as="attach">
+                            <span class="ca-file-chip" style="display: inline-flex; align-items: center; gap: 8px;">
+                                <a t-att-href="'/kurye-muhasebe/belgeler/indir/%s' % attach.id" target="_blank"><t t-esc="attach.name"/></a>
+                                <t t-if="attach.is_deletable_by_courier()">
+                                    <a t-att-href="'/kurye-muhasebe/belgeler/sil/%s' % attach.id" class="text-danger ml-2" onclick="return confirm('Bu belgeyi silmek istediğinize emin misiniz?');" title="Belgeyi Sil" style="color: #dc3545; display: inline-flex; align-items: center; font-size: 14px;">
+                                        <i class="fa fa-trash"/>
+                                    </a>
+                                </t>
+                            </span>
+                        </t>
+                    </div>
+                    <form action="/kurye-muhasebe/belgeler/upload" method="post" enctype="multipart/form-data" class="ca-upload-form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="doc_type" value="ehliyet"/>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="file" name="files" multiple="multiple" required="required" style="width: auto; flex: 1; min-height: auto; padding: 6px; font-size: 14px;" accept=".pdf,.png,.jpg,.jpeg"/>
+                            <button type="submit" class="ca-button ca-button-primary ca-upload-btn" style="min-height: 38px; padding: 6px 16px; font-size: 14px;">Belge Yükle</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 2. Adli Sicil -->
+                <div class="ca-doc-item">
+                    <div class="ca-doc-title">
+                        Adli Sicil Kaydı
+                        <t t-if="not partner.adli_sicil_attachment">
+                            <span class="ca-badge ca-badge-danger" style="font-size: 11px;">Eksik</span>
+                        </t>
+                    </div>
+                    <div class="ca-doc-desc">E-Devlet üzerinden alınan güncel adli sicil kaydı belgesi.</div>
+                    <div class="ca-file-list" t-if="partner.adli_sicil_attachment">
+                        <t t-foreach="partner.adli_sicil_attachment" t-as="attach">
+                            <span class="ca-file-chip" style="display: inline-flex; align-items: center; gap: 8px;">
+                                <a t-att-href="'/kurye-muhasebe/belgeler/indir/%s' % attach.id" target="_blank"><t t-esc="attach.name"/></a>
+                                <t t-if="attach.is_deletable_by_courier()">
+                                    <a t-att-href="'/kurye-muhasebe/belgeler/sil/%s' % attach.id" class="text-danger ml-2" onclick="return confirm('Bu belgeyi silmek istediğinize emin misiniz?');" title="Belgeyi Sil" style="color: #dc3545; display: inline-flex; align-items: center; font-size: 14px;">
+                                        <i class="fa fa-trash"/>
+                                    </a>
+                                </t>
+                            </span>
+                        </t>
+                    </div>
+                    <form action="/kurye-muhasebe/belgeler/upload" method="post" enctype="multipart/form-data" class="ca-upload-form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="doc_type" value="adli_sicil"/>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="file" name="files" multiple="multiple" required="required" style="width: auto; flex: 1; min-height: auto; padding: 6px; font-size: 14px;" accept=".pdf,.png,.jpg,.jpeg"/>
+                            <button type="submit" class="ca-button ca-button-primary ca-upload-btn" style="min-height: 38px; padding: 6px 16px; font-size: 14px;">Belge Yükle</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 3. P1* Belgesi -->
+                <div class="ca-doc-item">
+                    <div class="ca-doc-title">
+                        P1 Yetki Belgeleri
+                        <t t-if="not partner.p1_yetki_attachment">
+                            <span class="ca-badge ca-badge-danger" style="font-size: 11px;">Eksik</span>
+                        </t>
+                    </div>
+                    <div class="ca-doc-desc">Taşıma yetki belgeniz (P1 belgesi).</div>
+                    <div class="ca-file-list" t-if="partner.p1_yetki_attachment">
+                        <t t-foreach="partner.p1_yetki_attachment" t-as="attach">
+                            <span class="ca-file-chip" style="display: inline-flex; align-items: center; gap: 8px;">
+                                <a t-att-href="'/kurye-muhasebe/belgeler/indir/%s' % attach.id" target="_blank"><t t-esc="attach.name"/></a>
+                                <t t-if="attach.is_deletable_by_courier()">
+                                    <a t-att-href="'/kurye-muhasebe/belgeler/sil/%s' % attach.id" class="text-danger ml-2" onclick="return confirm('Bu belgeyi silmek istediğinize emin misiniz?');" title="Belgeyi Sil" style="color: #dc3545; display: inline-flex; align-items: center; font-size: 14px;">
+                                        <i class="fa fa-trash"/>
+                                    </a>
+                                </t>
+                            </span>
+                        </t>
+                    </div>
+                    <form action="/kurye-muhasebe/belgeler/upload" method="post" enctype="multipart/form-data" class="ca-upload-form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="doc_type" value="p1_yetki"/>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="file" name="files" multiple="multiple" required="required" style="width: auto; flex: 1; min-height: auto; padding: 6px; font-size: 14px;" accept=".pdf,.png,.jpg,.jpeg"/>
+                            <button type="submit" class="ca-button ca-button-primary ca-upload-btn" style="min-height: 38px; padding: 6px 16px; font-size: 14px;">Belge Yükle</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 4. Vergi Levhası -->
+                <div class="ca-doc-item">
+                    <div class="ca-doc-title">
+                        Vergi Levhası
+                        <t t-if="not partner.vergi_levhasi">
+                            <span class="ca-badge ca-badge-danger" style="font-size: 11px;">Eksik</span>
+                        </t>
+                    </div>
+                    <div class="ca-doc-desc">Şirketinize ait güncel vergi levhası.</div>
+                    <div class="ca-file-list" t-if="partner.vergi_levhasi">
+                        <t t-foreach="partner.vergi_levhasi" t-as="attach">
+                            <span class="ca-file-chip" style="display: inline-flex; align-items: center; gap: 8px;">
+                                <a t-att-href="'/kurye-muhasebe/belgeler/indir/%s' % attach.id" target="_blank"><t t-esc="attach.name"/></a>
+                                <t t-if="attach.is_deletable_by_courier()">
+                                    <a t-att-href="'/kurye-muhasebe/belgeler/sil/%s' % attach.id" class="text-danger ml-2" onclick="return confirm('Bu belgeyi silmek istediğinize emin misiniz?');" title="Belgeyi Sil" style="color: #dc3545; display: inline-flex; align-items: center; font-size: 14px;">
+                                        <i class="fa fa-trash"/>
+                                    </a>
+                                </t>
+                            </span>
+                        </t>
+                    </div>
+                    <form action="/kurye-muhasebe/belgeler/upload" method="post" enctype="multipart/form-data" class="ca-upload-form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="doc_type" value="vergi_levhasi"/>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="file" name="files" multiple="multiple" required="required" style="width: auto; flex: 1; min-height: auto; padding: 6px; font-size: 14px;" accept=".pdf,.png,.jpg,.jpeg"/>
+                            <button type="submit" class="ca-button ca-button-primary ca-upload-btn" style="min-height: 38px; padding: 6px 16px; font-size: 14px;">Belge Yükle</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 5. SRC -->
+                <div class="ca-doc-item">
+                    <div class="ca-doc-title">
+                        SRC Belgesi
+                        <t t-if="not partner.src_attachment">
+                            <span class="ca-badge ca-badge-danger" style="font-size: 11px;">Eksik</span>
+                        </t>
+                    </div>
+                    <div class="ca-doc-desc">Mesleki yeterlilik belgeniz (SRC).</div>
+                    <div class="ca-file-list" t-if="partner.src_attachment">
+                        <t t-foreach="partner.src_attachment" t-as="attach">
+                            <span class="ca-file-chip" style="display: inline-flex; align-items: center; gap: 8px;">
+                                <a t-att-href="'/kurye-muhasebe/belgeler/indir/%s' % attach.id" target="_blank"><t t-esc="attach.name"/></a>
+                                <t t-if="attach.is_deletable_by_courier()">
+                                    <a t-att-href="'/kurye-muhasebe/belgeler/sil/%s' % attach.id" class="text-danger ml-2" onclick="return confirm('Bu belgeyi silmek istediğinize emin misiniz?');" title="Belgeyi Sil" style="color: #dc3545; display: inline-flex; align-items: center; font-size: 14px;">
+                                        <i class="fa fa-trash"/>
+                                    </a>
+                                </t>
+                            </span>
+                        </t>
+                    </div>
+                    <form action="/kurye-muhasebe/belgeler/upload" method="post" enctype="multipart/form-data" class="ca-upload-form">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="doc_type" value="src"/>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="file" name="files" multiple="multiple" required="required" style="width: auto; flex: 1; min-height: auto; padding: 6px; font-size: 14px;" accept=".pdf,.png,.jpg,.jpeg"/>
+                            <button type="submit" class="ca-button ca-button-primary ca-upload-btn" style="min-height: 38px; padding: 6px 16px; font-size: 14px;">Belge Yükle</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
+            <script>
+                (function () {
+                    const forms = document.querySelectorAll('.ca-upload-form');
+                    forms.forEach((form) => {
+                        form.addEventListener('submit', function (e) {
+                            const btn = form.querySelector('.ca-upload-btn');
+                            if (btn) {
+                                btn.disabled = true;
+                                btn.replaceChildren();
+                                const spinner = document.createElement('span');
+                                spinner.className = 'ca-spinner';
+                                btn.appendChild(spinner);
+                                const text = document.createTextNode(' Yükleniyor...');
+                                btn.appendChild(text);
+                            }
+                        });
+                    });
+                })();
+            </script>
+        </t>
+    </template>
+
+    <template id="courier_accounting_requests" name="Courier Accounting Requests">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/home" class="ca-back">←</a>
+            
+            <section class="ca-card" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <h1 style="margin: 0 0 10px 0;">Destek Taleplerim</h1>
+                    <p style="color: #666; margin: 0;">Geçmişte oluşturduğunuz talepleri ve durumlarını buradan inceleyebilirsiniz.</p>
+                </div>
+                <a href="/kurye-muhasebe/talepler/yeni" class="ca-button ca-button-primary">Yeni Talep Oluştur</a>
+            </section>
+
+            <div class="ca-requests-container">
+                <t t-foreach="requests" t-as="req">
+                    <div class="ca-request-item">
+                        <div class="ca-request-header">
+                            <span class="ca-request-type"><t t-esc="type_labels.get(req.type, req.type)"/></span>
+                            <span t-attf-class="ca-badge ca-badge-#{req.state}">
+                                <t t-esc="state_labels.get(req.state, req.state)"/>
+                            </span>
+                        </div>
+                        <div class="ca-request-date">
+                            Talep Tarihi: <t t-esc="format_date(req.create_date)"/>
+                        </div>
+                        <div class="ca-request-desc"><t t-esc="req.description"/></div>
+                        <div class="ca-request-reply" t-if="req.response">
+                            <strong>Yönetici Yanıtı:</strong>
+                            <p style="margin: 6px 0 0 0; white-space: pre-wrap;"><t t-esc="req.response"/></p>
+                        </div>
+                    </div>
+                </t>
+                <p t-if="not requests" class="ca-empty" style="text-align: center; background: #doc; border-radius: 12px; padding: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); background: #fff;">Kayıtlı destek talebiniz bulunmamaktadır.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="courier_accounting_new_request" name="Courier Accounting New Request">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/talepler" class="ca-back">←</a>
+            
+            <section class="ca-card" style="max-width: 520px; margin: 0 auto;">
+                <h1>Yeni Destek Talebi</h1>
+                <form action="/kurye-muhasebe/talepler/yeni/post" method="post" class="ca-form ca-request-form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <label>
+                        <span>Talep Tipi</span>
+                        <select name="type" required="required" style="width: 100%; min-height: 46px; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px; background: #fff;">
+                            <t t-foreach="type_labels" t-as="tl">
+                                <option t-att-value="tl[0]"><t t-esc="tl[1]"/></option>
+                            </t>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Açıklama</span>
+                        <textarea name="description" required="required" rows="6" style="width: 100%; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px;" placeholder="Lütfen talebinizin detaylarını yazınız..."></textarea>
+                    </label>
+                    <div t-if="error" class="ca-error">Lütfen tüm alanları doldurunuz.</div>
+                    <button type="submit" class="ca-button ca-button-primary ca-submit-btn">Talebi Gönder</button>
+                </form>
+            </section>
+            
+            <script>
+                (function () {
+                    const form = document.querySelector('.ca-request-form');
+                    if (form) {
+                        form.addEventListener('submit', function () {
+                            const btn = form.querySelector('.ca-submit-btn');
+                            if (btn) {
+                                btn.disabled = true;
+                                btn.replaceChildren();
+                                const spinner = document.createElement('span');
+                                spinner.className = 'ca-spinner';
+                                btn.appendChild(spinner);
+                                const text = document.createTextNode(' Gönderiliyor...');
+                                btn.appendChild(text);
+                            }
+                        });
+                    }
+                })();
+            </script>
+        </t>
+    </template>
+</odoo>

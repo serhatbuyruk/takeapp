@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_courier_accounting_line_tree" model="ir.ui.view">
+        <field name="name">partner.courier.accounting.line.tree</field>
+        <field name="model">partner.courier.accounting.line</field>
+        <field name="arch" type="xml">
+            <tree string="Kurye Hakediş Kayıtları">
+                <field name="currency_id" invisible="1"/>
+                <field name="partner_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="net_payable_amount"/>
+                <field name="imported_at" optional="hide"/>
+                <field name="area" optional="hide"/>
+                <field name="city" optional="hide"/>
+                <field name="pickup_count" optional="hide"/>
+                <field name="dropoff_count" optional="hide"/>
+                <field name="google_distance_pickup_amount" optional="hide"/>
+                <field name="google_distance_dropoff_amount" optional="hide"/>
+                <field name="pickup_amount" optional="hide"/>
+                <field name="dropoff_amount" optional="hide"/>
+                <field name="distance_amount" optional="hide"/>
+                <field name="guarantee_region_amount" optional="hide"/>
+                <field name="night_shift_amount" optional="hide"/>
+                <field name="region_campaign_amount" optional="hide"/>
+                <field name="weekly_extra_package_amount" optional="hide"/>
+                <field name="daily_bonus_amount" optional="hide"/>
+                <field name="tip_amount_tax_included" optional="hide"/>
+                <field name="tip_amount_tax_excluded" optional="hide"/>
+                <field name="earning_amount_tax_excluded" optional="hide"/>
+                <field name="total_payment_tax_excluded" optional="hide"/>
+                <field name="kuryetec_bonus_tax_excluded" optional="hide"/>
+                <field name="bonus_included_total_payment_tax_excluded" optional="hide"/>
+                <field name="bonus_included_earning_tax_included" optional="hide"/>
+                <field name="cash_deduction_tax_included" optional="hide"/>
+                <field name="softpos_deduction_tax_included" optional="hide"/>
+                <field name="insurance_deduction_amount" optional="hide"/>
+                <field name="field_deduction_order_amount" optional="hide"/>
+                <field name="ixopay_cash_deposit_amount" optional="hide"/>
+                <field name="final_deduction_yemeksepeti_amount" optional="hide"/>
+                <field name="one_week_previous_negative_balance_amount" optional="hide"/>
+                <field name="previous_balance_amount" optional="hide"/>
+                <field name="equipment_purchase_amount" optional="hide"/>
+                <field name="total_deduction_amount" optional="hide"/>
+                <field name="one_week_previous_payment_deduction_amount" optional="hide"/>
+                <field name="two_week_previous_payment_deduction_amount" optional="hide"/>
+                <field name="withholding_tax_amount" optional="hide"/>
+                <field name="advance_amount" optional="hide"/>
+                <field name="deposited_payment_amount" optional="hide"/>
+                <field name="isg_payment_amount" optional="hide"/>
+                <field name="sgk_amount" optional="hide"/>
+                <field name="invoice_type" optional="hide"/>
+                <field name="note" optional="hide"/>
+                <field name="manager_name" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_accounting_line_form" model="ir.ui.view">
+        <field name="name">partner.courier.accounting.line.form</field>
+        <field name="model">partner.courier.accounting.line</field>
+        <field name="arch" type="xml">
+            <form string="Kurye Hakediş">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group>
+                            <field name="area"/>
+                            <field name="city"/>
+                            <field name="manager_name"/>
+                            <field name="invoice_type"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ödenekler">
+                            <group>
+                                <field name="pickup_count"/>
+                                <field name="dropoff_count"/>
+                                <field name="google_distance_pickup_amount"/>
+                                <field name="google_distance_dropoff_amount"/>
+                                <field name="pickup_amount"/>
+                                <field name="dropoff_amount"/>
+                                <field name="distance_amount"/>
+                                <field name="guarantee_region_amount"/>
+                                <field name="night_shift_amount"/>
+                                <field name="region_campaign_amount"/>
+                                <field name="weekly_extra_package_amount"/>
+                                <field name="daily_bonus_amount"/>
+                                <field name="tip_amount_tax_included"/>
+                                <field name="tip_amount_tax_excluded"/>
+                                <field name="earning_amount_tax_excluded"/>
+                            </group>
+                        </page>
+                        <page string="Kesintiler">
+                            <group>
+                                <field name="cash_deduction_tax_included"/>
+                                <field name="softpos_deduction_tax_included"/>
+                                <field name="insurance_deduction_amount"/>
+                                <field name="field_deduction_order_amount"/>
+                                <field name="ixopay_cash_deposit_amount"/>
+                                <field name="final_deduction_yemeksepeti_amount"/>
+                                <field name="one_week_previous_negative_balance_amount"/>
+                                <field name="previous_balance_amount"/>
+                                <field name="equipment_purchase_amount"/>
+                                <field name="total_deduction_amount"/>
+                                <field name="one_week_previous_payment_deduction_amount"/>
+                                <field name="two_week_previous_payment_deduction_amount"/>
+                                <field name="advance_amount"/>
+                            </group>
+                        </page>
+                        <page string="Toplam">
+                            <group>
+                                <field name="total_payment_tax_excluded"/>
+                                <field name="kuryetec_bonus_tax_excluded"/>
+                                <field name="bonus_included_total_payment_tax_excluded"/>
+                                <field name="bonus_included_earning_tax_included"/>
+                                <field name="withholding_tax_amount"/>
+                                <field name="deposited_payment_amount"/>
+                                <field name="isg_payment_amount"/>
+                                <field name="sgk_amount"/>
+                                <field name="net_payable_amount"/>
+                            </group>
+                        </page>
+                        <page string="Not">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_accounting_line_search" model="ir.ui.view">
+        <field name="name">partner.courier.accounting.line.search</field>
+        <field name="model">partner.courier.accounting.line</field>
+        <field name="arch" type="xml">
+            <search string="Kurye Hakediş">
+                <field name="partner_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="area"/>
+                <field name="city"/>
+                <field name="manager_name"/>
+                <group expand="0" string="Grupla">
+                    <filter name="group_partner" string="Contact" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_week_start" string="Hafta Başlangıç" context="{'group_by': 'date_start'}"/>
+                    <filter name="group_city" string="Şehir" context="{'group_by': 'city'}"/>
+                    <filter name="group_area" string="Bölge" context="{'group_by': 'area'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_partner_courier_accounting_line" model="ir.actions.act_window">
+        <field name="name">Kurye Hakediş Kayıtları</field>
+        <field name="res_model">partner.courier.accounting.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_partner_courier_accounting_line"
+        name="Kurye Hakediş Kayıtları"
+        parent="contacts.menu_contacts"
+        action="action_partner_courier_accounting_line"
+        groups="partner_courier_accounting.group_partner_courier_accounting_admin"
+        sequence="89"/>
+</odoo>
