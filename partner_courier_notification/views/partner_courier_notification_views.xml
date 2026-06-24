@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_courier_notification_tree" model="ir.ui.view">
+        <field name="name">partner.courier.notification.tree</field>
+        <field name="model">partner.courier.notification</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'sent'" decoration-danger="state == 'failed'">
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="target_type"/>
+                <field name="recipient_count"/>
+                <field name="sent_count"/>
+                <field name="skipped_count"/>
+                <field name="failed_count"/>
+                <field name="onesignal_notification_id"/>
+                <field name="sent_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_notification_form" model="ir.ui.view">
+        <field name="name">partner.courier.notification.form</field>
+        <field name="model">partner.courier.notification</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send" type="object" string="Bildirimi Gönder" class="oe_highlight" attrs="{'invisible': [('state', '=', 'sent')]}"/>
+                    <button name="action_reset_to_draft" type="object" string="Taslağa Al" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,failed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_send" class="oe_stat_button" icon="fa-paper-plane" attrs="{'invisible': [('state', '=', 'sent')]}">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Gönder</span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" attrs="{'readonly': [('state', '=', 'sent')]}"/>
+                            <field name="message" attrs="{'readonly': [('state', '=', 'sent')]}"/>
+                            <field name="target_type" attrs="{'readonly': [('state', '=', 'sent')]}"/>
+                            <field name="partner_ids" widget="many2many_tags" attrs="{'invisible': [('target_type', '!=', 'partners')], 'readonly': [('state', '=', 'sent')]}"/>
+                            <field name="partner_domain" widget="domain" options="{'model': 'res.partner'}" attrs="{'invisible': [('target_type', '!=', 'domain')], 'readonly': [('state', '=', 'sent')]}"/>
+                        </group>
+                        <group>
+                            <field name="image_url" attrs="{'readonly': [('state', '=', 'sent')]}"/>
+                            <field name="launch_url" attrs="{'readonly': [('state', '=', 'sent')]}"/>
+                            <field name="additional_data_json" placeholder='{"screen": "home"}' attrs="{'readonly': [('state', '=', 'sent')]}"/>
+                            <field name="sent_date" readonly="1"/>
+                            <field name="onesignal_notification_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Özet">
+                        <field name="recipient_count"/>
+                        <field name="sent_count"/>
+                        <field name="skipped_count"/>
+                        <field name="failed_count"/>
+                    </group>
+                    <notebook>
+                        <page string="Alıcılar">
+                            <field name="recipient_line_ids" readonly="1">
+                                <tree decoration-success="state == 'sent'" decoration-warning="state == 'skipped'" decoration-danger="state == 'failed'">
+                                    <field name="partner_id"/>
+                                    <field name="player_id"/>
+                                    <field name="state"/>
+                                    <field name="onesignal_notification_id"/>
+                                    <field name="error_message"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="OneSignal Yanıtı">
+                            <field name="response_message" nolabel="1" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_notification_search" model="ir.ui.view">
+        <field name="name">partner.courier.notification.search</field>
+        <field name="model">partner.courier.notification</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="message"/>
+                <filter name="draft" string="Taslak" domain="[('state', '=', 'draft')]"/>
+                <filter name="sent" string="Gönderildi" domain="[('state', '=', 'sent')]"/>
+                <filter name="failed" string="Hatalı" domain="[('state', '=', 'failed')]"/>
+                <group expand="0" string="Grupla">
+                    <filter name="group_state" string="Durum" context="{'group_by': 'state'}"/>
+                    <filter name="group_target_type" string="Hedef" context="{'group_by': 'target_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_partner_courier_notification" model="ir.actions.act_window">
+        <field name="name">Kurye Bildirimleri</field>
+        <field name="res_model">partner.courier.notification</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_partner_courier_notification_search"/>
+        <field name="groups_id" eval="[(4, ref('partner_courier_accounting.group_partner_courier_accounting_admin'))]"/>
+    </record>
+
+    <menuitem
+        id="menu_partner_courier_notification"
+        name="Kurye Bildirimleri"
+        parent="contacts.menu_contacts"
+        action="action_partner_courier_notification"
+        sequence="46"
+        groups="partner_courier_accounting.group_partner_courier_accounting_admin"/>
+</odoo>

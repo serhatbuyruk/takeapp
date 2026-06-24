@@ -2,6 +2,8 @@
 <odoo>
     <template id="courier_accounting_layout" name="Courier Accounting Layout">
         <t t-call="website.layout">
+            <t t-set="no_header" t-value="true"/>
+            <t t-set="no_footer" t-value="true"/>
             <style>
                 .ca-portal { min-height: 100vh; background: #f2f2f2; color: #2b2b2f; font-family: Arial, Helvetica, sans-serif; }
                 .ca-shell { width: 100%; max-width: 920px; margin: 0 auto; padding: 32px 18px 42px; }
@@ -12,23 +14,26 @@
                 .ca-form { display: grid; gap: 16px; }
                 .ca-form label { display: grid; gap: 7px; font-weight: 700; }
                 .ca-form input { width: 100%; min-height: 46px; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px; }
-                .ca-button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; border: 0; border-radius: 8px; padding: 12px 18px; text-decoration: none; font-weight: 800; cursor: pointer; }
+                .ca-button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; border: 0; border-radius: 8px; padding: 12px 18px; text-decoration: none !important; font-weight: 800; cursor: pointer; }
+                .ca-button:hover, .ca-button:focus, .ca-button:active, .ca-back:hover, .ca-back:focus, .ca-back:active, .ca-week-item:hover, .ca-week-item:focus, .ca-week-item:active, .ca-training-item:hover, .ca-training-item:focus, .ca-training-item:active, .ca-document-link:hover, .ca-document-link:focus, .ca-document-link:active { text-decoration: none !important; }
                 .ca-button-primary { background: #e97712; color: #fff !important; }
                 .ca-button-light { background: #ededed; color: #222 !important; }
                 .ca-action-grid { display: grid; gap: 12px; }
-                .ca-back { display: inline-flex; width: 56px; height: 56px; align-items: center; justify-content: center; margin: 0 0 22px; border-radius: 50%; background: #e9e9e9; color: #111 !important; text-decoration: none; font-size: 34px; line-height: 1; }
+                .ca-back { position: sticky; top: 12px; z-index: 20; display: inline-flex; width: 56px; height: 56px; align-items: center; justify-content: center; margin: 0 0 22px; border-radius: 50%; background: #e9e9e9; color: #111 !important; text-decoration: none; font-size: 34px; line-height: 1; box-shadow: 0 8px 18px rgba(0,0,0,.12); }
                 .ca-panel { margin: 0 0 24px; padding: 28px 26px; }
                 .ca-panel-info { background: #ffe2ae; }
                 .ca-panel-note { background: #a9edd7; }
                 .ca-panel-allowance { background: #d8d1fb; }
                 .ca-panel-deduction { background: #dfb4e3; }
                 .ca-panel-total { background: #ffc8b8; }
-                .ca-row { display: grid; grid-template-columns: minmax(0, 1fr) auto 30px; gap: 16px; align-items: start; padding: 14px 0; border-bottom: 2px solid rgba(255, 255, 255, .55); font-size: 24px; }
+                .ca-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, auto) 30px; gap: 16px; align-items: start; padding: 14px 0; border-bottom: 2px solid rgba(255, 255, 255, .55); font-size: 24px; }
                 .ca-row:last-child { border-bottom: 0; }
-                .ca-row strong { font-weight: 850; }
-                .ca-row span { text-align: right; overflow-wrap: anywhere; }
-                .ca-row-note { grid-template-columns: 150px minmax(0, 1fr) 30px; }
+                .ca-row strong { min-width: 0; font-weight: 850; overflow-wrap: anywhere; }
+                .ca-row span { min-width: 0; max-width: 100%; text-align: right; overflow-wrap: anywhere; word-break: break-word; }
+                .ca-row-note { grid-template-columns: minmax(0, 150px) minmax(0, 1fr) 30px; }
                 .ca-row-note span { text-align: left; }
+                .ca-personal-row { grid-template-columns: minmax(0, 190px) minmax(0, 1fr); }
+                .ca-personal-row span { text-align: right; }
                 .ca-info-btn { width: 28px; height: 28px; border: 2px solid #2b2b2f; border-radius: 50%; background: rgba(255,255,255,.45); color: #2b2b2f; font-size: 16px; font-weight: 900; line-height: 1; cursor: pointer; }
                 .ca-modal { position: fixed; inset: 0; z-index: 9999; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(0,0,0,.48); }
                 .ca-modal.is-open { display: flex; }
@@ -43,8 +48,10 @@
                 @media (max-width: 560px) {
                     .ca-shell { padding: 22px 12px 34px; }
                     .ca-card, .ca-panel { padding: 22px 18px; border-radius: 12px; }
-                    .ca-row { grid-template-columns: minmax(0, 1fr) auto 28px; gap: 10px; font-size: 18px; }
-                    .ca-row-note { grid-template-columns: 92px minmax(0, 1fr) 28px; }
+                    .ca-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 28px; gap: 10px; font-size: 18px; }
+                    .ca-row-note { grid-template-columns: minmax(0, 92px) minmax(0, 1fr) 28px; }
+                    .ca-personal-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+                    .ca-personal-row span { text-align: left; font-size: 17px; line-height: 1.35; }
                 }
                 .ca-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; }
                 .ca-badge-danger { background: #ffebee; color: #b71c1c; }
@@ -72,6 +79,32 @@
                 .ca-request-date { font-size: 12px; color: #888; }
                 .ca-request-desc { background: #f9f9f9; padding: 12px; border-radius: 6px; font-size: 14px; margin-bottom: 12px; white-space: pre-wrap; }
                 .ca-request-reply { background: #fff8e1; border: 1px solid #ffe082; padding: 12px; border-radius: 6px; font-size: 14px; color: #5d4037; }
+                .ca-training-list { display: grid; gap: 14px; }
+                .ca-training-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; background: #fff; border-radius: 12px; padding: 18px; color: #222 !important; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border-left: 5px solid #e97712; }
+                .ca-training-title { display: block; font-size: 18px; font-weight: 850; margin-bottom: 6px; }
+                .ca-training-desc { display: block; color: #666; font-size: 14px; line-height: 1.45; }
+                .ca-training-frame { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 10px; background: #111; }
+                .ca-training-video { width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; background: #111; }
+                .ca-document-list { display: grid; gap: 10px; margin-top: 16px; }
+                .ca-document-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 8px; background: #f4f4f4; color: #222 !important; text-decoration: none; font-weight: 700; }
+                .ca-center-list { display: grid; gap: 18px; }
+                .ca-center-card { background: #fff; border-radius: 14px; padding: 28px 22px; box-shadow: 0 8px 26px rgba(0,0,0,.08); text-align: center; overflow-wrap: anywhere; }
+                .ca-center-card h2 { margin: 0 0 14px; color: #000; font-size: 30px; line-height: 1.15; font-weight: 900; }
+                .ca-center-address { display: grid; gap: 8px; margin: 0 0 18px; color: #6f8ed7; font-size: 24px; line-height: 1.35; }
+                .ca-center-phone, .ca-center-days, .ca-center-hours, .ca-center-cities { margin: 0 0 14px; color: #7a7a7a; font-size: 23px; line-height: 1.35; }
+                .ca-center-phone strong, .ca-center-days, .ca-center-cities strong { font-weight: 850; }
+                .ca-center-phone { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 10px; }
+                .ca-call-button { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; border-radius: 8px; padding: 7px 12px; background: #e97712; color: #fff !important; text-decoration: none !important; font-size: 15px; font-weight: 850; white-space: nowrap; }
+                .ca-center-hours { margin-bottom: 18px; font-weight: 500; }
+                .ca-center-cities { margin-bottom: 0; }
+                @media (max-width: 560px) {
+                    .ca-training-item { grid-template-columns: minmax(0, 1fr); }
+                    .ca-center-list { gap: 14px; }
+                    .ca-center-card { padding: 24px 16px; }
+                    .ca-center-card h2 { font-size: 25px; }
+                    .ca-center-address { font-size: 20px; }
+                    .ca-center-phone, .ca-center-days, .ca-center-hours, .ca-center-cities { font-size: 20px; }
+                }
             </style>
             <div id="wrap" class="ca-portal">
                 <main class="ca-shell">
@@ -136,7 +169,7 @@
 
     <template id="courier_accounting_home" name="Courier Accounting Home">
         <t t-call="partner_courier_accounting.courier_accounting_layout">
-            <section class="ca-card ca-home-card">
+            <section class="ca-card ca-home-card" t-att-data-contact-id="partner.id" t-att-data-user-id="courier_user_id or ''">
                 <h1><t t-esc="partner.name"/></h1>
                 <div class="ca-action-grid">
                     <a href="/kurye-muhasebe/kisisel-bilgiler" class="ca-button ca-button-primary">Kişisel Bilgiler</a>
@@ -150,9 +183,24 @@
                     </a>
                     
                     <a href="/kurye-muhasebe/talepler" class="ca-button ca-button-primary">Talepler</a>
+                    <a href="/kurye-muhasebe/egitimler" class="ca-button ca-button-primary">Eğitimler</a>
+                    <a href="/kurye-muhasebe/iletisim-merkezleri" class="ca-button ca-button-primary">İletişim Merkezleri</a>
                     
                     <a href="/kurye-muhasebe/logout" class="ca-button ca-button-light">Çıkış</a>
                 </div>
+                <script>
+                    (function () {
+                        const homeCard = document.querySelector('.ca-home-card');
+                        const contactId = homeCard ? parseInt(homeCard.dataset.contactId, 10) : 0;
+                        const userId = homeCard ? parseInt(homeCard.dataset.userId, 10) : 0;
+                        if (!contactId || !window.ReactNativeWebView) return;
+                        window.ReactNativeWebView.postMessage(JSON.stringify({
+                            type: 'USER_LOGGED_IN',
+                            userId: userId || false,
+                            contactId: contactId
+                        }));
+                    })();
+                </script>
             </section>
         </t>
     </template>
@@ -162,15 +210,55 @@
             <a href="/kurye-muhasebe/home" class="ca-back">←</a>
             <section class="ca-panel ca-panel-info">
                 <h2>Kişisel Bilgiler</h2>
-                <div class="ca-row"><strong>Kurye ID:</strong><span t-esc="partner.courier_id"/></div>
-                <div class="ca-row"><strong>Ad Soyad:</strong><span t-esc="partner.name"/></div>
-                <div class="ca-row"><strong>Telefon:</strong><span t-esc="partner.phone or partner.mobile"/></div>
-                <div class="ca-row"><strong>Bölge:</strong><span t-esc="partner.area"/></div>
-                <div class="ca-row"><strong>Şehir:</strong><span t-esc="partner.city"/></div>
-                <div class="ca-row"><strong>Fatura Tipi:</strong><span t-esc="partner.invoice_type"/></div>
-                <div class="ca-row"><strong>Yönetici:</strong><span t-esc="partner.manager_name"/></div>
-                <div class="ca-row"><strong>IBAN:</strong><span t-esc="partner.iban"/></div>
+                <div class="ca-row ca-personal-row"><strong>Kurye ID:</strong><span t-esc="partner.courier_id"/></div>
+                <div class="ca-row ca-personal-row"><strong>Ad Soyad:</strong><span t-esc="partner.name"/></div>
+                <div class="ca-row ca-personal-row"><strong>Telefon:</strong><span t-esc="partner.phone or partner.mobile"/></div>
+                <div class="ca-row ca-personal-row"><strong>Bölge:</strong><span t-esc="partner.area"/></div>
+                <div class="ca-row ca-personal-row"><strong>Şehir:</strong><span t-esc="partner.city"/></div>
+                <div class="ca-row ca-personal-row"><strong>Fatura Tipi:</strong><span t-esc="partner.invoice_type"/></div>
+                <div class="ca-row ca-personal-row"><strong>Yönetici:</strong><span t-esc="partner.manager_name"/></div>
+                <div class="ca-row ca-personal-row"><strong>IBAN:</strong><span t-esc="partner.iban"/></div>
             </section>
+        </t>
+    </template>
+
+    <template id="courier_accounting_contact_centers" name="Courier Accounting Contact Centers">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/home" class="ca-back">←</a>
+            <section class="ca-card" style="margin-bottom: 24px;">
+                <h1>İletişim Merkezleri</h1>
+            </section>
+            <div class="ca-center-list">
+                <article t-foreach="centers" t-as="center" class="ca-center-card">
+                    <h2 t-esc="center['name']"/>
+                    <div class="ca-center-address">
+                        <span t-foreach="center['address']" t-as="line" t-esc="line"/>
+                    </div>
+                    <p class="ca-center-phone">
+                        <strong>Telefon Numarası:</strong>
+                        <span t-esc="center['phone']"/>
+                        <a href="tel:+908509697380" data-phone-url="tel:+908509697380" class="ca-call-button">Ara</a>
+                    </p>
+                    <p class="ca-center-days" t-esc="center['days']"/>
+                    <p class="ca-center-hours" t-esc="center['hours']"/>
+                    <p t-if="center['other_cities']" class="ca-center-cities">
+                        <strong>Diğer İller:</strong>
+                        <t t-esc="center['other_cities']"/>
+                    </p>
+                </article>
+            </div>
+            <script>
+                (function () {
+                    document.querySelectorAll('.ca-call-button').forEach((button) => {
+                        button.addEventListener('click', function (event) {
+                            const phoneUrl = button.dataset.phoneUrl || button.getAttribute('href');
+                            if (!phoneUrl) return;
+                            event.preventDefault();
+                            window.location.href = phoneUrl;
+                        });
+                    });
+                })();
+            </script>
         </t>
     </template>
 
@@ -180,10 +268,18 @@
             <section class="ca-card">
                 <h1>Hafta Seçimi</h1>
                 <div class="ca-week-list">
-                    <a t-foreach="lines" t-as="line" t-att-href="'/kurye-muhasebe/hakedis/%s' % line.id" class="ca-week-item">
-                        <span><t t-esc="format_date(line.date_start)"/> - <t t-esc="format_date(line.date_end)"/></span>
-                        <strong t-esc="format_money(line.net_payable_amount, line.currency_id)"/>
-                    </a>
+                    <div t-foreach="lines" t-as="line" style="display: flex; align-items: center; gap: 8px;">
+                        <a t-att-href="'/kurye-muhasebe/hakedis/%s' % line.id" class="ca-week-item" style="flex: 1; margin: 0;">
+                            <span><t t-esc="format_date(line.date_start)"/> - <t t-esc="format_date(line.date_end)"/></span>
+                            <strong t-esc="format_money(line.net_payable_amount, line.currency_id)"/>
+                        </a>
+                        <a t-att-href="'/kurye-muhasebe/hakedis/%s/pdf' % line.id" class="ca-button ca-button-primary" style="width: 48px; min-width: 48px; height: 48px; min-height: 48px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; margin: 0;" title="PDF İndir">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-pdf" viewBox="0 0 16 16">
+                              <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                              <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.047-.183.144-.415.964-.652.8-.23 1.63-.374 2.48-.433a51.77 51.77 0 0 1 .98-1.286c-.935-.02-1.793-.162-2.316-.464-.788-.456-1.02-1.14-.772-1.61.124-.235.39-.36.721-.36.36 0 .69.186.973.524.461.55.772 1.438.9 2.585.856-.12 1.764-.2 2.658-.23a11.753 11.753 0 0 1 .74 1.352c-.326.136-.66.223-.983.275a22.25 22.25 0 0 1-2.933.254c-.168.188-.33.376-.48.563l-.329.418c-.353.447-.6.714-.83.812a.824.824 0 0 1-.444.062zM9.13 11.37a11.548 11.548 0 0 0-.79-.11c-.078-.01-.154-.018-.228-.022a16.99 16.99 0 0 0-.184 1.947c.324-.043.619-.11.884-.214.358-.14.613-.379.438-.802-.066-.16-.188-.413-.326-.799zm-4.76 1.886c.19.145.443.104.612-.124.082-.108.233-.302.428-.543a14.285 14.285 0 0 0-.83.08c-.462.08-.605.213-.62.285a.068.068 0 0 0 .01.077c.09.13.2.225.4.225zM8.56 5.122A1.23 1.23 0 0 0 7.3 6c0 .6.47 1.072 1.257 1.78l.09-.298c.17-.56.327-1.135.471-1.7l-.142-.23a.29.29 0 0 0-.28-.152z"/>
+                            </svg>
+                        </a>
+                    </div>
                     <p t-if="not lines" class="ca-empty">Hakediş kaydı bulunamadı.</p>
                 </div>
             </section>
@@ -196,11 +292,20 @@
 
             <section class="ca-panel ca-panel-info">
                 <h2>Bilgiler</h2>
-                <div class="ca-row"><strong>Rider Id:</strong><span t-esc="partner.courier_id"/><button type="button" class="ca-info-btn" t-att-data-title="'Rider Id'" t-att-data-info="info['rider_id']">i</button></div>
-                <div class="ca-row"><strong>Rider Name:</strong><span t-esc="partner.name"/><button type="button" class="ca-info-btn" t-att-data-title="'Rider Name'" t-att-data-info="info['rider_name']">i</button></div>
+                <div class="ca-row"><strong>Kurye ID:</strong><span t-esc="partner.courier_id"/><button type="button" class="ca-info-btn" t-att-data-title="'Kurye ID'" t-att-data-info="info['rider_id']">i</button></div>
+                <div class="ca-row"><strong>Kurye Adı:</strong><span t-esc="partner.name"/><button type="button" class="ca-info-btn" t-att-data-title="'Kurye Adı'" t-att-data-info="info['rider_name']">i</button></div>
                 <div class="ca-row"><strong>Bölge:</strong><span t-esc="line.area"/><button type="button" class="ca-info-btn" t-att-data-title="'Bölge'" t-att-data-info="info['area']">i</button></div>
                 <div class="ca-row"><strong>Şehir:</strong><span t-esc="line.city"/><button type="button" class="ca-info-btn" t-att-data-title="'Şehir'" t-att-data-info="info['city']">i</button></div>
                 <div class="ca-row"><strong>Hafta:</strong><span><t t-esc="format_date(line.date_start)"/> - <t t-esc="format_date(line.date_end)"/></span><button type="button" class="ca-info-btn" t-att-data-title="'Hafta'" t-att-data-info="info['week']">i</button></div>
+                <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
+                    <a t-attf-href="/kurye-muhasebe/hakedis/#{line.id}/pdf" class="ca-button ca-button-primary" style="min-height: 38px; font-size: 16px; padding: 8px 16px; display: inline-flex; align-items: center; gap: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-file-earmark-pdf" viewBox="0 0 16 16">
+                          <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                          <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.047-.183.144-.415.964-.652.8-.23 1.63-.374 2.48-.433a51.77 51.77 0 0 1 .98-1.286c-.935-.02-1.793-.162-2.316-.464-.788-.456-1.02-1.14-.772-1.61.124-.235.39-.36.721-.36.36 0 .69.186.973.524.461.55.772 1.438.9 2.585.856-.12 1.764-.2 2.658-.23a11.753 11.753 0 0 1 .74 1.352c-.326.136-.66.223-.983.275a22.25 22.25 0 0 1-2.933.254c-.168.188-.33.376-.48.563l-.329.418c-.353.447-.6.714-.83.812a.824.824 0 0 1-.444.062zM9.13 11.37a11.548 11.548 0 0 0-.79-.11c-.078-.01-.154-.018-.228-.022a16.99 16.99 0 0 0-.184 1.947c.324-.043.619-.11.884-.214.358-.14.613-.379.438-.802-.066-.16-.188-.413-.326-.799zm-4.76 1.886c.19.145.443.104.612-.124.082-.108.233-.302.428-.543a14.285 14.285 0 0 0-.83.08c-.462.08-.605.213-.62.285a.068.068 0 0 0 .01.077c.09.13.2.225.4.225zM8.56 5.122A1.23 1.23 0 0 0 7.3 6c0 .6.47 1.072 1.257 1.78l.09-.298c.17-.56.327-1.135.471-1.7l-.142-.23a.29.29 0 0 0-.28-.152z"/>
+                        </svg>
+                        PDF İndir
+                    </a>
+                </div>
             </section>
 
             <section class="ca-panel ca-panel-note">
@@ -549,6 +654,255 @@
                     }
                 })();
             </script>
+        </t>
+    </template>
+
+    <template id="courier_accounting_trainings" name="Courier Accounting Trainings">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/home" class="ca-back">←</a>
+
+            <section class="ca-card" style="margin-bottom: 24px;">
+                <h1>Eğitimler</h1>
+                <p style="color: #666; margin-bottom: 0;">Size tanımlanan eğitimleri buradan izleyebilir ve dokümanları inceleyebilirsiniz.</p>
+            </section>
+
+            <div class="ca-training-list">
+                <a t-foreach="trainings" t-as="training" t-att-href="'/kurye-muhasebe/egitimler/%s' % training.id" class="ca-training-item">
+                    <span>
+                        <span class="ca-training-title"><t t-esc="training.name"/></span>
+                        <span class="ca-training-desc" t-if="training.description"><t t-esc="training.description"/></span>
+                    </span>
+                    <span t-if="training.id in attended_training_ids" class="ca-badge ca-badge-approved">Katıldınız</span>
+                    <span t-if="training.id not in attended_training_ids" class="ca-badge ca-badge-new">Yeni</span>
+                </a>
+                <p t-if="not trainings" class="ca-empty" style="text-align: center; background: #fff; border-radius: 12px; padding: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">Yayında eğitim bulunmamaktadır.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="courier_accounting_training_detail" name="Courier Accounting Training Detail">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/egitimler" class="ca-back">←</a>
+
+            <section class="ca-card" style="margin-bottom: 24px;">
+                <h1><t t-esc="training.name"/></h1>
+                <p t-if="training.description" style="color: #666; margin-bottom: 0; white-space: pre-wrap;"><t t-esc="training.description"/></p>
+                <div t-if="success == '1'" style="margin-top: 14px; padding: 8px 12px; background: #e8f5e9; color: #1b5e20; font-weight: 700; border-radius: 6px;">Eğitim katılımınız kaydedildi.</div>
+            </section>
+
+            <section class="ca-card" style="margin-bottom: 24px;">
+                <t t-if="training.content_type == 'video_url'">
+                    <iframe class="ca-training-frame" t-att-src="training.video_embed_url" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen"/>
+                </t>
+                <t t-if="training.content_type == 'video_file'">
+                    <video class="ca-training-video" controls="controls" preload="metadata">
+                        <source t-att-src="'/kurye-muhasebe/egitimler/video/%s' % training.id"/>
+                    </video>
+                </t>
+                <t t-if="training.content_type == 'document'">
+                    <h2 style="margin-top: 0;">Dokümanlar</h2>
+                    <div class="ca-document-list">
+                        <a t-foreach="training.document_attachment_ids" t-as="attach" t-att-href="'/kurye-muhasebe/egitimler/dokuman/%s/%s' % (training.id, attach.id)" target="_blank" class="ca-document-link">
+                            <span t-esc="attach.name"/>
+                            <span>Görüntüle</span>
+                        </a>
+                        <p t-if="not training.document_attachment_ids" class="ca-empty">Bu eğitim için doküman yüklenmemiş.</p>
+                    </div>
+                </t>
+            </section>
+
+            <section class="ca-card">
+                <t t-if="has_attended">
+                    <span class="ca-badge ca-badge-approved" style="margin-bottom: 12px;">Katılım kaydedildi</span>
+                    <p style="color: #666; margin: 0;">Bu eğitim için katılımınız daha önce kaydedilmiş.</p>
+                </t>
+                <form t-if="not has_attended" t-att-action="'/kurye-muhasebe/egitimler/%s/katilim' % training.id" method="post" class="ca-form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <button type="submit" class="ca-button ca-button-primary">Eğitime Katıldım</button>
+                </form>
+            </section>
+        </t>
+    </template>
+
+    <record id="action_report_courier_earning" model="ir.actions.report">
+        <field name="name">Hakediş Raporu</field>
+        <field name="model">partner.courier.accounting.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">partner_courier_accounting.report_courier_earning_template</field>
+        <field name="report_file">partner_courier_accounting.report_courier_earning_template</field>
+        <field name="binding_model_id" ref="partner_courier_accounting.model_partner_courier_accounting_line"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_courier_earning_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="partner_courier_accounting.report_courier_earning_document"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_courier_earning_document">
+        <t t-call="web.external_layout">
+            <div class="page" style="font-family: 'DejaVu Sans', 'Helvetica', Arial, sans-serif; font-size: 13px; color: #2b2b2f;">
+                <style>
+                    .pdf-header { border-bottom: 2px solid #e97712; padding-bottom: 10px; margin-bottom: 20px; }
+                    .pdf-title { font-size: 24px; font-weight: bold; color: #e97712; }
+                    .pdf-section { margin-bottom: 20px; border-radius: 8px; border: 1px solid #ddd; padding: 15px; page-break-inside: avoid; }
+                    .pdf-section-title { font-size: 16px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; color: #222; }
+                    .pdf-table { width: 100%; border-collapse: collapse; }
+                    .pdf-table td { padding: 6px 0; border-bottom: 1px solid #f2f2f2; }
+                    .pdf-table td.label { font-weight: bold; width: 45%; color: #555; }
+                    .pdf-table td.value { text-align: right; font-weight: 500; }
+                    .pdf-table tr:last-child td { border-bottom: 0; }
+                    .pdf-total-section { background: #ffebee; border: 1px solid #ffcdd2; }
+                    .pdf-total-section .pdf-section-title { color: #b71c1c; border-bottom-color: #ffcdd2; }
+                </style>
+
+                <div class="pdf-header">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <div class="pdf-title">HAK EDİŞ DETAYI</div>
+                                <div style="font-size: 11px; color: #666; margin-top: 4px;">
+                                    Basım Tarihi: <span t-esc="datetime.date.today().strftime('%d/%m/%Y')"/>
+                                </div>
+                            </td>
+                            <td style="text-align: right; font-weight: bold; font-size: 14px; color: #555;">
+                                <span t-esc="doc.partner_id.name"/><br/>
+                                <span style="font-size: 11px; font-weight: normal; color: #777;">Kurye ID: <span t-esc="doc.partner_id.courier_id"/></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Bilgiler -->
+                <div class="pdf-section">
+                    <div class="pdf-section-title">Genel Bilgiler</div>
+                    <table class="pdf-table">
+                        <tr>
+                            <td class="label">Kurye ID:</td>
+                            <td class="value"><span t-esc="doc.partner_id.courier_id"/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Kurye Adı:</td>
+                            <td class="value"><span t-esc="doc.partner_id.name"/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Bölge / Şehir:</td>
+                            <td class="value"><span t-esc="doc.area"/> / <span t-esc="doc.city"/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Hafta Aralığı:</td>
+                            <td class="value">
+                                <span t-esc="doc.date_start.strftime('%d/%m/%Y') if doc.date_start else ''"/> - 
+                                <span t-esc="doc.date_end.strftime('%d/%m/%Y') if doc.date_end else ''"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Ödeme Notu -->
+                <t t-if="doc.note">
+                    <div class="pdf-section">
+                        <div class="pdf-section-title">Ödeme Notu</div>
+                        <div style="padding: 5px 0; font-size: 13px; line-height: 1.4;"><span t-esc="doc.note"/></div>
+                    </div>
+                </t>
+
+                <!-- Ödenekler -->
+                <div class="pdf-section">
+                    <div class="pdf-section-title">Ödenekler</div>
+                    <table class="pdf-table">
+                        <tr>
+                            <td class="label">Pick Up (Adet):</td>
+                            <td class="value"><span t-esc="doc.pickup_count"/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Drop Off (Adet):</td>
+                            <td class="value"><span t-esc="doc.dropoff_count"/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Pick Up Tutar:</td>
+                            <td class="value"><span t-esc="doc.pickup_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Drop Off Tutar:</td>
+                            <td class="value"><span t-esc="doc.dropoff_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Kilometre Başı Mesafe Tutarı:</td>
+                            <td class="value"><span t-esc="doc.distance_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Haftalık Ek Paket:</td>
+                            <td class="value"><span t-esc="doc.weekly_extra_package_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Bahşiş Tutar (KDV Hariç):</td>
+                            <td class="value"><span t-esc="doc.tip_amount_tax_excluded" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Mahsup Edilenler -->
+                <div class="pdf-section">
+                    <div class="pdf-section-title">Mahsup Edilenler</div>
+                    <table class="pdf-table">
+                        <tr>
+                            <td class="label">Nakit Kesinti Tutarı (KDV Dahil):</td>
+                            <td class="value"><span t-esc="doc.cash_deduction_tax_included" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">SoftPos Kesinti Tutarı (KDV Dahil):</td>
+                            <td class="value"><span t-esc="doc.softpos_deduction_tax_included" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Sigorta Kesintisi:</td>
+                            <td class="value"><span t-esc="doc.insurance_deduction_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">İXOPAY (Nakit Yatırılan Tutar):</td>
+                            <td class="value"><span t-esc="doc.ixopay_cash_deposit_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr style="font-weight: bold; background-color: #fcfcfc;">
+                            <td class="label">Toplam Kesinti:</td>
+                            <td class="value"><span t-esc="doc.total_deduction_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Kuryetec Bonus'u (KDV Hariç):</td>
+                            <td class="value"><span t-esc="doc.kuryetec_bonus_tax_excluded" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Toplam Ödeme (KDV Hariç):</td>
+                            <td class="value"><span t-esc="doc.total_payment_tax_excluded" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Toplam -->
+                <div class="pdf-section pdf-total-section">
+                    <div class="pdf-section-title">Toplam Hesaplama</div>
+                    <table class="pdf-table">
+                        <tr>
+                            <td class="label">Bonus Dahil Toplam Ödeme (KDV Hariç):</td>
+                            <td class="value"><span t-esc="doc.bonus_included_total_payment_tax_excluded" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Bonus Dahil Hak Ediş (KDV Dahil):</td>
+                            <td class="value"><span t-esc="doc.bonus_included_earning_tax_included" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Tevkifat Vergisi Tutarı:</td>
+                            <td class="value"><span t-esc="doc.withholding_tax_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr style="font-weight: bold; font-size: 15px;">
+                            <td class="label" style="color: #b71c1c;">Toplam Ödenecek Net Tutar:</td>
+                            <td class="value" style="color: #b71c1c;"><span t-esc="doc.net_payable_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </t>
     </template>
 </odoo>

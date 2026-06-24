@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_partner_courier_notification" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.partner.courier.notification</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block"
+                     data-string="Partner Courier Notification"
+                     string="Partner Courier Notification"
+                     data-key="partner_courier_notification"
+                     name="partner_courier_notification_settings">
+                    <h2>Partner Courier Notification</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div name="partner_courier_onesignal_app_id_setting" class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="partner_courier_onesignal_app_id"/>
+                                <field name="partner_courier_onesignal_app_id"/>
+                            </div>
+                        </div>
+                        <div name="partner_courier_onesignal_api_key_setting" class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="partner_courier_onesignal_api_key"/>
+                                <field name="partner_courier_onesignal_api_key" password="True"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

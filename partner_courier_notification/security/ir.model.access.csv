@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_courier_notification_admin,partner.courier.notification.admin,model_partner_courier_notification,partner_courier_accounting.group_partner_courier_accounting_admin,1,1,1,1
+access_partner_courier_notification_recipient_admin,partner.courier.notification.recipient.admin,model_partner_courier_notification_recipient,partner_courier_accounting.group_partner_courier_accounting_admin,1,1,1,1

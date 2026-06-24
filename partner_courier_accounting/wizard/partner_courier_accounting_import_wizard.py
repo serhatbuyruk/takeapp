@@ -66,6 +66,22 @@ class PartnerCourierAccountingImportWizard(models.TransientModel):
             ('one_week_previous_payment_deduction_amount', 'float'),
         ],
     }
+    _TEMPLATE_ANCHORS = (
+        (0, 'KURYE ID'),
+        (1, 'KURYE NAME'),
+        (2, 'Bölge'),
+        (3, 'Şehir'),
+        (4, 'Pick up'),
+        (5, 'Drop off'),
+        (28, 'Son Kesinti (Yemek Sepeti)'),
+        (30, 'Ekipman Alımı'),
+        (31, 'Toplam Kesinti'),
+        (34, 'Tevkifat Vergisi Tutarı'),
+        (39, 'Toplam Ödenecek Net Tutar (Kesintiler Düşürülmüştür)'),
+        (40, 'Fatura Tipi'),
+        (41, 'NOT'),
+        (42, 'Yönetici'),
+    )
     _REQUIRED_HEADERS = tuple(_HEADER_FIELD_MAP)
 
     def action_import(self):
@@ -78,6 +94,7 @@ class PartnerCourierAccountingImportWizard(models.TransientModel):
             raise UserError(_('Excel dosyasında okunabilir satır bulunamadı.'))
 
         headers = [self._clean_header(value) for value in rows[0]]
+        self._validate_template(headers)
         courier_id_index = self._find_header_index(headers, 'KURYE ID')
         if courier_id_index is None:
             raise UserError(_('KURYE ID kolonu bulunamadı.'))
@@ -240,6 +257,11 @@ class PartnerCourierAccountingImportWizard(models.TransientModel):
         missing_headers = [header for header in self._REQUIRED_HEADERS if header not in headers]
         if missing_headers:
             raise UserError(_('Excelde eksik kolon var: %s') % ', '.join(missing_headers))
+
+    def _validate_template(self, headers):
+        for index, header in self._TEMPLATE_ANCHORS:
+            if len(headers) <= index or headers[index] != header:
+                raise UserError(_('Bu excel mevcut şablonla uyuşmuyor. Lütfen doğru hakediş şablonunu yükleyin.'))
 
     def _validate_unique_courier_ids(self, rows, courier_id_index):
         seen = set()

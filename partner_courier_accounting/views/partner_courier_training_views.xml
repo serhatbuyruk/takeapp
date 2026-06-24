@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_courier_training_tree" model="ir.ui.view">
+        <field name="name">partner.courier.training.tree</field>
+        <field name="model">partner.courier.training</field>
+        <field name="arch" type="xml">
+            <tree string="Kurye Eğitimleri">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="content_type"/>
+                <field name="attendance_count"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_training_form" model="ir.ui.view">
+        <field name="name">partner.courier.training.form</field>
+        <field name="model">partner.courier.training</field>
+        <field name="arch" type="xml">
+            <form string="Kurye Eğitimi">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_view_attendances"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-users">
+                            <field name="attendance_count" widget="statinfo" string="Katılan"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Arşivlendi" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                            <field name="content_type"/>
+                        </group>
+                        <group>
+                            <field name="video_url" attrs="{'invisible': [('content_type', '!=', 'video_url')], 'required': [('content_type', '=', 'video_url')]}"/>
+                            <field name="video_file" filename="video_filename" attrs="{'invisible': [('content_type', '!=', 'video_file')], 'required': [('content_type', '=', 'video_file')]}"/>
+                            <field name="video_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Açıklama">
+                            <field name="description" placeholder="Kuryelerin portalda göreceği kısa açıklama..."/>
+                        </page>
+                        <page string="Dokümanlar" attrs="{'invisible': [('content_type', '!=', 'document')]}">
+                            <field name="document_attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Eğitime Katılan Kuryeler">
+                            <field name="attendance_ids" readonly="1">
+                                <tree create="0" edit="0" delete="0">
+                                    <field name="partner_id"/>
+                                    <field name="attended_at"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_training_search" model="ir.ui.view">
+        <field name="name">partner.courier.training.search</field>
+        <field name="model">partner.courier.training</field>
+        <field name="arch" type="xml">
+            <search string="Kurye Eğitimleri">
+                <field name="name"/>
+                <field name="content_type"/>
+                <filter name="active" string="Aktif" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Arşivli" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grupla">
+                    <filter name="group_content_type" string="İçerik Tipi" context="{'group_by': 'content_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_training_attendance_tree" model="ir.ui.view">
+        <field name="name">partner.courier.training.attendance.tree</field>
+        <field name="model">partner.courier.training.attendance</field>
+        <field name="arch" type="xml">
+            <tree string="Eğitim Katılımları" create="0">
+                <field name="training_id"/>
+                <field name="partner_id"/>
+                <field name="attended_at"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_training_attendance_form" model="ir.ui.view">
+        <field name="name">partner.courier.training.attendance.form</field>
+        <field name="model">partner.courier.training.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Eğitim Katılımı" create="0" edit="0">
+                <sheet>
+                    <group>
+                        <field name="training_id"/>
+                        <field name="partner_id"/>
+                        <field name="attended_at"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_partner_courier_training" model="ir.actions.act_window">
+        <field name="name">Kurye Eğitimleri</field>
+        <field name="res_model">partner.courier.training</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_partner_courier_training_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+
+    <record id="action_partner_courier_training_attendance" model="ir.actions.act_window">
+        <field name="name">Eğitim Katılımları</field>
+        <field name="res_model">partner.courier.training.attendance</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="menu_partner_courier_training"
+        name="Kurye Eğitimleri"
+        parent="contacts.menu_contacts"
+        action="action_partner_courier_training"
+        groups="partner_courier_accounting.group_partner_courier_accounting_admin"
+        sequence="91"/>
+
+    <menuitem
+        id="menu_partner_courier_training_attendance"
+        name="Eğitim Katılımları"
+        parent="contacts.menu_contacts"
+        action="action_partner_courier_training_attendance"
+        groups="partner_courier_accounting.group_partner_courier_accounting_admin"
+        sequence="92"/>
+</odoo>

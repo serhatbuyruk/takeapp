@@ -9,4 +9,13 @@
         <field name="state">code</field>
         <field name="code">action = records[:1].action_open_courier_accounting_home()</field>
     </record>
+
+    <record id="action_res_partner_show_same_courier_id" model="ir.actions.server">
+        <field name="name">Aynı Kurye ID'lileri Listele</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_show_same_courier_id_contacts()</field>
+    </record>
 </odoo>

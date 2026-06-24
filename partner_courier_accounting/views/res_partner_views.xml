@@ -5,6 +5,9 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="partner_courier_fields.view_partner_form_inherit_courier"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='courier_id']" position="after">
+                <field name="player_id"/>
+            </xpath>
             <xpath expr="//field[@name='sgk_belgesi']" position="after">
                 <field name="adli_sicil_attachment" widget="many2many_binary"/>
                 <field name="src_attachment" widget="many2many_binary"/>
@@ -28,6 +31,31 @@
                         </tree>
                     </field>
                 </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_tree_inherit_courier_accounting" model="ir.ui.view">
+        <field name="name">res.partner.tree.courier.accounting</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_courier_fields.view_partner_tree_inherit_courier_fields"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='courier_id']" position="after">
+                <field name="player_id" optional="hide"/>
+                <field name="has_attachments" invisible="1"/>
+                <button name="action_show_attachments" type="object" icon="fa-paperclip" title="Belgeler" attrs="{'invisible': [('has_attachments', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_inherit_courier_accounting" model="ir.ui.view">
+        <field name="name">res.partner.select.courier.accounting</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='inactive']" position="after">
+                <separator/>
+                <filter string="Çift Kontaklar" name="duplicate_couriers" domain="[('is_duplicate_courier', '=', True)]" context="{'group_by': 'courier_id'}"/>
             </xpath>
         </field>
     </record>

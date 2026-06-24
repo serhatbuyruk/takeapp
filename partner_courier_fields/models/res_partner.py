@@ -4,6 +4,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     courier_id = fields.Char(string="Kurye ID")
+    courier_tc = fields.Char(string="Kurye T.C. No", tracking=True)
     courier_first_name = fields.Char(string="Kurye Adı")
     courier_last_name = fields.Char(string="Kurye Soyadı")
 

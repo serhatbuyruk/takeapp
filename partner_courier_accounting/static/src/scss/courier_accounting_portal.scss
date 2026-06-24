@@ -62,8 +62,18 @@
     border: 0;
     border-radius: 8px;
     padding: 12px 18px;
-    text-decoration: none;
+    text-decoration: none !important;
     font-weight: 800;
+}
+
+.ca-button,
+.ca-back,
+.ca-week-item {
+    &:hover,
+    &:focus,
+    &:active {
+        text-decoration: none !important;
+    }
 }
 
 .ca-button-primary {
