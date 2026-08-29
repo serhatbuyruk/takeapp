@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="automation_26" model="base.automation">
+        <field name="name">Bildirim Creation</field>
+        <field name="model_id" ref="notifier.model_notifier_profile"/>
+        <field name="trigger">on_create</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">7</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  player_ids = []
+  if rec.x_notification_type == "kullanici" and len(rec.x_user) == 0:
+    raise UserError(("Lütfen Kullanıcıyı Giriniz!"))
+  if rec.name != False:
+    rec["name"] = rec.name.title()
+  if rec.x_icerik != False:
+    rec["x_icerik"] = rec.x_icerik.title()
+  if len(rec.x_user) > 0:
+    if rec.x_notification_type == "kullanici" and rec.x_user.partner_id.player_id != False:
+      player_ids.append(rec.x_user.partner_id.player_id)
+    env['notifier.profile'].with_context(notifier_source_id=rec.id).send_Push_Notification_With_Playerid_V1("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f", player_ids ,str(rec.name),str(rec.x_icerik))
+  if rec.x_notification_type == "toplu_bildirim":
+    bildirim_atilacak_kontaklar = env['res.partner'].search([['player_id', '!=', False]])
+    for bildirim_atilacak_kontak in bildirim_atilacak_kontaklar:
+      player_ids.append(bildirim_atilacak_kontak.player_id)
+    env['notifier.profile'].with_context(notifier_source_id=rec.id).send_Push_Notification_With_Playerid_V1("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f", player_ids ,str(rec.name),str(rec.x_icerik))
+
+]]></field>
+        </record>
+        <record id="cron_45" model="ir.cron">
+        <field name="name">test</field>
+        <field name="model_id" ref="notifier.model_notifier_profile"/>
+        <field name="state">code</field>
+        <field name="active" eval="False"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">0</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+
+model.env['notifier.profile'].send_Sms("2423212120","N5.Udv67","ASPTERCUME","05357927154","test1")
+
+]]></field>
+        </record>
+        <record id="cron_60" model="ir.cron">
+        <field name="name">send notification test (Autoronics)</field>
+        <field name="model_id" ref="notifier.model_notifier_profile"/>
+        <field name="state">code</field>
+        <field name="active" eval="False"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">0</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+player_ids = []
+player_ids.append("b9f4bdb1-9527-4b2c-a2fc-d40bbd473dc7")
+#player_ids.append("7ca508c8-5d64-4dba-9dc7-9e7969559082")
+model.send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Yeni Tesllimat","Antalya dönere paketini almaya git!")
+
+
+]]></field>
+        </record>
+        <record id="cron_71" model="ir.cron">
+        <field name="name">Kullanıcılara Bildirim Gönder (Autoronics)</field>
+        <field name="model_id" ref="notifier.model_notifier_profile"/>
+        <field name="state">code</field>
+        <field name="active" eval="False"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">1</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+kuryeler = env['res.partner'].search([["user_role","=","kurye"]])
+player_ids = []
+for kurye in kuryeler:
+  if kurye.player_id != False:
+    player_ids.append(kurye.player_id)
+if len(player_ids) > 0:
+  env['notifier.profile'].send_Push_Notification_With_Playerid_V1("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f", player_ids ,"Yeni Özellik Bildirimi","Kabul edilen paketler belirli aşamada ekrandan kaybolacak ve sırayla teslim edilecektir.")
+
+
+]]></field>
+        </record>
+    </data>
+</odoo>

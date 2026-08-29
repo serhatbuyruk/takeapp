@@ -1,0 +1,27 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_slots_user_1,Slots User,model_slots_profile,slots.slots_group_user,1,0,0,0
+access_slots_user_2,Slots Manager,model_slots_profile,slots.slots_group_manager,1,1,1,1
+access_slots_user_3,Slots Admin,model_slots_profile,slots.slots_group_admin,1,1,1,1
+access_slots_user_4,Slots Dealer,model_slots_profile,slots.slots_group_dealer,1,1,1,1
+access_slots_user_5,Slots Access Rigths Full Access,model_slots_profile,base.group_erp_manager,1,1,1,1
+access_slots_user_6,Slots Settings Full Access,model_slots_profile,base.group_system,1,1,1,1
+
+access_skurye_lines_user_admin,Skurye Lines User,model_skurye_profile_lines,base.group_user,1,1,1,1
+access_skurye_lines_user_user,Skurye Lines User,model_skurye_profile_lines,base.group_portal,1,1,0,0
+access_slots_km_range_manager,Slot Km Range Manager,model_slots_km_ucret_araligi,slots.slots_group_manager,1,1,1,1
+access_slots_km_range_admin,Slot Km Range Admin,model_slots_km_ucret_araligi,slots.slots_group_admin,1,1,1,1
+access_slots_km_range_dealer,Slot Km Range Dealer,model_slots_km_ucret_araligi,slots.slots_group_dealer,1,1,1,1
+access_slots_km_range_erp,Slot Km Range ERP,model_slots_km_ucret_araligi,base.group_erp_manager,1,1,1,1
+access_slots_km_range_system,Slot Km Range System,model_slots_km_ucret_araligi,base.group_system,1,1,1,1
+access_package_reconciliation_user,Package Reconciliation Restaurant Read,model_slots_package_reconciliation,base.group_user,1,0,0,0
+access_package_reconciliation_admin,Package Reconciliation Slots Admin,model_slots_package_reconciliation,slots.slots_group_admin,1,1,0,0
+access_package_reconciliation_fullaccess,Package Reconciliation Slots Full Access,model_slots_package_reconciliation,slots.slots_group_fullaccess,1,1,0,0
+access_package_reconciliation_system,Package Reconciliation System,model_slots_package_reconciliation,base.group_system,1,1,1,1
+access_package_reconciliation_corders_admin,Package Reconciliation Corders Admin,model_slots_package_reconciliation,corders.corders_group_admin,1,1,0,0
+access_package_reconciliation_corders_fullaccess,Package Reconciliation Corders Full Access,model_slots_package_reconciliation,corders.corders_group_fullaccess,1,1,0,0
+access_package_reconciliation_reject_wizard_user,Package Reconciliation Reject Wizard User,model_slots_package_reconciliation_reject_wizard,base.group_user,1,1,1,1
+access_puantaj_system,Vardiya Puantaj System,model_slots_puantaj_duzeltme,base.group_system,1,1,1,1
+access_puantaj_slots_admin,Vardiya Puantaj Slots Admin,model_slots_puantaj_duzeltme,slots.slots_group_admin,1,1,1,1
+access_puantaj_slots_full,Vardiya Puantaj Slots Full,model_slots_puantaj_duzeltme,slots.slots_group_fullaccess,1,1,1,1
+access_puantaj_corders_admin,Vardiya Puantaj Corders Admin,model_slots_puantaj_duzeltme,corders.corders_group_admin,1,1,1,1
+access_puantaj_corders_full,Vardiya Puantaj Corders Full,model_slots_puantaj_duzeltme,corders.corders_group_fullaccess,1,1,1,1

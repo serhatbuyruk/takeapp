@@ -1,0 +1,192 @@
+.kt-welcome-page {
+    --kt-accent: #ef2855;
+    --kt-accent-dark: #d91847;
+    --kt-ink: #172033;
+    --kt-muted: #687287;
+    min-height: calc(100vh - 72px);
+    background:
+        radial-gradient(circle at 90% 4%, rgba(239, 40, 85, .13), transparent 34%),
+        linear-gradient(180deg, #fff 0%, #f5f7fb 100%);
+}
+
+.kt-welcome-shell {
+    padding: 28px 16px 40px;
+}
+
+.kt-welcome-card {
+    width: min(100%, 980px);
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid rgba(23, 32, 51, .07);
+    border-radius: 28px;
+    background: rgba(255, 255, 255, .94);
+    box-shadow: 0 22px 60px rgba(23, 32, 51, .12);
+}
+
+.kt-welcome-art {
+    position: relative;
+    display: flex;
+    min-height: 300px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 58%, #fff 0 35%, transparent 36%),
+        linear-gradient(145deg, #252b37 0%, #454b58 100%);
+}
+
+.kt-welcome-art::after {
+    position: absolute;
+    right: -45px;
+    bottom: -65px;
+    width: 190px;
+    height: 190px;
+    border: 34px solid rgba(239, 40, 85, .75);
+    border-radius: 50%;
+    content: "";
+}
+
+.kt-welcome-image {
+    position: relative;
+    z-index: 1;
+    width: min(86%, 440px);
+    max-height: 365px;
+    object-fit: contain;
+    filter: drop-shadow(0 16px 22px rgba(0, 0, 0, .18));
+}
+
+.kt-welcome-badge {
+    position: absolute;
+    z-index: 2;
+    top: 18px;
+    left: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(255, 255, 255, .13);
+    font-size: 13px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+}
+
+.kt-welcome-content {
+    padding: 30px 24px 26px;
+}
+
+.kt-welcome-kicker {
+    margin-bottom: 10px;
+    color: var(--kt-accent);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .14em;
+}
+
+.kt-welcome-content h1 {
+    margin: 0 0 12px;
+    color: var(--kt-ink);
+    font-size: clamp(30px, 7vw, 48px);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -.035em;
+}
+
+.kt-welcome-content p {
+    margin: 0 0 24px;
+    color: var(--kt-muted);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.kt-welcome-primary {
+    display: flex;
+    width: 100%;
+    min-height: 56px;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border-radius: 16px;
+    color: #fff !important;
+    background: linear-gradient(135deg, var(--kt-accent), var(--kt-accent-dark));
+    box-shadow: 0 12px 24px rgba(239, 40, 85, .25);
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none !important;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.kt-welcome-primary:active {
+    transform: scale(.985);
+    box-shadow: 0 7px 14px rgba(239, 40, 85, .22);
+}
+
+.kt-welcome-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 22px;
+}
+
+.kt-welcome-features span {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    padding: 12px 4px;
+    border-radius: 14px;
+    color: #596276;
+    background: #f5f7fa;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.kt-welcome-features i {
+    color: var(--kt-accent);
+    font-size: 17px;
+}
+
+@media (min-width: 768px) {
+    .kt-welcome-shell {
+        padding: 56px 24px;
+    }
+
+    .kt-welcome-card {
+        display: grid;
+        grid-template-columns: 1.08fr .92fr;
+        align-items: stretch;
+    }
+
+    .kt-welcome-art {
+        min-height: 520px;
+    }
+
+    .kt-welcome-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 52px 42px;
+    }
+}
+
+@media (max-width: 390px) {
+    .kt-welcome-shell {
+        padding: 16px 10px 28px;
+    }
+
+    .kt-welcome-card {
+        border-radius: 22px;
+    }
+
+    .kt-welcome-art {
+        min-height: 270px;
+    }
+
+    .kt-welcome-content {
+        padding: 24px 18px 20px;
+    }
+}

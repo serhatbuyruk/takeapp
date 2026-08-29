@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_operation_dashboard" model="ir.actions.client">
+        <field name="name">Operasyon Dashboard</field>
+        <field name="tag">slot_dashboard.operation_dashboard</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_slot_dashboard_root"
+              name="Operasyon Dashboard"
+              action="action_operation_dashboard"
+              sequence="4"
+              web_icon="slot_dashboard,static/description/icon.svg"
+              groups="base.group_system,slots.slots_group_admin,slots.slots_group_fullaccess,corders.corders_group_admin,corders.corders_group_fullaccess"/>
+</odoo>

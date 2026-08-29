@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_notifier_admin,Notier Admin,model_notifier_profile,base.group_system,1,1,1,1
+access_notifier_user,Notier User,model_notifier_profile,base.group_user,1,1,1,1
+access_notifier_delivery_log_admin,Notifier Delivery Log Admin,model_notifier_delivery_log,base.group_system,1,1,1,1

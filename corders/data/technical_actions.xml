@@ -1,0 +1,2973 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="automation_13" model="base.automation">
+        <field name="name">When Corders Created yedek</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="trigger">on_create</field>
+        <field name="active" eval="False"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">8</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  atama_durumu = 0
+  restoran_paket_arasi_mesafe = 0
+  restoran_paket_arasi_yon = 0
+  if rec.pos_entegrasyon_firmasi != "adisyo":
+    rec["siparis_tarihi"] = datetime.datetime.now()
+  magaza = rec.magaza
+  uygun_slotlar = env['slots.profile'].search(["&","&","&",["active_status","=",True],["magazalar.id","=",rec.magaza.id],["start_date","<=",rec.siparis_tarihi],["end_date",">=",rec.siparis_tarihi]],limit=1)
+  log("uygun_slotlar: " + str(uygun_slotlar), level='info')
+  if rec.lat != 0 and rec.lng != 0 and rec.magaza.lat != 0 and rec.magaza.lng != 0:
+      restoran_paket_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, rec.lat, rec.lng)
+      restoran_paket_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, rec.lat, rec.lng)
+      rec["mesafe"] = restoran_paket_arasi_mesafe
+      rec["yon"] = restoran_paket_arasi_yon
+  
+  for slot in uygun_slotlar:
+    slot["kurye"]["kurye_siparis_puani"] = 0
+  
+  # SENARYO -1 -------------------------------------------------------
+  if atama_durumu == 0:
+    for index, slot in enumerate(uygun_slotlar):
+      restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, slot.kurye.lat, slot.kurye.lng)
+      restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng,slot.kurye.lat, slot.kurye.lng)
+      log(slot.kurye.name + " Anlık Paket Sayısı: " + str(slot.kurye.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+      if restoran_kurye_arasi_mesafe <= 500:
+        if atama_durumu == 0 and slot.kurye.kurye_durumu == "musait":
+          if slot.kurye.anlik_tasinan_paket_sayisi < slot.partner_id.kurye_max_paket_sayisi:
+            rec["kurye"] = slot.kurye.id
+            rec["kurye_telefonu"] = slot.kurye.mobile
+            atama_durumu = 1
+            log(str(rec.siparis_no) + " - " + str(rec.kurye.name) + " - Algoritma 1 Üzerinden Atanmıştır.", level='info')
+        
+  # SENARYO - 2 - 3 -------------------------------------------------------
+  if atama_durumu == 0:
+    uygun_slotlar = sorted(
+        uygun_slotlar,
+        key=lambda slot: model.find_distance(magaza.lat, magaza.lng, slot.kurye.lat, slot.kurye.lng),
+        reverse=False
+    )
+    for index, slot in enumerate(uygun_slotlar):
+      restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, slot.kurye.lat, slot.kurye.lng)
+      restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng,slot.kurye.lat, slot.kurye.lng)
+      #log(slot.kurye.name + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+      if restoran_kurye_arasi_mesafe <= 500:
+        if atama_durumu == 0 and slot.kurye.kurye_durumu == "pakette":
+          if slot.kurye.anlik_tasinan_paket_sayisi < slot.partner_id.kurye_max_paket_sayisi:
+            rec["kurye"] = slot.kurye.id
+            rec["kurye_telefonu"] = slot.kurye.mobile
+            atama_durumu = 1
+            log(str(rec.siparis_no) + " - " + str(rec.kurye.name) + " - Algoritma 2 Üzerinden Atanmıştır.", level='info')
+      if restoran_kurye_arasi_mesafe <= 1000:
+        if atama_durumu == 0 and slot.kurye.kurye_durumu == "musait":
+          if slot.kurye.anlik_tasinan_paket_sayisi < slot.partner_id.kurye_max_paket_sayisi:
+            rec["kurye"] = slot.kurye.id
+            rec["kurye_telefonu"] = slot.kurye.mobile
+            atama_durumu = 1
+            log(str(rec.siparis_no) + " - " + str(rec.kurye.name) + " - Algoritma 3 Üzerinden Atanmıştır.", level='info')
+            
+  # SENARYO - 4 -------------------------------------------------------
+  if atama_durumu == 0:
+    uygun_slotlar = sorted(
+        uygun_slotlar,
+        key=lambda slot: model.find_distance(magaza.lat, magaza.lng, slot.kurye.lat, slot.kurye.lng),
+        reverse=False
+    )
+    for index, slot in enumerate(uygun_slotlar):
+      restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, slot.kurye.lat, slot.kurye.lng)
+      restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng,slot.kurye.lat, slot.kurye.lng)
+      #log(slot.kurye.name + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+      if restoran_kurye_arasi_mesafe <= 99999999999999999:
+        if atama_durumu == 0 and slot.kurye.kurye_durumu == "musait":
+          if slot.kurye.anlik_tasinan_paket_sayisi < slot.partner_id.kurye_max_paket_sayisi:
+            rec["kurye"] = slot.kurye.id
+            rec["kurye_telefonu"] = slot.kurye.mobile
+            atama_durumu = 1
+            log(str(rec.siparis_no) + " - " + str(rec.kurye.name) + " - Algoritma 4 Üzerinden Atanmıştır.", level='info')
+            
+  # SENARYO - 5 -------------------------------------------------------
+    
+    
+  player_ids = []
+  if len(rec.kurye) > 0:
+    if slot.kurye.player_id != False:
+      player_ids.append(slot.kurye.player_id)
+  if len(magaza) > 0:
+    if magaza.player_id != False:
+      player_ids.append(slot.kurye.player_id)
+  if len(player_ids) > 0:
+    if atama_durumu == 1:
+      message = "Yeni Sipariş Geldi"
+      env['notifier.profile'].send_Push_Notification_With_Playerid("Basic zzzzz5OTgtYWQ0Zi00MTZiLThjODMtNjY3Njk5NGY5NmNh", "4333527bf-b24b-4ea4-adaf-d7ba4dd94232", player_ids ,message)
+    if atama_durumu == 0:
+      message = "Dikkat! Yeni Siparişe Uygun Kurye Bulamadık"
+      env['notifier.profile'].send_Push_Notification_With_Playerid("Basic zzzzz5OTgtYWQ0Zi00MTZiLThjODMtNjY3Njk5NGY5NmNh", "4333527bf-b24b-4ea4-adaf-d7ba4dd94232", player_ids ,message)  
+    
+
+]]></field>
+        </record>
+        <record id="automation_14" model="base.automation">
+        <field name="name">When Corders Kurye Sipariş Durumu Changes</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="trigger">on_write</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">17</field>
+        <field name="trg_date_range">0</field>
+        <field name="trigger_field_ids" eval="[(6, 0, [ref('corders.field_corders_profile__kurye_siparis_durumu')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  slot = env['slots.profile'].search(["&","&","&",["skurye_profile_lines.partner_id.id","=",rec.kurye.id],["magazalar.id","=",rec.magaza.id],["start_date","<=",rec.siparis_tarihi],["end_date",">=",rec.siparis_tarihi]], limit=1)
+  if rec.kurye_siparis_durumu == "yonlendirildi":
+    player_ids = []
+    if rec.kurye.player_id != False:
+      player_ids.append(rec.kurye.player_id)
+      message = "Sipariş Yönlendirildi"
+      env['notifier.profile'].send_Push_Notification_With_Playerid("Basic zzzzz5OTgtYWQ0Zi00MTZiLThjODMtNjY3Njk5NGY5NmNh", "4333527bf-b24b-4ea4-adaf-d7ba4dd94232", player_ids ,message)
+  if rec.kurye_siparis_durumu == "onaylandi":
+    if len(slot) > 0:
+      for kurye_line in slot.skurye_profile_lines:
+        if kurye_line.partner_id.id == rec.kurye.id:
+          #kurye_line["partner_id"]["anlik_tasinan_paket_sayisi"] = slot.kurye.anlik_tasinan_paket_sayisi + 1
+          kurye_line["partner_id"]["toplam_tasinan_paket"] = rec.kurye.toplam_tasinan_paket + 1
+  if rec.kurye_siparis_durumu == "siparisi_teslim_aldi":
+    rec["siparis_durumu"] = "yola_cikti"
+    rec["paket_baslangic_tarihi"] = datetime.datetime.now()
+  #if rec.kurye_siparis_durumu == "siparisi_teslim_aldi" and rec.kurye.kurye_durumu != "mesgul":
+  #  rec["kurye"]["kurye_durumu"] = "pakette"
+  #  rec["kurye"]["anlik_tasinan_paket_sayisi"] = rec.kurye.anlik_tasinan_paket_sayisi + 1
+  if rec.kurye_siparis_durumu == "siparisi_teslim_etti":
+    rec["siparis_durumu"] = "teslim_edildi"
+  if rec.kurye_siparis_durumu == "siparisi_iptal_etti":
+    rec["siparis_durumu"] = "iptal_edildi"
+    
+  belirli_saat_oncesi = datetime.datetime.now() - datetime.timedelta(hours = 24)
+  if len(rec.kurye) > 0:
+    kuryenin_sepetinde_tasidigi_siparisler = env['corders.profile'].search(['&','&','&','&',["siparis_tarihi", ">=", belirli_saat_oncesi],["kurye.id","=",rec.kurye.id],["kurye_siparis_durumu","=","siparisi_teslim_aldi"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+    rec["kurye"]["anlik_tasinan_paket_sayisi"] = len(kuryenin_sepetinde_tasidigi_siparisler)
+    if len(kuryenin_sepetinde_tasidigi_siparisler) > 0 and rec.kurye.kurye_durumu != "mesgul":
+      rec["kurye"]["kurye_durumu"] = "pakette"
+    kuryenin_tum_devam_eden_siparisleri = env['corders.profile'].search(['&','&','&',["siparis_tarihi", ">=", belirli_saat_oncesi],["kurye.id","=",rec.kurye.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+    rec["kurye"]["uzerindeki_paket_sayisi"] = len(kuryenin_tum_devam_eden_siparisleri)
+  
+  
+]]></field>
+        </record>
+        <record id="automation_15" model="base.automation">
+        <field name="name">When Corders Sipariş Durumu Changed yedek</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="trigger">on_write</field>
+        <field name="active" eval="False"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">10</field>
+        <field name="trg_date_range">0</field>
+        <field name="trigger_field_ids" eval="[(6, 0, [ref('corders.field_corders_profile__siparis_durumu')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["siparis_durumu_zamani"] = datetime.datetime.now()
+  if rec.siparis_durumu == "teslim_edildi" or rec.siparis_durumu == "iptal_edildi":
+    if rec.kurye.anlik_tasinan_paket_sayisi >= 1:
+      rec["kurye"]["anlik_tasinan_paket_sayisi"] = rec.kurye.anlik_tasinan_paket_sayisi - 1
+    kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",rec.kurye.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+    if len(kuryenin_devam_eden_siparisleri) == 0:
+      rec["kurye"]["kurye_durumu"] = "musait"
+    
+  if rec.siparis_durumu == "teslim_edildi":
+    slot = env['slots.profile'].search(["&","&","&",["skurye_profile_lines.partner_id.id","=",rec.kurye.id],["magazalar.id","=",rec.magaza.id],["start_date","<=",rec.siparis_tarihi],["end_date",">=",rec.siparis_tarihi]], limit=1)
+    if len(slot) > 0:
+      #Ücretlendirme Ayarları Başlangıç -----------------------------------
+      
+      if slot.slot_ucretlendirme_tipi == "paket":
+        if slot.promosyonlu_slot == False:
+          rec["baz_price"] = slot.paket_basi_ucret
+          rec["sale_price"] = slot.paket_basi_ucret
+          log("id:" + str(rec.id) + " '- sipariş paket başı ücret cinsinden " + str(slot.paket_basi_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+        if slot.promosyonlu_slot == True:
+          rec["baz_price"] = slot.paket_basi_ucret
+          rec["promosyon_price"] = slot.slot_promosyon_ucret
+          rec["sale_price"] = slot.paket_basi_ucret + slot.slot_promosyon_ucret
+          log("id:" + str(rec.id) + " '- sipariş paket başı ücret cinsinden - paket başı: " + str(slot.paket_basi_ucret) + "TL - promosyon ücreti: " +  str(slot.slot_promosyon_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+      
+      if slot.slot_ucretlendirme_tipi == "paket_saat":
+        if slot.promosyonlu_slot == False:
+          rec["baz_price"] = slot.paket_basi_ucret
+          rec["promosyon_price"] = slot.slot_promosyon_ucret
+          rec["sale_price"] = slot.paket_basi_ucret
+          log("id:" + str(rec.id) + " '- sipariş paket başı ücret cinsinden " + str(slot.paket_basi_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+        if slot.promosyonlu_slot == True:
+          rec["baz_price"] = slot.paket_basi_ucret
+          rec["promosyon_price"] = slot.slot_promosyon_ucret
+          rec["sale_price"] = slot.paket_basi_ucret + slot.slot_promosyon_ucret
+          log("id:" + str(rec.id) + " '- sipariş paket_saat ücret cinsinden - paket başı: " + str(slot.paket_basi_ucret) + "TL - promosyon ücreti: " +  str(slot.slot_promosyon_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+      
+      if slot.slot_ucretlendirme_tipi == "paket_saat_km":
+        mesafe = 0
+        mesafe = model.find_distance(rec.magaza.lat, rec.magaza.lng, rec.kurye.lat, rec.kurye.lng)
+        km_aralik_ucreti = slot.get_distance_fee(mesafe)
+        rec["baz_price"] = slot.paket_basi_ucret
+        rec["promosyon_price"] = slot.slot_promosyon_ucret
+        rec["toplam_km_price"] = km_aralik_ucreti
+        rec["restoran_paket_mesafesi"] = mesafe
+        if slot.promosyonlu_slot == False:
+          rec["sale_price"] = slot.paket_basi_ucret + km_aralik_ucreti
+        if slot.promosyonlu_slot == True:
+          rec["sale_price"] = slot.paket_basi_ucret + km_aralik_ucreti + slot.slot_promosyon_ucret
+        log("id:" + str(rec.id) + " - kurye uzaklığı: " + str(mesafe/1000) + " '- sipariş paket_saat_km ücret cinsinden - paket başı: " + str(slot.paket_basi_ucret) + "TL - mesafe aralık ücreti: " +  str(km_aralik_ucreti) + "TL - promosyon ücreti: " +  str(slot.slot_promosyon_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+      #Ücretlendirme Ayarları Bitiş --------------------------------------------------
+     
+      rec["paket_bitis_tarihi"] = datetime.datetime.now()
+      if rec.paket_bitis_tarihi != False and rec.paket_baslangic_tarihi != False:
+        rec["paket_suresi_dakika"] = (rec.paket_bitis_tarihi - rec.paket_baslangic_tarihi).total_seconds() / 60
+  if rec.siparis_durumu == "yola_cikti":
+    rec["kurye"]["kurye_durumu"] = "pakette"
+    rec["paket_baslangic_tarihi"] = datetime.datetime.now()
+    
+  if rec.siparis_durumu == "iptal_edildi":
+    model.siparis_iptal_edildi_bilgisi(rec.id)
+    
+    
+    
+
+
+]]></field>
+        </record>
+        <record id="automation_16" model="base.automation">
+        <field name="name">When Logging Created</field>
+        <field name="model_id" ref="base.model_ir_logging"/>
+        <field name="trigger">on_create</field>
+        <field name="active" eval="True"/>
+        <field name="filter_domain">[('func', 'in', ['yeppos_send_order', 'yeppos_cancel_order', 'adisyo_get_last_orders', 'adisyo_get_complated_orders', 'sepettakip_send_order', 'sepettakip_cancel_order', 'pagate_order_callback', 'pagate_post_order_callback', 'pagate_put_order_callback', 'test_callback'])]</field>
+
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  first_json_value = "data"
+  products = []
+  
+  #----------------------------------- YEPPOS ORDER --------------------------------------------------------------
+  if rec.func == "yeppos_send_order":
+    if "order_id" in rec.x_raw_json:
+      data_json = rec.x_raw_json
+      platform = False
+      siparis_tarihi = False
+      delivery_time = False
+      update_date = False
+      odeme_yontemi = False
+      lat = 0
+      lng = 0
+      restoran = env['res.partner'].sudo().search(['&',["pos_entegrasyon_firmasi","=","yeppos"],["yeppos_bayi_id","=",data_json['bayi_id']]],limit=1)
+      if len(restoran) > 0:
+        corder = env['corders.profile'].sudo().search([["yeppos_order_id","=",data_json['order_id']]],limit=1)
+        if len(corder) == 0:
+          if data_json['platform'] == "Sepetapp":
+            platform = "kasa"
+          elif data_json['platform'] == "YEMEKSEPETI":
+            platform = "yemeksepeti"
+          elif data_json['platform'] == "TRENDYOLYEMEK":
+            platform = "trendyol"
+          elif data_json['platform'] == "GETIRYEMEK":
+            platform = "getir"
+          elif data_json['platform'] == "Trendyol":
+            platform = "trendyol"
+          elif data_json['platform'] == "MIGROSYEMEK":
+            platform = "migros_yemek"
+          elif data_json['platform'] == "CallerId":
+            platform = "telefon"
+          else:
+            platform = "kasa"
+            
+          siparis_notu = data_json['note']
+          
+          if "products" in data_json:
+            if "quantity" in data_json['products'][0]:
+              product_data = data_json['products']
+              for product in product_data:
+                  product_entry = {
+                    # Odoo'da yeni kayıt eklemek için bu şekilde belirtilir
+                      'adet': product["quantity"],
+                      'fiyat': product["price"],
+                      'tutar': product["price"]*product["quantity"],
+                      'name': str(product["name"]),
+                      'urun': str(product["name"]),
+                      'aciklama': str(product["note"]),
+                  }
+                  products.append((0, 0, product_entry))  # (0, 0, {...}) formatında ekleme yapılıyor
+                
+          adres = data_json['address']['text']
+          adres_tarifi = ""
+          if "address" in data_json and "description" in data_json["address"]:
+            adres_tarifi = data_json['address']['description']
+          if 'address' in data_json and 'lat' in data_json['address'] and 'long' in data_json['address']:
+            lat = data_json['address']['lat']
+            lng = data_json['address']['long']
+          else:
+            lat = 0
+            lng = 0
+          
+          musteri_adi = data_json['customer']['full_name']
+          musteri_telefonu = data_json['customer']['phone_number']
+          if platform == "trendyol" and "-" in musteri_telefonu:
+            musteri_telefonu = musteri_telefonu.replace("-", " ,, ")
+            
+          
+          toplam_siparis_tutari = data_json['price']
+          #indirim_tutari = data_json['payment']['discountAmount']
+          
+          if data_json['is_paid'] == True:
+            odeme_yontemi = "online_odendi"
+          
+          if data_json['payment_type'] == "CC":
+            odeme_yontemi = "kapida_kredi_karti"
+          elif data_json['payment_type'] == "CASH":
+            odeme_yontemi = "kapida_nakit"
+          else:
+            odeme_yontemi = "online_odendi"
+        
+            
+          main_json = {
+                        'pos_entegrasyon_firmasi':"yeppos",
+                        'siparis_no':str(data_json['order_id']),
+                        'yeppos_order_id':str(data_json['order_id']),
+                        'platform':platform,
+                        'odeme_yontemi':odeme_yontemi,
+                        'toplam_siparis_tutari':str(toplam_siparis_tutari),
+                        'magaza':restoran.id,
+                        'siparis_notu':str(siparis_notu),
+                        'musteri_adi':str(musteri_adi),
+                        'musteri_telefonu':str(musteri_telefonu),
+                        'adres':str(adres),
+                        'adres_tarifi':str(adres_tarifi),
+                        'lat': lat,
+                        'lng': lng,
+                      }
+  
+          # order_profile_lines'i main_json'a ekleyin
+          main_json['order_profile_lines'] = products
+          
+          # Kayıt oluştur
+          corder = env['corders.profile'].create(main_json)
+          products = []
+          product_data = []
+  
+  
+  #----------------------------------- YEPPOS SİPARİŞ İPTALİ --------------------------------------------------------------
+  if rec.func == "yeppos_cancel_order":
+    if "order_id" in rec.x_raw_json:
+      data_json = rec.x_raw_json
+      corder = env['corders.profile'].sudo().search([["siparis_no","=",data_json['order_id']]],limit=1)
+      if len(corder) > 0:
+        corder["iptal_nedeni"] = "Pos Uygulamasından İptal Edildi."
+        corder["siparis_durumu"] = "iptal_edildi"
+  
+  
+  #----------------------------------- SEPET TAKİP ORDER --------------------------------------------------------------
+  if rec.func == "sepettakip_send_order":
+    if "order_id" in record.message:
+      #data_string = record.message.replace("'", '"')
+      #data_string = data_string.replace('None', '\"\"')
+      #data_string = data_string.replace('False', 'false')
+      #data_string = data_string.replace('True', 'true')
+      #data_json = json.loads(data_string)
+      data_json = rec.x_raw_json
+      platform = False
+      siparis_tarihi = False
+      delivery_time = False
+      update_date = False
+      odeme_yontemi = False
+      lat = 0
+      lng = 0
+      restoran = env['res.partner'].sudo().search(['&',["pos_entegrasyon_firmasi","=","sepettakip"],["sepettakip_bayi_id","=",data_json['bayi_id']]],limit=1)
+      if len(restoran) > 0:
+        corder = env['corders.profile'].sudo().search([["sepettakip_order_id","=",data_json['order_id']]],limit=1)
+        if len(corder) == 0:
+          if data_json['platform'] == "Sepetapp":
+            platform = "kasa"
+          elif data_json['platform'] == "Yemeksepeti":
+            platform = "yemeksepeti"
+          elif data_json['platform'] == "yemeksepeti":
+            platform = "yemeksepeti"
+          elif data_json['platform'] == "Getir":
+            platform = "getir"
+          elif data_json['platform'] == "Trendyol":
+            platform = "trendyol"
+          elif data_json['platform'] == "Migros":
+            platform = "migros_yemek"
+          elif data_json['platform'] == "CallerId":
+            platform = "telefon"
+          else:
+            platform = "kasa"
+            
+          siparis_notu = data_json['note']
+          
+          if "products" in data_json:
+            if "quantity" in data_json['products'][0]:
+              product_data = data_json['products']
+              for product in product_data:
+                  product_entry = {
+                    # Odoo'da yeni kayıt eklemek için bu şekilde belirtilir
+                      'adet': product["quantity"],
+                      'fiyat': product["price"],
+                      'tutar': product["price"]*product["quantity"],
+                      'name': str(product["name"]),
+                      'urun': str(product["name"]),
+                      'aciklama': str(product["note"]),
+                  }
+                  products.append((0, 0, product_entry))  # (0, 0, {...}) formatında ekleme yapılıyor
+                
+          adres = data_json['address']['text']
+          adres_tarifi = ""
+          if "address" in data_json and "description" in data_json["address"]:
+            adres_tarifi = data_json['address']['description']
+          if 'address' in data_json and 'lat' in data_json['address'] and 'long' in data_json['address']:
+            lat = data_json['address']['lat']
+            lng = data_json['address']['long']
+          else:
+            lat = 0
+            lng = 0
+          
+          musteri_adi = data_json['customer']['full_name']
+          musteri_telefonu = data_json['customer']['phone_number']
+          if platform == "trendyol" and "-" in musteri_telefonu:
+            musteri_telefonu = musteri_telefonu.replace("-", " ,, ")
+            
+          
+          toplam_siparis_tutari = data_json['price']
+          #indirim_tutari = data_json['payment']['discountAmount']
+          
+          if data_json['is_paid'] == True:
+            odeme_yontemi = "online_odendi"
+          
+          if data_json['payment_type'] == "card":
+            odeme_yontemi = "kapida_kredi_karti"
+          elif data_json['payment_type'] == "cash":
+            odeme_yontemi = "kapida_nakit"
+          else:
+            odeme_yontemi = "online_odendi"
+        
+            
+          main_json = {
+                        'pos_entegrasyon_firmasi':"sepettakip",
+                        'siparis_no':str(data_json['order_id']),
+                        'sepettakip_order_id':str(data_json['order_id']),
+                        'platform':platform,
+                        'odeme_yontemi':odeme_yontemi,
+                        'toplam_siparis_tutari':str(toplam_siparis_tutari),
+                        'magaza':restoran.id,
+                        'siparis_notu':str(siparis_notu),
+                        'musteri_adi':str(musteri_adi),
+                        'musteri_telefonu':str(musteri_telefonu),
+                        'adres':str(adres),
+                        'adres_tarifi':str(adres_tarifi),
+                        'lat': lat,
+                        'lng': lng,
+                      }
+  
+          # order_profile_lines'i main_json'a ekleyin
+          main_json['order_profile_lines'] = products
+          
+          # Kayıt oluştur
+          corder = env['corders.profile'].create(main_json)
+          products = []
+          product_data = []
+          
+  #----------------------------------- SEPET TAKİP SİPARİŞ İPTALİ --------------------------------------------------------------
+  if rec.func == "sepettakip_cancel_order":
+    if "order_id" in record.message:
+      data_string = record.message.replace("'", '"')
+      data_string = data_string.replace('None', '\"\"')
+      data_string = data_string.replace('False', 'false')
+      data_string = data_string.replace('True', 'true')
+      data_json = json.loads(data_string)
+      corder = env['corders.profile'].sudo().search([["sepettakip_order_id","=",data_json['order_id']]],limit=1)
+      if len(corder) > 0:
+        corder["iptal_nedeni"] = "SepetTakip Pos Uygulamasından İptal Edildi."
+        corder["siparis_durumu"] = "iptal_edildi"
+  
+  #----------------------------------- PAGATE STATUS --------------------------------------------------------------
+  if rec.func == "pagate_put_order_callback":
+    if "remoteId" in record.message:
+      data_string = record.message.replace("'", '"')
+      data_string = data_string.replace('None', '\"\"')
+      data_string = data_string.replace('False', 'false')
+      data_string = data_string.replace('True', 'true')
+      data_json = json.loads(data_string)
+      corder = env['corders.profile'].sudo().search([["remoteId","=",str(data_json['remoteId'])]],limit=1)
+      if len(corder) == 1:
+        if data_json['status'] == "APPROVED":
+          corder["siparis_durumu"] = "onaylandi"
+        if data_json['status'] == "PREPARED":
+          corder["siparis_durumu"] = "hazirlaniyor"
+        if data_json['status'] == "CANCELLED":
+          corder["siparis_durumu"] = "iptal_edildi"
+          corder["iptal_nedeni"] = "Restoran panelinden iptal edildi. Platform ekranından kontrol ediniz!"
+        if data_json['status'] == "CANCELED":
+          corder["siparis_durumu"] = "iptal_edildi"
+          corder["iptal_nedeni"] = "Restoran panelinden iptal edildi. Platform ekranından kontrol ediniz!"
+        log(str(corder.id) + "' li sipariş " + str(data_json['status']) + " olarak değiştirildi.", level='info')
+    
+    '''
+        if data_json['status'] == "SHIPPED":
+          corder["siparis_durumu"] = "yola_cikti"
+        if data_json['status'] == "DELIVERED":
+          corder["siparis_durumu"] = "teslim_edildi"
+        if data_json['status'] == "RETURNED":
+          corder["siparis_durumu"] = "onaylandi"
+    '''
+  #------------------------------------ TEST ORDER --------------------------------
+  if rec.func == "test_callback":
+    if "remoteId" in record.message and "remoteShopId" in record.message:
+      data_string = record.message.replace("'", '"')
+      data_string = data_string.replace('None', '\"\"')
+      data_string = data_string.replace('False', 'false')
+      data_string = data_string.replace('True', 'true')
+      data_json = json.loads(data_string)
+      platform = False
+      siparis_tarihi = False
+      delivery_time = False
+      update_date = False
+      odeme_yontemi = False
+      corder = env['corders.profile'].sudo().search([["remoteId","=",data_json['remoteId']]],limit=1)
+      restoran = env['res.partner'].sudo().search(['&',["pos_entegrasyon_firmasi","=","pagate"],["remoteShopId","=",data_json['remoteShopId']]],limit=1)
+      if len(corder) == 0:
+        orderCode = data_json['orderCode']
+        remoteId = data_json['remoteId']
+        remoteShopId = data_json['remoteShopId']
+        orderCode = data_json['orderCode']
+        if data_json['platform'] == "PAGATE":
+          platform = "kasa"
+        elif data_json['platform'] == "DELIVERY_HERO":
+          platform = "yemeksepeti"
+        elif data_json['platform'] == "GETIR_FOOD":
+          platform = "getir"
+        elif data_json['platform'] == "TRENDYOL_FOOD":
+          platform = "trendyol"
+        elif data_json['platform'] == "MIGROS_FOOD":
+          platform = "migros_yemek"
+        elif data_json['platform'] == "POSSI":
+          platform = "kasa"
+        elif data_json['platform'] == "DESEN_POS":
+          platform = "kasa"
+        elif data_json['platform'] == "OPTIMUS":
+          platform = "kasa"
+        elif data_json['platform'] == "YEP_POS":
+          platform = "kasa"
+        elif data_json['platform'] == "ADISYO":
+          platform = "kasa"
+        elif data_json['platform'] == "CHEFS_POS":
+          platform = "kasa"
+        elif data_json['platform'] == "VEGA":
+          platform = "kasa"
+        elif data_json['platform'] == "OTHER":
+          platform = "kasa"
+        else:
+          platform = "kasa"
+          
+        siparis_notu = data_json['note']
+        
+        log(str(len(data_json['products'])), level='info')
+        if len(data_json['products']) > 0:
+          if "quantity" in data_json['products'][0]:
+            product_data = data_json['products']
+            for product in product_data:
+                product_entry = {
+                  # Odoo'da yeni kayıt eklemek için bu şekilde belirtilir
+                    'adet': product["quantity"],
+                    'fiyat': product["sellPrice"] / product["quantity"],
+                    'tutar': product["sellPrice"],
+                    'name': str(product["name"]),
+                    'urun': str(product["name"]),
+                    'aciklama': str(product["description"]),
+                }
+                products.append((0, 0, product_entry))  # (0, 0, {...}) formatında ekleme yapılıyor
+              
+        adres = data_json['address']['address']
+        adres_tarifi = data_json['address']['description'] + " Apartman No: " + data_json['address']['apartmentNumber'] + " Kapı No: " + data_json['address']['doorNumber'] + " Kat: " + data_json['address']['floor'] + " Mahalle: " + data_json['address']['neighborhood']
+        lat = data_json['address']['latitude']
+        lng = data_json['address']['longitude']
+        
+        musteri_adi = data_json['customer']['name']
+        musteri_telefonu = data_json['customer']['phone']
+        
+        toplam_siparis_tutari = data_json['payment']['amount']
+        indirim_tutari = data_json['payment']['discountAmount']
+        
+        if data_json['payment']['type'] == "ONLINE":
+          odeme_yontemi = "online_odendi"
+        if data_json['payment']['type'] == "CREDIT_CARD":
+          odeme_yontemi = "kapida_kredi_karti"
+        if data_json['payment']['type'] == "CASH":
+          odeme_yontemi = "kapida_nakit"
+      
+          
+        main_json = {
+                      'pos_entegrasyon_firmasi':"pagate",
+                      'remoteId':str(remoteId),
+                      'remoteShopId':str(remoteShopId),
+                      'orderCode':str(orderCode),
+                      'siparis_no':str(data_json['remoteId']),
+                      'platform':platform,
+                      'odeme_yontemi':odeme_yontemi,
+                      'toplam_siparis_tutari':str(toplam_siparis_tutari),
+                      'indirim_tutari':str(indirim_tutari),
+                      'magaza':restoran.id,
+                      'siparis_notu':str(siparis_notu),
+                      'musteri_adi':str(musteri_adi),
+                      'musteri_telefonu':str(musteri_telefonu),
+                      'adres':str(adres),
+                      'adres_tarifi':str(adres_tarifi),
+                      'lat': lat,
+                      'lng': lng,
+                    }
+                    
+        if data_json['platform'] == "DELIVERY_HERO" or data_json['platform'] == "TRENDYOL_FOOD":
+          main_json['adres'] = str(adres_tarifi)
+          main_json['adres_tarifi'] = str(adres)
+          
+          
+        # order_profile_lines'i main_json'a ekleyin
+        main_json['order_profile_lines'] = products
+        
+        # Kayıt oluştur
+        corder = env['corders.profile'].create(main_json)
+        products = []
+        product_data = []
+  
+  #----------------------------------- PAGATE ORDER --------------------------------------------------------------
+  if rec.func == "pagate_order_callback" or rec.func == "pagate_post_order_callback":
+    if "remoteId" in record.message and "remoteShopId" in record.message:
+      data_string = record.message.replace("'", '"')
+      data_string = data_string.replace('None', '\"\"')
+      data_string = data_string.replace('False', 'false')
+      data_string = data_string.replace('True', 'true')
+      data_json = rec.x_raw_json
+      platform = False
+      siparis_tarihi = False
+      delivery_time = False
+      update_date = False
+      odeme_yontemi = False
+      corder = env['corders.profile'].sudo().search([["remoteId","=",data_json['remoteId']]],limit=1)
+      restoran = env['res.partner'].sudo().search(['&',["pos_entegrasyon_firmasi","=","pagate"],["remoteShopId","=",data_json['remoteShopId']]],limit=1)
+      if len(corder) == 0:
+        orderCode = data_json['orderCode']
+        remoteId = data_json['remoteId']
+        remoteShopId = data_json['remoteShopId']
+        orderCode = data_json['orderCode']
+        if data_json['platform'] == "PAGATE":
+          platform = "kasa"
+        elif data_json['platform'] == "DELIVERY_HERO":
+          platform = "yemeksepeti"
+        elif data_json['platform'] == "GETIR_FOOD":
+          platform = "getir"
+        elif data_json['platform'] == "TRENDYOL_FOOD":
+          platform = "trendyol"
+        elif data_json['platform'] == "MIGROS_FOOD":
+          platform = "migros_yemek"
+        elif data_json['platform'] == "POSSI":
+          platform = "kasa"
+        elif data_json['platform'] == "DESEN_POS":
+          platform = "kasa"
+        elif data_json['platform'] == "OPTIMUS":
+          platform = "kasa"
+        elif data_json['platform'] == "YEP_POS":
+          platform = "kasa"
+        elif data_json['platform'] == "ADISYO":
+          platform = "kasa"
+        elif data_json['platform'] == "CHEFS_POS":
+          platform = "kasa"
+        elif data_json['platform'] == "VEGA":
+          platform = "kasa"
+        elif data_json['platform'] == "OTHER":
+          platform = "kasa"
+        else:
+          platform = "kasa"
+          
+        siparis_notu = data_json['note']
+        
+        if data_json.get('products') and isinstance(data_json['products'], list) and len(data_json['products']) > 0:
+          if "quantity" in data_json['products'][0]:
+            product_data = data_json['products']
+            for product in product_data:
+                quantity = 1
+                if product["quantity"] == 0:
+                  quantity = 1
+                product_entry = {
+                  # Odoo'da yeni kayıt eklemek için bu şekilde belirtilir
+                    'adet': product["quantity"],
+                    'fiyat': product["sellPrice"] / quantity,
+                    'tutar': product["sellPrice"],
+                    'name': str(product["name"]),
+                    'urun': str(product["name"]),
+                    'aciklama': str(product["description"]),
+                }
+                products.append((0, 0, product_entry))  # (0, 0, {...}) formatında ekleme yapılıyor
+              
+        adres = data_json['address']['address']
+        adres_tarifi = data_json['address']['description'] + " Apartman No: " + data_json['address']['apartmentNumber'] + " Kapı No: " + data_json['address']['doorNumber'] + " Kat: " + data_json['address']['floor'] + " Mahalle: " + data_json['address']['neighborhood']
+        lat = data_json['address']['latitude']
+        lng = data_json['address']['longitude']
+        
+        musteri_adi = data_json['customer']['name']
+        musteri_telefonu = data_json['customer']['phone']
+        
+        toplam_siparis_tutari = data_json['payment']['amount']
+        indirim_tutari = data_json['payment']['discountAmount']
+        
+        if data_json['payment']['type'] == "ONLINE":
+          odeme_yontemi = "online_odendi"
+        if data_json['payment']['type'] == "CREDIT_CARD":
+          odeme_yontemi = "kapida_kredi_karti"
+        if data_json['payment']['type'] == "CASH":
+          odeme_yontemi = "kapida_nakit"
+      
+          
+        main_json = {
+                      'pos_entegrasyon_firmasi':"pagate",
+                      'remoteId':str(remoteId),
+                      'remoteShopId':str(remoteShopId),
+                      'orderCode':str(orderCode),
+                      'siparis_no':str(data_json['remoteId']),
+                      'platform':platform,
+                      'odeme_yontemi':odeme_yontemi,
+                      'toplam_siparis_tutari':str(toplam_siparis_tutari),
+                      'indirim_tutari':str(indirim_tutari),
+                      'magaza':restoran.id,
+                      'siparis_notu':str(siparis_notu),
+                      'musteri_adi':str(musteri_adi),
+                      'musteri_telefonu':str(musteri_telefonu),
+                      'adres':str(adres),
+                      'adres_tarifi':str(adres_tarifi),
+                      'lat': lat,
+                      'lng': lng,
+                    }
+                    
+        if data_json['platform'] == "DELIVERY_HERO" or data_json['platform'] == "TRENDYOL_FOOD":
+          main_json['adres'] = str(adres_tarifi)
+          main_json['adres_tarifi'] = str(adres)
+          
+          
+        # order_profile_lines'i main_json'a ekleyin
+        main_json['order_profile_lines'] = products
+        
+        # Kayıt oluştur
+        corder = env['corders.profile'].create(main_json)
+        products = []
+        product_data = []
+          
+  
+  #----------------------------------- ADİSYO --------------------------------------------------------------
+  if rec.func == "adisyo_get_complated_orders":
+    if rec.func == "adisyo_get_complated_orders":
+      first_json_value = "orders"
+    if rec.func == "adisyo_get_last_orders":
+      first_json_value = "data"
+    if first_json_value in record.message and "externalAppName" in record.message:
+      data_string = record.message.replace("'", '"')
+      data_string = data_string.replace('None', '\"\"')
+      data_string = data_string.replace('False', 'false')
+      data_string = data_string.replace('True', 'true')
+      data_json = rec.x_raw_json
+      for data in data_json[first_json_value]:
+        platform = False
+        siparis_tarihi = False
+        delivery_time = False
+        update_date = False
+        odeme_yontemi = False
+        corder = env['corders.profile'].search([["pos_entegrasyon_id","=",data['id']]],limit=1)
+        restoran = env['res.partner'].search(['&',["pos_entegrasyon_firmasi","=","adisyo"],["adisyo_x_api_consumer","=",data['restaurantKey']]],limit=1)
+        if len(corder) == 0:
+          if data['externalAppName'] == "Yemeksepeti":
+            platform = "yemeksepeti"
+          elif data['externalAppName'] == "Getir":
+            platform = "getir"
+          elif data['externalAppName'] == "Trendyol":
+            platform = "trendyol"
+          elif data['externalAppName'] == "Migros Yemek":
+            platform = "migros_yemek"
+          elif data['externalAppName'] == "YemekSepeti DeliveryHero":
+            platform = "yemeksepeti"
+          elif data['externalAppName'] == "Getir Yemek":
+            platform = "getir"
+          elif data['externalAppName'] == "Trendyol Yemek":
+            platform = "trendyol"
+          else:
+            platform = "kasa"
+          
+          if data.get('deliveryTime') and len(data['deliveryTime']) > 5:
+            delivery_time = datetime.datetime.strptime(data['deliveryTime'], "%Y-%m-%dT%H:%M:%S.%f") - datetime.timedelta(hours = 3)
+          if data.get('insertDate') and len(data['insertDate']) > 5:
+            siparis_tarihi = datetime.datetime.strptime(data['insertDate'], "%Y-%m-%dT%H:%M:%S.%f") - datetime.timedelta(hours = 3)
+          if data.get('updateDate') and len(data['updateDate']) > 5:
+            update_date = datetime.datetime.strptime(data['updateDate'], "%Y-%m-%dT%H:%M:%S.%f")- datetime.timedelta(hours = 3)
+          if len(data['paymentMethodName']) > 3:
+            if "YS Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Trendyol Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Getir Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Getir Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Migros Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Nakit" in data['paymentMethodName']:
+              odeme_yontemi = "kapida_nakit"
+            elif "Kredi Kartı" in data['paymentMethodName']:
+              odeme_yontemi = "kapida_kredi_karti"
+            
+          main_json = {
+                        'pos_entegrasyon_id': str(data['id']),
+                        'pos_entegrasyon_firmasi':"adisyo",
+                        'siparis_no':str(data['orderNumber']),
+                        'siparis_tarihi':siparis_tarihi,
+                        'platform':platform,
+                        'odeme_yontemi':odeme_yontemi,
+                        'toplam_siparis_tutari':str(data['orderTotal']),
+                        'indirim_tutari':str(data['discountAmount']),
+                        'vergi_tutari':str(data['taxAmount']),
+                        'magaza':restoran.id,
+                        'paket_bitis_tarihi':delivery_time,
+                        'siparis_notu':str(data['orderNote']),
+                        'external_app_id':str(data['externalAppId']),
+                        'adisyo_status_id':str(data['statusId']),
+                        'adisyo_status':str(data['status']),
+                        'adisyo_payment_method_name':str(data['paymentMethodName']),
+                        'adisyo_payment_method_id':str(data['paymentMethodId']),
+                        'adisyo_order_number':str(data['orderNumber']),
+                        'adisyo_order_type_id':str(data['orderTypeId']),
+                        'adisyo_order_type':str(data['orderType']),
+                        'adisyo_customer_id':str(data['customerId']),
+                        'adisyo_integration_order_id':str(data['integrationOrderId']),
+                        'adisyo_restaurant_key':str(data['restaurantKey']),
+                        'adisyo_external_app_key':str(data['externalAppKey']),
+                        'adisyo_update_date':update_date,
+                      }
+          
+          if "customerName" in data['customer']:
+            customer_json = {
+              'musteri_adi':str(data['customer']['customerName']) + " " + str(data['customer']['customerSurname']),
+              'musteri_email':str(data['customer']['customerEmail']),
+              'musteri_telefonu':str(data['customer']['customerPhone']),
+              'adres':str(data['customer']['address']),
+              'adres_tarifi':str(data['customer']['addressDescription']),
+              'city':str(data['customer']['city']),
+              'firma':str(data['customer']['company'])
+            }
+            main_json.update(customer_json)
+            
+          if "quantity" in data['products'][0]:
+            product_data = data['products']
+            for product in product_data:
+                product_entry = {
+                  # Odoo'da yeni kayıt eklemek için bu şekilde belirtilir
+                    'adet': product["quantity"],
+                    'fiyat': product["unitPrice"],
+                    'tutar': (product["unitPrice"] * product["quantity"]),
+                    'name': str(product["productName"]),
+                    'urun': str(product["productName"]),
+                    'aciklama': str(product["description"]),
+                }
+                products.append((0, 0, product_entry))  # (0, 0, {...}) formatında ekleme yapılıyor
+            
+            
+            # order_profile_lines'i main_json'a ekleyin
+            main_json['order_profile_lines'] = products
+          
+          # Kayıt oluştur
+          corder = env['corders.profile'].create(main_json)
+          products = []
+          product_data = []
+          
+          
+          
+  if rec.func == "adisyo_get_last_orders":
+    if rec.func == "adisyo_get_complated_orders":
+      first_json_value = "orders"
+    if rec.func == "adisyo_get_last_orders":
+      first_json_value = "data"
+    if first_json_value in record.message and "externalAppName" in record.message:
+      data_string = record.message.replace("'", '"')
+      data_string = data_string.replace('None', '\"\"')
+      data_string = data_string.replace('False', 'false')
+      data_string = data_string.replace('True', 'true')
+      data_json = rec.x_raw_json
+      for data in data_json[first_json_value]:
+        platform = False
+        siparis_tarihi = False
+        delivery_time = False
+        update_date = False
+        odeme_yontemi = False
+        corder = env['corders.profile'].search([["pos_entegrasyon_id","=",data['id']]],limit=1)
+        restoran = env['res.partner'].search(['&',["pos_entegrasyon_firmasi","=","adisyo"],["adisyo_x_api_consumer","=",data['restaurantKey']]],limit=1)
+        if len(corder) == 0:
+          if data['externalAppName'] == "Yemeksepeti":
+            platform = "yemeksepeti"
+          elif data['externalAppName'] == "Getir":
+            platform = "getir"
+          elif data['externalAppName'] == "Trendyol":
+            platform = "trendyol"
+          elif data['externalAppName'] == "Migros Yemek":
+            platform = "migros_yemek"
+          elif data['externalAppName'] == "YemekSepeti DeliveryHero":
+            platform = "yemeksepeti"
+          elif data['externalAppName'] == "Getir Yemek":
+            platform = "getir"
+          elif data['externalAppName'] == "Trendyol Yemek":
+            platform = "trendyol"
+          else:
+            platform = "kasa"
+          
+          if data.get('deliveryTime') and len(data['deliveryTime']) > 5:
+            delivery_time = datetime.datetime.strptime(data['deliveryTime'], "%Y-%m-%dT%H:%M:%S.%f") - datetime.timedelta(hours = 3)
+          if data.get('insertDate') and len(data['insertDate']) > 5:
+            siparis_tarihi = datetime.datetime.strptime(data['insertDate'], "%Y-%m-%dT%H:%M:%S.%f") - datetime.timedelta(hours = 3)
+          if data.get('updateDate') and len(data['updateDate']) > 5:
+            update_date = datetime.datetime.strptime(data['updateDate'], "%Y-%m-%dT%H:%M:%S.%f") - datetime.timedelta(hours = 3)
+          if len(data['paymentMethodName']) > 3:
+            if "YS Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Trendyol Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Getir Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Getir Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Migros Online" in data['paymentMethodName']:
+              odeme_yontemi = "online_odendi"
+            elif "Nakit" in data['paymentMethodName']:
+              odeme_yontemi = "kapida_nakit"
+            elif "Kredi Kartı" in data['paymentMethodName']:
+              odeme_yontemi = "kapida_kredi_karti"
+            
+          main_json = {
+                        'pos_entegrasyon_id': str(data['id']),
+                        'pos_entegrasyon_firmasi':"adisyo",
+                        'siparis_no':str(data['orderNumber']),
+                        'siparis_tarihi':siparis_tarihi,
+                        'platform':platform,
+                        'odeme_yontemi': odeme_yontemi,
+                        'toplam_siparis_tutari':str(data['orderTotal']),
+                        'indirim_tutari':str(data['discountAmount']),
+                        'vergi_tutari':str(data['taxAmount']),
+                        'magaza':restoran.id,
+                        'paket_bitis_tarihi':delivery_time,
+                        'siparis_notu':str(data['orderNote']),
+                        'external_app_id':str(data['externalAppId']),
+                        'adisyo_status_id':str(data['statusId']),
+                        'adisyo_status':str(data['status']),
+                        'adisyo_payment_method_name':str(data['paymentMethodName']),
+                        'adisyo_payment_method_id':str(data['paymentMethodId']),
+                        'adisyo_order_number':str(data['orderNumber']),
+                        #'adisyo_order_type_id':str(data['orderTypeId']),
+                        #'adisyo_order_type':str(data['orderType']),
+                        'adisyo_customer_id':str(data['customerId']),
+                        #'adisyo_integration_order_id':str(data['integrationOrderId']),
+                        'adisyo_restaurant_key':str(data['restaurantKey']),
+                        'adisyo_external_app_key':str(data['externalAppKey']),
+                        'adisyo_update_date':update_date,
+                      }
+          
+          if "customerName" in data['customer']:
+            customer_json = {
+              'musteri_adi':str(data['customer']['customerName']) + " " + str(data['customer']['customerSurname']),
+              'musteri_email':str(data['customer']['customerEmail']),
+              'musteri_telefonu':str(data['customer']['customerPhone']),
+              'adres':str(data['customer']['address']),
+              'adres_tarifi':str(data['customer']['addressDescription']),
+              'city':str(data['customer']['city']),
+              'firma':str(data['customer']['company'])
+            }
+            main_json.update(customer_json)
+            
+          if "quantity" in data['products'][0]:
+            product_data = data['products']
+            for product in product_data:
+                product_entry = {
+                  # Odoo'da yeni kayıt eklemek için bu şekilde belirtilir
+                    'adet': product["quantity"],
+                    'fiyat': product["unitPrice"],
+                    'tutar': (product["unitPrice"] * product["quantity"]),
+                    'name': str(product["productName"]),
+                    'urun': str(product["productName"]),
+                    'aciklama': str(product["description"]),
+                }
+                products.append((0, 0, product_entry))  # (0, 0, {...}) formatında ekleme yapılıyor
+            
+            
+            # order_profile_lines'i main_json'a ekleyin
+            main_json['order_profile_lines'] = products
+          
+          # Kayıt oluştur
+          corder = env['corders.profile'].create(main_json)
+          products = []
+          product_data = []
+    
+       
+      
+      
+
+
+]]></field>
+        </record>
+        <record id="automation_17" model="base.automation">
+        <field name="name">When New Contact Created</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="trigger">on_create</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">9</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["contact_color"] = env['corders.profile'].generate_random_color()
+  
+  if rec.user_role == "kurye":
+    rec["name"] = rec.name.title()
+    if not rec.email:
+      raise Warning("Please enter an email address.")
+    attachment = env['ir.attachment'].search([["id","=",7895]])
+    rec["email"] = rec.email.lower()
+    rec["kurye_durumu"] = "mesgul"
+    rec["image_1920"] = attachment.datas
+    x_group_portal_user = env.ref('base.group_portal')
+    new_user = env['res.users'].create([{'name': rec.name,
+                              'login': rec.email.lower(),
+                              'partner_id': rec.id,
+                              'company_id': env.company.id, 
+                              'groups_id': [(6, 0, [x_group_portal_user.id])],
+                              }],)
+    if len(rec.kurye_firmasi) > 0:
+      firma_yetkilileri = env['res.users'].search([["partner_id.parent_id.id","=",rec.kurye_firmasi.id]])
+      for firma_yekilisi in firma_yetkilileri:
+        rec["yetkili_users"] = [(4, firma_yekilisi.id)]
+        
+  if rec.user_role == "magaza":
+    rec["name"] = rec.name.title()
+    attachment = env['ir.attachment'].search([["id","=",10782]])
+    rec["kurye_durumu"] = "mesgul"
+    rec["image_1920"] = attachment.datas
+ 
+
+
+
+]]></field>
+        </record>
+        <record id="automation_19" model="base.automation">
+        <field name="name">When Contact Created And Updated Address Fields</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="trigger">on_create_or_write</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">10</field>
+        <field name="trg_date_range">0</field>
+        <field name="trigger_field_ids" eval="[(6, 0, [ref('base.field_res_partner__street'), ref('base.field_res_partner__city'), ref('base.field_res_partner__state_id')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  acik_adres = str(rec.street) + " " + str(rec.city) + "/" + str(rec.state_id.name) + "/" + str(rec.country_id.name)
+  response = env['slots.profile'].sudo().get_lat_lng(rec.id,acik_adres)
+  lat = 0
+  lng = 0
+  if response["status"] == "OK":
+    lat = response["results"][0]["geometry"]["location"]["lat"]
+    lng = response["results"][0]["geometry"]["location"]["lng"]
+  if lat > 0 and lng > 0:
+    rec["lat"] = lat
+    rec["lng"] = lng
+
+
+]]></field>
+        </record>
+        <record id="automation_21" model="base.automation">
+        <field name="name">When Corders Created</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="trigger">on_create</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">16</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  if rec.siparis_no == False and rec.pos_entegrasyon_firmasi == False:
+    rec["siparis_no"] = model.generate_random_code()
+  if rec.musteri_adi == False and rec.pos_entegrasyon_firmasi == False:
+    raise UserError(("Lütfen Müşteri Adını Giriniz!"))
+  if rec.adres == False and rec.pos_entegrasyon_firmasi == False:
+    raise UserError(("Lütfen Adres Alanını Giriniz!"))
+  if rec.odeme_yontemi == False and rec.pos_entegrasyon_firmasi == False:
+    raise UserError(("Lütfen Ödeme Yöntemi Alanını Giriniz!"))
+  if rec.platform == False and rec.pos_entegrasyon_firmasi == False:
+    raise UserError(("Lütfen Platform Alanını Giriniz!"))
+  if len(rec.magaza) == 0 and rec.pos_entegrasyon_firmasi == False:
+    raise UserError(("Lütfen Mağaza Alanını Giriniz!"))
+  if rec.musteri_telefonu == False:
+    raise UserError(("Lütfen Müşteri Telefonu Alanını Giriniz!"))
+  atama_durumu = 0
+  restoran_paket_arasi_mesafe = 0
+  restoran_paket_arasi_yon = 0
+  restoran_kurye_arasi_mesafe = 0
+  restoran_kurye_arasi_yon = 0
+  min_degree = 0
+  rec["siparis_tarihi"] = datetime.datetime.now()
+  magaza = rec.magaza
+  lat = 0
+  lng = 0
+  if rec.lat == 0 and rec.lng == 0 and rec.adres != False:
+    response = model.get_lat_lng(rec.id,str(rec.adres) + " " + str(rec.adres_tarifi))
+    if response["status"] == "OK":
+      if 'geometry' in response["results"][0]:
+        if 'location' in response["results"][0]["geometry"]:
+          lat = response["results"][0]["geometry"]["location"]["lat"]
+          lng = response["results"][0]["geometry"]["location"]["lng"]
+          log(str(rec.id) + " id' li Siparişte google maps api ile konum bilgisi alındı.", level='info')
+    if lat > 0 and lng > 0:
+      rec["lat"] = lat
+      rec["lng"] = lng
+  assigned_courier = rec.auto_assign_courier()
+  if len(assigned_courier) > 0:
+    atama_durumu = 1
+  if magaza.slot_tipi == 'sabit':
+    uygun_slot = env['slots.profile'].search(["&","&","&",["active_status","=",True],["magazalar.id","=",rec.magaza.id],["start_date","<=",rec.siparis_tarihi],["end_date",">=",rec.siparis_tarihi]],limit=1)
+    log("uygun slot id: " + str(uygun_slot.id) + " uygun slot adı: " + str(uygun_slot.name), level='info')
+    if rec.lat != 0 and rec.lng != 0 and rec.magaza.lat != 0 and rec.magaza.lng != 0:
+        restoran_paket_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, rec.lat, rec.lng)
+        if restoran_paket_arasi_mesafe >= 6000:
+          restoran_paket_arasi_mesafe = 6000
+        restoran_paket_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, rec.lat, rec.lng)
+        rec["mesafe"] = restoran_paket_arasi_mesafe
+        rec["yon"] = restoran_paket_arasi_yon
+        
+    
+    # SENARYO -A1 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        if restoran_kurye_arasi_mesafe <= 500:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "musait" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A1-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: min(abs(float(siparis.yon) - restoran_paket_arasi_yon),360-abs(float(siparis.yon) - restoran_paket_arasi_yon)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  min_degree = min(abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon),360-abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon))
+                  if min_degree > 50:
+                    break
+                  if min_degree <= 50:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A1-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                    
+    
+    # SENARYO -A2 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(kurye_line.partner_id.name + " - durumu:" + kurye_line.partner_id.kurye_durumu + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu)  + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 1200:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "musait" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A2-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: min(abs(float(siparis.yon) - restoran_paket_arasi_yon),360-abs(float(siparis.yon) - restoran_paket_arasi_yon)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  min_degree = min(abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon),360-abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon))
+                  if min_degree > 50:
+                    break
+                  if min_degree <= 50:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A2-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                    
+    
+    # SENARYO -A3 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(kurye_line.partner_id.name + " - durumu:" + kurye_line.partner_id.kurye_durumu + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu)  + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 750:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "pakette" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A3-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: min(abs(float(siparis.yon) - restoran_paket_arasi_yon),360-abs(float(siparis.yon) - restoran_paket_arasi_yon)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  min_degree = min(abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon),360-abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon))
+                  if min_degree > 50:
+                    break
+                  if min_degree <= 50:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A3-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                    
+                    
+    # SENARYO -A4 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(kurye_line.partner_id.name + " - durumu:" + kurye_line.partner_id.kurye_durumu + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu)  + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 2000:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "musait" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A4-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: min(abs(float(siparis.yon) - restoran_paket_arasi_yon),360-abs(float(siparis.yon) - restoran_paket_arasi_yon)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  min_degree = min(abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon),360-abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon))
+                  if min_degree > 50:
+                    break
+                  if min_degree <= 50:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A4-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                    
+                    
+                    
+    # SENARYO -A5 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(kurye_line.partner_id.name + " - durumu:" + kurye_line.partner_id.kurye_durumu + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu)  + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 99999999999:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_mola_durumu == False and (kurye_line.partner_id.kurye_durumu == "musait" or kurye_line.partner_id.kurye_durumu == "pakette"):
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A5-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: min(abs(float(siparis.yon) - restoran_paket_arasi_yon),360-abs(float(siparis.yon) - restoran_paket_arasi_yon)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  min_degree = min(abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon),360-abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon))
+                  if min_degree > 50:
+                    break
+                  if min_degree <= 50:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A5-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                    
+                    
+                    
+    # SENARYO -A6 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(kurye_line.partner_id.name + " - durumu:" + kurye_line.partner_id.kurye_durumu + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu)  + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 99999999999:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_mola_durumu == False and (kurye_line.partner_id.kurye_durumu == "musait" or kurye_line.partner_id.kurye_durumu == "pakette"):
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A6-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: min(abs(float(siparis.yon) - restoran_paket_arasi_yon),360-abs(float(siparis.yon) - restoran_paket_arasi_yon)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  min_degree = min(abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon),360-abs(float(kuryenin_devam_eden_siparisi.yon) - restoran_paket_arasi_yon))
+                  if min_degree > 50:
+                    break
+                  if min_degree <= 50:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A6-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                    
+
+              
+    # SENARYO - A7 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: kurye.slot_paket_sayisi)
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng,kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(slot.kurye.name + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 99999999999999999:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu != "mesgul" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi < 4:
+              rec["kurye"] = kurye_line.partner_id.id
+              rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+              kurye_line["slot_paket_sayisi"] = kurye_line.slot_paket_sayisi + 1
+              atama_durumu = 1
+              log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A7-S1 Üzerinden Atanmıştır.", level='info')
+              break
+              
+    # SENARYO - A8 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: kurye.slot_paket_sayisi)
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng,kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(slot.kurye.name + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 99999999999999999:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu != "mesgul":
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi < 111:
+              rec["kurye"] = kurye_line.partner_id.id
+              rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+              kurye_line["slot_paket_sayisi"] = kurye_line.slot_paket_sayisi + 1
+              atama_durumu = 1
+              log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Algoritma A8-S1 Üzerinden Atanmıştır.", level='info')
+              
+              
+  if magaza.slot_tipi == 'bolge':
+    min_degree = 0
+    uygun_slot = env['slots.profile'].search(["&","&","&",["active_status","=",True],["magazalar.id","=",rec.magaza.id],["start_date","<=",rec.siparis_tarihi],["end_date",">=",rec.siparis_tarihi]],limit=1)
+    log("uygun slot id: " + str(uygun_slot.id) + " uygun slot adı: " + str(uygun_slot.name), level='info')
+    if rec.lat != 0 and rec.lng != 0 and rec.magaza.lat != 0 and rec.magaza.lng != 0:
+        restoran_paket_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, rec.lat, rec.lng)
+        if restoran_paket_arasi_mesafe >= 6000:
+          restoran_paket_arasi_mesafe = 6000
+        restoran_paket_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, rec.lat, rec.lng)
+        rec["mesafe"] = restoran_paket_arasi_mesafe
+        rec["yon"] = restoran_paket_arasi_yon
+        
+    
+    # SENARYO -A1 -------------------------------------------------------
+    iki_paket_arasi_mesafe = 0
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        if restoran_kurye_arasi_mesafe <= 500:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "musait" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A1-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: abs(model.find_distance(rec.lat, rec.lng, siparis.lat, siparis.lng)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  iki_paket_arasi_mesafe = abs(model.find_distance(rec.lat, rec.lng, kuryenin_devam_eden_siparisi.lat, kuryenin_devam_eden_siparisi.lng))
+                  if iki_paket_arasi_mesafe > 1500 and rec.lat != 0 and rec.lng != 0 and kuryenin_devam_eden_siparisi.lat != 0 and kuryenin_devam_eden_siparisi.lng != 0:
+                    break
+                  if iki_paket_arasi_mesafe <= 1500:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A1-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                    
+    
+    # SENARYO -A2 -------------------------------------------------------
+    iki_paket_arasi_mesafe = 0
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(str(kurye_line.partner_id.name) + " - durumu:" + str(kurye_line.partner_id.kurye_durumu) + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu) + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 1200:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "musait" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A2-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: abs(model.find_distance(rec.lat, rec.lng, siparis.lat, siparis.lng)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  iki_paket_arasi_mesafe = abs(model.find_distance(rec.lat, rec.lng, kuryenin_devam_eden_siparisi.lat, kuryenin_devam_eden_siparisi.lng))
+                  if iki_paket_arasi_mesafe > 1500 and rec.lat != 0 and rec.lng != 0 and kuryenin_devam_eden_siparisi.lat != 0 and kuryenin_devam_eden_siparisi.lng != 0:
+                    break
+                  if iki_paket_arasi_mesafe <= 1500:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A2-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                  
+                  
+    # SENARYO -A3 -------------------------------------------------------
+    iki_paket_arasi_mesafe = 0
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(str(kurye_line.partner_id.name) + " - durumu:" + str(kurye_line.partner_id.kurye_durumu) + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu) + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 750:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "pakette" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A3-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: abs(model.find_distance(rec.lat, rec.lng, siparis.lat, siparis.lng)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  iki_paket_arasi_mesafe = abs(model.find_distance(rec.lat, rec.lng, kuryenin_devam_eden_siparisi.lat, kuryenin_devam_eden_siparisi.lng))
+                  if iki_paket_arasi_mesafe > 1500 and rec.lat == 0 and rec.lng == 0 and kuryenin_devam_eden_siparisi.lat != 0 and kuryenin_devam_eden_siparisi.lng != 0:
+                    break
+                  if iki_paket_arasi_mesafe <= 1500:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A3-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                    
+    # SENARYO -A4 -------------------------------------------------------
+    iki_paket_arasi_mesafe = 0
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(str(kurye_line.partner_id.name) + " - durumu:" + str(kurye_line.partner_id.kurye_durumu) + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu) + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 2000:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "musait" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A4-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: abs(model.find_distance(rec.lat, rec.lng, siparis.lat, siparis.lng)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  iki_paket_arasi_mesafe = abs(model.find_distance(rec.lat, rec.lng, kuryenin_devam_eden_siparisi.lat, kuryenin_devam_eden_siparisi.lng))
+                  if iki_paket_arasi_mesafe > 1500 and rec.lat != 0 and rec.lng != 0 and kuryenin_devam_eden_siparisi.lat != 0 and kuryenin_devam_eden_siparisi.lng != 0:
+                    break
+                  if iki_paket_arasi_mesafe <= 1500:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A4-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                    
+                    
+                    
+    # SENARYO -A5 -------------------------------------------------------
+    iki_paket_arasi_mesafe = 0
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(str(kurye_line.partner_id.name) + " - durumu:" + str(kurye_line.partner_id.kurye_durumu) + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu) + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 9999999999999:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "musait" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A5-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: abs(model.find_distance(rec.lat, rec.lng, siparis.lat, siparis.lng)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  iki_paket_arasi_mesafe = abs(model.find_distance(rec.lat, rec.lng, kuryenin_devam_eden_siparisi.lat, kuryenin_devam_eden_siparisi.lng))
+                  if iki_paket_arasi_mesafe > 1500 and rec.lat != 0 and rec.lng != 0 and kuryenin_devam_eden_siparisi.lat != 0 and kuryenin_devam_eden_siparisi.lng != 0:
+                    break
+                  if iki_paket_arasi_mesafe <= 1500:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A5-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+                  
+                  
+                  
+    # SENARYO -A6 -------------------------------------------------------
+    iki_paket_arasi_mesafe = 0
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: model.find_distance(magaza.lat, magaza.lng, kurye.partner_id.lat, kurye.partner_id.lng))
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(str(kurye_line.partner_id.name) + " - durumu:" + str(kurye_line.partner_id.kurye_durumu) + " mola durumu: " + str(kurye_line.partner_id.kurye_mola_durumu) + " Anlık Paket Sayısı: " + str(kurye_line.partner_id.anlik_tasinan_paket_sayisi) + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 9999999999999:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_mola_durumu == False and (kurye_line.partner_id.kurye_durumu == "musait" or kurye_line.partner_id.kurye_durumu == "pakette"):
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi <= 3:
+              kuryenin_devam_eden_siparisleri = env['corders.profile'].search(['&','&',["kurye.id","=",kurye_line.partner_id.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+              if len(kuryenin_devam_eden_siparisleri) == 0:
+                rec["kurye"] = kurye_line.partner_id.id
+                rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                kurye_line["slot_paket_sayisi"] += 1
+                atama_durumu = 1
+                log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A5-S1 Üzerinden Atanmıştır.", level='info')
+              if len(kuryenin_devam_eden_siparisleri) > 0 and len(kuryenin_devam_eden_siparisleri) <= 3:
+                sorted_kuryenin_devam_eden_siparisleri = sorted(kuryenin_devam_eden_siparisleri,key=lambda siparis: abs(model.find_distance(rec.lat, rec.lng, siparis.lat, siparis.lng)),reverse=True)
+                for kuryenin_devam_eden_siparisi in sorted_kuryenin_devam_eden_siparisleri:
+                  iki_paket_arasi_mesafe = abs(model.find_distance(rec.lat, rec.lng, kuryenin_devam_eden_siparisi.lat, kuryenin_devam_eden_siparisi.lng))
+                  if iki_paket_arasi_mesafe > 1500 and rec.lat != 0 and rec.lng != 0 and kuryenin_devam_eden_siparisi.lat != 0 and kuryenin_devam_eden_siparisi.lng != 0:
+                    break
+                  if iki_paket_arasi_mesafe <= 1500:
+                    rec["kurye"] = kurye_line.partner_id.id
+                    rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+                    kurye_line["slot_paket_sayisi"] += 1
+                    atama_durumu = 1
+                    log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A5-S2 Üzerinden Atanmıştır.", level='info')
+                    break
+
+ 
+    # SENARYO - A7 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: kurye.slot_paket_sayisi)
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng,kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(slot.kurye.name + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 99999999999999999:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu == "musait" and kurye_line.partner_id.kurye_mola_durumu == False:
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi < 4:
+              rec["kurye"] = kurye_line.partner_id.id
+              rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+              kurye_line["slot_paket_sayisi"] = kurye_line.slot_paket_sayisi + 1
+              atama_durumu = 1
+              log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A7-S1 Üzerinden Atanmıştır.", level='info')
+              break
+              
+    # SENARYO - A8 -------------------------------------------------------
+    if atama_durumu == 0:
+      aktif_kuryeler = filter(lambda kurye: kurye.active, uygun_slot.skurye_profile_lines)
+      sorted_skurye_profile_lines = sorted(aktif_kuryeler, key=lambda kurye: kurye.slot_paket_sayisi)
+      for index, kurye_line in enumerate(sorted_skurye_profile_lines):
+        if atama_durumu == 1:
+          break
+        restoran_kurye_arasi_mesafe = model.find_distance(magaza.lat, magaza.lng, kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        restoran_kurye_arasi_yon = model.yon_tespiti(magaza.lat, magaza.lng,kurye_line.partner_id.lat, kurye_line.partner_id.lng)
+        #log(slot.kurye.name + " R-K Metresi: " + str(restoran_kurye_arasi_mesafe) + " R-K Yönü: " + str(restoran_kurye_arasi_yon) + " R-P Metresi: " + str(restoran_paket_arasi_mesafe) + " R-P Yönü: " + str(restoran_paket_arasi_yon), level='info')
+        if restoran_kurye_arasi_mesafe <= 99999999999999999:
+          if atama_durumu == 0 and kurye_line.partner_id.kurye_durumu != "mesgul":
+            if kurye_line.partner_id.anlik_tasinan_paket_sayisi < 111:
+              rec["kurye"] = kurye_line.partner_id.id
+              rec["kurye_telefonu"] = kurye_line.partner_id.mobile
+              kurye_line["slot_paket_sayisi"] = kurye_line.slot_paket_sayisi + 1
+              atama_durumu = 1
+              log(str(rec.siparis_no) + " - " + str(kurye_line.partner_id.name) + " - Bölge Algoritması A8-S1 Üzerinden Atanmıştır.", level='info')
+              
+  
+  
+  player_ids = []
+  if len(magaza) > 0:
+    player_ids.append(rec.magaza.player_id)
+    if atama_durumu == 0:
+      if len(player_ids) > 0:
+        env['notifier.profile'].send_Push_Notification_With_Playerid("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f", player_ids ,str(rec.siparis_no) + " nolu siparişinize kurye atanamadı.")  
+      #if rec.magaza.mobile != False:
+      #  env['notifier.profile'].sudo().send_Sms("8503098436","P7.95cHD","Esaalarm",rec.magaza.mobile,str(rec.siparis_no) + " nolu siparişinize kurye atanamadı. Sipariş detaylarına ulaşmak ve manuel kurye atamak için https://kuryetec.autoronics.com/web")
+
+
+  ]]></field>
+        </record>
+        <record id="automation_22" model="base.automation">
+        <field name="name">When Corders Sipariş Durumu Changed (Eski Versiyon)</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="trigger">on_write</field>
+        <field name="active" eval="False"/>
+        <field name="filter_pre_domain">[(&quot;magaza.name&quot;, &quot;not ilike&quot;, &quot;Dürümcü Bedir Usta (Şafak)&quot;)]</field>
+        <field name="filter_domain">[(&quot;magaza.name&quot;, &quot;not ilike&quot;, &quot;Dürümcü Bedir Usta (Şafak)&quot;)]</field>
+        <field name="state">code</field>
+        <field name="sequence">18</field>
+        <field name="trg_date_range">0</field>
+        <field name="trigger_field_ids" eval="[(6, 0, [ref('corders.field_corders_profile__siparis_durumu')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["siparis_durumu_zamani"] = datetime.datetime.now()
+  if rec.siparis_durumu == "teslim_edildi" or rec.siparis_durumu == "iptal_edildi":
+    #if rec.kurye.anlik_tasinan_paket_sayisi >= 1:
+    #  rec["kurye"]["anlik_tasinan_paket_sayisi"] = rec.kurye.anlik_tasinan_paket_sayisi - 1
+    belirli_saat_oncesi = datetime.datetime.now() - datetime.timedelta(hours = 24)
+    if len(rec.kurye) > 0:
+      kuryenin_tum_devam_eden_siparisleri = env['corders.profile'].search(['&','&','&',["siparis_tarihi", ">=", belirli_saat_oncesi],["kurye.id","=",rec.kurye.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+      rec["kurye"]["uzerindeki_paket_sayisi"] = len(kuryenin_tum_devam_eden_siparisleri)
+      kuryenin_sepetinde_tasidigi_siparisler = env['corders.profile'].search(['&','&','&','&',["siparis_tarihi", ">=", belirli_saat_oncesi],["kurye.id","=",rec.kurye.id],["kurye_siparis_durumu","=","siparisi_teslim_aldi"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+      rec["kurye"]["anlik_tasinan_paket_sayisi"] = len(kuryenin_sepetinde_tasidigi_siparisler)
+      if len(kuryenin_sepetinde_tasidigi_siparisler) == 0 and rec.kurye.kurye_durumu != "mesgul":
+        rec["kurye"]["kurye_durumu"] = "musait"
+    
+  if rec.siparis_durumu == "teslim_edildi":
+    mesafe = 0
+    mesafe = model.find_distance(rec.magaza.lat, rec.magaza.lng, rec.lat, rec.lng)
+    slot = env['slots.profile'].search(["&","&",["magazalar.id","=",rec.magaza.id],["start_date","<=",rec.siparis_tarihi],["end_date",">=",rec.siparis_tarihi]], limit=1)
+    if len(slot) > 0:
+      #Sabit Kuryeli Ücretlendirme Ayarları Başlangıç -----------------------------------
+      if slot.slot_tipi == "sabit":
+        if rec.kurye != False:
+          rec["baz_price"] = rec.magaza.paket_basi_ucret
+          rec["promosyon_price"] = slot.slot_promosyon_ucret
+          sabit_km_ucreti = rec.magaza.get_distance_fee(mesafe)
+          rec["toplam_km_price"] = sabit_km_ucreti
+          rec["yuzdelik_kar_orani_price"] = (rec.magaza.yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari)
+          rec["sale_price"] = rec.magaza.paket_basi_ucret + sabit_km_ucreti + slot.slot_promosyon_ucret + (rec.magaza.yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari)
+          rec["restoran_paket_mesafesi"] = mesafe
+          #log("id:" + str(rec.id) + " - kurye uzaklığı: " + str(mesafe/1000) + " '- sipariş paket_saat_km ücret cinsinden - paket başı: " + str(rec.magaza.paket_basi_ucret) + "TL - km ücreti: " +  str(rec.magaza.kmlik_ucret) + "TL - promosyon ücreti: " +  str(slot.slot_promosyon_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+          # sabit Ücretlendirme Ayarları Bitiş --------------------------------------------------
+            
+      #Bölge Tanımlamalı Ücretlendirme Ayarları Başlangıç -----------------------------------
+      if slot.slot_tipi == "bolge":
+        if rec.kurye != False:
+          rec["baz_price"] = slot.paket_basi_ucret
+          rec["promosyon_price"] = slot.slot_promosyon_ucret
+          rec["toplam_km_price"] = slot.get_distance_fee(mesafe)
+          rec["sale_price"] = slot.paket_basi_ucret + slot.slot_promosyon_ucret + rec.toplam_km_price
+          rec["restoran_paket_mesafesi"] = mesafe
+          #log("id:" + str(rec.id) + " - kurye uzaklığı: " + str(mesafe/1000) + " '- sipariş paket_saat_km ücret cinsinden - paket başı: " + str(slot.paket_basi_ucret) + "TL - km ücreti: " +  str(slot.kmlik_ucret) + "TL - promosyon ücreti: " +  str(slot.slot_promosyon_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+          #Bölge Tanımlamalı Ücretlendirme Ayarları Bitiş --------------------------------------------------
+     
+      rec["paket_bitis_tarihi"] = datetime.datetime.now()
+      if rec.paket_bitis_tarihi != False and rec.paket_baslangic_tarihi != False:
+        rec["paket_suresi_dakika"] = (rec.paket_bitis_tarihi - rec.paket_baslangic_tarihi).total_seconds() / 60
+    
+  if rec.siparis_durumu == "iptal_edildi":
+    model.siparis_iptal_edildi_bilgisi(rec.id)
+
+    
+    
+    
+
+
+]]></field>
+        </record>
+        <record id="automation_23" model="base.automation">
+        <field name="name">When Contact Created And Updated</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="trigger">on_create_or_write</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">8</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  if rec.user_role == 'magaza':
+    if rec.slot_tipi == False:
+      raise UserError(("Lütfen Vardiya Tipini Giriniz!"))
+  
+  if (rec.pazartesi_start_date == False and rec.pazartesi_end_date != False) or (rec.pazartesi_start_date != False and rec.pazartesi_end_date == False):
+    raise UserError(("Lütfen Pazartesi Günü İçin Çalışma Saatlerini Tam Giriniz!"))
+  if (rec.sali_start_date == False and rec.sali_end_date != False) or (rec.sali_start_date != False and rec.sali_end_date == False):
+    raise UserError(("Lütfen Salı Günü İçin Çalışma Saatlerini Tam Giriniz!"))
+  if (rec.carsamba_start_date == False and rec.carsamba_end_date != False) or (rec.carsamba_start_date != False and rec.carsamba_end_date == False):
+    raise UserError(("Lütfen Çarşamba Günü İçin Çalışma Saatlerini Tam Giriniz!"))
+  if (rec.persembe_start_date == False and rec.persembe_end_date != False) or (rec.persembe_start_date != False and rec.persembe_end_date == False):
+    raise UserError(("Lütfen Perşembe Günü İçin Çalışma Saatlerini Tam Giriniz!"))
+  if (rec.cuma_start_date == False and rec.cuma_end_date != False) or (rec.cuma_start_date != False and rec.cuma_end_date == False):
+    raise UserError(("Lütfen Cuma Günü İçin Çalışma Saatlerini Tam Giriniz!"))
+  if (rec.cumartesi_start_date == False and rec.cumartesi_end_date != False) or (rec.cumartesi_start_date != False and rec.cumartesi_end_date == False):
+    raise UserError(("Lütfen Cumartesi Günü İçin Çalışma Saatlerini Tam Giriniz!"))
+  if (rec.pazar_start_date == False and rec.pazar_end_date != False) or (rec.pazar_start_date != False and rec.pazar_end_date == False):
+    raise UserError(("Lütfen Pazar Günü İçin Çalışma Saatlerini Tam Giriniz!"))
+  
+
+]]></field>
+        </record>
+        <record id="automation_24" model="base.automation">
+        <field name="name">When Corders Kurye Changed</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="trigger">on_write</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">20</field>
+        <field name="trg_date_range">0</field>
+        <field name="trigger_field_ids" eval="[(6, 0, [ref('corders.field_corders_profile__kurye')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  player_ids = []
+  if len(rec.kurye) > 0:
+    belirli_saat_oncesi = datetime.datetime.now() - datetime.timedelta(hours = 24)
+    kuryenin_sepetinde_tasidigi_siparisler = env['corders.profile'].search(['&','&','&','&',["siparis_tarihi", ">=", belirli_saat_oncesi],["kurye.id","=",rec.kurye.id],["kurye_siparis_durumu","=","siparisi_teslim_aldi"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+    rec["kurye"]["anlik_tasinan_paket_sayisi"] = len(kuryenin_sepetinde_tasidigi_siparisler)
+    kuryenin_tum_devam_eden_siparisleri = env['corders.profile'].search(['&','&','&',["siparis_tarihi", ">=", belirli_saat_oncesi],["kurye.id","=",rec.kurye.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+    rec["kurye"]["uzerindeki_paket_sayisi"] = len(kuryenin_tum_devam_eden_siparisleri)
+    player_ids.append(rec.kurye.player_id)
+    if len(player_ids) > 0:
+      env['notifier.profile'].send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Yeni Teslimat",str(rec.siparis_no) + " nolu yeni paket teslimatınız atanmıştır.")
+    #if rec.kurye.mobile != False:
+    #  env['notifier.profile'].sudo().send_Sms("8503098436","P7.95cHD","Esaalarm",rec.kurye.mobile,str(rec.siparis_no) + " nolu yeni paket teslimatınız atanmıştır. Sipariş detaylarına ulaşmak için https://kuryetec.autoronics.com/r/rws")
+]]></field>
+        </record>
+        <record id="automation_25" model="base.automation">
+        <field name="name">Contact Silme</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="trigger">on_unlink</field>
+        <field name="active" eval="True"/>
+
+        <field name="filter_domain">[]</field>
+        <field name="state">code</field>
+        <field name="sequence">6</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  if env.user.has_group('base.group_system') == False:
+    raise UserError((rec.name + " silme işlemi için yetkiniz yok. Daha önce kaydedilmiş olan restoran ve kuryelerin mevcut muhasebesel girdileri ve çıktıları olabilir. Bu sebeple silme işlemine izin vermiyoruz. Bu tarz talepleriniz için Yetkili Firma ile iletişime geçin!"))
+  if rec.user_role == "magaza":
+    slots = env['slots.profile'].search([["magazalar.id","ilike",rec.id]])
+    if len(slots) > 0:
+      raise UserError((rec.name + " İçin Geçmiş Vardiyalar Var. Bu Restorana Kayıtlı Kuryelerin Geçmiş Ödemeleri Olabileceği İçin Restoranı Silme Yetkin Yok!"))
+
+    
+
+
+]]></field>
+        </record>
+        <record id="automation_29" model="base.automation">
+        <field name="name">When Corders Sipariş Durumu Changed</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="trigger">on_write</field>
+        <field name="active" eval="True"/>
+        <field name="filter_pre_domain">[]</field>
+        <field name="filter_domain">[]</field>
+        <field name="state">code</field>
+        <field name="sequence">19</field>
+        <field name="trg_date_range">0</field>
+        <field name="trigger_field_ids" eval="[(6, 0, [ref('corders.field_corders_profile__siparis_durumu')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["siparis_durumu_zamani"] = datetime.datetime.now()
+  if rec.siparis_durumu == "teslim_edildi" or rec.siparis_durumu == "iptal_edildi":
+    #if rec.kurye.anlik_tasinan_paket_sayisi >= 1:
+    #  rec["kurye"]["anlik_tasinan_paket_sayisi"] = rec.kurye.anlik_tasinan_paket_sayisi - 1
+    belirli_saat_oncesi = datetime.datetime.now() - datetime.timedelta(hours = 24)
+    if len(rec.kurye) > 0:
+      kuryenin_tum_devam_eden_siparisleri = env['corders.profile'].search(['&','&','&',["siparis_tarihi", ">=", belirli_saat_oncesi],["kurye.id","=",rec.kurye.id],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+      rec["kurye"]["uzerindeki_paket_sayisi"] = len(kuryenin_tum_devam_eden_siparisleri)
+      kuryenin_sepetinde_tasidigi_siparisler = env['corders.profile'].search(['&','&','&','&',["siparis_tarihi", ">=", belirli_saat_oncesi],["kurye.id","=",rec.kurye.id],["kurye_siparis_durumu","=","siparisi_teslim_aldi"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+      rec["kurye"]["anlik_tasinan_paket_sayisi"] = len(kuryenin_sepetinde_tasidigi_siparisler)
+      if len(kuryenin_sepetinde_tasidigi_siparisler) == 0 and rec.kurye.kurye_durumu != "mesgul":
+        rec["kurye"]["kurye_durumu"] = "musait"
+    
+  if rec.siparis_durumu == "teslim_edildi":
+    mesafe = 0
+    mesafe = model.find_distance(rec.magaza.lat, rec.magaza.lng, rec.lat, rec.lng)
+    slot = env['slots.profile'].search(["&","&",["magazalar.id","=",rec.magaza.id],["start_date","<=",rec.siparis_tarihi],["end_date",">=",rec.siparis_tarihi]], limit=1)
+    kuryenin_musteriden_aldigi_odeme = 0
+    if len(slot) > 0:
+      #Sabit Kuryeli Ücretlendirme Ayarları Başlangıç -----------------------------------
+      if slot.slot_tipi == "sabit":
+        if rec.kurye != False:
+          rec["baz_price"] = rec.magaza.paket_basi_ucret
+          rec["promosyon_price"] = slot.slot_promosyon_ucret
+          sabit_km_ucreti = rec.magaza.get_distance_fee(mesafe)
+          rec["toplam_km_price"] = sabit_km_ucreti
+          rec["yuzdelik_kar_orani_price"] = (rec.magaza.yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari)
+          rec["sale_price"] = rec.magaza.paket_basi_ucret + sabit_km_ucreti + slot.slot_promosyon_ucret + (rec.magaza.yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari)
+          rec["restoran_paket_mesafesi"] = mesafe
+          #log("id:" + str(rec.id) + " - kurye uzaklığı: " + str(mesafe/1000) + " '- sipariş paket_saat_km ücret cinsinden - paket başı: " + str(rec.magaza.paket_basi_ucret) + "TL - km ücreti: " +  str(rec.magaza.kmlik_ucret) + "TL - promosyon ücreti: " +  str(slot.slot_promosyon_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+          # sabit Ücretlendirme Ayarları Bitiş --------------------------------------------------
+        if rec.magaza != False:
+          rec["restoran_baz_price"] = rec.magaza.restoran_paket_basi_ucret
+          restoran_km_ucreti = rec.magaza.get_platform_distance_fee(mesafe)
+          rec["restoran_toplam_km_price"] = restoran_km_ucreti
+          rec["restoran_yuzdelik_kar_orani_price"] = (rec.magaza.restoran_yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari)
+          if rec.kurye_odeme_alma_yontemi == "kapida_kredi_karti" or rec.kurye_odeme_alma_yontemi == "kapida_nakit":
+            kuryenin_musteriden_aldigi_odeme = rec.toplam_siparis_tutari
+          rec["kuryenin_musteriden_aldigi_odeme"] = kuryenin_musteriden_aldigi_odeme
+          rec["restoran_borc_toplami"] = rec.magaza.restoran_paket_basi_ucret + restoran_km_ucreti + (rec.magaza.restoran_yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari) - kuryenin_musteriden_aldigi_odeme
+        
+            
+      #Bölge Tanımlamalı Ücretlendirme Ayarları Başlangıç -----------------------------------
+      if slot.slot_tipi == "bolge":
+        if rec.kurye != False:
+          rec["baz_price"] = slot.paket_basi_ucret
+          rec["promosyon_price"] = slot.slot_promosyon_ucret
+          rec["toplam_km_price"] = slot.get_distance_fee(mesafe)
+          rec["sale_price"] = slot.paket_basi_ucret + slot.slot_promosyon_ucret + rec.toplam_km_price
+          rec["restoran_paket_mesafesi"] = mesafe
+          #log("id:" + str(rec.id) + " - kurye uzaklığı: " + str(mesafe/1000) + " '- sipariş paket_saat_km ücret cinsinden - paket başı: " + str(slot.paket_basi_ucret) + "TL - km ücreti: " +  str(slot.kmlik_ucret) + "TL - promosyon ücreti: " +  str(slot.slot_promosyon_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+          #Bölge Tanımlamalı Ücretlendirme Ayarları Bitiş --------------------------------------------------
+        if rec.magaza != False:
+          rec["restoran_baz_price"] = rec.magaza.restoran_paket_basi_ucret
+          restoran_km_ucreti = rec.magaza.get_platform_distance_fee(mesafe)
+          rec["restoran_toplam_km_price"] = restoran_km_ucreti
+          rec["restoran_yuzdelik_kar_orani_price"] = (rec.magaza.restoran_yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari)
+          if rec.kurye_odeme_alma_yontemi == "kapida_kredi_karti" or rec.kurye_odeme_alma_yontemi == "kapida_nakit":
+            kuryenin_musteriden_aldigi_odeme = rec.toplam_siparis_tutari
+          rec["kuryenin_musteriden_aldigi_odeme"] = kuryenin_musteriden_aldigi_odeme
+          rec["restoran_borc_toplami"] = rec.magaza.restoran_paket_basi_ucret + restoran_km_ucreti + (rec.magaza.restoran_yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari) - kuryenin_musteriden_aldigi_odeme
+     
+      rec["paket_bitis_tarihi"] = datetime.datetime.now()
+      if rec.paket_bitis_tarihi != False and rec.paket_baslangic_tarihi != False:
+        rec["paket_suresi_dakika"] = (rec.paket_bitis_tarihi - rec.paket_baslangic_tarihi).total_seconds() / 60
+    
+  if rec.siparis_durumu == "iptal_edildi":
+    model.siparis_iptal_edildi_bilgisi(rec.id)
+
+    
+    
+    
+
+
+]]></field>
+        </record>
+        <record id="cron_54" model="ir.cron">
+        <field name="name">Siparişleri Çek - 1 (Autoronics)</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="state">code</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">13</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+min_date = str((datetime.datetime.now()-datetime.timedelta(minutes = 1440)).strftime('%Y-%m-%d %H:%M:%S'))
+status = "Ordered,Cooked,OnDelivery"
+restoranlar = env['res.partner'].search(['&',["user_role","=","magaza"],["pos_entegrasyon_firmasi","=","adisyo"]])
+for restoran in restoranlar:
+  model.adisyo_get_last_orders((restoran.id),"1",min_date,status)
+  restoran["last_integration_time"] = datetime.datetime.now()
+  #orderType = "TakeAway,Retail"
+  #model.adisyo_get_complated_orders("194","1",min_date,"true",orderType)
+
+
+]]></field>
+        </record>
+        <record id="cron_56" model="ir.cron">
+        <field name="name">Offline Kurye İşaretleme (Autoronics)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">7</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+kuryeler = env['res.partner'].search(['&','&',["user_role","=","kurye"],["konum_online","=",True],["son_konum_zamani","<",datetime.datetime.now() - datetime.timedelta(seconds = 180)]])
+for kurye in kuryeler:
+  kurye["konum_online"] = False
+  
+dk3_offline_kuryeler = env['res.partner'].search(['&','&','&','&',["kurye_durumu","!=",False],["kurye_durumu","!=","mesgul"],["user_role","=","kurye"],["son_konum_zamani",">",datetime.datetime.now() - datetime.timedelta(seconds = 660)],["son_konum_zamani","<",datetime.datetime.now() - datetime.timedelta(seconds = 600)]])
+player_ids = []
+#log("now: " + str(datetime.datetime.now()), level='info')
+log("Uzun süreli offline olan kuryeler: " + str(dk3_offline_kuryeler), level='info')
+for offline_kurye in dk3_offline_kuryeler:
+  if offline_kurye.player_id != False:
+    player_ids.append(offline_kurye.player_id)
+    log("son konum zamani: " + str(offline_kurye.son_konum_zamani), level='info')
+if len(player_ids) > 0:
+  env['notifier.profile'].send_Push_Notification_With_Playerid_V1("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f", player_ids ,"Konumun Offline Oldu!","10 dakikadır konumuna erişemiyoruz! Lütfen uygulama ekranını açık tut.")]]></field>
+        </record>
+        <record id="cron_61" model="ir.cron">
+        <field name="name">Onaylanmamış veya Bekleyen Sipariş Uyarısı (Autoronics)</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="state">code</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+
+#onaylanmamış sipariş kuryeye bildirim
+#siparisler = env['corders.profile'].search(['&','&','&','&','&',["siparis_tarihi",">",datetime.datetime.now() - datetime.timedelta(seconds = 300)],["siparis_tarihi","<",datetime.datetime.now() - datetime.timedelta(seconds = 60)],["kurye","!=",False],["kurye_siparis_durumu","=","onay_bekliyor"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+#if len(siparisler) > 0:
+#  log("Onaylanmamış Siparisler: " + str(siparisler), level='info')
+#player_ids = []
+#for siparis in siparisler:
+#  player_ids = []
+#  if len(siparis.kurye) > 0:
+#    player_ids.append(siparis.kurye.player_id)
+#    if len(player_ids) > 0:
+#      env['notifier.profile'].send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Siparişi Onaylamadın! Seni Bekliyoruz",str(siparis.siparis_no) + " nolu teslimatı hala onaylamadın.")
+
+#onaylanmış ancak teslim edilmemiş siparişi kuryeye bildirime
+#siparisler = env['corders.profile'].search(['&','&','&','&','&',["siparis_tarihi",">",datetime.datetime.now() - datetime.timedelta(seconds = 2850)],["siparis_tarihi","<",datetime.datetime.now() - datetime.timedelta(seconds = 2700)],["kurye","!=",False],["kurye_siparis_durumu","!=","onay_bekliyor"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+#if len(siparisler) > 0:
+#  log("Kuryelerin onaylanmış ancak teslim edilmemiş siparisleri: " + str(siparisler), level='info')
+#player_ids = []
+#for siparis in siparisler:
+#  if len(siparis.kurye) > 0:
+#    player_ids.append(siparis.kurye.player_id)
+#if len(player_ids) > 0:
+#  env['notifier.profile'].send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Teslim Edilmemiş Siparişin Var!","Uzun süredir siparişini teslim etmedin")
+
+
+#onaylanmamış siparişte kuryeye telefon araması
+siparisler = env['corders.profile'].search(['&','&','&','&','&','&',["siparis_tarihi",">",datetime.datetime.now() - datetime.timedelta(seconds = 180)],["siparis_tarihi","<",datetime.datetime.now() - datetime.timedelta(seconds = 120)],["kurye","!=",False],["kurye.siparis_aramasi_status","!=",False],["kurye.mobile","!=",False],["kurye_siparis_durumu","=","onay_bekliyor"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+for siparis in siparisler:
+  log("Onaylanmamış Siparişin ücretli telefon araması - Aranan kurye: " + str(siparis.kurye.name) + " Aranan telefon: " + str(siparis.kurye.mobile) + " Kurye Yetkilisi: " + str(siparis.kurye.yetkili_user.partner_id.name), level='info')
+  env['notifier.profile'].sudo().send_basic_voice_call("8503098436","P7.95cHD",str((datetime.datetime.now() - datetime.timedelta(hours=1)).strftime("%d%m%y")),str((datetime.datetime.now() - datetime.timedelta(hours=1)).strftime("%H%M")),str((datetime.datetime.now() + datetime.timedelta(hours=5)).strftime("%d%m%y")),str((datetime.datetime.now() + datetime.timedelta(hours=5)).strftime("%H%M")),"https://kuryetec.autoronics.com/netgsmcallback","1","2c1179bb198d25042a75eaa8011b04cd",str(siparis.magaza.name) + " restoranındaki " + str(siparis.siparis_no) + " nolu teslimatı hala onaylamadınız. Lütfen Uygulamanıza girerek siparişi onaylayınız!",str(siparis.kurye.mobile),"no_2","no_3","no_4","no_5","1","Lütfen Uygulamaya Geçiniz","2","Test Dönüş","3","Test Dönüş")
+  
+#kurye yetkilisine kurye siparişi onaylamadığındaki bildirim
+siparisler = env['corders.profile'].search(['&','&','&','&','&',["siparis_tarihi",">",datetime.datetime.now() - datetime.timedelta(seconds = 360)],["siparis_tarihi","<",datetime.datetime.now() - datetime.timedelta(seconds = 300)],["kurye","!=",False],["kurye_siparis_durumu","=","onay_bekliyor"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+if len(siparisler) > 0:
+  log("yetkililere onaylanmamış sipariş uyarısı: " + str(siparisler), level='info')
+for siparis in siparisler:
+  player_ids = []
+  if len(siparis.kurye.yetkili_users) > 0:
+    for yetkili_user in siparis.kurye.yetkili_users:
+      if yetkili_user.partner_id.player_id != False:
+        player_ids.append(yetkili_user.partner_id.player_id)
+  if len(player_ids) > 0:
+    #log("kurye firmasına bildirim gönderildi", level='info')
+    env['notifier.profile'].send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Kurye Siparişi Onaylamadı!",str(siparis.siparis_no) + " nolu teslimatı " + str(siparis.kurye.name) + " hala onaylamadı.")
+
+
+#restoran yetkilisine kurye bulunamadığındaki bildirim
+siparisler = env['corders.profile'].search(['&','&','&','&','&',["siparis_tarihi",">",datetime.datetime.now() - datetime.timedelta(seconds = 80)],["siparis_tarihi","<",datetime.datetime.now() - datetime.timedelta(seconds = 30)],["kurye","=",False],["kurye_siparis_durumu","=","onay_bekliyor"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+if len(siparisler) > 0:
+  log("restoran yetkililerine atanamayan kurye sipariş uyarısı: " + str(siparisler), level='info')
+for siparis in siparisler:
+  player_ids = []
+  if len(siparis.magaza.yetkili_users) > 0:
+    for yetkili_user in siparis.magaza.yetkili_users:
+      if yetkili_user.partner_id.player_id != False:
+        player_ids.append(yetkili_user.partner_id.player_id)
+  if len(player_ids) > 0:
+    #log("kurye firmasına bildirim gönderildi", level='info')
+    env['notifier.profile'].send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Siparişe Uygun Kurye Bulunamadı!",str(siparis.siparis_no) + " nolu teslimatta " + str(siparis.magaza.name) + " restoranına uygun kurye bulunamadı. Hemen manuel atama yapın!")
+
+
+
+#onaylanmış ancak teslim edilmemiş siparişi kurye yetkilisine bildirime
+siparisler = env['corders.profile'].search(['&','&','&','&','&',["siparis_tarihi",">",datetime.datetime.now() - datetime.timedelta(seconds = 2150)],["siparis_tarihi","<",datetime.datetime.now() - datetime.timedelta(seconds = 2100)],["kurye","!=",False],["kurye_siparis_durumu","!=","onay_bekliyor"],["siparis_durumu","!=","teslim_edildi"],["siparis_durumu","!=","iptal_edildi"]])
+if len(siparisler) > 0:
+  log("Yetkililere onaylanmış ancak teslim edilmemiş sipariş uyarısı: " + str(siparisler), level='info')
+player_ids = []
+for siparis in siparisler:
+  player_ids = []
+  if len(siparis.kurye.yetkili_users) > 0:
+    for yetkili_user in siparis.kurye.yetkili_users:
+      if yetkili_user.partner_id.player_id != False:
+        player_ids.append(yetkili_user.partner_id.player_id)
+  if len(player_ids) > 0:
+    #log("kurye firmasına bildirim gönderildi", level='info')
+    env['notifier.profile'].send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Kurye Siparişi Onayladı Ancak Teslim Etmedi!",str(siparis.siparis_no) + " nolu teslimatı " + str(siparis.kurye.name) + " hala teslim etmedi.")
+]]></field>
+        </record>
+        <record id="cron_63" model="ir.cron">
+        <field name="name">Mola Durumları (Autoronics)</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="state">code</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+player_ids = []
+current_time = datetime.datetime.now() + datetime.timedelta(hours = 3)
+midnight_time = current_time.strftime('%H:%M:%S')
+if midnight_time >= "05:30:01" and midnight_time <= "05:35:00":
+    tum_kuryeler = env['res.partner'].search([["user_role","=","kurye"]])
+    for kurye in tum_kuryeler:
+      kurye.sudo().write({
+        'mola_kalan_sure': kurye.max_mola_suresi,
+        'kurye_mola_durumu': False
+      })
+
+kuryeler = env['res.partner'].search(['&',["user_role","=","kurye"],["kurye_mola_durumu","=",True]])
+for kurye in kuryeler:
+  if kurye.mola_kalan_sure >= 1:
+    kalan_sure = kurye.mola_kalan_sure - 1
+    kurye["mola_kalan_sure"] = kalan_sure
+    if kalan_sure == 0:
+      kurye.sudo().write({
+        'kurye_mola_durumu': False
+      })
+      log(str(kurye.id) + " id'li " + str(kurye.name) + " adlı kuryenin mola süresi doldu.", level='info')
+      if kurye.player_id != False:
+          player_ids.append(kurye.player_id)
+if len(player_ids) > 0:
+  env['notifier.profile'].send_Push_Notification_With_Playerid_V1("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f", player_ids ,"Mola Süren Doldu!","Bugünlük Mola Kotanı Kullandın")
+  
+      
+  
+]]></field>
+        </record>
+        <record id="cron_64" model="ir.cron">
+        <field name="name">Kurye Anlık Paket Sayisi Sıfırlama İşlemi (Autoronics)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+current_time = datetime.datetime.now() + datetime.timedelta(hours = 3)
+#log(str(current_time), level='info')
+if current_time.hour == 5 and current_time.minute >= 45 and current_time.minute <= 59:
+  kuryeler = env['res.partner'].search(['&',["user_role","=","kurye"],["anlik_tasinan_paket_sayisi",">",0]])
+  log("Kuryelerin Anlık Taşınan Paket Sayılarını Sıfırlama İşlemi Yapıldı", level='info')
+  for kurye in kuryeler:
+    kurye["anlik_tasinan_paket_sayisi"] = 0
+
+]]></field>
+        </record>
+        <record id="cron_69" model="ir.cron">
+        <field name="name">Log Zaman Aşımı Temizleme (Autoronics)</field>
+        <field name="model_id" ref="base.model_ir_logging"/>
+        <field name="state">code</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+expire_time = datetime.datetime.now() - datetime.timedelta(hours = 2160)
+reports = env['ir.logging'].search([["create_date","<",expire_time]],limit=20000).unlink()
+
+
+]]></field>
+        </record>
+        <record id="server_action_1164" model="ir.actions.server">
+        <field name="name">Müşterinin Konumunu Gör</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records: 
+  action = { 
+    'type': 'ir.actions.act_url', 
+    'name': 'Redirect to Specific Record', 
+    'res_model': 'ir.actions.act_url',  # Example: 'res.partner' 
+    'target': 'current',  # or 'new' for a new window 
+    'url': ("https://www.google.com/maps?q=" + str(rec.lat) + "," + str(rec.lng))
+    }
+
+]]></field>
+        </record>
+        <record id="server_action_1281" model="ir.actions.server">
+        <field name="name">Başlangıç Loglarını Gör</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="groups_id" eval="[(6, 0, [ref('corders.corders_group_fullaccess')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  action = {
+      'type': 'ir.actions.act_window',
+      'name': 'Detaylı Sipariş Logları',
+      'res_model': 'ir.logging',  # Example: 'res.partner'
+      'view_mode': 'tree,form',
+      'domain': ['&','&',('func', 'ilike', 'When Corders Created'),('create_date', '>=', rec.create_date - datetime.timedelta(seconds = 2)),('create_date', '<=', rec.create_date + datetime.timedelta(seconds = 3))],
+      'target': 'current',  # or 'new' for a new window
+  }
+
+
+
+]]></field>
+        </record>
+        <record id="server_action_1282" model="ir.actions.server">
+        <field name="name">Kurye Ata</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Kurye Ata',
+    'res_model': 'corders.wizard',  # Example: 'res.partner'
+    'view_mode': 'form',
+    'target': 'new',  # or 'new' for a new window,
+    'context': {
+        'corder_id': rec.id,
+    },
+  }
+
+
+]]></field>
+        </record>
+        <record id="server_action_1283" model="ir.actions.server">
+        <field name="name">Bitiş Loglarını Gör</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  action = {
+      'type': 'ir.actions.act_window',
+      'name': 'Detaylı Sipariş Logları',
+      'res_model': 'ir.logging',  # Example: 'res.partner'
+      'view_mode': 'tree,form',
+      'domain': ['|',('message', 'ilike', str(rec.id) + ' -'),('message', 'ilike', str(rec.id) + ' id')],
+      'target': 'current',  # or 'new' for a new window
+  }
+
+
+
+]]></field>
+        </record>
+        <record id="server_action_1284" model="ir.actions.server">
+        <field name="name">Kurye Ödeme Analizi</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+    
+    ks_domain_1 = [
+        ("partner_id", "ilike", "deneme")  # Example filter: search 'partner_id' with 'deneme'
+    ]
+    ks_domain_2 = []  # Add secondary filters here if needed
+
+    action = {
+        'type': 'ir.actions.client',
+        'name': 'Dashboard Ninja',
+        'tag': 'ks_dashboard_ninja',
+        'target': 'current',
+        'context': {
+            'lang': env.user.lang,
+            'tz': env.user.tz,
+            'uid': env.user.id,
+            'allowed_company_ids': env.user.company_ids.ids,
+        },
+        'params': {
+            'ks_dashboard_id': 6,
+            'ks_domain_1': ks_domain_1,
+            'ks_domain_2': ks_domain_2,
+        },
+    }
+]]></field>
+        </record>
+        <record id="server_action_1286" model="ir.actions.server">
+        <field name="name">Bu Ayın Paket Kazançları</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  # Bu ayın ilk gününü ve saatini 00:00:00 olarak ayarla
+  today = datetime.datetime.today()
+  first_day_of_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+  
+  # Bu ayın son gününü ve saatini 23:59:59 olarak ayarla
+  next_month = today.replace(day=28) + datetime.timedelta(days=4)  # Sonraki ayı bul
+  last_day_of_month = next_month.replace(day=1) - datetime.timedelta(seconds=1)
+  
+  if rec.user_role == "kurye":
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Bu Ayın Paketleri',
+        'res_model': 'corders.profile',
+        'view_mode': 'tree,form',
+        'domain': ['&', '&',('kurye.id', '=', rec.id),('siparis_tarihi', '>=', first_day_of_month),('siparis_tarihi', '<=', last_day_of_month)],
+        'target': 'current',  # 'new' yeni bir pencere için
+        'context': {
+            'group_by': 'kurye'  # 'kurye' alanına göre gruplama
+        },
+    }
+
+
+
+]]></field>
+        </record>
+        <record id="server_action_1287" model="ir.actions.server">
+        <field name="name">Geçen Ayın Paket Kazançları</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  # Bu ayın ilk gününü ve saatini 00:00:00 olarak ayarla
+  today = datetime.datetime.today()
+  first_day_of_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+  
+  # Geçen ayın ilk ve son gününü belirle
+  last_month = first_day_of_month - datetime.timedelta(days=1)  # Geçen ayın son günü
+  first_day_of_last_month = last_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)  # Geçen ayın ilk günü
+  last_day_of_last_month = first_day_of_month - datetime.timedelta(seconds=1)  # Geçen ayın son günü ve saati 23:59:59
+  
+  if rec.user_role == "kurye":
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Geçen Ayın Paketleri',  # İsim değiştirilerek güncellendi
+        'res_model': 'corders.profile',
+        'view_mode': 'tree,form',
+        'domain': [
+            '&', '&',
+            ('kurye.id', '=', rec.id),
+            ('siparis_tarihi', '>=', first_day_of_last_month),
+            ('siparis_tarihi', '<=', last_day_of_last_month)
+        ],
+        'target': 'current',  # 'new' yeni bir pencere için
+        'context': {
+            'group_by': 'kurye'  # 'kurye' alanına göre gruplama
+        },
+    }
+
+
+
+
+]]></field>
+        </record>
+        <record id="server_action_1288" model="ir.actions.server">
+        <field name="name">Bu Ayın Saatlik Kazançları</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  # Bu ayın ilk gününü ve saatini 00:00:00 olarak ayarla
+  today = datetime.datetime.today()
+  first_day_of_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+  
+  # Bu ayın son gününü ve saatini 23:59:59 olarak ayarla
+  next_month = today.replace(day=28) + datetime.timedelta(days=4)  # Sonraki ayı bul
+  last_day_of_month = next_month.replace(day=1) - datetime.timedelta(seconds=1)
+  
+  if rec.user_role == "kurye":
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Bu Ayın Saatlik Kazançları',
+        'res_model': 'skurye.profile.lines',
+        'view_mode': 'tree,form',
+        'domain': ['&', '&',('partner_id.id', '=', rec.id),('start_date', '>=', first_day_of_month),('start_date', '<=', last_day_of_month)],
+        'target': 'current',  # 'new' yeni bir pencere için
+        'context': {
+            'group_by': 'partner_id'  # 'kurye' alanına göre gruplama
+        },
+    }
+
+
+
+]]></field>
+        </record>
+        <record id="server_action_1289" model="ir.actions.server">
+        <field name="name">Geçen Ayın Saatlik Kazançları</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  # Bu ayın ilk gününü ve saatini 00:00:00 olarak ayarla
+  today = datetime.datetime.today()
+  first_day_of_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+  
+  # Geçen ayın ilk ve son gününü belirle
+  last_month = first_day_of_month - datetime.timedelta(days=1)  # Geçen ayın son günü
+  first_day_of_last_month = last_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)  # Geçen ayın ilk günü
+  last_day_of_last_month = first_day_of_month - datetime.timedelta(seconds=1)  # Geçen ayın son günü ve saati 23:59:59
+  
+  if rec.user_role == "kurye":
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Bu Ayın Saatlik Kazançları',
+        'res_model': 'skurye.profile.lines',
+        'view_mode': 'tree,form',
+        'domain': ['&', '&',('partner_id.id', '=', rec.id),('start_date', '>=', first_day_of_last_month),('start_date', '<=', last_day_of_last_month)],
+        'target': 'current',  # 'new' yeni bir pencere için
+        'context': {
+            'group_by': 'partner_id'  # 'kurye' alanına göre gruplama
+        },
+    }
+
+
+
+
+]]></field>
+        </record>
+        <record id="server_action_1296" model="ir.actions.server">
+        <field name="name">Kurye Kazancını Tekrardan Hesapla</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="groups_id" eval="[(6, 0, [ref('corders.corders_group_admin'), ref('corders.corders_group_fullaccess')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  if rec.kurye_siparis_durumu == "siparisi_teslim_etti" and len(rec.kurye) > 0:
+    mesafe = 0
+    mesafe = model.find_distance(rec.magaza.lat, rec.magaza.lng, rec.lat, rec.lng)
+    slot = env['slots.profile'].search(["&","&",["magazalar.id","=",rec.magaza.id],["start_date","<=",rec.siparis_tarihi],["end_date",">=",rec.siparis_tarihi]], limit=1)
+    if len(slot) > 0:
+      #Sabit Kuryeli Ücretlendirme Ayarları Başlangıç -----------------------------------
+      if slot.slot_tipi == "sabit":
+        if rec.kurye != False:
+          rec["baz_price"] = rec.magaza.paket_basi_ucret
+          rec["promosyon_price"] = slot.slot_promosyon_ucret
+          sabit_km_ucreti = rec.magaza.get_distance_fee(mesafe)
+          rec["toplam_km_price"] = sabit_km_ucreti
+          rec["yuzdelik_kar_orani_price"] = (rec.magaza.yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari)
+          rec["sale_price"] = rec.magaza.paket_basi_ucret + sabit_km_ucreti + slot.slot_promosyon_ucret + (rec.magaza.yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari)
+          #rec["restoran_paket_mesafesi"] = mesafe
+          #log("id:" + str(rec.id) + " - kurye uzaklığı: " + str(mesafe/1000) + " '- sipariş paket_saat_km ücret cinsinden - paket başı: " + str(rec.magaza.paket_basi_ucret) + "TL - km ücreti: " +  str(rec.magaza.kmlik_ucret) + "TL - promosyon ücreti: " +  str(slot.slot_promosyon_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+          # sabit Ücretlendirme Ayarları Bitiş --------------------------------------------------
+            
+      #Bölge Tanımlamalı Ücretlendirme Ayarları Başlangıç -----------------------------------
+      if slot.slot_tipi == "bolge":
+        if rec.kurye != False:
+          rec["baz_price"] = slot.paket_basi_ucret
+          rec["promosyon_price"] = slot.slot_promosyon_ucret
+          rec["toplam_km_price"] = slot.get_distance_fee(mesafe)
+          rec["sale_price"] = slot.paket_basi_ucret + slot.slot_promosyon_ucret + rec.toplam_km_price
+          #rec["restoran_paket_mesafesi"] = mesafe
+          #log("id:" + str(rec.id) + " - kurye uzaklığı: " + str(mesafe/1000) + " '- sipariş paket_saat_km ücret cinsinden - paket başı: " + str(slot.paket_basi_ucret) + "TL - km ücreti: " +  str(slot.kmlik_ucret) + "TL - promosyon ücreti: " +  str(slot.slot_promosyon_ucret) + "TL olarak ücretlendirilmiştir.", level='info')
+          #Bölge Tanımlamalı Ücretlendirme Ayarları Bitiş --------------------------------------------------
+      if rec.magaza != False:
+        restoran_km_ucreti = rec.magaza.get_platform_distance_fee(mesafe)
+        rec["restoran_baz_price"] = rec.magaza.restoran_paket_basi_ucret
+        rec["restoran_toplam_km_price"] = restoran_km_ucreti
+        rec["restoran_yuzdelik_kar_orani_price"] = (rec.magaza.restoran_yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari)
+        rec["restoran_borc_toplami"] = rec.magaza.restoran_paket_basi_ucret + restoran_km_ucreti + (rec.magaza.restoran_yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari) - rec.kuryenin_musteriden_aldigi_odeme
+  
+  
+]]></field>
+        </record>
+        <record id="server_action_1300" model="ir.actions.server">
+        <field name="name">Kuryeyi Benden Sil</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="groups_id" eval="[(6, 0, [ref('corders.corders_group_manager'), ref('corders.corders_group_admin'), ref('corders.corders_group_dealer'), ref('corders.corders_group_fullaccess')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  kuryeler = env['res.partner'].sudo().search([('id', '=', rec.id)])
+  for kurye in kuryeler:
+      kurye.sudo().write({'yetkili_users': False})
+
+
+]]></field>
+        </record>
+        <record id="server_action_1302" model="ir.actions.server">
+        <field name="name">Kuryenin Ödemesi Yapıldı Olarak İşaretle</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">8</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["kurye_odeme_durumu"] = "paid"
+
+
+]]></field>
+        </record>
+        <record id="server_action_1303" model="ir.actions.server">
+        <field name="name">Kuryenin Ödemesi Yapılmadı Olarak İşaretle</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">9</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["kurye_odeme_durumu"] = "not_paid"
+
+
+]]></field>
+        </record>
+        <record id="server_action_1304" model="ir.actions.server">
+        <field name="name">Restoranın Ödemesi Yapıldı Olarak İşaretle</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">10</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["restoran_borc_durumu"] = "paid"
+
+
+]]></field>
+        </record>
+        <record id="server_action_1305" model="ir.actions.server">
+        <field name="name">Restoranın Ödemesi Yapılmadı Olarak İşaretle</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">11</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["restoran_borc_durumu"] = "not_paid"
+
+
+]]></field>
+        </record>
+        <record id="server_action_1306" model="ir.actions.server">
+        <field name="name">Kuryenin Elindeki Tutarı Sıfırla</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  if rec.kuryenin_musteriden_aldigi_odeme > 0:
+    kuryenin_musteriden_aldigi_odeme = rec.kuryenin_musteriden_aldigi_odeme
+    restoran_mesafesi = rec.restoran_paket_mesafesi or rec.mesafe
+    restoran_km_ucreti = rec.magaza.get_platform_distance_fee(restoran_mesafesi)
+    rec["restoran_toplam_km_price"] = restoran_km_ucreti
+    rec["restoran_borc_toplami"] = rec.magaza.restoran_paket_basi_ucret + restoran_km_ucreti + (rec.magaza.restoran_yuzdelik_kar_orani / 100 * rec.toplam_siparis_tutari) - rec.kuryenin_musteriden_aldigi_odeme
+    rec["kuryeden_alinan_paket_tutari"] = rec.kuryenin_musteriden_aldigi_odeme
+    rec["kuryenin_musteriden_aldigi_odeme"] = 0
+    total_payment = sum(records.mapped('kuryeden_alinan_paket_tutari'))
+
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Kuryenin Elindeki Paket Tutarları Sıfırlandı!',
+            'message': 'Kuryeden Alınan Fiş ve Nakit Tutar: ' + str(total_payment),
+            'sticky': True,  # If True, the message will not automatically disappear
+            'type': 'success',  # Can be 'info', 'warning', 'danger', 'success'
+        },}
+
+
+
+]]></field>
+        </record>
+        <record id="server_action_1307" model="ir.actions.server">
+        <field name="name">Dashboard</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_model_id" ref="corders.model_corders_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  dashboard = env['ks_dashboard_ninja.board'].search([], limit=1)
+
+  if not dashboard:
+      raise UserError("Dashboard bulunamadı.")
+  
+  action = {
+      "type": "ir.actions.client",
+      "tag": "ks_dashboard_ninja",
+      "name": "Dashboard’a Git",
+      "target": "new",
+      "params": {
+          "ks_dashboard_id": dashboard.id,
+          "ks_domain_1": [["magaza", "ilike", "test"]],
+          "ks_domain_2": [],
+      },
+  }
+
+
+
+]]></field>
+        </record>
+    </data>
+</odoo>

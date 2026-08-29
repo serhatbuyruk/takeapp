@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_manual_shift_wizard_form" model="ir.ui.view">
+        <field name="name">slot.dashboard.manual.shift.wizard.form</field>
+        <field name="model">slot.dashboard.manual.shift.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Manuel Vardiya Ekle" create="false" edit="true">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Eksik kalan bir kuryeyi seçilen restoranın günlük
+                        vardiyasına ekleyin. Aynı kurye zaten kayıtlıysa ve
+                        paket taşımaya başlamadıysa saatleri güncellenir.
+                    </div>
+                    <group>
+                        <group string="Vardiya Bilgisi">
+                            <field name="shift_date"/>
+                            <field name="restaurant_id"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="courier_id"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                        </group>
+                        <group string="Çalışma Saatleri">
+                            <field name="start_hour" widget="float_time"/>
+                            <field name="end_hour" widget="float_time"/>
+                            <div class="o_form_label">Gece vardiyası</div>
+                            <div class="text-muted">
+                                Çıkış girişten erkense ertesi gün kabul edilir.
+                                Çıkış 00:00 ise aynı gün 23:59 olarak kaydedilir.
+                            </div>
+                        </group>
+                    </group>
+                    <group string="Excel Plan Bilgileri" col="2">
+                        <field name="region" placeholder="Örn. Antalya"/>
+                        <field name="branch" placeholder="Örn. Şafak"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_save_shift"
+                            type="object"
+                            string="Vardiyayı Kaydet / Güncelle"
+                            class="btn-primary"/>
+                    <button string="Kapat"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_manual_shift_wizard" model="ir.actions.act_window">
+        <field name="name">Manuel Vardiya Ekle</field>
+        <field name="res_model">slot.dashboard.manual.shift.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_manual_shift_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_attendance_wizard_form" model="ir.ui.view">
+        <field name="name">slot.dashboard.attendance.wizard.form</field>
+        <field name="model">slot.dashboard.attendance.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Vardiya Puantaj Ekle" create="false" edit="true">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Ek saat ve paket mevcut vardiya değerlerinin üzerine
+                        eklenir; kurye ve restoran hakedişlerine yansır.
+                    </div>
+                    <field name="available_line_ids" invisible="1"/>
+                    <group>
+                        <group string="Vardiya Seçimi">
+                            <field name="attendance_date"/>
+                            <field name="courier_id"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="shift_line_id"
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="restaurant_id" readonly="1"/>
+                        </group>
+                        <group string="Puantaj Eki">
+                            <field name="extra_hours"/>
+                            <field name="extra_packages"/>
+                            <field name="note" placeholder="Ekleme nedeni veya açıklama"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_apply" type="object"
+                            string="Puantajı Hakedişe Ekle" class="btn-primary"/>
+                    <button string="Kapat" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_attendance_wizard" model="ir.actions.act_window">
+        <field name="name">Vardiya Puantaj Ekle</field>
+        <field name="res_model">slot.dashboard.attendance.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_attendance_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_attendance_adjustment_tree" model="ir.ui.view">
+        <field name="name">slots.puantaj.duzeltme.tree</field>
+        <field name="model">slots.puantaj.duzeltme</field>
+        <field name="arch" type="xml">
+            <tree string="Vardiya Puantaj Kayıtları"
+                  create="false"
+                  default_order="attendance_date desc, restaurant_id, courier_id">
+                <field name="attendance_date"/>
+                <field name="restaurant_id"/>
+                <field name="courier_id"/>
+                <field name="extra_hours" sum="Toplam Ek Saat"/>
+                <field name="extra_packages" sum="Toplam Ek Paket"/>
+                <field name="note" optional="show"/>
+                <field name="created_by_id" optional="show"/>
+                <field name="create_date" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_attendance_adjustment_form" model="ir.ui.view">
+        <field name="name">slots.puantaj.duzeltme.form</field>
+        <field name="model">slots.puantaj.duzeltme</field>
+        <field name="arch" type="xml">
+            <form string="Vardiya Puantaj Kaydı" create="false" duplicate="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="courier_id" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Vardiya Bilgisi">
+                            <field name="attendance_date" readonly="1"/>
+                            <field name="restaurant_id" readonly="1"/>
+                            <field name="slot_id" readonly="1"/>
+                            <field name="line_id" readonly="1"/>
+                        </group>
+                        <group string="Ek Puantaj">
+                            <field name="extra_hours"/>
+                            <field name="extra_packages"/>
+                            <field name="note"/>
+                            <field name="created_by_id" readonly="1"/>
+                            <field name="create_date" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_attendance_adjustment_list" model="ir.actions.act_window">
+        <field name="name">Puantaj Kayıtları</field>
+        <field name="res_model">slots.puantaj.duzeltme</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_attendance_adjustment_tree"/>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <record id="view_shift_import_wizard_form" model="ir.ui.view">
+        <field name="name">slot.dashboard.shift.import.wizard.form</field>
+        <field name="model">slot.dashboard.shift.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Vardiya Planı Yükle" create="false" edit="true">
+                <sheet>
+                    <field name="state" invisible="1"/>
+                    <div class="alert alert-info"
+                         role="alert"
+                         attrs="{'invisible': [('state', '!=', 'upload')]}">
+                        Başlık sırası değiştirilmeden şu sütunları içeren bir
+                        <strong>.xlsx</strong> dosyası yükleyin:
+                        <br/>
+                        TARİH · BÖLGE · PROJE · ŞUBE · KURYE ·
+                        VARDİYA GİRİŞ · VARDİYA ÇIKIŞ
+                    </div>
+                    <group attrs="{'invisible': [('state', '!=', 'upload')]}">
+                        <field name="filename" invisible="1"/>
+                        <field name="upload_file"
+                               filename="filename"
+                               widget="binary"/>
+                    </group>
+                    <div class="alert alert-warning"
+                         role="alert"
+                         attrs="{'invisible': ['|', ('state', '!=', 'review'), ('error_count', '=', 0)]}">
+                        <h4>Kontrol tamamlandı</h4>
+                        <p>
+                            <field name="valid_row_count" class="oe_inline"/>
+                            geçerli satır aktarılabilir;
+                            <field name="error_count" class="oe_inline"/>
+                            hata/çakışma aktarılmayacak.
+                        </p>
+                        <strong>Aktarılmayacak satırlar ve nedenleri:</strong>
+                        <field name="preview_message" nolabel="1" readonly="1"/>
+                    </div>
+                    <div class="alert alert-success"
+                         role="alert"
+                         attrs="{'invisible': ['|', ('state', '!=', 'review'), ('error_count', '!=', 0)]}">
+                        <h4>Plan aktarılmaya hazır</h4>
+                        <p>
+                            <field name="valid_row_count" class="oe_inline"/>
+                            geçerli satır bulundu; hata veya çakışma yok.
+                        </p>
+                    </div>
+                    <div class="alert alert-success"
+                         role="alert"
+                         attrs="{'invisible': [('state', '!=', 'done')]}">
+                        <field name="result_message"
+                               nolabel="1"
+                               readonly="1"/>
+                        <div attrs="{'invisible': [('error_count', '=', 0)]}">
+                            <strong>Aktarılmayan satırlar:</strong>
+                            <field name="preview_message" nolabel="1" readonly="1"/>
+                        </div>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_preview"
+                            type="object"
+                            string="Planı Kontrol Et"
+                            class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'upload')]}"/>
+                    <button name="action_import_valid_rows"
+                            type="object"
+                            string="Geçerli Satırları Yine de İçeri Aktar"
+                            class="btn-primary"
+                            attrs="{'invisible': ['|', '|', ('state', '!=', 'review'), ('error_count', '=', 0), ('valid_row_count', '=', 0)]}"/>
+                    <button name="action_import_valid_rows"
+                            type="object"
+                            string="Planı İçeri Aktar"
+                            class="btn-primary"
+                            attrs="{'invisible': ['|', '|', ('state', '!=', 'review'), ('error_count', '!=', 0), ('valid_row_count', '=', 0)]}"/>
+                    <button name="action_reset"
+                            type="object"
+                            string="Yeni Dosya Seç"
+                            class="btn-secondary"
+                            attrs="{'invisible': [('state', '=', 'upload')]}"/>
+                    <button string="Kapat"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_shift_import_wizard" model="ir.actions.act_window">
+        <field name="name">Vardiya Planı Yükle</field>
+        <field name="res_model">slot.dashboard.shift.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_shift_import_wizard_form"/>
+        <field name="target">new</field>
+        <field name="context">{'default_state': 'upload'}</field>
+    </record>
+
+    <record id="view_imported_shift_line_tree" model="ir.ui.view">
+        <field name="name">skurye.profile.lines.imported.shift.tree</field>
+        <field name="model">skurye.profile.lines</field>
+        <field name="arch" type="xml">
+            <tree string="Yüklenen Vardiya Planı"
+                  create="false"
+                  edit="false"
+                  delete="false"
+                  default_order="shift_plan_date, kurye_start_date, shift_plan_project, shift_plan_branch">
+                <field name="shift_plan_date"/>
+                <field name="shift_plan_region"/>
+                <field name="shift_plan_project"/>
+                <field name="shift_plan_branch"/>
+                <field name="partner_id"/>
+                <field name="kurye_start_date"/>
+                <field name="kurye_end_date"/>
+                <field name="shift_import_batch_id"
+                       optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_operation_shift_line_form" model="ir.ui.view">
+        <field name="name">skurye.profile.lines.operation.form</field>
+        <field name="model">skurye.profile.lines</field>
+        <field name="priority" eval="5"/>
+        <field name="arch" type="xml">
+            <form string="Kurye Vardiya Satırı" create="false" duplicate="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="partner_id" options="{'no_create': true}"/>
+                        </h1>
+                        <p class="text-muted">
+                            Bu ekran yalnız seçili kurye vardiya satırını yönetir.
+                            Silme işlemi ana vardiyayı veya diğer kuryeleri silmez.
+                        </p>
+                    </div>
+                    <group>
+                        <group string="Planlanan Vardiya">
+                            <field name="shift_plan_date"/>
+                            <field name="kurye_start_date"/>
+                            <field name="kurye_end_date"/>
+                            <field name="shift_plan_project" readonly="1"/>
+                            <field name="shift_plan_branch" readonly="1"/>
+                        </group>
+                        <group string="Çalışma Durumu">
+                            <field name="active"/>
+                            <field name="kurye_active"/>
+                            <field name="start_date" readonly="1"/>
+                            <field name="end_date" readonly="1"/>
+                            <field name="kurye_calisma_saati" readonly="1"/>
+                            <field name="puantaj_ek_saat" readonly="1"/>
+                            <field name="puantaj_ek_paket_sayisi" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Paket ve Mutabakat">
+                        <field name="sale_price_currency_id" invisible="1"/>
+                        <group>
+                            <field name="kurye_beyan_paket_sayisi" readonly="1"/>
+                            <field name="mutabakat_hesaplanan_paket_sayisi" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="paket_mutabakat_durumu" widget="badge" readonly="1"/>
+                            <field name="mutabakat_toplam_kazanc" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Puantaj Geçmişi">
+                        <field name="puantaj_duzeltme_ids" nolabel="1" readonly="1">
+                            <tree create="false" edit="false" delete="false">
+                                <field name="attendance_date"/>
+                                <field name="extra_hours"/>
+                                <field name="extra_packages"/>
+                                <field name="note"/>
+                                <field name="created_by_id"/>
+                                <field name="create_date"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_shift_package_status_tree" model="ir.ui.view">
+        <field name="name">skurye.profile.lines.shift.package.status.tree</field>
+        <field name="model">skurye.profile.lines</field>
+        <field name="arch" type="xml">
+            <tree string="Vardiya Paket Beyanları"
+                  create="false"
+                  edit="false"
+                  delete="false"
+                  decoration-danger="dashboard_package_state == 'missing'"
+                  decoration-success="dashboard_package_state == 'submitted'"
+                  default_order="kurye_start_date desc, partner_id">
+                <field name="dashboard_package_state"
+                       widget="badge"
+                       decoration-danger="dashboard_package_state == 'missing'"
+                       decoration-success="dashboard_package_state == 'submitted'"/>
+                <field name="paket_mutabakat_restoran_id"/>
+                <field name="partner_id"/>
+                <field name="dashboard_planned_start"/>
+                <field name="dashboard_planned_end"/>
+                <field name="kurye_beyan_paket_sayisi"/>
+                <field name="mutabakat_hesaplanan_paket_sayisi" optional="show"/>
+                <field name="paket_mutabakat_durumu"
+                       widget="badge"/>
+                <field name="kurye_paket_beyani_yapildi"
+                       invisible="1"/>
+                <field name="paket_mutabakat_slot_id"
+                       optional="hide"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

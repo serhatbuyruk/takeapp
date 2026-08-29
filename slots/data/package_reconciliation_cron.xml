@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_auto_approve_package_reconciliations" model="ir.cron">
+        <field name="name">Kurye Paket Mutabakatlarını Otomatik Onayla</field>
+        <field name="model_id" ref="slots.model_slots_package_reconciliation"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_auto_approve()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">10</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="priority">5</field>
+    </record>
+</odoo>

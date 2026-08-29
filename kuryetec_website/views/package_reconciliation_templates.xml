@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="package_reconciliation_gate" inherit_id="website.layout">
+        <xpath expr="//div[@id='wrapwrap']" position="after">
+            <div t-if="request.env.user.partner_id.user_role == 'kurye'"
+                 id="kt-package-reconciliation-root"
+                 class="kt-package-gate"
+                 aria-hidden="true">
+                <div class="kt-package-gate__backdrop"></div>
+                <section class="kt-package-gate__sheet"
+                         role="dialog"
+                         aria-modal="true"
+                         aria-labelledby="kt-package-gate-title">
+                    <div class="kt-package-gate__handle"></div>
+                    <div class="kt-package-gate__icon">
+                        <i class="fa fa-cube"></i>
+                    </div>
+                    <p class="kt-package-gate__eyebrow">VARDİYA TAMAMLANDI</p>
+                    <h2 id="kt-package-gate-title">Paket sayını bildir</h2>
+                    <p class="kt-package-gate__lead">
+                        Devam etmek için tamamlanan vardiyada taşıdığın paket sayısını gir.
+                        Gönderdikten sonra bu sayı kurye tarafından değiştirilemez.
+                    </p>
+                    <div class="kt-package-gate__slot">
+                        <strong data-kt-package-slot-name="1"></strong>
+                        <span data-kt-package-restaurant="1"></span>
+                        <small>
+                            <i class="fa fa-calendar-o"></i>
+                            <span data-kt-package-slot-date="1"></span>
+                            <span class="kt-package-gate__dot">•</span>
+                            <span data-kt-package-time-range="1"></span>
+                        </small>
+                    </div>
+                    <form data-kt-package-form="1" novalidate="novalidate">
+                        <label for="kt-package-count">Taşınan paket sayısı</label>
+                        <div class="kt-package-gate__input-wrap">
+                            <button type="button"
+                                    data-kt-package-minus="1"
+                                    aria-label="Paket sayısını azalt">−</button>
+                            <input id="kt-package-count"
+                                   data-kt-package-count="1"
+                                   type="number"
+                                   min="0"
+                                   step="1"
+                                   inputmode="numeric"
+                                   pattern="[0-9]*"
+                                   placeholder="0"
+                                   required="required"
+                                   autocomplete="off"/>
+                            <button type="button"
+                                    data-kt-package-plus="1"
+                                    aria-label="Paket sayısını artır">+</button>
+                        </div>
+                        <p class="kt-package-gate__error"
+                           data-kt-package-error="1"
+                           hidden="hidden"></p>
+                        <button class="kt-package-gate__submit"
+                                data-kt-package-submit="1"
+                                type="submit">
+                            Restoran Onayına Gönder
+                        </button>
+                    </form>
+                </section>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="courier_package_counts_page" name="Kurye Paket Sayıları">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure kt-package-history">
+                <section class="kt-package-history__hero">
+                    <a href="/kurye-anasayfa" class="kt-package-history__back" aria-label="Anasayfaya dön">
+                        <i class="fa fa-chevron-left"></i>
+                    </a>
+                    <div>
+                        <span>MUTABAKAT TAKİBİ</span>
+                        <h1>Paket Sayıları</h1>
+                        <p>Restorana gönderdiğin vardiya paket sayılarını ve onay durumlarını buradan takip edebilirsin.</p>
+                    </div>
+                    <div class="kt-package-history__hero-icon">
+                        <i class="fa fa-cubes"></i>
+                    </div>
+                </section>
+
+                <section class="kt-package-history__content">
+                    <t t-if="package_records">
+                        <div class="kt-package-history__summary">
+                            <strong><t t-esc="len(package_records)"/></strong>
+                            <span>paket beyanı</span>
+                        </div>
+                        <div class="kt-package-history__list">
+                            <t t-foreach="package_records" t-as="record">
+                                <article class="kt-package-history__card">
+                                    <div class="kt-package-history__card-head">
+                                        <div class="kt-package-history__count">
+                                            <strong t-esc="record['package_count']"/>
+                                            <span>paket</span>
+                                        </div>
+                                        <span t-attf-class="kt-package-status is-#{record['state']}">
+                                            <i t-attf-class="fa #{'fa-check-circle' if record['state'] in ('approved', 'auto_approved') else ('fa-times-circle' if record['state'] == 'rejected' else 'fa-clock-o')}"></i>
+                                            <t t-esc="record['state_label']"/>
+                                        </span>
+                                    </div>
+                                    <h2 t-esc="record['slot_name']"/>
+                                    <p class="kt-package-history__restaurant">
+                                        <i class="fa fa-cutlery"></i>
+                                        <t t-esc="record['restaurant_name']"/>
+                                    </p>
+                                    <div class="kt-package-history__meta">
+                                        <span><i class="fa fa-calendar-o"></i><t t-esc="record['slot_date']"/></span>
+                                        <span><i class="fa fa-paper-plane-o"></i><t t-esc="record['submitted_at']"/></span>
+                                    </div>
+                                </article>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="kt-package-history__empty">
+                            <div><i class="fa fa-cube"></i></div>
+                            <h2>Henüz paket beyanın yok</h2>
+                            <p>Tamamlanan sabit kurye vardiyasından sonra girdiğin paket sayıları burada görünecek.</p>
+                            <a href="/kurye-anasayfa">Anasayfaya Dön</a>
+                        </div>
+                    </t>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

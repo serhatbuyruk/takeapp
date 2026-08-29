@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_portal_slots_profile" model="ir.rule">
+        <field name="name">Vardiya portal kullanıcısı erişimi (Autoronics)</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="domain_force">['|',('kurye', '=', user.partner_id.id),('kurye', '=', False)]</field>
+        <field name="groups" eval="[(6, 0, [ref('base.group_portal')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_portal_skurye_lines" model="ir.rule">
+        <field name="name">Skurye portal user access to skurye.profile.lines (Autoronics)</field>
+        <field name="model_id" ref="slots.model_skurye_profile_lines"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(6, 0, [ref('base.group_portal')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_dealer_res_partner" model="ir.rule">
+        <field name="name">Corders dealer access res.partner records (autoronics)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">['|','|',('id', '=', user.partner_id.id),('create_uid', '=', user.id),('yetkili_users', 'in', [user.id])]</field>
+        <field name="groups" eval="[(6, 0, [ref('slots.slots_group_dealer')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="access_portal_slots_profile" model="ir.model.access">
+        <field name="name">Vardiya Portal Kullanıcısı</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="group_id" ref="base.group_portal"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="access_full_slots_profile" model="ir.model.access">
+        <field name="name">Vardiya Tam Erişim</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="group_id" ref="slots.slots_group_fullaccess"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

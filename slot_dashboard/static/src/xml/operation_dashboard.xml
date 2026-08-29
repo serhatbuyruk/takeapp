@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="slot_dashboard.OperationDashboard" owl="1">
+        <div t-attf-class="kt-ops-action o_action_delegate_scroll #{props.className || ''}">
+            <div class="kt-ops-dashboard">
+            <t t-if="state.loading and !state.data">
+                <div class="kt-ops-loading">
+                    <div class="kt-ops-loading__mark">
+                        <i class="fa fa-circle-o-notch fa-spin"/>
+                    </div>
+                    <strong>Operasyon verileri hazırlanıyor</strong>
+                    <span>Bugünün vardiya ve kurye planı analiz ediliyor…</span>
+                </div>
+            </t>
+            <t t-elif="state.data">
+                <header class="kt-ops-hero">
+                    <div class="kt-ops-hero__content">
+                        <span class="kt-ops-eyebrow">KURYETEC OPERASYON MERKEZİ</span>
+                        <h1>
+                            <t t-if="state.data.is_today">Bugünün operasyonu nasıl gidiyor?</t>
+                            <t t-else=""><t t-esc="state.data.selected_date_label"/> operasyon raporu</t>
+                        </h1>
+                        <p>Vardiya planını, kurye girişlerini ve müdahale gerektiren durumları tek ekrandan yönetin.</p>
+                    </div>
+                    <div class="kt-ops-hero__actions">
+                        <div class="kt-ops-date-control">
+                            <i class="fa fa-calendar"/>
+                            <input type="date"
+                                   t-att-value="state.selectedDate"
+                                   t-on-change="onDateChange"/>
+                        </div>
+                        <button t-if="!state.data.is_today"
+                                class="kt-ops-btn is-ghost"
+                                t-on-click="openToday">
+                            Bugün
+                        </button>
+                        <button class="kt-ops-btn is-light"
+                                t-att-disabled="state.loading"
+                                t-on-click="refresh">
+                            <i t-attf-class="fa #{state.loading ? 'fa-circle-o-notch fa-spin' : 'fa-refresh'}"/>
+                            Yenile
+                        </button>
+                    </div>
+                    <div class="kt-ops-hero__glow is-one"/>
+                    <div class="kt-ops-hero__glow is-two"/>
+                </header>
+
+                <main class="kt-ops-main">
+                    <section class="kt-ops-shortcuts">
+                        <button class="kt-ops-shortcut is-primary" t-on-click="openShiftImport">
+                            <span class="kt-ops-shortcut__icon"><i class="fa fa-upload"/></span>
+                            <span>
+                                <strong>Vardiya Planı Yükle</strong>
+                                <small>Excel ile sabit kurye vardiyalarını aç</small>
+                            </span>
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                        <button class="kt-ops-shortcut is-manual" t-on-click="openManualShift">
+                            <span class="kt-ops-shortcut__icon"><i class="fa fa-user-plus"/></span>
+                            <span>
+                                <strong>Manuel Vardiya Ekle</strong>
+                                <small>Eksik kuryeyi hızlıca plana ekle</small>
+                            </span>
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                        <button class="kt-ops-shortcut is-attendance" t-on-click="openAttendanceAdjustment">
+                            <span class="kt-ops-shortcut__icon"><i class="fa fa-clock-o"/></span>
+                            <span>
+                                <strong>Vardiya Puantaj Ekle</strong>
+                                <small>Ek saat ve paketi hakedişe yansıt</small>
+                            </span>
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                        <button class="kt-ops-shortcut is-attendance-list" t-on-click="openAttendanceAdjustments">
+                            <span class="kt-ops-shortcut__icon"><i class="fa fa-list-alt"/></span>
+                            <span>
+                                <strong>Puantajları Gör</strong>
+                                <small>Eklenen saat ve paket kayıtlarını incele</small>
+                            </span>
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                        <button class="kt-ops-shortcut is-secondary" t-on-click="openShiftPlan">
+                            <span class="kt-ops-shortcut__icon is-blue"><i class="fa fa-calendar-check-o"/></span>
+                            <span>
+                                <strong>Vardiyaları Gör</strong>
+                                <small>Yüklenen personel ve saat planı</small>
+                            </span>
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                        <button class="kt-ops-shortcut is-success" t-on-click="openShiftPackages">
+                            <span class="kt-ops-shortcut__icon is-green"><i class="fa fa-cubes"/></span>
+                            <span>
+                                <strong>Personel Paket Beyanları</strong>
+                                <small>Eksik ve tamamlanan paket bildirimleri</small>
+                            </span>
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                        <button class="kt-ops-shortcut is-earnings" t-on-click="openCourierEarnings">
+                            <span class="kt-ops-shortcut__icon"><i class="fa fa-money"/></span>
+                            <span>
+                                <strong>Kurye / Restoran Hakedişleri</strong>
+                                <small>Kurye maliyeti ve restoran borç raporu</small>
+                            </span>
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                    </section>
+
+                    <section class="kt-ops-plan-summary">
+                        <div>
+                            <span>GÜNÜN KURYE PLANI</span>
+                            <strong><t t-esc="state.data.metrics.courier_planned"/> kurye planlandı</strong>
+                        </div>
+                        <small t-if="state.data.metrics.courier_missing and state.data.metrics.courier_upcoming">
+                            <i class="fa fa-clock-o"/>
+                            <t t-esc="state.data.metrics.courier_missing"/> kurye henüz giriş yapmadı ·
+                            <t t-esc="state.data.metrics.courier_upcoming"/> kurye vardiya saatini bekliyor
+                        </small>
+                        <small t-elif="state.data.metrics.courier_missing">
+                            <i class="fa fa-exclamation-circle"/>
+                            <t t-esc="state.data.metrics.courier_missing"/> kurye henüz giriş yapmadı
+                        </small>
+                        <small t-elif="state.data.metrics.courier_upcoming">
+                            <i class="fa fa-clock-o"/>
+                            <t t-esc="state.data.metrics.courier_upcoming"/> kurye vardiya saatini bekliyor
+                        </small>
+                        <small t-else="">
+                            <i class="fa fa-check-circle"/>
+                            Zamanı gelen tüm kuryeler giriş yaptı
+                        </small>
+                    </section>
+
+                    <section class="kt-ops-kpis">
+                        <button type="button"
+                                class="kt-ops-kpi"
+                                t-att-class="state.statusFilter === 'on_time' ? 'is-selected' : ''"
+                                t-on-click="() => this.showRoster('on_time')">
+                            <div class="kt-ops-kpi__icon is-green"><i class="fa fa-check"/></div>
+                            <div>
+                                <span>ZAMANINDA GİRİŞ YAPAN</span>
+                                <strong t-esc="state.data.metrics.courier_on_time"/>
+                                <small>Planlanan saatte giriş yapan kuryeler</small>
+                            </div>
+                        </button>
+                        <button type="button"
+                                class="kt-ops-kpi"
+                                t-att-class="state.statusFilter === 'late' ? 'is-selected' : ''"
+                                t-on-click="() => this.showRoster('late')">
+                            <div class="kt-ops-kpi__icon is-amber"><i class="fa fa-clock-o"/></div>
+                            <div>
+                                <span>GEÇ GİRİŞ YAPAN</span>
+                                <strong t-esc="state.data.metrics.courier_late"/>
+                                <small>10 dakika ve üzeri geciken kuryeler</small>
+                            </div>
+                        </button>
+                        <button type="button"
+                                class="kt-ops-kpi"
+                                t-att-class="state.statusFilter === 'missing' ? 'is-selected' : ''"
+                                t-on-click="() => this.showRoster('missing')">
+                            <div class="kt-ops-kpi__icon is-red"><i class="fa fa-user-times"/></div>
+                            <div>
+                                <span>GİRİŞ YAPMAYAN</span>
+                                <strong t-esc="state.data.metrics.courier_missing"/>
+                                <small>Giriş zamanı geçtiği halde gelmeyen kuryeler</small>
+                            </div>
+                        </button>
+                    </section>
+
+                    <section class="kt-ops-grid is-overview">
+                        <article class="kt-ops-panel kt-ops-compliance">
+                            <div class="kt-ops-panel__head">
+                                <div>
+                                    <span class="kt-ops-panel__icon is-blue"><i class="fa fa-pie-chart"/></span>
+                                    <div>
+                                        <h2>Uyum Oranı</h2>
+                                        <p>Giriş zamanı gelen kuryeler</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="kt-ops-compliance__body">
+                                <div t-attf-class="kt-ops-compliance__ring #{state.data.metrics.courier_due ? '' : 'is-empty'}"
+                                     t-att-style="'--compliance:' + state.data.metrics.courier_compliance_rate + '%'">
+                                    <div>
+                                        <strong t-if="state.data.metrics.courier_due">
+                                            %<t t-esc="state.data.metrics.courier_compliance_rate"/>
+                                        </strong>
+                                        <strong t-else="">—</strong>
+                                        <small>uyum</small>
+                                    </div>
+                                </div>
+                                <div class="kt-ops-compliance__legend">
+                                    <div>
+                                        <span class="is-arrived"/>
+                                        <small>İşe gelen</small>
+                                        <strong t-esc="state.data.metrics.courier_arrived"/>
+                                    </div>
+                                    <div>
+                                        <span class="is-missing"/>
+                                        <small>Gelmeyen</small>
+                                        <strong t-esc="state.data.metrics.courier_missing"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="kt-ops-panel kt-ops-restaurants">
+                            <div class="kt-ops-panel__head">
+                                <div>
+                                    <span class="kt-ops-panel__icon is-green"><i class="fa fa-cutlery"/></span>
+                                    <div>
+                                        <h2>Restoran Bazlı Durum</h2>
+                                        <p t-if="state.data.dashboard_scope_active">
+                                            <t t-esc="state.data.dashboard_restaurant_count"/> işaretli restoran izleniyor
+                                        </p>
+                                        <p t-else="">Tüm restoranların kurye girişleri</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div t-if="state.data.restaurants.length" class="kt-ops-restaurant-list">
+                                <t t-foreach="state.data.restaurants" t-as="restaurant" t-key="restaurant.name">
+                                    <button type="button" class="kt-ops-restaurant"
+                                            t-on-click="() => this.openRestaurantDetails(restaurant)">
+                                        <div>
+                                            <strong t-esc="restaurant.name"/>
+                                            <small>
+                                                <t t-esc="restaurant.arrived"/>/<t t-esc="restaurant.due"/> giriş
+                                                <t t-if="restaurant.late"> · <span class="is-warning"><t t-esc="restaurant.late"/> geç</span></t>
+                                                <t t-if="restaurant.missing"> · <span class="is-danger"><t t-esc="restaurant.missing"/> gelmedi</span></t>
+                                                <t t-if="restaurant.upcoming"> · <t t-esc="restaurant.upcoming"/> bekliyor</t>
+                                            </small>
+                                        </div>
+                                        <div class="kt-ops-progress">
+                                            <span t-att-style="'width:' + restaurant.entry_rate + '%'"/>
+                                        </div>
+                                        <strong>%<t t-esc="restaurant.entry_rate"/></strong>
+                                        <i class="fa fa-chevron-right"/>
+                                    </button>
+                                </t>
+                            </div>
+                            <div t-else="" class="kt-ops-empty is-compact">
+                                <i class="fa fa-cutlery"/>
+                                <strong>Restoran planı bulunamadı</strong>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="kt-ops-panel kt-ops-roster" t-ref="roster">
+                        <div class="kt-ops-panel__head is-wrap">
+                            <div>
+                                <span class="kt-ops-panel__icon is-purple"><i class="fa fa-list-alt"/></span>
+                                <div>
+                                    <h2>Günün Kurye Vardiyaları</h2>
+                                    <p><t t-esc="state.data.metrics.planned_shifts"/> planlanmış kurye satırı</p>
+                                </div>
+                            </div>
+                            <div class="kt-ops-filters">
+                                <button t-att-class="state.statusFilter === 'all' ? 'is-active' : ''" t-on-click="() => this.setFilter('all')">Tümü</button>
+                                <button t-att-class="state.statusFilter === 'on_time' ? 'is-active' : ''" t-on-click="() => this.setFilter('on_time')">Zamanında</button>
+                                <button t-att-class="state.statusFilter === 'missing' ? 'is-active' : ''" t-on-click="() => this.setFilter('missing')">Gelmedi</button>
+                                <button t-att-class="state.statusFilter === 'late' ? 'is-active' : ''" t-on-click="() => this.setFilter('late')">Geç Kalan</button>
+                                <button t-att-class="state.statusFilter === 'upcoming' ? 'is-active' : ''" t-on-click="() => this.setFilter('upcoming')">Yaklaşan</button>
+                            </div>
+                        </div>
+                        <div t-if="filteredRows.length" class="kt-ops-table-wrap">
+                            <table class="kt-ops-table">
+                                <thead>
+                                    <tr>
+                                        <th>Kurye</th>
+                                        <th>Restoran / Operasyon</th>
+                                        <th>Vardiya</th>
+                                        <th>Planlanan</th>
+                                        <th>Gerçek Giriş</th>
+                                        <th>Durum</th>
+                                        <th/>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="filteredRows" t-as="row" t-key="row.line_id">
+                                        <tr>
+                                            <td>
+                                                <div class="kt-ops-courier-cell">
+                                                    <span t-attf-class="kt-ops-avatar is-#{row.status}">
+                                                        <t t-esc="row.courier_name.charAt(0).toUpperCase()"/>
+                                                    </span>
+                                                    <div class="kt-ops-courier-info">
+                                                        <strong t-esc="row.courier_name"/>
+                                                        <button t-if="row.can_stop_shift"
+                                                                class="kt-ops-shift-action is-stop"
+                                                                t-att-disabled="state.shiftActionLineId === row.line_id"
+                                                                t-on-click="() => this.toggleCourierShift(row)">
+                                                            <i t-attf-class="fa #{state.shiftActionLineId === row.line_id ? 'fa-spinner fa-spin' : 'fa-stop-circle-o'}"/>
+                                                            <span>Vardiyayı Sonlandır</span>
+                                                        </button>
+                                                        <button t-if="row.can_resume_shift"
+                                                                class="kt-ops-shift-action is-resume"
+                                                                t-att-disabled="state.shiftActionLineId === row.line_id"
+                                                                t-on-click="() => this.toggleCourierShift(row)">
+                                                            <i t-attf-class="fa #{state.shiftActionLineId === row.line_id ? 'fa-spinner fa-spin' : 'fa-play-circle-o'}"/>
+                                                            <span>Devam Ettir</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td t-esc="row.restaurant_name"/>
+                                            <td>
+                                                <strong t-esc="row.slot_name"/>
+                                                <small t-esc="row.slot_type_label"/>
+                                            </td>
+                                            <td><t t-esc="row.planned_start"/> – <t t-esc="row.planned_end"/></td>
+                                            <td t-esc="row.actual_start"/>
+                                            <td>
+                                                <span t-attf-class="kt-ops-status is-#{row.status}">
+                                                    <t t-esc="row.status_label"/>
+                                                    <t t-if="row.late_duration_label"> · <t t-esc="row.late_duration_label"/></t>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="kt-ops-row-open"
+                                                        title="Kurye vardiya satırını aç"
+                                                        aria-label="Kurye vardiya satırını aç"
+                                                        t-on-click="() => this.openCourierShiftLine(row)">
+                                                    <i class="fa fa-arrow-right"/>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div t-else="" class="kt-ops-empty">
+                            <i class="fa fa-calendar-o"/>
+                            <strong>Bu filtrede vardiya bulunamadı</strong>
+                            <span>Başka bir durum filtresi seçebilirsiniz.</span>
+                        </div>
+                    </section>
+
+                    <div t-if="state.selectedRestaurantName" class="kt-ops-modal-backdrop"
+                         t-on-click.self="closeRestaurantDetails">
+                        <section class="kt-ops-modal" role="dialog" aria-modal="true">
+                            <header class="kt-ops-modal__head">
+                                <div>
+                                    <span>RESTORAN VARDİYA DETAYI</span>
+                                    <h2 t-esc="state.selectedRestaurantName"/>
+                                    <p>
+                                        <t t-esc="state.data.selected_date_label"/> ·
+                                        <t t-esc="selectedRestaurantRows.length"/> kurye vardiyası
+                                    </p>
+                                </div>
+                                <button type="button" aria-label="Kapat" t-on-click="closeRestaurantDetails">
+                                    <i class="fa fa-times"/>
+                                </button>
+                            </header>
+                            <div class="kt-ops-modal__body">
+                                <t t-if="selectedRestaurantRows.length">
+                                    <t t-foreach="selectedRestaurantRows" t-as="row" t-key="row.line_id">
+                                        <article class="kt-ops-modal-courier">
+                                            <span t-attf-class="kt-ops-avatar is-#{row.status}">
+                                                <t t-esc="row.courier_name.charAt(0).toUpperCase()"/>
+                                            </span>
+                                            <div class="kt-ops-modal-courier__identity">
+                                                <strong t-esc="row.courier_name"/>
+                                                <small t-esc="row.slot_name"/>
+                                            </div>
+                                            <div class="kt-ops-modal-courier__time">
+                                                <span>Planlanan vardiya</span>
+                                                <strong><t t-esc="row.planned_start"/> – <t t-esc="row.planned_end"/></strong>
+                                                <small>Gerçek giriş: <t t-esc="row.actual_start"/></small>
+                                            </div>
+                                            <span t-attf-class="kt-ops-status is-#{row.status}">
+                                                <t t-esc="row.status_label"/>
+                                                <t t-if="row.late_duration_label"> · <t t-esc="row.late_duration_label"/></t>
+                                            </span>
+                                        </article>
+                                    </t>
+                                </t>
+                                <div t-else="" class="kt-ops-empty">
+                                    <i class="fa fa-motorcycle"/>
+                                    <strong>Kurye vardiyası bulunamadı</strong>
+                                </div>
+                            </div>
+                            <footer class="kt-ops-modal__foot">
+                                <button type="button" t-on-click="closeRestaurantDetails">Kapat</button>
+                            </footer>
+                        </section>
+                    </div>
+
+                </main>
+            </t>
+            </div>
+        </div>
+    </t>
+</templates>

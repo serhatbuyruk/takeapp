@@ -1,0 +1,797 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="automation_10" model="base.automation">
+        <field name="name">Vardiya Oluşturulduğunda</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="trigger">on_create</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">12</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["code"] = model.generate_code(5)
+  rec["name"] = rec.name.title()
+
+]]></field>
+        </record>
+        <record id="automation_11" model="base.automation">
+        <field name="name">Vardiya Oluşturulduğunda ve Güncellendiğinde</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="trigger">on_create_or_write</field>
+        <field name="active" eval="False"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">6</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  if len(rec.partner_id) == 0:
+    raise UserError(("Lütfen Restoran Alanını Giriniz!"))
+  if len(rec.kurye) == 0:
+    raise UserError(("Lütfen Kurye Alanını Giriniz!"))
+  if rec.start_date == False:
+    raise UserError(("Lütfen Vardiya Başlangıç Zamanını Giriniz!"))
+  if rec.end_date == False:
+    raise UserError(("Lütfen Vardiya Bitiş Zamanını Giriniz!"))
+  if rec.partner_id.lat == 0 or  rec.partner_id.lng == 0:
+    raise UserError(("Lütfen Restoranın Konumunu Restoranın İçine Girerek Doldurunuz!"))
+  rec["name"] = str(rec.partner_id.name) + " | " + str(rec.kurye.name)
+  rec["lat"] = rec.partner_id.lat
+  rec["lng"] = rec.partner_id.lng
+  rec["color"] = str(rec.kurye.contact_color)
+  
+  # Slot Saatleri Hesaplama
+  if rec.start_date != False and rec.end_date != False:
+    rec["dakika_araligi"] = (rec.end_date - rec.start_date).total_seconds()/60
+    rec["saat_araligi"] = (rec.end_date - rec.start_date).total_seconds()/3600
+    if rec.kurye_job_start_date != False:
+      rec["kurye_yoklamasi"] = True
+      if (rec.kurye_job_start_date - rec.start_date).total_seconds() > 10 * 60:
+        rec["gecikme_durumu"] = True
+        rec["gecikme_dakikasi"] = (rec.kurye_job_start_date - rec.start_date).total_seconds()/60
+    if rec.kurye_job_end_date != False:
+      if rec.kurye_job_end_date < rec.end_date:
+        rec["erken_kapatma"] = True
+        rec["bitise_kalan_dakika"] = (rec.end_date - rec.kurye_job_end_date).total_seconds()/60
+  
+  # Slot Çakışma Uyarısı
+  if rec.start_date != False and rec.end_date != False and len(rec.kurye) > 0:
+    cakisan_slot_1 = env['slots.profile'].search(["&","&","&","&",["id","!=",rec.id],["partner_id.id","=",rec.partner_id.id],["kurye.id","=",rec.kurye.id],["start_date","<=",rec.start_date],["end_date",">=",rec.start_date]], limit=1)
+    cakisan_slot_2 = env['slots.profile'].search(["&","&","&","&",["id","!=",rec.id],["partner_id.id","=",rec.partner_id.id],["kurye.id","=",rec.kurye.id],["start_date","<=",rec.end_date],["end_date",">=",rec.end_date]], limit=1)
+    if len(cakisan_slot_1) > 0:
+      cakisan_slot_names_1 = cakisan_slot_1.mapped('id')
+      raise UserError(("Seçtiğiniz Tarihler Arasında Bu Kurye ve Restoran İçin Giriş Yapılmış! Bu Seçimle Çakışan Kayıt No: ") +  str(cakisan_slot_names_1))
+    if len(cakisan_slot_2) > 0:
+      cakisan_slot_names_2 = cakisan_slot_2.mapped('id')
+      raise UserError(("Seçtiğiniz Tarihler Arasında Bu Kurye ve Restoran İçin Giriş Yapılmış! Bu Seçimle Çakışan Kayıt No: ") +  str(cakisan_slot_names_2))
+  
+
+
+
+]]></field>
+        </record>
+        <record id="automation_18" model="base.automation">
+        <field name="name">Vardiya Adresle Oluşturulduğunda ve Güncellendiğinde</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="trigger">on_create_or_write</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">14</field>
+        <field name="trg_date_range">0</field>
+        <field name="trigger_field_ids" eval="[(6, 0, [ref('slots.field_slots_profile__slot_acik_adresi')])]"/>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  if rec.slot_tipi == "bolge":
+    response = model.get_lat_lng(rec.id,str(rec.slot_acik_adresi))
+    lat = 0
+    lng = 0
+    if response["status"] == "OK":
+      lat = response["results"][0]["geometry"]["location"]["lat"]
+      lng = response["results"][0]["geometry"]["location"]["lng"]
+    if lat > 0 and lng > 0:
+      rec["lat"] = lat
+      rec["lng"] = lng
+    
+
+
+]]></field>
+        </record>
+        <record id="automation_20" model="base.automation">
+        <field name="name">Vardiya Oluşturulduğunda ve Güncellendiğinde</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="trigger">on_create_or_write</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">13</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  if len(rec.magazalar) == 0:
+    raise UserError((rec.name + " İçin Lütfen Restoranlar Alanını Giriniz!"))
+  if len(rec.skurye_profile_lines) == 0:
+    raise UserError((rec.name + " İçin Lütfen Kuryeler Alanını Giriniz!"))
+  if rec.start_date == False:
+    raise UserError((rec.name + " İçin Lütfen Vardiya Başlangıç Zamanını Giriniz!"))
+  if rec.end_date == False:
+    raise UserError((rec.name + " İçin Lütfen Vardiya Bitiş Zamanını Giriniz!"))
+  if rec.slot_acik_adresi == False:
+    raise UserError(("Lütfen Vardiya Açık Adres Alanını Adres Tam Doğru olacak Şekilde Giriniz. Adresin Doğru Olması İçin Google Üzerinde Var Olan Bir Noktanın Adresiyle Bu alanı Doldurabilirsiniz."))
+  
+  # slot bolge tipinde tarihin düzgün ayarlanması için uyarı verme
+  if rec.slot_tipi == "bolge":
+    #log(str(rec.start_date), level='info')
+    if rec.start_date.hour == 21 and rec.start_date.minute == 0 and rec.start_date.second == 0:
+      raise UserError(("Zaman karışıklığını engellemek için Başlangıç Tarihini 00:00:00 saatinin 1 dk ilerisine veya gerisine ayarlayınız. 00:00 tarihinden sonrası için bir gün sonraya geçildiğini unutmayınız ve tarihi kontrol ederek ayarlayınız!")) 
+    if rec.end_date.hour == 21 and rec.end_date.minute == 0 and rec.end_date.second == 0:
+      raise UserError(("Zaman karışıklığını engellemek için Bitiş Tarihini 00:00:00 saatinin 1 dk ilerisine veya gerisine ayarlayınız. 00:00 tarihinden sonrası için bir gün sonraya geçildiğini unutmayınız ve tarihi kontrol ederek ayarlayınız!"))
+    if rec.paket_basi_ucret == 0:
+      raise UserError(("Ücretlendirmeyi Yapmadın! Lütfen Bu Ekrandaki Ücretlendirme Bölümünden Kuryenin Alacağı Rakamları Ayarla."))
+  
+  if len(rec.magazalar) > 1: 
+    for magaza in rec.magazalar:
+      if rec.slot_tipi != magaza.slot_tipi:
+        raise UserError((str(magaza.name) + " adlı restoran seçili olan vardiya tipinde değildir! Lütfen restoranlar menüsünden restoranı bularak vardiya tipini değiştiriniz."))
+        
+  rec["slot_tipi"] = rec.magazalar[0].slot_tipi
+  
+  if rec.slot_tipi == "sabit": 
+    if len(rec.magazalar) > 1:
+      raise UserError(("Sabit Kuryeli Vardiya Tipinde Sadece 1 Restoran Seçebilirsiniz! 2. Restoran İçin Daha Sonra Yeni Bir Vardiya Açınız!"))
+      
+  # Skurye line para ve zaman Hesaplama
+  for kurye_line in rec.skurye_profile_lines:
+    kurye_line["name"] = str(rec.name) + " | " + str(kurye_line.partner_id.name)
+    if kurye_line.kurye_active == False:
+      if kurye_line.end_date == False:
+        kurye_line["end_date"] = datetime.datetime.now()
+      kurye_line["partner_id"]["kurye_durumu"] = "mesgul"
+      if kurye_line.kurye_calisma_saati == 0 and kurye_line.start_date != False and kurye_line.kurye_end_date != False:
+        kurye_line["kurye_calisma_saati"] = kurye_line.calculate_worked_hours_until(kurye_line.kurye_end_date)
+        kurye_line["end_date"] = kurye_line.kurye_end_date
+      if kurye_line.kurye_calisma_saati == 0 and kurye_line.kurye_start_date == False and kurye_line.kurye_end_date == False:
+        kurye_line["kurye_calisma_saati"] = kurye_line.calculate_worked_hours_until(rec.end_date)
+        kurye_line["end_date"] = rec.end_date
+      if kurye_line.sale_price == 0 and rec.slot_tipi == "sabit":
+        kurye_line["sale_price"] = kurye_line.kurye_calisma_saati * rec.magazalar[0].saatlik_ucret
+      if kurye_line.sale_price == 0 and rec.slot_tipi == "bolge":
+        kurye_line["sale_price"] = kurye_line.kurye_calisma_saati * rec.saatlik_ucret
+  
+  # Slot Saatleri Hesaplama
+  if rec.start_date != False and rec.end_date != False:
+    rec["dakika_araligi"] = (rec.end_date - rec.start_date).total_seconds()/60
+    rec["saat_araligi"] = (rec.end_date - rec.start_date).total_seconds()/3600
+    
+  
+  
+
+
+
+]]></field>
+        </record>
+        <record id="automation_27" model="base.automation">
+        <field name="name">When Skurye.Profile.Lines Created Or Updated</field>
+        <field name="model_id" ref="slots.model_skurye_profile_lines"/>
+        <field name="trigger">on_create_or_write</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">11</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  if env.user.has_group('base.group_system') == False:
+    if len(rec.partner_id) == 0:
+      raise UserError((str(rec.name) + " Adlı Vardiyadaki Kurye Ekleme Alanında Kurye Seçim Alanını Boş Bıraktınız! Lütfen Bu Satırı Düzeltiniz Yada Siliniz."))
+    if (rec.kurye_start_date == False and rec.kurye_end_date != False) or (rec.kurye_start_date != False and rec.kurye_end_date == False):
+      raise UserError((str(rec.partner_id.name) + " Adlı Kurye İçin Kurye Ekleme Satırlarındaki Kurye İş Başlangıç Saatini ve Kurye İş Bitiş Saatini Tam Giriniz!"))
+    
+
+
+]]></field>
+        </record>
+        <record id="automation_28" model="base.automation">
+        <field name="name">Vardiya Silindiğinde</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="trigger">on_unlink</field>
+        <field name="active" eval="True"/>
+
+
+        <field name="state">code</field>
+        <field name="sequence">15</field>
+        <field name="trg_date_range">0</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  log(str(rec.name) + " adlı slot " + str(env.user.name) + " tarafından " + str((datetime.datetime.now() + datetime.timedelta(hours = 3)).strftime("%d-%m-%Y %H:%M")) + " tarihinde silindi.", level='info')
+
+
+]]></field>
+        </record>
+        <record id="cron_57" model="ir.cron">
+        <field name="name">Otomatik Vardiyaları Başlat - Sonlandır (Autoronics)</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="state">code</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">0</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">8</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+bugun = (datetime.datetime.now() + datetime.timedelta(hours = 3)).weekday()
+sabit_kuryeli_restoranlar = False
+now = datetime.datetime.now() + datetime.timedelta(hours = 3)
+if bugun == 0:
+  sabit_kuryeli_restoranlar = env['res.partner'].search(['&','&','&',["user_role","=",'magaza'],["slot_tipi","=",'sabit'],["pazartesi_status","=",True],["today_slot_status","=",False]])
+if bugun == 1:
+  sabit_kuryeli_restoranlar = env['res.partner'].search(['&','&','&',["user_role","=",'magaza'],["slot_tipi","=",'sabit'],["sali_status","=",True],["today_slot_status","=",False]])
+if bugun == 2:
+  sabit_kuryeli_restoranlar = env['res.partner'].search(['&','&','&',["user_role","=",'magaza'],["slot_tipi","=",'sabit'],["carsamba_status","=",True],["today_slot_status","=",False]])
+if bugun == 3:
+  sabit_kuryeli_restoranlar = env['res.partner'].search(['&','&','&',["user_role","=",'magaza'],["slot_tipi","=",'sabit'],["persembe_status","=",True],["today_slot_status","=",False]])
+if bugun == 4:
+  sabit_kuryeli_restoranlar = env['res.partner'].search(['&','&','&',["user_role","=",'magaza'],["slot_tipi","=",'sabit'],["cuma_status","=",True],["today_slot_status","=",False]])
+if bugun == 5:
+  sabit_kuryeli_restoranlar = env['res.partner'].search(['&','&','&',["user_role","=",'magaza'],["slot_tipi","=",'sabit'],["cumartesi_status","=",True],["today_slot_status","=",False]])
+if bugun == 6:
+  sabit_kuryeli_restoranlar = env['res.partner'].search(['&','&','&',["user_role","=",'magaza'],["slot_tipi","=",'sabit'],["pazar_status","=",True],["today_slot_status","=",False]])
+  
+log("sabit_kuryeli_restoranlar: " + str(sabit_kuryeli_restoranlar), level='info')
+  
+  
+comparison_time_str = "2024-11-26 00:30:00.110760"
+comparison_time = datetime.datetime.strptime(comparison_time_str, "%Y-%m-%d %H:%M:%S.%f")
+now_time = now.time()  # Şu anki zamanın sadece saat kısmı
+comparison_time_only = comparison_time.time()  # Karşılaştırılacak zamanın saat kısmı
+
+if now_time > comparison_time_only:
+  for sabit_kuryeli_restoran in sabit_kuryeli_restoranlar:
+    if len(sabit_kuryeli_restoran.kuryeler) > 0:
+      magaza_start_date = False
+      magaza_end_date = False
+      magaza_ids = []
+      if bugun == 0:
+        magaza_start_date = sabit_kuryeli_restoran.pazartesi_start_date
+        magaza_end_date = sabit_kuryeli_restoran.pazartesi_end_date
+      if bugun == 1:
+        magaza_start_date = sabit_kuryeli_restoran.sali_start_date
+        magaza_end_date = sabit_kuryeli_restoran.sali_end_date
+      if bugun == 2:
+        magaza_start_date = sabit_kuryeli_restoran.carsamba_start_date
+        magaza_end_date = sabit_kuryeli_restoran.carsamba_end_date
+      if bugun == 3:
+        magaza_start_date = sabit_kuryeli_restoran.persembe_start_date
+        magaza_end_date = sabit_kuryeli_restoran.persembe_end_date
+      if bugun == 4:
+        magaza_start_date = sabit_kuryeli_restoran.cuma_start_date
+        magaza_end_date = sabit_kuryeli_restoran.cuma_end_date
+      if bugun == 5:
+        magaza_start_date = sabit_kuryeli_restoran.cumartesi_start_date
+        magaza_end_date = sabit_kuryeli_restoran.cumartesi_end_date
+      if bugun == 6:
+        magaza_start_date = sabit_kuryeli_restoran.pazar_start_date
+        magaza_end_date = sabit_kuryeli_restoran.pazar_end_date
+      #log(str(magaza_start_date) + " " + str(magaza_end_date), level='info')
+      if magaza_start_date != False and magaza_end_date != False:
+        start_date = datetime.datetime(
+            now.year, now.month, now.day,
+            magaza_start_date.hour, magaza_start_date.minute, magaza_start_date.second
+        )
+        end_date = datetime.datetime(
+            now.year, now.month, now.day,
+            magaza_end_date.hour, magaza_end_date.minute, magaza_end_date.second
+        )
+        if start_date > end_date and start_date.hour < end_date.hour:
+          start_date = start_date - datetime.timedelta(hours = 24)
+          end_date = end_date + datetime.timedelta(hours = 24)
+        if start_date > end_date and start_date.hour > end_date.hour:
+          start_date = start_date
+          end_date = end_date + datetime.timedelta(hours = 24)
+        formatted_start_date = start_date.strftime("%Y-%m-%d %H:%M:%S")
+        formatted_end_date = end_date.strftime("%Y-%m-%d %H:%M:%S")
+        magaza_ids.append(sabit_kuryeli_restoran.id)
+        kuryeler = sabit_kuryeli_restoran.kuryeler
+        
+        skurye_profile_lines = []
+        for kurye in kuryeler:
+          day_status = False
+          kurye_start_date = False
+          kurye_end_date = False
+          if bugun == 0:
+            day_status = kurye.pazartesi_status
+            kurye_start_date = kurye.pazartesi_start_date
+            kurye_end_date = kurye.pazartesi_end_date
+          if bugun == 1:
+            day_status = kurye.sali_status
+            kurye_start_date = kurye.sali_start_date
+            kurye_end_date = kurye.sali_end_date
+          if bugun == 2:
+            day_status = kurye.carsamba_status
+            kurye_start_date = kurye.carsamba_start_date
+            kurye_end_date = kurye.carsamba_end_date
+          if bugun == 3:
+            day_status = kurye.persembe_status
+            kurye_start_date = kurye.persembe_start_date
+            kurye_end_date = kurye.persembe_end_date
+          if bugun == 4:
+            day_status = kurye.cuma_status
+            kurye_start_date = kurye.cuma_start_date
+            kurye_end_date = kurye.cuma_end_date
+          if bugun == 5:
+            day_status = kurye.cumartesi_status
+            kurye_start_date = kurye.cumartesi_start_date
+            kurye_end_date = kurye.cumartesi_end_date
+          if bugun == 6:
+            day_status = kurye.pazar_status
+            kurye_start_date = kurye.pazar_start_date
+            kurye_end_date = kurye.pazar_end_date          
+          if kurye_start_date != False and kurye_end_date != False and day_status == True:
+            kurye_start_date = datetime.datetime(
+              now.year, now.month, now.day,
+              kurye_start_date.hour, kurye_start_date.minute, kurye_start_date.second
+            )
+            kurye_end_date = datetime.datetime(
+                now.year, now.month, now.day,
+                kurye_end_date.hour, kurye_end_date.minute, kurye_end_date.second
+            )
+            if kurye_start_date > kurye_end_date and kurye_start_date.hour < kurye_end_date.hour:
+              kurye_start_date = kurye_start_date - datetime.timedelta(hours = 24)
+              kurye_end_date = kurye_end_date + datetime.timedelta(hours = 24)
+            if kurye_start_date > kurye_end_date and kurye_start_date.hour > kurye_end_date.hour:
+              kurye_start_date = kurye_start_date
+              kurye_end_date = kurye_end_date + datetime.timedelta(hours = 24)
+            formatted_kurye_start_date = kurye_start_date.strftime("%Y-%m-%d %H:%M:%S")
+            formatted_kurye_end_date = kurye_end_date.strftime("%Y-%m-%d %H:%M:%S")
+            skurye_profile_lines.append((0, 0, {'partner_id': kurye.id, 'kurye_start_date': formatted_kurye_start_date, 'kurye_end_date': formatted_kurye_end_date}))
+          if kurye_start_date == False and kurye_end_date == False and day_status == True:
+            skurye_profile_lines.append((0, 0, {'partner_id': kurye.id}))
+        if len(skurye_profile_lines) == 0:
+          bos_kurye = env['res.partner'].search([["name","=",'Boş']])
+          skurye_profile_lines.append((0, 0, {'partner_id': bos_kurye.id}))
+            
+        new_slot = env['slots.profile'].create({
+              'name': str(sabit_kuryeli_restoran.name) + " Vardiyası",
+              'slot_tipi': "sabit",
+              'magazalar': [(6, 0, magaza_ids)],
+              'start_date': formatted_start_date, 
+              'end_date': formatted_end_date,
+              'lat': sabit_kuryeli_restoran.lat,
+              'lng': sabit_kuryeli_restoran.lng,
+              'slot_acik_adresi': str(sabit_kuryeli_restoran.street) + " " + str(sabit_kuryeli_restoran.city) + "/" + str(sabit_kuryeli_restoran.state_id.name),
+              'skurye_profile_lines': (skurye_profile_lines)
+          })
+        for slot_magaza in new_slot.magazalar:
+          slot_magaza["today_slot_status"] = True
+      
+      
+if now_time < comparison_time_only:
+  sabit_kuryeli_restoranlar = env['res.partner'].search(['&',["slot_tipi","=",'sabit'],["today_slot_status","=",True]])
+  for sabit_kuryeli_restoran in sabit_kuryeli_restoranlar:
+    sabit_kuryeli_restoran["today_slot_status"] = False
+
+
+
+#--------------- Slot başlangıç bildirimleri Başlangıç--------------
+player_ids = []
+yaklasan_slotlar = env['slots.profile'].search(["&","&",["active_status","=",True],["start_date",">=",datetime.datetime.now() + datetime.timedelta(seconds = 1800)],["start_date","<=",datetime.datetime.now() + datetime.timedelta(seconds = 1855)]])
+for yaklasan_slot in yaklasan_slotlar:
+  kurye_lines = yaklasan_slot.skurye_profile_lines
+  for kurye_line in kurye_lines:
+    if kurye_line.kurye_start_date == False and kurye_line.partner_id.player_id != False:
+      player_ids.append(kurye_line.partner_id.player_id)
+if len(player_ids) > 0:
+  env['notifier.profile'].send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Vardiyan Yaklaşıyor!","30 dakika içinde işe başlayacaksın")
+
+player_ids = []
+yaklasan_skurye_lines = env['skurye.profile.lines'].search(["&","&",["kurye_active","=",True],["kurye_start_date",">=",datetime.datetime.now() + datetime.timedelta(seconds = 1800)],["kurye_start_date","<=",datetime.datetime.now() + datetime.timedelta(seconds = 1855)]])
+for yaklasan_skurye_line in yaklasan_skurye_lines:
+  if yaklasan_skurye_line.kurye_start_date != False and yaklasan_skurye_line.partner_id.player_id != False:
+    player_ids.append(yaklasan_skurye_line.partner_id.player_id)
+if len(player_ids) > 0:
+  env['notifier.profile'].send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Vardiyan Yaklaşıyor!","30 dakika sonra işe başlayacaksın.")
+
+#--------------- Slot başlangıç bildirimleri Son--------------
+
+
+#--------------- Slota Geciken Kuryelere Uyarı Bildirimi--------------
+player_ids = []
+aktif_slotlar = env['slots.profile'].search(["&","&",["active_status","=",True],["start_date","<",datetime.datetime.now()],["end_date",">",datetime.datetime.now()]])
+for aktif_slot in aktif_slotlar:
+  kurye_lines = aktif_slot.skurye_profile_lines
+  for kurye_line in kurye_lines:
+    time_minutes_diff = 0
+    if kurye_line.kurye_active == True and kurye_line.kurye_start_date != False and kurye_line.start_date == False and len(kurye_line.partner_id) > 0:
+      minutes_diff = (datetime.datetime.now() - kurye_line.kurye_start_date).total_seconds() / 60
+      if minutes_diff >= 10 and minutes_diff <= 11 and kurye_line.partner_id.player_id != False:
+        player_ids.append(kurye_line.partner_id.player_id)
+if len(player_ids) > 0:
+  env['notifier.profile'].send_Push_Notification_With_Playerid_Voice("Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0", "796c5def-6915-4219-b2c4-c71de264806f",player_ids,"3648fa8a-86d4-496c-b4b4-9ec7132d1aed","Uyarı","notif.wav","notif" ,"Acele Et! Vardiyaya Geç Kaldın!","Vardiya zamanını kaçırma seni bekliyoruz..")
+
+
+#--------------- Süresi Dolan Slotları Kapatma--------------    
+expired_slots = env['slots.profile'].search(["&","&",["active_status","=",True],["start_date","<",datetime.datetime.now()],["end_date","<",datetime.datetime.now()]])
+for expired_slot in expired_slots:
+  aktif_baska_slot_durumu = "kurye durumu değiştirilmedi."
+  expired_slot["active_status"] = False
+  for kurye_line in expired_slot.skurye_profile_lines:
+    if kurye_line.kurye_end_date == False and kurye_line.start_date != False:
+      kurye_line["kurye_calisma_saati"] = kurye_line.calculate_worked_hours_until(expired_slot.end_date)
+      kurye_line["end_date"] = expired_slot.end_date
+    if kurye_line.start_date != False and kurye_line.kurye_end_date != False:
+      if kurye_line.kurye_calisma_saati == 0:
+        kurye_line["kurye_calisma_saati"] = kurye_line.calculate_worked_hours_until(kurye_line.kurye_end_date)
+        kurye_line["end_date"] = kurye_line.kurye_end_date
+    if expired_slot.slot_tipi == "sabit":
+      if kurye_line.sale_price == 0:
+        kurye_line["sale_price"] = kurye_line.kurye_calisma_saati * expired_slot.magazalar[0].saatlik_ucret
+    if expired_slot.slot_tipi == "bolge":
+      if kurye_line.sale_price == 0:
+        kurye_line["sale_price"] = kurye_line.kurye_calisma_saati * expired_slot.saatlik_ucret
+    kurye_line["partner_id"]["kurye_durumu"] = "mesgul"
+    aktif_baska_slot_durumu = "Vardiya Zamanı Tamamlandı ve Kuryeler meşgule çekildi"
+  log(str(expired_slot.id) + " id' li " + str(expired_slot.name) + " slotunun süresi doldu ve kapatıldı. " + aktif_baska_slot_durumu, level='info')
+
+
+]]></field>
+        </record>
+        <record id="cron_62" model="ir.cron">
+        <field name="name">Skurye Line Başlama - Bitirme (Autoronics)</field>
+        <field name="model_id" ref="slots.model_skurye_profile_lines"/>
+        <field name="state">code</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+expired_skurye_lines = env['skurye.profile.lines'].search(["&","&",["kurye_active","=",True],["kurye_end_date","!=",False],["kurye_end_date","<",datetime.datetime.now()]])
+for expired_skurye_line in expired_skurye_lines:
+  log(str(expired_skurye_line.end_date), level='info')
+  log(str(expired_skurye_line.partner_id.id) + " id' li " + str(expired_skurye_line.partner_id.name) + " kuryesinin slot line süresi doldu ve meşgule çevrildi. ", level='info')
+  expired_skurye_line["end_date"] = expired_skurye_line.kurye_end_date
+  expired_skurye_line["kurye_active"] = False
+  expired_skurye_line["partner_id"]["kurye_durumu"] = "mesgul"
+  
+  
+  
+ 
+
+]]></field>
+        </record>
+        <record id="cron_70" model="ir.cron">
+        <field name="name">Kurye Muhasebe Denetleyici (Autoronics)</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="state">code</field>
+        <field name="active" eval="False"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">1</field>
+        <field name="priority">5</field>
+        <field name="doall" eval="False"/>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+expired_slots = env['slots.profile'].search(["&","&",["active_status","=",False],["start_date","<",datetime.datetime.now()],["end_date","<","2025-01-27 23:59:59"]])
+for expired_slot in expired_slots:
+  aktif_baska_slot_durumu = "kurye durumu değiştirilmedi."
+  #expired_slot["active_status"] = False
+  for kurye_line in expired_slot.skurye_profile_lines:
+    if kurye_line.kurye_end_date == False and kurye_line.start_date != False:
+      kurye_line["kurye_calisma_saati"] = kurye_line.calculate_worked_hours_until(expired_slot.end_date)
+      kurye_line["end_date"] = expired_slot.end_date
+    if kurye_line.start_date != False and kurye_line.kurye_end_date != False:
+      kurye_line["kurye_calisma_saati"] = kurye_line.calculate_worked_hours_until(kurye_line.kurye_end_date)
+      kurye_line["end_date"] = kurye_line.kurye_end_date
+    if expired_slot.slot_tipi == "sabit":
+      kurye_line["sale_price"] = kurye_line.kurye_calisma_saati * expired_slot.magazalar[0].saatlik_ucret
+    if expired_slot.slot_tipi == "bolge":
+      kurye_line["sale_price"] = kurye_line.kurye_calisma_saati * expired_slot.saatlik_ucret
+    #kurye_line["partner_id"]["kurye_durumu"] = "mesgul"
+    #aktif_baska_slot_durumu = "Slot Zamanı Tamamlandı ve Kuryeler meşgule çekildi"
+  #log(str(expired_slot.id) + " id' li " + str(expired_slot.name) + " slotunun süresi doldu ve kapatıldı. " + aktif_baska_slot_durumu, level='info')
+
+
+]]></field>
+        </record>
+        <record id="server_action_1113" model="ir.actions.server">
+        <field name="name">Bugünün Vardiyaları</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  user_timezone = timezone(env.user.tz or 'Europe/Istanbul')
+  utc_timezone = timezone('UTC')
+  today_local = datetime.datetime.now(user_timezone).date()
+  local_start = user_timezone.localize(datetime.datetime.combine(today_local, datetime.time.min))
+  local_end = local_start + datetime.timedelta(days=1)
+  utc_start = local_start.astimezone(utc_timezone).replace(tzinfo=None)
+  utc_end = local_end.astimezone(utc_timezone).replace(tzinfo=None)
+  if rec.user_role == "magaza":
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Bugünün Vardiyaları',
+        'res_model': 'slots.profile',
+        'view_mode': 'kanban,tree,form',
+        'domain': [
+            '&','&','|',('magazalar.id', '=', rec.id),('partner_id.id', '=', rec.id),('start_date', '>=', utc_start),('start_date', '<', utc_end)
+        ],
+        'target': 'current',  # 'new' yeni bir pencere için
+        'context': {
+            'group_by': 'kurye'  # 'kurye' alanına göre gruplama
+        },
+    }
+  if rec.user_role == "kurye":
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Bugünün Vardiyaları',
+        'res_model': 'slots.profile',
+        'view_mode': 'kanban,tree,form',
+        'domain': [
+            '&','&',('skurye_profile_lines.partner_id.id', '=', rec.id),('start_date', '>=', utc_start),('start_date', '<', utc_end)
+        ],
+        'target': 'current',  # 'new' yeni bir pencere için
+        'context': {
+            'group_by': 'partner_id'  # 'kurye' alanına göre gruplama
+        },
+    }
+
+
+
+]]></field>
+        </record>
+        <record id="server_action_1116" model="ir.actions.server">
+        <field name="name">Kuryenin Kazancını Hesapla</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="binding_model_id" ref="slots.model_slots_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">6</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  corders = env['corders.profile'].search(["&",["magaza.id","=",rec.partner_id.id],["kurye.id","=",rec.kurye.id],["siparis_tarihi",">=",rec.start_date],["siparis_tarihi","<=",rec.end_date]],limit=1)
+  toplam_paket_ucreti = sum(corder.sale_price for corder in corders)
+  toplam_odeme = toplam_paket_ucreti + rec.saat_araligi*rec.saatlik_ucret + rec.slot_promosyon_ucret
+  log("Slot Id: " + str(rec.id) + " - " + str(rec.kurye.name) + " - Toplam Paket Ücreti: " + str(toplam_paket_ucreti) + " Saat Aralığı: " + str(rec.saat_araligi) + " Saatlik Ücret: " + str(rec.saatlik_ucret) + " Toplam Ödeme: " + str(toplam_odeme) + " Slot Promosyon Ücreti: " + str(rec.slot_promosyon_ucret), level='info')
+  rec["sale_price"] = toplam_odeme
+  
+
+]]></field>
+        </record>
+        <record id="server_action_1133" model="ir.actions.server">
+        <field name="name">Konumu Gör</field>
+        <field name="model_id" ref="slots.model_slots_profile"/>
+        <field name="binding_model_id" ref="slots.model_slots_profile"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records: 
+  action = { 
+    'type': 'ir.actions.act_url', 
+    'name': 'Redirect to Specific Record', 
+    'res_model': 'ir.actions.act_url',  # Example: 'res.partner' 
+    'target': 'current',  # or 'new' for a new window 
+    'url': ("https://www.google.com/maps?q=" + str(rec.lat) + "," + str(rec.lng))
+    }
+
+]]></field>
+        </record>
+        <record id="server_action_1135" model="ir.actions.server">
+        <field name="name">Konumu Gör</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">5</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records: 
+  action = { 
+    'type': 'ir.actions.act_url', 
+    'name': 'Redirect to Specific Record', 
+    'res_model': 'ir.actions.act_url',  # Example: 'res.partner' 
+    'target': 'current',  # or 'new' for a new window 
+    'url': ("https://www.google.com/maps?q=" + str(rec.lat) + "," + str(rec.lng))
+    }
+
+]]></field>
+        </record>
+        <record id="server_action_1310" model="ir.actions.server">
+        <field name="name">Kuryenin Saatlik Alacağı Yapıldı Olarak İşaretle</field>
+        <field name="model_id" ref="slots.model_skurye_profile_lines"/>
+        <field name="binding_model_id" ref="slots.model_skurye_profile_lines"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">6</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["kurye_odeme_durumu"] = "paid"
+
+
+]]></field>
+        </record>
+        <record id="server_action_1311" model="ir.actions.server">
+        <field name="name">Kuryenin Saatlik Alacağı Yapılmadı Olarak İşaretle</field>
+        <field name="model_id" ref="slots.model_skurye_profile_lines"/>
+        <field name="binding_model_id" ref="slots.model_skurye_profile_lines"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="sequence">7</field>
+        <field name="code"><![CDATA[# Available variables:
+#  - env: Odoo Environment on which the action is triggered
+#  - model: Odoo Model of the record on which the action is triggered; is a void recordset
+#  - record: record on which the action is triggered; may be void
+#  - records: recordset of all records on which the action is triggered in multi-mode; may be void
+#  - time, datetime, dateutil, timezone: useful Python libraries
+#  - float_compare: Odoo function to compare floats based on specific precisions
+#  - log: log(message, level='info'): logging function to record debug information in ir.logging table
+#  - UserError: Warning Exception to use with raise
+#  - Command: x2Many commands namespace
+# To return an action, assign: action = {...}
+for rec in records:
+  rec["kurye_odeme_durumu"] = "not_paid"
+
+
+]]></field>
+        </record>
+    </data>
+</odoo>

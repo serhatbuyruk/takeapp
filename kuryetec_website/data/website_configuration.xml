@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="website.default_website" model="website">
+        <field name="homepage_url">/anasayfa</field>
+        <field name="robots_txt">/</field>
+    </record>
+
+    <record id="rewrite_home_to_root" model="website.rewrite">
+        <field name="name">home yönlendirme</field>
+        <field name="url_from">/home</field>
+        <field name="url_to">/</field>
+        <field name="redirect_type">301</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="menu_root" model="website.menu">
+        <field name="name">Top Menu for Website 1</field>
+        <field name="url">/default-main-menu</field>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">0</field>
+    </record>
+    <record id="menu_courier_home" model="website.menu">
+        <field name="name">Kurye Anasayfa</field>
+        <field name="url">/kurye-anasayfa</field>
+        <field name="page_id" ref="kuryetec_website.website_page_97"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">1</field>
+    </record>
+    <record id="menu_history" model="website.menu">
+        <field name="name">Gecmis</field>
+        <field name="url">/gecmis</field>
+        <field name="page_id" ref="kuryetec_website.website_page_109"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">2</field>
+    </record>
+    <record id="menu_available_hours" model="website.menu">
+        <field name="name">Musait Saatler</field>
+        <field name="url">/musait-saatler</field>
+        <field name="page_id" ref="kuryetec_website.website_page_98"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">3</field>
+    </record>
+    <record id="menu_package_counts" model="website.menu">
+        <field name="name">Paket Sayıları</field>
+        <field name="url">/paket-sayilari</field>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">4</field>
+    </record>
+    <record id="menu_payments" model="website.menu">
+        <field name="name">Ödemeler</field>
+        <field name="url">/odemeler</field>
+        <field name="page_id" ref="kuryetec_website.website_page_100"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">5</field>
+    </record>
+    <record id="menu_break" model="website.menu">
+        <field name="name">Mola</field>
+        <field name="url">/mola</field>
+        <field name="page_id" ref="kuryetec_website.website_page_116"/>
+        <!-- Geçici olarak kurye menüsünden gizlidir; route korunur. -->
+        <field name="parent_id" eval="False"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">5</field>
+    </record>
+    <record id="menu_support" model="website.menu">
+        <field name="name">Destek</field>
+        <field name="url">/destek-merkezi</field>
+        <field name="page_id" ref="kuryetec_website.website_page_108"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">6</field>
+    </record>
+    <record id="menu_authorized_company" model="website.menu">
+        <field name="name">Yetkili Firma</field>
+        <field name="url">/yetkili-firma</field>
+        <field name="page_id" ref="kuryetec_website.website_page_118"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">7</field>
+    </record>
+    <record id="menu_announcements" model="website.menu">
+        <field name="name">Duyurular</field>
+        <field name="url">/duyurular</field>
+        <field name="page_id" ref="kuryetec_website.website_page_122"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">8</field>
+    </record>
+    <record id="menu_notifications" model="website.menu">
+        <field name="name">Bildirimler</field>
+        <field name="url">/bildirimler</field>
+        <field name="page_id" ref="kuryetec_website.website_page_123"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">9</field>
+    </record>
+    <record id="menu_profile" model="website.menu">
+        <field name="name">Profilim</field>
+        <field name="url">/my/account</field>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">10</field>
+    </record>
+    <record id="menu_privacy" model="website.menu">
+        <field name="name">Gizlilik Politikasi</field>
+        <field name="url">/gizlilik-politikasi</field>
+        <field name="page_id" ref="kuryetec_website.website_page_103"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">11</field>
+    </record>
+    <record id="menu_explicit_consent" model="website.menu">
+        <field name="name">Acik Riza Metni</field>
+        <field name="url">/acik-riza-metni</field>
+        <field name="page_id" ref="kuryetec_website.website_page_120"/>
+        <field name="parent_id" ref="kuryetec_website.menu_root"/>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="sequence">12</field>
+    </record>
+
+    <record id="access_theme_ir_attachment" model="ir.model.access">
+        <field name="name">access_theme_ir_attachment (autoronics)</field>
+        <field name="model_id" ref="website.model_theme_ir_attachment"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_package_reconciliation_restaurant" model="ir.rule">
+        <field name="name">Restoran yalnızca kendi kurye paketlerini görür</field>
+        <field name="model_id" ref="slots.model_slots_package_reconciliation"/>
+        <field name="domain_force">['|', '|', ('restaurant_id.yetkili_users', 'in', [user.id]), ('restaurant_id', '=', user.partner_id.id), ('restaurant_id', '=', user.partner_id.parent_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_package_reconciliation_slots_admin" model="ir.rule">
+        <field name="name">Vardiya yöneticileri tüm kurye paketlerini görür</field>
+        <field name="model_id" ref="slots.model_slots_package_reconciliation"/>
+        <field name="domain_force">[]</field>
+        <field name="groups" eval="[(4, ref('slots.slots_group_admin')), (4, ref('slots.slots_group_fullaccess')), (4, ref('corders.corders_group_admin')), (4, ref('corders.corders_group_fullaccess')), (4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

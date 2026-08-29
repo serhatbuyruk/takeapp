@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="layout_map" name="Web layout with Google Map" inherit_id="web.layout">
+        <xpath expr="//script" position="before">
+            <script t-attf-src="https://maps.google.com/maps/api/js?key=AIzaSyBh9PSQgCo_2o5jGm_ptIJKvJCPcJdiblU&amp;callback=myMap"></script>
+        </xpath>
+    </template>
+</odoo>

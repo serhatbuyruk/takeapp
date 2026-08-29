@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_form_operation_dashboard" model="ir.ui.view">
+        <field name="name">res.partner.form.operation.dashboard</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="corders.res_partner_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='akilli_ayarlar']/field[@name='slot_tipi']"
+                   position="after">
+                <field name="operation_dashboard_enabled"
+                       widget="boolean_toggle"
+                       groups="base.group_system,slots.slots_group_admin,slots.slots_group_fullaccess,corders.corders_group_admin,corders.corders_group_fullaccess"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

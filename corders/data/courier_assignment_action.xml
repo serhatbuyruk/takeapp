@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="automation_21" model="base.automation">
+        <field name="code"><![CDATA[
+for rec in records:
+  assigned_courier = rec.prepare_and_auto_assign_courier()
+  if len(assigned_courier) == 0 and rec.magaza and rec.magaza.player_id:
+    env['notifier.profile'].send_Push_Notification_With_Playerid(
+      "Basic NjM3MTRiOWItYzg0Zi00NGE5LThmY2QtMGYwMTIwNDI5NmM0",
+      "796c5def-6915-4219-b2c4-c71de264806f",
+      [rec.magaza.player_id],
+      str(rec.siparis_no) + " nolu siparişinize kurye atanamadı."
+    )
+        ]]></field>
+    </record>
+</odoo>

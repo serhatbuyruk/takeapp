@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_portal_corders_profile" model="ir.rule">
+        <field name="name">Portal user can access corders.profile (Autoronics)</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="domain_force">[('kurye', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(6, 0, [ref('base.group_portal')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_portal_res_partner" model="ir.rule">
+        <field name="name">Portal user access to res.partner</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force" eval="False"/>
+        <field name="groups" eval="[(6, 0, [ref('base.group_portal')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_manager_res_partner" model="ir.rule">
+        <field name="name">Corders manager access res.partner records (autoronics)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">['|','|',('id', '=', user.partner_id.id),('create_uid', '=', user.id),('yetkili_users', 'in', [user.id])]</field>
+        <field name="groups" eval="[(6, 0, [ref('corders.corders_group_manager')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_admin_res_partner" model="ir.rule">
+        <field name="name">Corders admin access res.partner records (autoronics)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">['|','|',('id', '=', user.partner_id.id),('create_uid', '=', user.id),('yetkili_users', 'in', [user.id])]</field>
+        <field name="groups" eval="[(6, 0, [ref('corders.corders_group_admin')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="access_portal_corders_profile" model="ir.model.access">
+        <field name="name">Corders Portal User Access (Autoronics)</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="group_id" ref="base.group_portal"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="access_portal_res_partner" model="ir.model.access">
+        <field name="name">Portal User Access To res.partner (autoronics)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="group_id" ref="base.group_portal"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="access_portal_order_profile_lines" model="ir.model.access">
+        <field name="name">portal user access to order line (autoronics)</field>
+        <field name="model_id" ref="corders.model_order_profile_lines"/>
+        <field name="group_id" ref="base.group_portal"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="access_manager_corders_profile" model="ir.model.access">
+        <field name="name">Corders Manager res.partner access (Autoronics)</field>
+        <field name="model_id" ref="corders.model_corders_profile"/>
+        <field name="group_id" ref="corders.corders_group_manager"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="access_dealer_res_partner" model="ir.model.access">
+        <field name="name">Corders Dealer res.partner access (Autoronics)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="group_id" ref="corders.corders_group_dealer"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="access_admin_res_partner" model="ir.model.access">
+        <field name="name">Corders Admin res.partner access (Autoronics)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="group_id" ref="corders.corders_group_admin"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>
