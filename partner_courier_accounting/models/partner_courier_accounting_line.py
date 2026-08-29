@@ -22,6 +22,7 @@ class PartnerCourierAccountingLine(models.Model):
     )
     date_start = fields.Date(string='Hafta Başlangıç')
     date_end = fields.Date(string='Hafta Bitiş')
+    payment_date = fields.Date(string='Ödemenin Yapılacağı Tarih')
     area = fields.Char(string='Bölge')
     city = fields.Char(string='Şehir')
     pickup_count = fields.Integer(string='Pick up')

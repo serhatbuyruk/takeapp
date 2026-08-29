@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<odoo>
-    <template id="assets_backend" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <link href="/notifier/static/src/css/google_maps_widget.css" rel="stylesheet" type="text/css"/>
-            <script src="/notifier/static/src/js/google_maps_widget.js" type="text/javascript"/>
-        </xpath>
-    </template>
-</odoo>

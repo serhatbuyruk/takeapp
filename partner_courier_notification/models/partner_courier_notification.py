@@ -1,4 +1,5 @@
 import json
+import re
 import uuid
 from urllib import error as url_error
 from urllib import request as url_request
@@ -35,6 +36,11 @@ class PartnerCourierNotification(models.Model):
         'partner_id',
         string='Kişiler',
         domain="[('player_id', '!=', False)]",
+    )
+    courier_ids_text = fields.Text(
+        string='Kurye ID Listesi',
+        copy=False,
+        help='Her satıra bir Kurye ID yapıştırıp seçili kişiler listesine ekleyebilirsiniz.',
     )
     partner_domain = fields.Char(
         string='Contact Filtresi',
@@ -73,6 +79,11 @@ class PartnerCourierNotification(models.Model):
     sent_date = fields.Datetime(string='Gönderim Tarihi', readonly=True, copy=False)
     response_message = fields.Text(string='OneSignal Yanıtı', readonly=True, copy=False)
 
+    _ONESIGNAL_SUBSCRIPTION_ID_PATTERN = re.compile(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+        re.IGNORECASE,
+    )
+
     @api.depends('recipient_line_ids.state')
     def _compute_counts(self):
         for notification in self:
@@ -106,6 +117,61 @@ class PartnerCourierNotification(models.Model):
             notification._send_notification()
         return True
 
+    def action_add_partners_by_courier_ids(self):
+        self.ensure_one()
+        return self._add_partners_by_courier_ids()
+
+    def _add_partners_by_courier_ids(self):
+        self.ensure_one()
+        if self.state == 'sent':
+            raise UserError(_('Gönderilmiş bildirimin hedef kişileri değiştirilemez.'))
+
+        courier_ids = self._parse_courier_ids_text()
+        if not courier_ids:
+            raise UserError(_('Lütfen en az bir Kurye ID girin.'))
+
+        partners = self.env['res.partner'].search([
+            ('active', '=', True),
+            ('courier_id', 'in', courier_ids),
+        ])
+        found_courier_ids = set(partners.mapped('courier_id'))
+        missing_courier_ids = [courier_id for courier_id in courier_ids if courier_id not in found_courier_ids]
+        if not partners:
+            raise UserError(_('Girilen Kurye ID değerleriyle eşleşen aktif contact bulunamadı.'))
+
+        existing_partners = self.partner_ids
+        self.write({
+            'target_type': 'partners',
+            'partner_ids': [(6, 0, (existing_partners | partners).ids)],
+            'courier_ids_text': False,
+        })
+
+        message = _('%s kişi seçili kişiler listesine eklendi.') % len(partners - existing_partners)
+        if missing_courier_ids:
+            message += _(' Bulunamayan Kurye ID: %s') % ', '.join(missing_courier_ids)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Kurye ID Listesi'),
+                'message': message,
+                'type': 'warning' if missing_courier_ids else 'success',
+                'sticky': bool(missing_courier_ids),
+                'next': {'type': 'ir.actions.client', 'tag': 'reload'},
+            },
+        }
+
+    def _parse_courier_ids_text(self):
+        self.ensure_one()
+        courier_ids = []
+        seen = set()
+        for value in re.split(r'[\s,;]+', self.courier_ids_text or ''):
+            courier_id = value.strip()
+            if courier_id and courier_id not in seen:
+                courier_ids.append(courier_id)
+                seen.add(courier_id)
+        return courier_ids
+
     def _send_notification(self):
         self.ensure_one()
         if self.state == 'sent':
@@ -121,22 +187,27 @@ class PartnerCourierNotification(models.Model):
         subscription_ids = []
         for partner in partners:
             player_id = (partner.player_id or '').strip()
-            state = 'sent' if player_id else 'skipped'
-            if player_id:
+            has_valid_player_id = self._is_valid_onesignal_subscription_id(player_id)
+            state = 'sent' if has_valid_player_id else 'skipped'
+            error_message = False
+            if player_id and not has_valid_player_id:
+                error_message = _('Player ID formatı geçersiz.')
+            if has_valid_player_id:
                 subscription_ids.append(player_id)
             recipient_lines.append((0, 0, {
                 'partner_id': partner.id,
                 'player_id': player_id,
                 'state': state,
+                'error_message': error_message,
             }))
         self.write({'recipient_line_ids': recipient_lines})
 
         if not subscription_ids:
             self.write({
                 'state': 'failed',
-                'response_message': _('Seçilen kişilerde player_id bulunamadı.'),
+                'response_message': _('Seçilen kişilerde geçerli player_id bulunamadı.'),
             })
-            raise UserError(_('Seçilen kişilerde player_id bulunamadı.'))
+            raise UserError(_('Seçilen kişilerde geçerli player_id bulunamadı.'))
 
         responses = []
         invalid_player_ids = set()
@@ -225,6 +296,9 @@ class PartnerCourierNotification(models.Model):
             payload['data'] = json.loads(self.additional_data_json)
         return payload
 
+    def _is_valid_onesignal_subscription_id(self, player_id):
+        return bool(player_id and self._ONESIGNAL_SUBSCRIPTION_ID_PATTERN.match(player_id))
+
     def _split_every(self, values, size):
         for index in range(0, len(values), size):
             yield values[index:index + size]
@@ -285,7 +359,7 @@ class PartnerCourierNotificationRecipient(models.Model):
     state = fields.Selection(
         [
             ('sent', 'Gönderildi'),
-            ('skipped', 'Player ID Yok'),
+            ('skipped', 'Player ID Yok / Geçersiz'),
             ('failed', 'Hatalı'),
         ],
         string='Durum',

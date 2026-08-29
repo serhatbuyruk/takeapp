@@ -54,6 +54,7 @@
 
             <!-- 18: Yönetici -->
             <field name="manager_name" optional="hide"/>
+            <field name="manager_phone" optional="hide"/>
 
             <!-- Borç bilgisi (opsiyonel) -->
             <field name="debt_info" optional="hide"/>
@@ -66,6 +67,16 @@
 
 
 
+
+
+    <record id="action_match_manager_phone" model="ir.actions.server">
+        <field name="name">Yönetici Telefonlarını Eşleştir</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_match_manager_phone()</field>
+    </record>
 
 
     <record id="view_partner_form_remove_autofocus" model="ir.ui.view">
@@ -172,6 +183,7 @@
                         <field name="area"/>
                         <field name="city"/>
                         <field name="manager_name"/>
+                        <field name="manager_phone"/>
                         <field name="debt_info"/>
                         <field name="borc_aciklamasi"/>
                     </group>

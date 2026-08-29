@@ -8,6 +8,7 @@
                 <group>
                     <field name="date_start"/>
                     <field name="date_end"/>
+                    <field name="payment_date"/>
                     <field name="file" filename="filename"/>
                     <field name="filename" invisible="1"/>
                 </group>

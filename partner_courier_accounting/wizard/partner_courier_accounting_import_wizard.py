@@ -16,6 +16,7 @@ class PartnerCourierAccountingImportWizard(models.TransientModel):
     filename = fields.Char(string='Dosya Adı')
     date_start = fields.Date(string='Hafta Başlangıç', required=True)
     date_end = fields.Date(string='Hafta Bitiş', required=True)
+    payment_date = fields.Date(string='Ödemenin Yapılacağı Tarih', required=True)
 
     _HEADER_FIELD_MAP = {
         'Bölge': ('area', 'char'),
@@ -151,6 +152,7 @@ class PartnerCourierAccountingImportWizard(models.TransientModel):
                 'currency_id': currency.id,
                 'date_start': self.date_start,
                 'date_end': self.date_end,
+                'payment_date': self.payment_date,
             }
             for index, (field_name, value_type) in column_map.items():
                 vals[field_name] = self._convert_value(self._cell(row, index), value_type, field_name, courier_id)

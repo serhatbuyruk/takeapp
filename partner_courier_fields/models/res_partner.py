@@ -27,6 +27,7 @@ class ResPartner(models.Model):
 
     invoice_type = fields.Char(string="Fatura Şekli")
     manager_name = fields.Char(string="Yöneticisi")
+    manager_phone = fields.Char(string="Yönetici Telefonu")
 
     # ✔ Monetary TRY alanı
     debt_info = fields.Monetary(string="Güncel Borç Bilgisi", currency_field="currency_id", tracking=True)
@@ -53,6 +54,31 @@ class ResPartner(models.Model):
     mont = fields.Boolean(string="Mont")
     eldiven = fields.Boolean(string="Eldiven")
     reflektor = fields.Boolean(string="Reflektör")
+
+    def action_match_manager_phone(self):
+        def normalize_manager_name(name):
+            return " ".join((name or "").split()).casefold()
+
+        manager_phone_by_name = {
+            normalize_manager_name("Baran Konuk"): "0538 077 83 95",
+            normalize_manager_name("Bekir Emre Akay"): "0530 819 69 43",
+            normalize_manager_name("Burhan Uysal"): "0544 575 28 33",
+            normalize_manager_name("Murat Şenoğlu"): "0544 249 26 84",
+            normalize_manager_name("Sadık Hakan Belen"): "0501 129 35 36",
+            normalize_manager_name("Serhat Ahmet Bekar"): "0533 811 61 99",
+            normalize_manager_name("Yakup Kurtul"): "0507 335 95 20",
+            normalize_manager_name("Abidin Elmaskonay"): "0551 598 57 30",
+            normalize_manager_name("Eda Nur Parlak"): "0530 819 6942",
+            normalize_manager_name("Yönetim"): "0530 819 6942",
+        }
+
+        for partner in self:
+            manager_name = normalize_manager_name(partner.manager_name)
+            manager_phone = manager_phone_by_name.get(manager_name)
+            if manager_phone:
+                partner.manager_phone = manager_phone
+
+        return True
 
     @api.onchange('courier_first_name', 'courier_last_name')
     def _onchange_courier_names(self):

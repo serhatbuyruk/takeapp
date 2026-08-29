@@ -9,6 +9,7 @@
                 <field name="partner_id"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
+                <field name="payment_date"/>
                 <field name="net_payable_amount"/>
                 <field name="imported_at" optional="hide"/>
                 <field name="area" optional="hide"/>
@@ -67,6 +68,7 @@
                             <field name="partner_id"/>
                             <field name="date_start"/>
                             <field name="date_end"/>
+                            <field name="payment_date"/>
                             <field name="currency_id"/>
                         </group>
                         <group>
@@ -143,12 +145,14 @@
                 <field name="partner_id"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
+                <field name="payment_date"/>
                 <field name="area"/>
                 <field name="city"/>
                 <field name="manager_name"/>
                 <group expand="0" string="Grupla">
                     <filter name="group_partner" string="Contact" context="{'group_by': 'partner_id'}"/>
                     <filter name="group_week_start" string="Hafta Başlangıç" context="{'group_by': 'date_start'}"/>
+                    <filter name="group_payment_date" string="Ödeme Tarihi" context="{'group_by': 'payment_date'}"/>
                     <filter name="group_city" string="Şehir" context="{'group_by': 'city'}"/>
                     <filter name="group_area" string="Bölge" context="{'group_by': 'area'}"/>
                 </group>

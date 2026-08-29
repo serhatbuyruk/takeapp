@@ -7,6 +7,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='courier_id']" position="after">
                 <field name="player_id"/>
+                <field name="courier_privacy_kvkk_accepted" readonly="1"/>
+                <field name="courier_privacy_kvkk_accepted_at" readonly="1"/>
             </xpath>
             <xpath expr="//field[@name='sgk_belgesi']" position="after">
                 <field name="adli_sicil_attachment" widget="many2many_binary"/>

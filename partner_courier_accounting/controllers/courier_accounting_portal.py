@@ -3,10 +3,15 @@ import json
 import logging
 import mimetypes
 import os
-from odoo import http
+import re
+from odoo import fields, http
 from odoo.http import request, Stream
 
 _logger = logging.getLogger(__name__)
+_ONESIGNAL_SUBSCRIPTION_ID_PATTERN = re.compile(
+    r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+    re.IGNORECASE,
+)
 
 
 class CourierAccountingPortal(http.Controller):
@@ -40,6 +45,13 @@ class CourierAccountingPortal(http.Controller):
         player_id_value = (playerId or player_id or '').strip()
         if not player_id_value:
             return {'success': False, 'error': 'missing_player_id'}
+        if not _ONESIGNAL_SUBSCRIPTION_ID_PATTERN.match(player_id_value):
+            _logger.warning(
+                'Invalid OneSignal player_id rejected for partner %s: %s',
+                partner.id,
+                player_id_value,
+            )
+            return {'success': False, 'error': 'invalid_player_id'}
 
         partner.sudo().write({'player_id': player_id_value})
         return {
@@ -72,8 +84,34 @@ class CourierAccountingPortal(http.Controller):
         text = f'{amount or 0:.0f}'.replace('.', ',')
         return f'%{text}'
 
+    def _parse_amount(self, value):
+        text = (value or '').strip()
+        if not text:
+            return 0.0
+        normalized = text.replace(' ', '')
+        if ',' in normalized and '.' in normalized:
+            normalized = normalized.replace('.', '').replace(',', '.')
+        else:
+            normalized = normalized.replace(',', '.')
+        try:
+            return float(normalized)
+        except ValueError:
+            return 0.0
+
     def _format_date(self, value):
         return value.strftime('%d/%m/%Y') if value else ''
+
+    def _phone_url(self, phone):
+        digits = ''.join(char for char in (phone or '') if char.isdigit())
+        if not digits:
+            return ''
+        if digits.startswith('90') and len(digits) == 12:
+            return 'tel:+%s' % digits
+        if digits.startswith('0') and len(digits) == 11:
+            return 'tel:+90%s' % digits[1:]
+        if digits.startswith('5') and len(digits) == 10:
+            return 'tel:+90%s' % digits
+        return 'tel:+%s' % digits
 
     def _contact_centers(self):
         return [
@@ -196,7 +234,9 @@ class CourierAccountingPortal(http.Controller):
         money_fields = [
             'pickup_amount', 'dropoff_amount', 'distance_amount', 'weekly_extra_package_amount',
             'tip_amount_tax_excluded', 'cash_deduction_tax_included', 'softpos_deduction_tax_included',
-            'insurance_deduction_amount', 'ixopay_cash_deposit_amount', 'total_deduction_amount',
+            'insurance_deduction_amount', 'field_deduction_order_amount',
+            'advance_amount', 'isg_payment_amount', 'sgk_amount',
+            'ixopay_cash_deposit_amount', 'total_deduction_amount',
             'kuryetec_bonus_tax_excluded', 'total_payment_tax_excluded',
             'bonus_included_total_payment_tax_excluded', 'bonus_included_earning_tax_included',
             'withholding_tax_amount', 'net_payable_amount',
@@ -221,7 +261,11 @@ class CourierAccountingPortal(http.Controller):
             'tip_amount_tax_excluded': 'Müşteri bahşişlerinin KDV hariç hesaplanan haftalık toplamıdır.',
             'cash_deduction_tax_included': 'Kuryenin elden aldığı nakit siparişlerden kaynaklanan KDV dahil kesinti tutarıdır.',
             'softpos_deduction_tax_included': 'SoftPos veya kredi kartı tahsilatlarından kaynaklanan KDV dahil kesinti tutarıdır.',
-            'insurance_deduction_amount': 'İlgili hafta için uygulanan sigorta kesintisi tutarıdır.',
+            'insurance_deduction_amount': 'İlgili hafta için uygulanan Yemeksepeti zorunlu sağlık sigortası kesintisi tutarıdır.',
+            'field_deduction_order_amount': 'Saha operasyonu veya sipariş süreçlerinden kaynaklanan kesinti tutarıdır.',
+            'advance_amount': 'İlgili hafta hakedişinden mahsup edilen avans tutarıdır.',
+            'isg_payment_amount': 'İlgili hafta için İSG ödeme tutarıdır.',
+            'sgk_amount': 'İlgili hafta için sigorta tutarıdır.',
             'ixopay_cash_deposit_amount': 'Kuryenin nakit olarak yatırdığı tutardır. Nakit kesinti hesabında mahsup edilir.',
             'total_deduction_amount': 'Nakit, sigorta, saha, önceki bakiye, ekipman ve benzeri kesintilerin toplam etkisini gösterir.',
             'kuryetec_bonus_tax_excluded': 'Kurye firmasının eklediği KDV hariç bonus tutarıdır.',
@@ -236,10 +280,13 @@ class CourierAccountingPortal(http.Controller):
     def login(self, **kw):
         if self._partner():
             return request.redirect('/kurye-muhasebe/home')
-        return self._render('partner_courier_accounting.courier_accounting_login', {'error': kw.get('error')})
+        return self._render('partner_courier_accounting.courier_accounting_login', {
+            'error': kw.get('error'),
+            'privacy_error': kw.get('privacy_error'),
+        })
 
     @http.route('/kurye-muhasebe/login', type='http', auth='public', methods=['POST'], website=True, csrf=True, sitemap=False)
-    def login_post(self, courier_id=None, identity_no=None, **kw):
+    def login_post(self, courier_id=None, identity_no=None, privacy_kvkk_accepted=None, **kw):
         courier_id = (courier_id or '').strip()
         identity_no = (identity_no or '').strip()
         partner = request.env['res.partner'].sudo().search([
@@ -248,6 +295,13 @@ class CourierAccountingPortal(http.Controller):
         ], limit=1)
         if not partner:
             return request.redirect('/kurye-muhasebe?error=1')
+        if not partner.courier_privacy_kvkk_accepted:
+            if privacy_kvkk_accepted != 'on':
+                return request.redirect('/kurye-muhasebe?privacy_error=1')
+            partner.write({
+                'courier_privacy_kvkk_accepted': True,
+                'courier_privacy_kvkk_accepted_at': fields.Datetime.now(),
+            })
         request.session['courier_accounting_partner_id'] = partner.id
         return request.redirect('/kurye-muhasebe/home')
 
@@ -282,7 +336,10 @@ class CourierAccountingPortal(http.Controller):
         partner = self._partner()
         if not partner:
             return request.redirect('/kurye-muhasebe')
-        return self._render('partner_courier_accounting.courier_accounting_personal', {'partner': partner})
+        return self._render('partner_courier_accounting.courier_accounting_personal', {
+            'partner': partner,
+            'manager_phone_url': self._phone_url(partner.manager_phone),
+        })
 
     @http.route('/kurye-muhasebe/iletisim-merkezleri', type='http', auth='public', website=True, sitemap=False)
     def contact_centers(self, **kw):
@@ -345,13 +402,23 @@ class CourierAccountingPortal(http.Controller):
         start_str = line.date_start.strftime('%d_%m_%Y') if line.date_start else 'start'
         end_str = line.date_end.strftime('%d_%m_%Y') if line.date_end else 'end'
         filename = f"hakedis_{start_str}_{end_str}.pdf"
-        
+
+        download_token = (kw.get('download_token') or '').strip()
         pdfhttpheaders = [
             ('Content-Type', 'application/pdf'),
             ('Content-Length', len(pdf_content)),
             ('Content-Disposition', f'attachment; filename="{filename}"')
         ]
-        return request.make_response(pdf_content, headers=pdfhttpheaders)
+        response = request.make_response(pdf_content, headers=pdfhttpheaders)
+        if download_token and len(download_token) <= 64 and download_token.replace('-', '').replace('_', '').isalnum():
+            response.set_cookie(
+                'courier_pdf_download_token',
+                download_token,
+                max_age=120,
+                path='/',
+                samesite='Lax',
+            )
+        return response
 
     @http.route('/kurye-muhasebe/belgeler', type='http', auth='public', website=True, sitemap=False)
     def documents(self, **kw):
@@ -539,6 +606,7 @@ class CourierAccountingPortal(http.Controller):
             'state_labels': state_labels,
             'type_labels': type_labels,
             'format_date': self._format_date,
+            'success': kw.get('success'),
         })
 
     @http.route('/kurye-muhasebe/talepler/yeni', type='http', auth='public', website=True, sitemap=False)
@@ -563,21 +631,23 @@ class CourierAccountingPortal(http.Controller):
         })
 
     @http.route('/kurye-muhasebe/talepler/yeni/post', type='http', auth='public', methods=['POST'], website=True, csrf=True, sitemap=False)
-    def create_request(self, type=None, description=None, **kw):
+    def create_request(self, type=None, description=None, requested_amount=None, **kw):
         partner = self._partner()
         if not partner:
             return request.redirect('/kurye-muhasebe')
             
         type_val = (type or '').strip()
         desc_val = (description or '').strip()
+        amount_val = self._parse_amount(requested_amount)
         
         valid_types = ['advance', 'equipment', 'shift', 'holiday', 'accounting', 'other']
-        if not type_val or type_val not in valid_types or not desc_val:
+        if not type_val or type_val not in valid_types or not desc_val or (type_val == 'advance' and amount_val <= 0):
             return request.redirect('/kurye-muhasebe/talepler/yeni?error=1')
             
         request.env['partner.courier.request'].sudo().create({
             'partner_id': partner.id,
             'type': type_val,
+            'requested_amount': amount_val if type_val == 'advance' else 0.0,
             'description': desc_val,
             'state': 'new',
         })

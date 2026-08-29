@@ -6,7 +6,10 @@
         <field name="arch" type="xml">
             <tree string="Kurye Talepleri">
                 <field name="partner_id"/>
+                <field name="courier_id"/>
+                <field name="courier_tc"/>
                 <field name="type"/>
+                <field name="requested_amount" attrs="{'invisible': [('type', '!=', 'advance')]}"/>
                 <field name="create_date" string="Oluşturulma Tarihi"/>
                 <field name="state" widget="badge" decoration-info="state == 'new'" decoration-warning="state == 'progress'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"/>
             </tree>
@@ -30,7 +33,12 @@
                     <group>
                         <group>
                             <field name="partner_id" readonly="1"/>
+                            <field name="courier_id" readonly="1"/>
+                            <field name="courier_tc" readonly="1"/>
                             <field name="create_date" readonly="1" string="Oluşturulma Tarihi"/>
+                        </group>
+                        <group>
+                            <field name="requested_amount" attrs="{'invisible': [('type', '!=', 'advance')], 'required': [('type', '=', 'advance')]}"/>
                         </group>
                     </group>
                     <notebook>
@@ -52,6 +60,8 @@
         <field name="arch" type="xml">
             <search string="Kurye Talepleri">
                 <field name="partner_id"/>
+                <field name="courier_id"/>
+                <field name="courier_tc"/>
                 <field name="type"/>
                 <field name="state"/>
                 <filter name="state_new" string="Yeni" domain="[('state', '=', 'new')]"/>
@@ -63,6 +73,10 @@
                     <filter name="group_type" string="Talep Tipi" context="{'group_by': 'type'}"/>
                     <filter name="group_state" string="Durum" context="{'group_by': 'state'}"/>
                 </group>
+                <searchpanel>
+                    <field name="state" string="Durum" select="multi"/>
+                    <field name="type" string="Talep Tipi" select="multi"/>
+                </searchpanel>
             </search>
         </field>
     </record>
@@ -73,6 +87,17 @@
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_partner_courier_request_search"/>
         <field name="context">{'search_default_state_new': 1}</field>
+    </record>
+
+    <record id="action_partner_courier_request_approve_batch" model="ir.actions.server">
+        <field name="name">Toplu Onayla</field>
+        <field name="model_id" ref="model_partner_courier_request"/>
+        <field name="binding_model_id" ref="model_partner_courier_request"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            records.write({'state': 'approved'})
+        </field>
     </record>
 
     <menuitem

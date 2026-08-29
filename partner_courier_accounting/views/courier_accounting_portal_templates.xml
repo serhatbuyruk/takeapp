@@ -41,8 +41,26 @@
                 .ca-modal-card h3 { margin: 0 0 12px; font-size: 24px; font-weight: 850; }
                 .ca-modal-card p { margin: 0 0 20px; font-size: 18px; line-height: 1.45; }
                 .ca-modal-close { width: 100%; min-height: 44px; border: 0; border-radius: 8px; background: #e97712; color: #fff; font-weight: 800; cursor: pointer; }
-                .ca-week-list { display: grid; gap: 12px; }
-                .ca-week-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 16px; border-radius: 8px; background: #f4f4f4; color: #222 !important; text-decoration: none; }
+                .ca-emergency-modal-card { max-width: 380px; padding: 28px 24px 24px; text-align: center; }
+                .ca-emergency-modal-icon { display: inline-grid; width: 48px; height: 48px; place-items: center; margin: 0 0 16px; border-radius: 50%; background: #fff1df; color: #c65d00; font-size: 22px; }
+                .ca-emergency-modal-card h3 { margin-bottom: 8px; }
+                .ca-emergency-modal-number { margin: 0 0 16px !important; color: #222; font-size: 22px !important; font-weight: 850; }
+                .ca-emergency-modal-note { color: #5d5d5d; font-size: 15px !important; }
+                .ca-policy-link { border: 0; background: transparent; color: #b95600; padding: 0; font: inherit; font-weight: 850; text-decoration: underline; cursor: pointer; }
+                .ca-policy-modal-card { max-width: 760px; max-height: 84vh; overflow: auto; }
+                .ca-policy-modal-card h3 { margin-bottom: 16px; }
+                .ca-policy-modal-card h4 { margin: 18px 0 8px; font-size: 17px; font-weight: 850; }
+                .ca-policy-modal-card p, .ca-policy-modal-card li { font-size: 14px; line-height: 1.55; color: #333; }
+                .ca-policy-modal-card ul { margin: 0 0 10px 20px; padding: 0; }
+                .ca-policy-note { padding: 10px 12px; border-radius: 8px; background: #fff7ed; font-size: 13px !important; }
+                .ca-pdf-overlay { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(0,0,0,.42); }
+                .ca-pdf-overlay.is-open { display: flex; }
+                .ca-pdf-overlay-card { display: flex; align-items: center; gap: 12px; width: min(100%, 360px); border-radius: 12px; background: #fff; padding: 18px 20px; color: #222; font-size: 18px; font-weight: 850; box-shadow: 0 16px 50px rgba(0,0,0,.25); }
+                .ca-pdf-download.is-loading { opacity: .82; pointer-events: none; cursor: wait; }
+                .ca-pdf-download[aria-disabled="true"] { pointer-events: none; cursor: wait; }
+                .ca-week-list { display: grid; gap: 26px; }
+                .ca-week-item { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 16px 16px 22px; border: 1px solid #dedede; border-radius: 8px; background: #f4f4f4; color: #222 !important; text-decoration: none; overflow: visible; box-shadow: 0 4px 12px rgba(0,0,0,.04); }
+                .ca-week-payment-date { position: absolute; left: 14px; bottom: -17px; display: inline-flex; max-width: calc(100% - 28px); padding: 6px 12px 7px; border: 1px solid #dedede; border-top: 0; border-radius: 0 0 8px 8px; background: #f4f4f4; color: #666; font-size: 12px; font-weight: 800; line-height: 1.25; box-shadow: 0 8px 12px rgba(0,0,0,.06); overflow-wrap: anywhere; }
                 .ca-error { margin: 0; color: #b00020; font-weight: 700; }
                 .ca-empty { margin: 0; color: #555; }
                 @media (max-width: 560px) {
@@ -77,8 +95,13 @@
                 .ca-request-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
                 .ca-request-type { font-size: 18px; font-weight: 800; }
                 .ca-request-date { font-size: 12px; color: #888; }
+                .ca-request-amount { display: inline-flex; margin: 10px 0 0; padding: 6px 10px; border-radius: 6px; background: #fff3e0; color: #8a4200; font-size: 13px; font-weight: 800; }
                 .ca-request-desc { background: #f9f9f9; padding: 12px; border-radius: 6px; font-size: 14px; margin-bottom: 12px; white-space: pre-wrap; }
                 .ca-request-reply { background: #fff8e1; border: 1px solid #ffe082; padding: 12px; border-radius: 6px; font-size: 14px; color: #5d4037; }
+                .ca-request-success { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 20px; border: 1px solid #b9e4c6; border-radius: 14px; padding: 18px 20px; background: #edf9f1; color: #155b2c; box-shadow: 0 7px 22px rgba(31, 133, 67, .08); }
+                .ca-request-success__text { display: flex; min-width: 0; align-items: center; gap: 12px; font-weight: 800; }
+                .ca-request-success__icon { display: inline-grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 50%; background: #27a958; color: #fff; font-size: 18px; }
+                .ca-rate-app-button { min-height: 44px; flex: 0 0 auto; gap: 8px; border-radius: 10px; background: #182230; color: #fff !important; white-space: nowrap; }
                 .ca-training-list { display: grid; gap: 14px; }
                 .ca-training-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; background: #fff; border-radius: 12px; padding: 18px; color: #222 !important; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border-left: 5px solid #e97712; }
                 .ca-training-title { display: block; font-size: 18px; font-weight: 850; margin-bottom: 6px; }
@@ -95,6 +118,10 @@
                 .ca-center-phone strong, .ca-center-days, .ca-center-cities strong { font-weight: 850; }
                 .ca-center-phone { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 10px; }
                 .ca-call-button { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; border-radius: 8px; padding: 7px 12px; background: #e97712; color: #fff !important; text-decoration: none !important; font-size: 15px; font-weight: 850; white-space: nowrap; }
+                .ca-emergency-phone { position: fixed; right: 20px; bottom: 20px; z-index: 100; display: grid; gap: 2px; min-width: 218px; padding: 12px 16px; border: 1px solid #d05e00; border-radius: 8px; background: #e97712; color: #fff !important; box-shadow: 0 10px 24px rgba(125, 51, 0, .28); text-decoration: none !important; }
+                .ca-emergency-phone:hover, .ca-emergency-phone:focus { background: #cf650d; color: #fff !important; text-decoration: none !important; }
+                .ca-emergency-phone-label { font-size: 12px; font-weight: 800; letter-spacing: .2px; }
+                .ca-emergency-phone-number { font-size: 18px; font-weight: 850; line-height: 1.2; }
                 .ca-center-hours { margin-bottom: 18px; font-weight: 500; }
                 .ca-center-cities { margin-bottom: 0; }
                 @media (max-width: 560px) {
@@ -104,6 +131,10 @@
                     .ca-center-card h2 { font-size: 25px; }
                     .ca-center-address { font-size: 20px; }
                     .ca-center-phone, .ca-center-days, .ca-center-hours, .ca-center-cities { font-size: 20px; }
+                    .ca-request-success { align-items: stretch; flex-direction: column; }
+                    .ca-rate-app-button { width: 100%; }
+                    .ca-emergency-phone { right: 12px; bottom: 12px; min-width: 0; padding: 10px 14px; }
+                    .ca-emergency-phone-number { font-size: 16px; }
                 }
             </style>
             <div id="wrap" class="ca-portal">
@@ -111,6 +142,100 @@
                     <t t-out="0"/>
                 </main>
             </div>
+            <div class="ca-pdf-overlay" id="caPdfOverlay" aria-hidden="true">
+                <div class="ca-pdf-overlay-card">
+                    <span class="ca-spinner"></span>
+                    <span>PDF hazırlanıyor...</span>
+                </div>
+            </div>
+            <script>
+                <![CDATA[
+                (function () {
+                    const overlay = document.getElementById('caPdfOverlay');
+                    const cookieName = 'courier_pdf_download_token';
+                    let isPdfLocked = false;
+                    let activeToken = '';
+                    let pollTimer = null;
+                    let fallbackTimer = null;
+
+                    const getCookie = function (name) {
+                        return document.cookie.split(';').map(function (part) {
+                            return part.trim();
+                        }).find(function (part) {
+                            return part.indexOf(name + '=') === 0;
+                        }) || '';
+                    };
+
+                    const clearDownloadCookie = function () {
+                        document.cookie = cookieName + '=; Max-Age=0; path=/';
+                    };
+
+                    const unlockPdf = function () {
+                        isPdfLocked = false;
+                        activeToken = '';
+                        if (pollTimer) window.clearInterval(pollTimer);
+                        if (fallbackTimer) window.clearTimeout(fallbackTimer);
+                        pollTimer = null;
+                        fallbackTimer = null;
+                        if (overlay) {
+                            overlay.classList.remove('is-open');
+                            overlay.setAttribute('aria-hidden', 'true');
+                        }
+                        document.querySelectorAll('.ca-pdf-download').forEach(function (link) {
+                            link.classList.remove('is-loading');
+                            link.removeAttribute('aria-disabled');
+                            if (link.dataset.originalHtml) {
+                                link.innerHTML = link.dataset.originalHtml;
+                            }
+                        });
+                    };
+
+                    document.addEventListener('click', function (event) {
+                        const link = event.target.closest('.ca-pdf-download');
+                        if (!link) return;
+                        if (isPdfLocked) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            return;
+                        }
+
+                        isPdfLocked = true;
+                        activeToken = String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+                        clearDownloadCookie();
+
+                        document.querySelectorAll('.ca-pdf-download').forEach(function (pdfLink) {
+                            if (!pdfLink.dataset.originalHtml) {
+                                pdfLink.dataset.originalHtml = pdfLink.innerHTML;
+                            }
+                            pdfLink.setAttribute('aria-disabled', 'true');
+                        });
+                        link.classList.add('is-loading');
+                        link.innerHTML = '<span class="ca-spinner"></span>Hazırlanıyor';
+                        if (overlay) {
+                            overlay.classList.add('is-open');
+                            overlay.setAttribute('aria-hidden', 'false');
+                        }
+
+                        const url = new URL(link.href, window.location.origin);
+                        url.searchParams.set('download_token', activeToken);
+                        link.href = url.toString();
+
+                        pollTimer = window.setInterval(function () {
+                            const cookie = getCookie(cookieName);
+                            if (cookie && decodeURIComponent(cookie.split('=').slice(1).join('=')) === activeToken) {
+                                clearDownloadCookie();
+                                unlockPdf();
+                            }
+                        }, 500);
+                        fallbackTimer = window.setTimeout(unlockPdf, 120000);
+                    }, true);
+
+                    window.addEventListener('pageshow', function () {
+                        if (isPdfLocked) unlockPdf();
+                    });
+                })();
+                ]]>
+            </script>
         </t>
     </template>
 
@@ -128,13 +253,81 @@
                         <span>Kimlik Numarası</span>
                         <input type="password" name="identity_no" required="required" autocomplete="current-password" id="ca_login_identity_no"/>
                     </label>
+                    <label id="ca_login_privacy_group" style="display:flex; grid-template-columns:none; align-items:flex-start; gap:8px; font-weight:700; line-height:1.35;">
+                        <input type="checkbox" name="privacy_kvkk_accepted" id="ca_login_privacy_kvkk" style="width:18px; min-width:18px; min-height:18px; margin-top:2px;"/>
+                        <span>
+                            <button type="button" class="ca-policy-link" id="ca_policy_open">KVKK Aydınlatma Metni ve Gizlilik Politikası</button>
+                            metnini okudum, anladım ve onaylıyorum.
+                        </span>
+                    </label>
                     <label style="display:flex; grid-template-columns:none; align-items:center; gap:8px; font-weight:700;">
                         <input type="checkbox" name="remember_me" id="ca_login_remember" style="width:18px; min-height:18px;"/>
                         <span>Beni hatırla</span>
                     </label>
                     <p t-if="error" class="ca-error">Bilgiler eşleşmedi.</p>
+                    <p t-if="privacy_error" class="ca-error">Giriş yapabilmek için Gizlilik ve KVKK onayını vermeniz gerekir.</p>
                     <button type="submit" class="ca-button ca-button-primary">Giriş Yap</button>
                 </form>
+                <div class="ca-modal" id="ca_policy_modal" role="dialog" aria-modal="true" aria-labelledby="ca_policy_title">
+                    <div class="ca-modal-card ca-policy-modal-card">
+                        <h3 id="ca_policy_title">KVKK Aydınlatma Metni ve Gizlilik Politikası</h3>
+                        <p class="ca-policy-note">
+                            Bu metin, kurye portalının kullanımı kapsamında kişisel verilerinizin nasıl işlendiğini açıklamak için hazırlanmıştır. Nihai veri sorumlusu bilgileri, şirket unvanı, iletişim adresi ve saklama süreleri şirket kayıtlarına göre ayrıca netleştirilmelidir.
+                        </p>
+
+                        <h4>1. Veri Sorumlusu</h4>
+                        <p>
+                            6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında kişisel verileriniz, kurye operasyonu, hakediş ve belge süreçlerini yürüten şirket tarafından veri sorumlusu sıfatıyla işlenmektedir.
+                        </p>
+
+                        <h4>2. İşlenen Kişisel Veriler</h4>
+                        <ul>
+                            <li>Kimlik ve giriş bilgileri: ad soyad, kurye ID, T.C. kimlik numarası veya doğrulama için kullanılan kimlik bilgileri.</li>
+                            <li>İletişim ve çalışma bilgileri: telefon, şehir, bölge, yönetici adı ve yönetici telefonu.</li>
+                            <li>Finans ve hakediş bilgileri: IBAN, banka bilgileri, fatura tipi, hakediş, kesinti, ödeme, borç, avans, sigorta, İSG ve ödeme notu bilgileri.</li>
+                            <li>Belge ve ekler: ehliyet, adli sicil, P1 yetki belgesi, vergi levhası, SRC, SGK, ruhsat, sigorta ve İSG belgeleri gibi sisteme yüklenen dosyalar.</li>
+                            <li>Talep ve eğitim bilgileri: portal üzerinden oluşturulan talepler, talep cevapları, eğitim katılım kayıtları ve ilgili işlem tarihleri.</li>
+                            <li>Teknik bilgiler: oturum bilgileri, cihaz/bildirim tanımlayıcısı, erişim kayıtları, işlem zamanı ve güvenlik kayıtları.</li>
+                        </ul>
+
+                        <h4>3. İşleme Amaçları</h4>
+                        <p>
+                            Verileriniz; kurye girişinin doğrulanması, hakediş ve ödeme süreçlerinin yürütülmesi, belge yeterliliğinin kontrolü, talep ve iletişim süreçlerinin yönetilmesi, eğitim süreçlerinin takibi, operasyonel bildirimlerin gönderilmesi, yasal yükümlülüklerin yerine getirilmesi, uyuşmazlıkların çözümü, güvenlik ve denetim faaliyetlerinin yürütülmesi amaçlarıyla işlenir.
+                        </p>
+
+                        <h4>4. Hukuki Sebep</h4>
+                        <p>
+                            Kişisel verileriniz KVKK madde 5 ve ilgili mevzuat kapsamında; sözleşmenin kurulması veya ifası, veri sorumlusunun hukuki yükümlülüğünü yerine getirmesi, bir hakkın tesisi, kullanılması veya korunması, meşru menfaat ve gerekli hallerde açık rıza hukuki sebeplerine dayanılarak işlenir. Özel nitelikli kişisel veri içerebilecek belgeler yalnızca ilgili mevzuatın izin verdiği ölçüde ve gerekli güvenlik tedbirleri alınarak işlenir.
+                        </p>
+
+                        <h4>5. Aktarım</h4>
+                        <p>
+                            Kişisel verileriniz; bankalar, ödeme ve muhasebe hizmet sağlayıcıları, iş ortakları, saha operasyonu ve kurye hizmeti alınan taraflar, yazılım/barındırma/bildirim hizmet sağlayıcıları, denetçiler, avukatlar, mali müşavirler ve yetkili kamu kurumları ile yalnızca gerekli olduğu ölçüde paylaşılabilir.
+                        </p>
+
+                        <h4>6. Toplama Yöntemi</h4>
+                        <p>
+                            Verileriniz; portal giriş ekranı, sistemdeki contact/kart kayıtları, Excel/import dosyaları, belge yükleme ekranları, talep formları, eğitim ekranları, bildirim servisleri ve sistem logları aracılığıyla otomatik veya kısmen otomatik yollarla toplanır.
+                        </p>
+
+                        <h4>7. Saklama ve Güvenlik</h4>
+                        <p>
+                            Verileriniz işleme amaçlarının gerektirdiği süre boyunca ve mevzuatta öngörülen zamanaşımı/saklama süreleri kadar saklanır. Süre sona erdiğinde silme, yok etme veya anonim hale getirme süreçleri uygulanır. Yetkisiz erişimi önlemek için erişim yetkileri, oturum kontrolleri ve teknik/idari güvenlik tedbirleri kullanılır.
+                        </p>
+
+                        <h4>8. İlgili Kişi Hakları</h4>
+                        <p>
+                            KVKK madde 11 kapsamında; kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, işleme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenme, aktarıldığı üçüncü kişileri bilme, eksik veya yanlış işlenmiş verilerin düzeltilmesini isteme, şartları oluşmuşsa silinmesini/yok edilmesini isteme, bu işlemlerin aktarılan üçüncü kişilere bildirilmesini talep etme, otomatik işlemler sonucu aleyhinize çıkan sonuca itiraz etme ve zarara uğramanız halinde giderim talep etme haklarına sahipsiniz.
+                        </p>
+
+                        <h4>9. Gizlilik Politikası</h4>
+                        <p>
+                            Portal yalnızca kurye operasyonu, hakediş, belge, talep, eğitim ve iletişim süreçleri için kullanılmalıdır. Giriş bilgileriniz kişiseldir; üçüncü kişilerle paylaşılmamalıdır. Sisteme yüklediğiniz belgelerin doğru, güncel ve size ait olması beklenir. Yetkisiz kullanım, şüpheli erişim veya yanlış veri fark edilirse şirket yetkililerine bildirilmelidir.
+                        </p>
+
+                        <button type="button" class="ca-modal-close" id="ca_policy_close">Kapat</button>
+                    </div>
+                </div>
                 <script>
                     (function () {
                         const key = 'partner_courier_accounting_login';
@@ -142,7 +335,24 @@
                         const courierInput = document.getElementById('ca_login_courier_id');
                         const identityInput = document.getElementById('ca_login_identity_no');
                         const rememberInput = document.getElementById('ca_login_remember');
+                        const privacyGroup = document.getElementById('ca_login_privacy_group');
+                        const privacyInput = document.getElementById('ca_login_privacy_kvkk');
+                        const policyOpen = document.getElementById('ca_policy_open');
+                        const policyClose = document.getElementById('ca_policy_close');
+                        const policyModal = document.getElementById('ca_policy_modal');
                         if (!form || !courierInput || !identityInput || !rememberInput) return;
+                        const privacyKey = 'partner_courier_accounting_privacy_accepted_courier_ids';
+                        let privacyAcceptedCourierIds = [];
+                        try {
+                            privacyAcceptedCourierIds = JSON.parse(window.localStorage.getItem(privacyKey) || '[]');
+                            if (!Array.isArray(privacyAcceptedCourierIds)) privacyAcceptedCourierIds = [];
+                        } catch (error) {}
+                        const togglePrivacyInput = function () {
+                            const courierId = (courierInput.value || '').trim();
+                            const isAccepted = courierId &amp;&amp; privacyAcceptedCourierIds.includes(courierId);
+                            if (privacyGroup) privacyGroup.style.display = isAccepted ? 'none' : 'flex';
+                            if (privacyInput &amp;&amp; isAccepted) privacyInput.checked = false;
+                        };
                         try {
                             const saved = JSON.parse(window.localStorage.getItem(key) || '{}');
                             if (saved.courier_id || saved.identity_no) {
@@ -151,6 +361,23 @@
                                 rememberInput.checked = true;
                             }
                         } catch (error) {}
+                        togglePrivacyInput();
+                        courierInput.addEventListener('input', togglePrivacyInput);
+                        if (policyOpen &amp;&amp; policyModal) {
+                            policyOpen.addEventListener('click', function () {
+                                policyModal.classList.add('is-open');
+                            });
+                        }
+                        if (policyClose &amp;&amp; policyModal) {
+                            policyClose.addEventListener('click', function () {
+                                policyModal.classList.remove('is-open');
+                            });
+                        }
+                        if (policyModal) {
+                            policyModal.addEventListener('click', function (event) {
+                                if (event.target === policyModal) policyModal.classList.remove('is-open');
+                            });
+                        }
                         form.addEventListener('submit', function () {
                             if (rememberInput.checked) {
                                 window.localStorage.setItem(key, JSON.stringify({
@@ -164,12 +391,75 @@
                     })();
                 </script>
             </section>
+            <a class="ca-emergency-phone" id="ca_emergency_phone" href="tel:+905445752833" aria-label="Acil destek için +90 544 575 28 33 numarasını ara">
+                <span class="ca-emergency-phone-label">Acil Destek</span>
+                <span class="ca-emergency-phone-number">+90 544 575 28 33</span>
+            </a>
+            <div class="ca-modal" id="ca_emergency_phone_modal" role="dialog" aria-modal="true" aria-labelledby="ca_emergency_phone_title">
+                <div class="ca-modal-card ca-emergency-modal-card">
+                    <span class="ca-emergency-modal-icon"><i class="fa fa-copy"/></span>
+                    <h3 id="ca_emergency_phone_title">Numara kopyalandı</h3>
+                    <p class="ca-emergency-modal-number">+90 544 575 28 33</p>
+                    <p class="ca-emergency-modal-note" id="ca_emergency_phone_message">Telefon uygulamanızı açıp numarayı yapıştırarak arayabilirsiniz.</p>
+                    <button type="button" class="ca-modal-close" id="ca_emergency_phone_close">Tamam</button>
+                </div>
+            </div>
+            <script>
+                (function () {
+                    const phoneLink = document.getElementById('ca_emergency_phone');
+                    const phoneModal = document.getElementById('ca_emergency_phone_modal');
+                    const phoneClose = document.getElementById('ca_emergency_phone_close');
+                    const phoneTitle = document.getElementById('ca_emergency_phone_title');
+                    const phoneMessage = document.getElementById('ca_emergency_phone_message');
+                    const phoneNumber = '+905445752833';
+                    const fallbackDevice = /(Xiaomi|Redmi|POCO|vivo|TECNO|\bMi (?:[A-Z]|\d))/i.test(navigator.userAgent || '');
+                    if (!phoneLink || !phoneModal || !fallbackDevice) return;
+
+                    const showModal = function (copied) {
+                        if (phoneTitle) phoneTitle.textContent = copied ? 'Numara kopyalandı' : 'Numarayı manuel arayın';
+                        if (phoneMessage) {
+                            phoneMessage.textContent = copied
+                                ? 'Telefon uygulamanızı açıp numarayı yapıştırarak arayabilirsiniz.'
+                                : 'Telefon uygulamanızı açıp bu numarayı girerek arayabilirsiniz.';
+                        }
+                        phoneModal.classList.add('is-open');
+                    };
+                    const copyPhoneNumber = async function () {
+                        try {
+                            if (navigator.clipboard &amp;&amp; window.isSecureContext) {
+                                await navigator.clipboard.writeText(phoneNumber);
+                                return true;
+                            }
+                        } catch (error) {}
+                        const input = document.createElement('textarea');
+                        input.value = phoneNumber;
+                        input.setAttribute('readonly', '');
+                        input.style.cssText = 'position:fixed; opacity:0; pointer-events:none;';
+                        document.body.appendChild(input);
+                        input.select();
+                        const copied = document.execCommand('copy');
+                        input.remove();
+                        return copied;
+                    };
+
+                    phoneLink.addEventListener('click', async function (event) {
+                        event.preventDefault();
+                        showModal(await copyPhoneNumber());
+                    });
+                    phoneClose.addEventListener('click', function () {
+                        phoneModal.classList.remove('is-open');
+                    });
+                    phoneModal.addEventListener('click', function (event) {
+                        if (event.target === phoneModal) phoneModal.classList.remove('is-open');
+                    });
+                })();
+            </script>
         </t>
     </template>
 
     <template id="courier_accounting_home" name="Courier Accounting Home">
         <t t-call="partner_courier_accounting.courier_accounting_layout">
-            <section class="ca-card ca-home-card" t-att-data-contact-id="partner.id" t-att-data-user-id="courier_user_id or ''">
+            <section class="ca-card ca-home-card" t-att-data-contact-id="partner.id" t-att-data-user-id="courier_user_id or ''" t-att-data-courier-id="partner.courier_id or ''" t-att-data-privacy-accepted="'1' if partner.courier_privacy_kvkk_accepted else ''">
                 <h1><t t-esc="partner.name"/></h1>
                 <div class="ca-action-grid">
                     <a href="/kurye-muhasebe/kisisel-bilgiler" class="ca-button ca-button-primary">Kişisel Bilgiler</a>
@@ -193,6 +483,19 @@
                         const homeCard = document.querySelector('.ca-home-card');
                         const contactId = homeCard ? parseInt(homeCard.dataset.contactId, 10) : 0;
                         const userId = homeCard ? parseInt(homeCard.dataset.userId, 10) : 0;
+                        const courierId = homeCard ? (homeCard.dataset.courierId || '').trim() : '';
+                        if (courierId &amp;&amp; homeCard.dataset.privacyAccepted === '1') {
+                            const privacyKey = 'partner_courier_accounting_privacy_accepted_courier_ids';
+                            let acceptedCourierIds = [];
+                            try {
+                                acceptedCourierIds = JSON.parse(window.localStorage.getItem(privacyKey) || '[]');
+                                if (!Array.isArray(acceptedCourierIds)) acceptedCourierIds = [];
+                            } catch (error) {}
+                            if (!acceptedCourierIds.includes(courierId)) {
+                                acceptedCourierIds.push(courierId);
+                                window.localStorage.setItem(privacyKey, JSON.stringify(acceptedCourierIds));
+                            }
+                        }
                         if (!contactId || !window.ReactNativeWebView) return;
                         window.ReactNativeWebView.postMessage(JSON.stringify({
                             type: 'USER_LOGGED_IN',
@@ -216,7 +519,14 @@
                 <div class="ca-row ca-personal-row"><strong>Bölge:</strong><span t-esc="partner.area"/></div>
                 <div class="ca-row ca-personal-row"><strong>Şehir:</strong><span t-esc="partner.city"/></div>
                 <div class="ca-row ca-personal-row"><strong>Fatura Tipi:</strong><span t-esc="partner.invoice_type"/></div>
-                <div class="ca-row ca-personal-row"><strong>Yönetici:</strong><span t-esc="partner.manager_name"/></div>
+                <div class="ca-row ca-personal-row"><strong>Yönetici Adı:</strong><span t-esc="partner.manager_name"/></div>
+                <div class="ca-row ca-personal-row">
+                    <strong>Yönetici Telefonu:</strong>
+                    <span>
+                        <t t-esc="partner.manager_phone"/>
+                        <a t-if="manager_phone_url" t-att-href="manager_phone_url" t-att-data-phone-url="manager_phone_url" class="ca-call-button" style="margin-left: 8px;">Telefon Et</a>
+                    </span>
+                </div>
                 <div class="ca-row ca-personal-row"><strong>IBAN:</strong><span t-esc="partner.iban"/></div>
             </section>
         </t>
@@ -272,12 +582,10 @@
                         <a t-att-href="'/kurye-muhasebe/hakedis/%s' % line.id" class="ca-week-item" style="flex: 1; margin: 0;">
                             <span><t t-esc="format_date(line.date_start)"/> - <t t-esc="format_date(line.date_end)"/></span>
                             <strong t-esc="format_money(line.net_payable_amount, line.currency_id)"/>
+                            <small t-if="line.payment_date" class="ca-week-payment-date">Ödemenin yapılacağı tarih: <t t-esc="format_date(line.payment_date)"/></small>
                         </a>
-                        <a t-att-href="'/kurye-muhasebe/hakedis/%s/pdf' % line.id" class="ca-button ca-button-primary" style="width: 48px; min-width: 48px; height: 48px; min-height: 48px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; margin: 0;" title="PDF İndir">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-pdf" viewBox="0 0 16 16">
-                              <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
-                              <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.047-.183.144-.415.964-.652.8-.23 1.63-.374 2.48-.433a51.77 51.77 0 0 1 .98-1.286c-.935-.02-1.793-.162-2.316-.464-.788-.456-1.02-1.14-.772-1.61.124-.235.39-.36.721-.36.36 0 .69.186.973.524.461.55.772 1.438.9 2.585.856-.12 1.764-.2 2.658-.23a11.753 11.753 0 0 1 .74 1.352c-.326.136-.66.223-.983.275a22.25 22.25 0 0 1-2.933.254c-.168.188-.33.376-.48.563l-.329.418c-.353.447-.6.714-.83.812a.824.824 0 0 1-.444.062zM9.13 11.37a11.548 11.548 0 0 0-.79-.11c-.078-.01-.154-.018-.228-.022a16.99 16.99 0 0 0-.184 1.947c.324-.043.619-.11.884-.214.358-.14.613-.379.438-.802-.066-.16-.188-.413-.326-.799zm-4.76 1.886c.19.145.443.104.612-.124.082-.108.233-.302.428-.543a14.285 14.285 0 0 0-.83.08c-.462.08-.605.213-.62.285a.068.068 0 0 0 .01.077c.09.13.2.225.4.225zM8.56 5.122A1.23 1.23 0 0 0 7.3 6c0 .6.47 1.072 1.257 1.78l.09-.298c.17-.56.327-1.135.471-1.7l-.142-.23a.29.29 0 0 0-.28-.152z"/>
-                            </svg>
+                        <a t-att-href="'/kurye-muhasebe/hakedis/%s/pdf' % line.id" class="ca-button ca-button-primary ca-pdf-download" style="width: 48px; min-width: 48px; height: 48px; min-height: 48px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; margin: 0;" title="PDF İndir">
+                            PDF
                         </a>
                     </div>
                     <p t-if="not lines" class="ca-empty">Hakediş kaydı bulunamadı.</p>
@@ -298,11 +606,7 @@
                 <div class="ca-row"><strong>Şehir:</strong><span t-esc="line.city"/><button type="button" class="ca-info-btn" t-att-data-title="'Şehir'" t-att-data-info="info['city']">i</button></div>
                 <div class="ca-row"><strong>Hafta:</strong><span><t t-esc="format_date(line.date_start)"/> - <t t-esc="format_date(line.date_end)"/></span><button type="button" class="ca-info-btn" t-att-data-title="'Hafta'" t-att-data-info="info['week']">i</button></div>
                 <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
-                    <a t-attf-href="/kurye-muhasebe/hakedis/#{line.id}/pdf" class="ca-button ca-button-primary" style="min-height: 38px; font-size: 16px; padding: 8px 16px; display: inline-flex; align-items: center; gap: 8px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-file-earmark-pdf" viewBox="0 0 16 16">
-                          <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
-                          <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.047-.183.144-.415.964-.652.8-.23 1.63-.374 2.48-.433a51.77 51.77 0 0 1 .98-1.286c-.935-.02-1.793-.162-2.316-.464-.788-.456-1.02-1.14-.772-1.61.124-.235.39-.36.721-.36.36 0 .69.186.973.524.461.55.772 1.438.9 2.585.856-.12 1.764-.2 2.658-.23a11.753 11.753 0 0 1 .74 1.352c-.326.136-.66.223-.983.275a22.25 22.25 0 0 1-2.933.254c-.168.188-.33.376-.48.563l-.329.418c-.353.447-.6.714-.83.812a.824.824 0 0 1-.444.062zM9.13 11.37a11.548 11.548 0 0 0-.79-.11c-.078-.01-.154-.018-.228-.022a16.99 16.99 0 0 0-.184 1.947c.324-.043.619-.11.884-.214.358-.14.613-.379.438-.802-.066-.16-.188-.413-.326-.799zm-4.76 1.886c.19.145.443.104.612-.124.082-.108.233-.302.428-.543a14.285 14.285 0 0 0-.83.08c-.462.08-.605.213-.62.285a.068.068 0 0 0 .01.077c.09.13.2.225.4.225zM8.56 5.122A1.23 1.23 0 0 0 7.3 6c0 .6.47 1.072 1.257 1.78l.09-.298c.17-.56.327-1.135.471-1.7l-.142-.23a.29.29 0 0 0-.28-.152z"/>
-                        </svg>
+                    <a t-attf-href="/kurye-muhasebe/hakedis/#{line.id}/pdf" class="ca-button ca-button-primary ca-pdf-download" style="min-height: 38px; font-size: 16px; padding: 8px 16px; display: inline-flex; align-items: center; gap: 8px;">
                         PDF İndir
                     </a>
                 </div>
@@ -328,7 +632,11 @@
                 <h2>Mahsup Edilenler</h2>
                 <div class="ca-row"><strong>Cash (Nakit) Kesinti Tutarı:</strong><span t-esc="money['cash_deduction_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'Cash (Nakit) Kesinti Tutarı'" t-att-data-info="info['cash_deduction_tax_included']">i</button></div>
                 <div class="ca-row"><strong>SoftPos (K.K.) Kesinti Tutarı:</strong><span t-esc="money['softpos_deduction_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'SoftPos (K.K.) Kesinti Tutarı'" t-att-data-info="info['softpos_deduction_tax_included']">i</button></div>
-                <div class="ca-row"><strong>Sigorta Kesintisi:</strong><span t-esc="money['insurance_deduction_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Sigorta Kesintisi'" t-att-data-info="info['insurance_deduction_amount']">i</button></div>
+                <div class="ca-row"><strong>Sigorta Kesintisi (Yemeksepeti Zorunlu Sağlık Sigortası):</strong><span t-esc="money['insurance_deduction_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Sigorta Kesintisi (Yemeksepeti Zorunlu Sağlık Sigortası)'" t-att-data-info="info['insurance_deduction_amount']">i</button></div>
+                <div class="ca-row"><strong>Saha Kesintisi (Sipariş):</strong><span t-esc="money['field_deduction_order_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Saha Kesintisi (Sipariş)'" t-att-data-info="info['field_deduction_order_amount']">i</button></div>
+                <div class="ca-row"><strong>Avans:</strong><span t-esc="money['advance_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Avans'" t-att-data-info="info['advance_amount']">i</button></div>
+                <div class="ca-row"><strong>İSG Ödeme:</strong><span t-esc="money['isg_payment_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'İSG Ödeme'" t-att-data-info="info['isg_payment_amount']">i</button></div>
+                <div class="ca-row"><strong>Sigorta:</strong><span t-esc="money['sgk_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Sigorta'" t-att-data-info="info['sgk_amount']">i</button></div>
                 <div class="ca-row"><strong>İXOPAY (Nakit Yatırılan Tutar):</strong><span t-esc="money['ixopay_cash_deposit_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'İXOPAY (Nakit Yatırılan Tutar)'" t-att-data-info="info['ixopay_cash_deposit_amount']">i</button></div>
                 <div class="ca-row"><strong>Toplam Kesinti:</strong><span t-esc="money['total_deduction_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Toplam Kesinti'" t-att-data-info="info['total_deduction_amount']">i</button></div>
                 <div class="ca-row"><strong>Kuryetec Bonus'u (KDV Hariç):</strong><span t-esc="money['kuryetec_bonus_tax_excluded']"/><button type="button" class="ca-info-btn" t-att-data-title="'Kuryetec Bonusu (KDV Hariç)'" t-att-data-info="info['kuryetec_bonus_tax_excluded']">i</button></div>
@@ -577,6 +885,44 @@
     <template id="courier_accounting_requests" name="Courier Accounting Requests">
         <t t-call="partner_courier_accounting.courier_accounting_layout">
             <a href="/kurye-muhasebe/home" class="ca-back">←</a>
+
+            <div t-if="success == '1'" class="ca-request-success">
+                <div class="ca-request-success__text">
+                    <span class="ca-request-success__icon">
+                        <i class="fa fa-check"/>
+                    </span>
+                    <span>Talebiniz başarıyla oluşturuldu.</span>
+                </div>
+                <a id="caRateAppButton"
+                   class="ca-button ca-rate-app-button"
+                   href="https://play.google.com/store/apps/details?id=com.kuryetec.app&amp;pcampaignid=web_share"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   data-android-url="https://play.google.com/store/apps/details?id=com.kuryetec.app&amp;pcampaignid=web_share"
+                   data-ios-url="https://apps.apple.com/tr/app/kuryetec/id6779643631?l=tr">
+                    <i class="fa fa-star"/>
+                    Uygulamayı Değerlendirin
+                </a>
+            </div>
+
+            <script t-if="success == '1'">
+                <![CDATA[
+                (function () {
+                    const button = document.getElementById('caRateAppButton');
+                    if (!button) {
+                        return;
+                    }
+                    const userAgent = navigator.userAgent || '';
+                    const isIPadOS = navigator.platform === 'MacIntel'
+                        && navigator.maxTouchPoints > 1;
+                    const isAppleMobile = /iPhone|iPad|iPod/i.test(userAgent)
+                        || isIPadOS;
+                    button.href = isAppleMobile
+                        ? button.dataset.iosUrl
+                        : button.dataset.androidUrl;
+                })();
+                ]]>
+            </script>
             
             <section class="ca-card" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                 <div>
@@ -597,6 +943,9 @@
                         </div>
                         <div class="ca-request-date">
                             Talep Tarihi: <t t-esc="format_date(req.create_date)"/>
+                        </div>
+                        <div class="ca-request-amount" t-if="req.type == 'advance' and req.requested_amount">
+                            Talep Edilen Tutar: <t t-esc="'{:,.2f}'.format(req.requested_amount).replace(',', 'X').replace('.', ',').replace('X', '.')"/> TL
                         </div>
                         <div class="ca-request-desc"><t t-esc="req.description"/></div>
                         <div class="ca-request-reply" t-if="req.response">
@@ -620,11 +969,15 @@
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                     <label>
                         <span>Talep Tipi</span>
-                        <select name="type" required="required" style="width: 100%; min-height: 46px; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px; background: #fff;">
+                        <select name="type" required="required" class="ca-request-type-select" style="width: 100%; min-height: 46px; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px; background: #fff;">
                             <t t-foreach="type_labels" t-as="tl">
                                 <option t-att-value="tl[0]"><t t-esc="tl[1]"/></option>
                             </t>
                         </select>
+                    </label>
+                    <label class="ca-request-amount-field">
+                        <span>Talep Edilen Tutar</span>
+                        <input type="text" name="requested_amount" inputmode="decimal" placeholder="Örn. 1.250,00"/>
                     </label>
                     <label>
                         <span>Açıklama</span>
@@ -638,6 +991,23 @@
             <script>
                 (function () {
                     const form = document.querySelector('.ca-request-form');
+                    const typeSelect = form ? form.querySelector('.ca-request-type-select') : null;
+                    const amountField = form ? form.querySelector('.ca-request-amount-field') : null;
+                    const amountInput = amountField ? amountField.querySelector('input') : null;
+
+                    const toggleAmountField = function () {
+                        if (!typeSelect || !amountField || !amountInput) return;
+                        const isAdvance = typeSelect.value === 'advance';
+                        amountField.style.display = isAdvance ? 'grid' : 'none';
+                        amountInput.required = isAdvance;
+                        if (!isAdvance) amountInput.value = '';
+                    };
+
+                    if (typeSelect) {
+                        typeSelect.addEventListener('change', toggleAmountField);
+                        toggleAmountField();
+                    }
+
                     if (form) {
                         form.addEventListener('submit', function () {
                             const btn = form.querySelector('.ca-submit-btn');
@@ -858,12 +1228,28 @@
                             <td class="value"><span t-esc="doc.softpos_deduction_tax_included" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
                         </tr>
                         <tr>
-                            <td class="label">Sigorta Kesintisi:</td>
+                            <td class="label">Sigorta Kesintisi (Yemeksepeti Zorunlu Sağlık Sigortası):</td>
                             <td class="value"><span t-esc="doc.insurance_deduction_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Saha Kesintisi (Sipariş):</td>
+                            <td class="value"><span t-esc="doc.field_deduction_order_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">İSG Ödeme:</td>
+                            <td class="value"><span t-esc="doc.isg_payment_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Sigorta:</td>
+                            <td class="value"><span t-esc="doc.sgk_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
                         </tr>
                         <tr>
                             <td class="label">İXOPAY (Nakit Yatırılan Tutar):</td>
                             <td class="value"><span t-esc="doc.ixopay_cash_deposit_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Avans:</td>
+                            <td class="value"><span t-esc="doc.advance_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
                         </tr>
                         <tr style="font-weight: bold; background-color: #fcfcfc;">
                             <td class="label">Toplam Kesinti:</td>

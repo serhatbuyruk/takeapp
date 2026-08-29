@@ -1,6 +1,6 @@
 {
     'name': 'Partner Courier Accounting',
-    'version': '16.0.1.0.0',
+    'version': '16.0.1.0.1',
     'category': 'Contacts',
     'summary': 'Adds accounting pickup lines to courier contacts',
     'depends': ['partner_courier_fields', 'website'],

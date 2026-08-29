@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class PartnerCourierRequest(models.Model):
@@ -13,6 +14,18 @@ class PartnerCourierRequest(models.Model):
         ondelete='cascade',
         index=True,
     )
+    courier_id = fields.Char(
+        string='Kurye ID',
+        related='partner_id.courier_id',
+        store=True,
+        readonly=True,
+    )
+    courier_tc = fields.Char(
+        string='Kurye T.C. No',
+        related='partner_id.courier_tc',
+        store=True,
+        readonly=True,
+    )
     type = fields.Selection([
         ('advance', 'Avans Talebi'),
         ('equipment', 'Ekipman Talebi'),
@@ -22,6 +35,7 @@ class PartnerCourierRequest(models.Model):
         ('other', 'Diğer'),
     ], string='Talep Tipi', required=True, default='advance')
 
+    requested_amount = fields.Float(string='Talep Edilen Tutar')
     description = fields.Text(string='Talep Açıklaması', required=True)
     response = fields.Text(string='Yönetici Açıklaması / Cevap')
     state = fields.Selection([
@@ -30,6 +44,12 @@ class PartnerCourierRequest(models.Model):
         ('approved', 'Onaylandı'),
         ('rejected', 'Reddedildi'),
     ], string='Durum', default='new', required=True)
+
+    @api.constrains('type', 'requested_amount')
+    def _check_requested_amount(self):
+        for record in self:
+            if record.type == 'advance' and record.requested_amount <= 0:
+                raise ValidationError(_('Avans taleplerinde talep edilen tutar 0 değerinden büyük olmalıdır.'))
 
     def name_get(self):
         result = []

@@ -5,6 +5,19 @@ from odoo.exceptions import ValidationError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    _COURIER_DOCUMENT_ATTACHMENT_FIELDS = (
+        'adli_sicil_attachment',
+        'src_attachment',
+        'p1_yetki_attachment',
+        'ehliyet_attachment',
+        'ruhsat_ve_muayene_attachment',
+        'zorunlu_trafik_sigortasi_attachment',
+        'isg_attachment',
+        'vergi_levhasi',
+        'sgk_belgesi',
+        'x_adli_sicil_files',
+    )
+
     courier_accounting_line_ids = fields.One2many(
         'partner.courier.accounting.line',
         'partner_id',
@@ -12,6 +25,14 @@ class ResPartner(models.Model):
     )
 
     player_id = fields.Char(string='Player ID')
+    courier_privacy_kvkk_accepted = fields.Boolean(
+        string='Gizlilik ve KVKK Onayı',
+        copy=False,
+    )
+    courier_privacy_kvkk_accepted_at = fields.Datetime(
+        string='Gizlilik ve KVKK Onay Tarihi',
+        copy=False,
+    )
 
     is_duplicate_courier = fields.Boolean(
         string="Çift Kurye ID'li",
@@ -23,6 +44,47 @@ class ResPartner(models.Model):
         string="Belgeleri Var mı?",
         compute="_compute_has_attachments",
     )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        partners = super().create(vals_list)
+        partners._bind_courier_document_attachments()
+        return partners
+
+    def write(self, vals):
+        result = super().write(vals)
+        if set(vals).intersection(self._courier_document_attachment_fields()):
+            self._bind_courier_document_attachments()
+        return result
+
+    @api.model
+    def _courier_document_attachment_fields(self):
+        return tuple(
+            field_name
+            for field_name in self._COURIER_DOCUMENT_ATTACHMENT_FIELDS
+            if field_name in self._fields
+            and self._fields[field_name].type == 'many2many'
+            and self._fields[field_name].comodel_name == 'ir.attachment'
+        )
+
+    def _bind_courier_document_attachments(self):
+        """Bind uploaded courier documents to their partner security record."""
+        attachment_fields = self._courier_document_attachment_fields()
+        for partner in self:
+            attachments = self.env['ir.attachment']
+            sudo_partner = partner.sudo()
+            for field_name in attachment_fields:
+                attachments |= sudo_partner[field_name]
+            unbound_attachments = attachments.filtered(
+                lambda attachment:
+                    attachment.res_model in (False, 'res.partner')
+                    and not attachment.res_id
+            )
+            if unbound_attachments:
+                unbound_attachments.sudo().write({
+                    'res_model': 'res.partner',
+                    'res_id': partner.id,
+                })
 
     @api.constrains('courier_id')
     def _check_unique_courier_id(self):

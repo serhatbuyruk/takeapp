@@ -53,6 +53,14 @@
                             <field name="onesignal_notification_id" readonly="1"/>
                         </group>
                     </group>
+                    <group string="Kurye ID ile Hedef Ekle" attrs="{'invisible': [('state', '=', 'sent')]}">
+                        <group>
+                            <field name="courier_ids_text" nolabel="1" placeholder="1779754&#10;3820506&#10;1982449" attrs="{'readonly': [('state', '=', 'sent')]}"/>
+                        </group>
+                        <group>
+                            <button name="action_add_partners_by_courier_ids" type="object" string="Seçili Kişilere Ekle" class="oe_highlight" attrs="{'invisible': [('state', '=', 'sent')]}"/>
+                        </group>
+                    </group>
                     <group string="Özet">
                         <field name="recipient_count"/>
                         <field name="sent_count"/>
