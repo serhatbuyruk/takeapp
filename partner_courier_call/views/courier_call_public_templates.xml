@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="courier_call_public_template" name="Courier Call Public Meeting">
+        <t t-call="mail.discuss_public_layout">
+            <t t-set="title">Kuryetec Görüşme</t>
+            <t t-set="head">
+                <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+                <style>
+                    body {
+                        direction: <t t-out="env['res.lang']._lang_get(lang or env.user.lang).direction or 'ltr'"/>;
+                    }
+                </style>
+                <script>
+                    odoo.define('mail.discuss_public_channel_template', function() {
+                        return {
+                            data: <t t-out="json.dumps(data)"/>,
+                        };
+                    });
+                    window.pccCourierCall = <t t-out="json.dumps(call_config)"/>;
+                    window.pccEndCourierCall = async function () {
+                        const config = window.pccCourierCall;
+                        if (!config || window.pccCourierCallIsEnding) return;
+                        window.pccCourierCallIsEnding = true;
+                        try {
+                            const response = await fetch(config.endUrl, {
+                                method: 'POST',
+                                credentials: 'same-origin',
+                                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                            });
+                            if (!response.ok) throw new Error('Call could not be ended');
+                            const separator = config.exitUrl.includes('?') ? '&amp;' : '?';
+                            window.location.assign(config.exitUrl + separator + 'call_ended=1');
+                        } catch (error) {
+                            window.pccCourierCallIsEnding = false;
+                            throw error;
+                        }
+                    };
+                    document.addEventListener('DOMContentLoaded', function () {
+                        document.body.classList.add('pcc-call-page');
+                        if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+                            document.body.classList.add('pcc-touch-device');
+                        }
+                        const closeButton = document.getElementById('pcc_close_call');
+                        closeButton.addEventListener('click', async function () {
+                            closeButton.disabled = true;
+                            try {
+                                await window.pccEndCourierCall();
+                            } catch (_error) {
+                                closeButton.disabled = false;
+                                closeButton.title = 'Görüşme kapatılamadı. Tekrar deneyin.';
+                            }
+                        });
+                    });
+                    (function () {
+                        const config = window.pccCourierCall;
+                        const separator = config.exitUrl.includes('?') ? '&amp;' : '?';
+                        const exitUrl = config.exitUrl + separator + 'call_ended=1';
+                        const timer = window.setInterval(async function () {
+                            try {
+                                const response = await fetch(config.statusUrl, {
+                                    credentials: 'same-origin',
+                                    cache: 'no-store',
+                                });
+                                if (!response.ok) return;
+                                const status = await response.json();
+                                if (!status.open) {
+                                    window.clearInterval(timer);
+                                    window.location.replace(exitUrl);
+                                }
+                            } catch (_error) {
+                                // A transient network error must not interrupt an active call.
+                            }
+                        }, 2000);
+                    })();
+                </script>
+            </t>
+            <t t-set="body">
+                <header class="pcc-meeting-header">
+                    <span class="pcc-meeting-header__brand">Kuryetec Görüşme</span>
+                    <span class="pcc-meeting-header__manager">
+                        <i class="fa fa-user" aria-hidden="true"/>
+                        <t t-esc="counterpart_name"/>
+                    </span>
+                </header>
+                <button id="pcc_close_call"
+                        class="pcc-meeting-close"
+                        type="button"
+                        title="Görüşmeyi kapat"
+                        aria-label="Görüşmeyi kapat">
+                    <i class="fa fa-times" aria-hidden="true"/>
+                </button>
+            </t>
+        </t>
+    </template>
+
+    <template id="courier_call_rejected_template" name="Courier Call Rejected">
+        <t t-call="website.layout">
+            <t t-set="title">Kuryetec Görüşme</t>
+            <main class="d-flex align-items-center justify-content-center min-vh-100 bg-dark text-white px-3">
+                <section class="text-center">
+                    <div class="mb-4">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-danger"
+                              style="width: 72px; height: 72px;">
+                            <i class="fa fa-phone" aria-hidden="true" style="font-size: 28px; transform: rotate(135deg);"/>
+                        </span>
+                    </div>
+                    <h1 class="h3 mb-3">Görüşme reddedildi</h1>
+                    <p class="text-white-50 mb-4" t-if="rejected">
+                        <strong class="text-white"><t t-esc="caller_name"/></strong> tarafından başlatılan arama sonlandırıldı.
+                    </p>
+                    <p class="text-white-50 mb-4" t-else="">
+                        Bu görüşme daha önce cevaplandı veya sonlandırıldı.
+                    </p>
+                    <a class="btn btn-light px-4" href="/kurye-muhasebe/home">Ana sayfaya dön</a>
+                </section>
+            </main>
+        </t>
+    </template>
+
+    <template id="courier_call_closed_template" name="Courier Call Closed">
+        <t t-call="website.layout">
+            <t t-set="title">Kuryetec Görüşme</t>
+            <main class="d-flex align-items-center justify-content-center min-vh-100 bg-dark text-white px-3">
+                <section class="text-center">
+                    <div class="mb-4">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-secondary"
+                              style="width: 72px; height: 72px;">
+                            <i class="fa fa-phone" aria-hidden="true" style="font-size: 28px; transform: rotate(135deg);"/>
+                        </span>
+                    </div>
+                    <h1 class="h3 mb-3">Görüşme sona erdi</h1>
+                    <p class="text-white-50 mb-4"><t t-esc="message"/></p>
+                    <a class="btn btn-light px-4" href="/kurye-muhasebe/home">Ana sayfaya dön</a>
+                </section>
+            </main>
+        </t>
+    </template>
+</odoo>

@@ -20,6 +20,34 @@
                             </div>
                         </div>
                     </div>
+                    <h2>Kuryetec SSO Geçişi</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="partner_courier_kuryetec_sso_enabled"/>
+                                <field name="partner_courier_kuryetec_sso_enabled"/>
+                                <div class="text-muted">Bu hesap kurye girişinden sonra Kuryetec sistemine yönlendirilir.</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="partner_courier_kuryetec_sso_login"/>
+                                <field name="partner_courier_kuryetec_sso_login"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="partner_courier_kuryetec_sso_password"/>
+                                <field name="partner_courier_kuryetec_sso_password" password="True"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="partner_courier_kuryetec_sso_shared_secret"/>
+                                <field name="partner_courier_kuryetec_sso_shared_secret" password="True"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </xpath>
         </field>

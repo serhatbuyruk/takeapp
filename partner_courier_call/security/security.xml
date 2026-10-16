@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="rule_partner_courier_call_manager" model="ir.rule">
+        <field name="name">Saha yöneticisi kendi kurye görüşmelerini görür</field>
+        <field name="model_id" ref="model_partner_courier_call"/>
+        <field name="domain_force">['|', ('manager_partner_id', '=', user.partner_id.id), ('manager_user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_partner_courier_call_admin" model="ir.rule">
+        <field name="name">Kurye hakediş yöneticisi tüm görüşmeleri görür</field>
+        <field name="model_id" ref="model_partner_courier_call"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('partner_courier_accounting.group_partner_courier_accounting_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

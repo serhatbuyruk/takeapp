@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_courier_logo_invoice_admin,partner.courier.logo.invoice.admin,model_partner_courier_logo_invoice,partner_courier_accounting.group_partner_courier_accounting_admin,1,1,1,1
+access_partner_courier_logo_sso_state_admin,partner.courier.logo.sso.state.admin,model_partner_courier_logo_sso_state,partner_courier_accounting.group_partner_courier_accounting_admin,1,1,1,1

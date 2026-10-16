@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit_courier_logo" model="ir.ui.view">
+        <field name="name">res.partner.form.courier.logo</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_courier_accounting.view_partner_form_inherit_courier_accounting"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='courier_id']" position="after">
+                <field name="logo_connection_state" readonly="1"/>
+                <field name="logo_connected_at" readonly="1"/>
+                <field name="logo_tenant_id" groups="base.group_system"/>
+                <field name="logo_access_token" password="True" groups="base.group_system"/>
+                <field name="logo_connection_error" groups="base.group_system" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

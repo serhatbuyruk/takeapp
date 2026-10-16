@@ -25,6 +25,8 @@ class ResPartner(models.Model):
     )
 
     player_id = fields.Char(string='Player ID')
+    firebase_token = fields.Char(string='Firebase Cihaz Tokenı', copy=False)
+    firebase_token_updated_at = fields.Datetime(string='Firebase Token Güncelleme Tarihi', copy=False)
     courier_privacy_kvkk_accepted = fields.Boolean(
         string='Gizlilik ve KVKK Onayı',
         copy=False,

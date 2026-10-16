@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_courier_call_tree" model="ir.ui.view">
+        <field name="name">partner.courier.call.tree</field>
+        <field name="model">partner.courier.call</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" delete="false" decoration-success="state == 'active'" decoration-muted="state in ('ended', 'expired', 'cancelled')" decoration-danger="state in ('missed', 'rejected')">
+                <field name="name"/>
+                <field name="courier_id" string="Arayan Kurye"/>
+                <field name="manager_partner_id" string="Aranan Kişi"/>
+                <field name="state" widget="badge"/>
+                <field name="manager_push_state" widget="badge" optional="show"/>
+                <field name="create_date" string="Arama Zamanı"/>
+                <field name="ringing_at" optional="hide"/>
+                <field name="answered_at" optional="show"/>
+                <field name="ended_at" optional="show"/>
+                <field name="duration_display" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_call_form" model="ir.ui.view">
+        <field name="name">partner.courier.call.form</field>
+        <field name="model">partner.courier.call</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="courier_id" string="Arayan Kurye"/>
+                            <field name="manager_partner_id" string="Aranan Kişi"/>
+                            <field name="manager_user_id"/>
+                            <field name="state" widget="badge"/>
+                            <field name="manager_push_state" widget="badge"/>
+                            <field name="manager_notification_id" groups="partner_courier_accounting.group_partner_courier_accounting_admin"/>
+                            <field name="manager_push_error" attrs="{'invisible': [('manager_push_error', '=', False)]}"/>
+                        </group>
+                        <group>
+                            <field name="create_date"/>
+                            <field name="ringing_at"/>
+                            <field name="answered_at"/>
+                            <field name="ended_at"/>
+                            <field name="ended_by"/>
+                            <field name="duration_display"/>
+                            <field name="expires_at"/>
+                        </group>
+                    </group>
+                    <group string="Teknik Bilgiler" groups="base.group_system">
+                        <field name="channel_id"/>
+                        <field name="guest_id"/>
+                        <field name="manager_guest_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_call_search" model="ir.ui.view">
+        <field name="name">partner.courier.call.search</field>
+        <field name="model">partner.courier.call</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="courier_id"/>
+                <field name="manager_partner_id"/>
+                <field name="state"/>
+                <filter name="my_calls" string="Benim Görüşmelerim" domain="[('manager_user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="waiting" string="Bekleyen" domain="[('state', 'in', ['waiting', 'ringing'])]"/>
+                <filter name="active" string="Aktif" domain="[('state', '=', 'active')]"/>
+                <filter name="answered" string="Cevaplanan" domain="[('answered_at', '!=', False)]"/>
+                <filter name="missed" string="Cevapsız" domain="[('state', '=', 'missed')]"/>
+                <filter name="rejected" string="Reddedilen" domain="[('state', '=', 'rejected')]"/>
+                <group expand="0" string="Grupla">
+                    <filter name="group_manager" string="Saha Yöneticisi" context="{'group_by': 'manager_partner_id'}"/>
+                    <filter name="group_state" string="Durum" context="{'group_by': 'state'}"/>
+                    <filter name="group_date" string="Tarih" context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_partner_courier_call" model="ir.actions.act_window">
+        <field name="name">Görüşme Kayıtları</field>
+        <field name="res_model">partner.courier.call</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_partner_courier_call_search"/>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="menu_partner_courier_call_root"
+              name="Kurye Görüşmeleri"
+              parent="contacts.menu_contacts"
+              sequence="55"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_partner_courier_call"
+              name="Görüşme Kayıtları"
+              parent="menu_partner_courier_call_root"
+              action="action_partner_courier_call"
+              sequence="10"
+              groups="base.group_user"/>
+</odoo>

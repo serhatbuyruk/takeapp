@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_courier_application_tree" model="ir.ui.view">
+        <field name="name">partner.courier.application.tree</field>
+        <field name="model">partner.courier.application</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'pending'" decoration-warning="state == 'contacted'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
+                <field name="create_date" string="Başvuru Tarihi"/>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_application_form" model="ir.ui.view">
+        <field name="name">partner.courier.application.form</field>
+        <field name="model">partner.courier.application</field>
+        <field name="arch" type="xml">
+            <form string="Kurye Başvurusu">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,contacted,approved,rejected" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="email"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_application_search" model="ir.ui.view">
+        <field name="name">partner.courier.application.search</field>
+        <field name="model">partner.courier.application</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="email"/>
+                <filter name="pending" string="Değerlendirmede" domain="[('state', '=', 'pending')]"/>
+                <filter name="contacted" string="İletişime Geçildi" domain="[('state', '=', 'contacted')]"/>
+                <filter name="approved" string="Onaylandı" domain="[('state', '=', 'approved')]"/>
+                <filter name="rejected" string="Uygun Bulunmadı" domain="[('state', '=', 'rejected')]"/>
+                <group expand="0" string="Grupla">
+                    <filter name="group_state" string="Durum" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_partner_courier_application" model="ir.actions.act_window">
+        <field name="name">Kurye Başvuruları</field>
+        <field name="res_model">partner.courier.application</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_partner_courier_application_search"/>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="groups_id" eval="[(4, ref('partner_courier_accounting.group_partner_courier_accounting_admin'))]"/>
+    </record>
+
+    <menuitem id="menu_partner_courier_application" name="Kurye Başvuruları" parent="contacts.menu_contacts"
+              action="action_partner_courier_application" sequence="89"
+              groups="partner_courier_accounting.group_partner_courier_accounting_admin"/>
+</odoo>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.WelcomeView" t-inherit-mode="extension" owl="1">
+        <xpath expr="//h1" position="replace">
+            <h1 class="fw-light">
+                <span t-if="messaging.discussPublicView and messaging.discussPublicView.startAudioOnly">
+                    Kuryetec Kurumsal Görüşme Hattı
+                </span>
+                <span t-elif="welcomeView.callDemoView">You've been invited to a meeting!</span>
+                <span t-else="">You've been invited to a chat!</span>
+            </h1>
+        </xpath>
+        <xpath expr="//button[hasclass('o_WelcomeView_joinButton')]/i" position="after">
+            <span t-if="messaging.discussPublicView and messaging.discussPublicView.startAudioOnly"
+                  class="pcc-join-call-label">Görüşmeye Katıl</span>
+        </xpath>
+    </t>
+
+    <t t-inherit="mail.CallView" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_CallView')]" position="inside">
+            <div t-if="messaging.discussPublicView and messaging.discussPublicView.startAudioOnly and messaging.rtc.isCourierMicrophonePromptVisible"
+                 class="pcc-microphone-permission"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="pcc_microphone_permission_title">
+                <div class="pcc-microphone-permission__panel">
+                    <div class="pcc-microphone-permission__icon" aria-hidden="true">
+                        <i class="fa fa-microphone"/>
+                    </div>
+                    <h2 id="pcc_microphone_permission_title">Mikrofon İzni</h2>
+                    <p>Karşı taraf bağlandı. Görüşmeye başlamak için mikrofon erişimine izin verin.</p>
+                    <p t-if="messaging.rtc.hasCourierMicrophonePermissionError"
+                       class="pcc-microphone-permission__error"
+                       role="alert">
+                        Mikrofon izni verilmedi. Tarayıcı veya uygulama ayarlarından mikrofonu açıp tekrar deneyin.
+                    </p>
+                    <button type="button"
+                            class="pcc-microphone-permission__button"
+                            t-att-disabled="messaging.rtc.isCourierMicrophoneRequestPending"
+                            t-on-click="callView.onClickRequestCourierMicrophone">
+                        <i class="fa fa-microphone" aria-hidden="true"/>
+                        <span t-if="!messaging.rtc.isCourierMicrophoneRequestPending">Mikrofona İzin Ver</span>
+                        <span t-else="">İzin Bekleniyor...</span>
+                    </button>
+                </div>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-inherit="mail.CallParticipantCard" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_CallParticipantCard')]" position="attributes">
+            <attribute name="t-attf-class">{{ className }} {{ callParticipantCard.rtcSession and callParticipantCard.rtcSession.isOwnSession ? 'pcc-is-self' : 'pcc-is-remote' }}</attribute>
+        </xpath>
+    </t>
+
+    <t t-inherit="mail.CallActionList" t-inherit-mode="extension" owl="1">
+        <xpath expr="//button[.//i[hasclass('fa-arrows-alt')]]" position="attributes">
+            <attribute name="class" add="pcc-layout-toggle" separator=" "/>
+        </xpath>
+        <xpath expr="//button[.//i[hasclass('fa-compress')]]" position="attributes">
+            <attribute name="class" add="pcc-layout-toggle" separator=" "/>
+        </xpath>
+        <xpath expr="//div[hasclass('o_CallActionList_buttons')]" position="inside">
+            <button t-if="messaging.discussPublicView and messaging.discussPublicView.startAudioOnly and callActionListView.thread.rtc"
+                    type="button"
+                    class="pcc-end-call-button d-inline-flex align-items-center justify-content-center m-1"
+                    title="Görüşmeyi Sonlandır"
+                    aria-label="Görüşmeyi Sonlandır"
+                    t-att-disabled="messaging.discussPublicView.isEndingCourierCall"
+                    t-on-click="callActionListView.onClickEndCourierCall">
+                <i class="fa fa-phone" aria-hidden="true"/>
+            </button>
+        </xpath>
+    </t>
+</templates>

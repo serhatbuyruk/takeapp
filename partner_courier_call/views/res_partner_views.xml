@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_form_courier_call" model="ir.ui.view">
+        <field name="name">res.partner.form.courier.call</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_courier_fields.view_partner_form_inherit_courier"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='manager_phone']" position="after">
+                <field name="courier_field_manager_partner_id"
+                       options="{'no_create': True, 'no_create_edit': True}"
+                       attrs="{'invisible': [('courier_id', '=', False)]}"/>
+                <field name="courier_manager_portal_user_id"
+                       options="{'no_create': True, 'no_create_edit': True}"
+                       attrs="{'invisible': [('courier_id', '=', False)]}"/>
+                <field name="courier_call_support_member"/>
+                <field name="courier_call_support_available"
+                       attrs="{'invisible': [('courier_call_support_member', '=', False)]}"/>
+                <field name="courier_call_support_last_call_at"
+                       attrs="{'invisible': [('courier_call_support_member', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

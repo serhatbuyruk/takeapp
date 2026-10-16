@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_courier_logo_invoice_tree" model="ir.ui.view">
+        <field name="name">partner.courier.logo.invoice.tree</field><field name="model">partner.courier.logo.invoice</field>
+        <field name="arch" type="xml"><tree><field name="line_id"/><field name="partner_id"/><field name="state"/><field name="logo_invoice_id"/><field name="created_at"/><field name="error_message"/></tree></field>
+    </record>
+    <record id="view_partner_courier_logo_invoice_form" model="ir.ui.view">
+        <field name="name">partner.courier.logo.invoice.form</field><field name="model">partner.courier.logo.invoice</field>
+        <field name="arch" type="xml"><form><sheet><group><field name="line_id"/><field name="partner_id" readonly="1"/><field name="state"/><field name="logo_invoice_id"/><field name="external_reference"/><field name="created_at"/><field name="error_message"/></group><notebook><page string="İstek"><field name="request_payload" readonly="1"/></page><page string="Yanıt"><field name="response_payload" readonly="1"/></page></notebook></sheet></form></field>
+    </record>
+    <record id="action_partner_courier_logo_invoice" model="ir.actions.act_window"><field name="name">Logo Kurye Faturaları</field><field name="res_model">partner.courier.logo.invoice</field><field name="view_mode">tree,form</field></record>
+    <menuitem id="menu_partner_courier_logo_invoice" name="Logo Kurye Faturaları" parent="contacts.menu_contacts" action="action_partner_courier_logo_invoice" groups="partner_courier_accounting.group_partner_courier_accounting_admin" sequence="90"/>
+</odoo>

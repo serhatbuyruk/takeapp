@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="courier_accounting_earnings_logo" inherit_id="partner_courier_accounting.courier_accounting_earnings">
+        <xpath expr="//div[contains(@class, 'ca-week-actions')]" position="inside">
+            <a t-if="line.logo_invoice_state == 'ready'" t-att-href="'/kurye-muhasebe/hakedis/%s' % line.id" class="ca-button ca-invoice-sample-button"><i class="fa fa-clock-o"/> Onay Bekliyor</a>
+            <a t-elif="partner.logo_connection_state != 'connected'" t-att-href="'/kurye-muhasebe/logo/bagla/%s' % line.id" class="ca-button ca-invoice-sample-button"><i class="fa fa-link"/> Fatura Bağlantısı</a>
+            <form t-else="" t-att-action="'/kurye-muhasebe/logo/fatura/%s/olustur' % line.id" method="post" style="margin: 0;">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <button type="submit" class="ca-button ca-invoice-sample-button" style="width: 100%;"><i class="fa fa-file-text-o"/> Fatura Kes</button>
+            </form>
+        </xpath>
+    </template>
+
+    <template id="courier_logo_result" name="Courier Logo Result">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a t-att-href="line and ('/kurye-muhasebe/hakedis/%s' % line.id) or '/kurye-muhasebe/hakedis'" class="ca-back">←</a>
+            <section class="ca-card" style="max-width: 600px; margin: 0 auto;">
+                <h1 t-esc="title"/>
+                <p t-att-class="error and 'ca-error' or ''" style="font-size: 17px; line-height: 1.5;" t-esc="message"/>
+                <a t-att-href="line and ('/kurye-muhasebe/hakedis/%s' % line.id) or '/kurye-muhasebe/hakedis'" class="ca-button ca-button-primary" style="margin-top: 18px;">Hakedişe Dön</a>
+            </section>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,555 @@
+body.pcc-call-page {
+    overflow: hidden;
+    background: #111820;
+    color: #fff;
+}
+
+.pcc-meeting-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2200;
+    display: flex;
+    min-height: 64px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 10px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    background: rgba(15, 22, 29, .93);
+    color: #fff;
+    backdrop-filter: blur(12px);
+}
+
+.pcc-meeting-header__brand {
+    font-size: 16px;
+    font-weight: 850;
+}
+
+.pcc-meeting-header__manager {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 8px;
+    color: #d8dee4;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.pcc-meeting-close {
+    position: fixed;
+    left: 50%;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    z-index: 2700;
+    display: inline-grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: #d94343;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transform: translateX(-50%);
+    box-shadow: 0 6px 18px rgba(120, 15, 15, .32);
+}
+
+.pcc-meeting-close:hover,
+.pcc-meeting-close:focus {
+    background: #bd3030;
+    color: #fff;
+    outline: 3px solid rgba(217, 67, 67, .25);
+}
+
+.pcc-meeting-close:disabled {
+    cursor: wait;
+    opacity: .65;
+}
+
+.pcc-call-page .o_WelcomeView {
+    position: relative;
+    min-height: 100vh;
+    padding: 88px 18px 28px;
+    background: #111820 !important;
+    color: #fff;
+}
+
+.pcc-microphone-permission {
+    position: fixed;
+    inset: 0;
+    z-index: 2600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(5, 10, 15, .78);
+    backdrop-filter: blur(7px);
+}
+
+.pcc-microphone-permission__panel {
+    width: 100%;
+    max-width: 390px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 8px;
+    padding: 28px 22px 22px;
+    background: #fff;
+    color: #171b20;
+    text-align: center;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .38);
+}
+
+.pcc-microphone-permission__icon {
+    display: inline-grid;
+    width: 58px;
+    height: 58px;
+    place-items: center;
+    margin-bottom: 16px;
+    border-radius: 50%;
+    background: #e5f6ec;
+    color: #138447;
+    font-size: 24px;
+}
+
+.pcc-microphone-permission__panel h2 {
+    margin: 0 0 8px;
+    color: #171b20;
+    font-size: 22px;
+    font-weight: 850;
+    letter-spacing: 0;
+}
+
+.pcc-microphone-permission__panel p {
+    margin: 0 0 20px;
+    color: #5f6871;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pcc-microphone-permission__panel .pcc-microphone-permission__error {
+    margin: 0 0 16px;
+    border: 1px solid #e6b4b4;
+    border-radius: 6px;
+    padding: 10px 12px;
+    background: #fff2f2;
+    color: #8b2222;
+    font-size: 12px;
+}
+
+.pcc-microphone-permission__button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 0;
+    border-radius: 7px;
+    padding: 0 20px;
+    background: #159957;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0;
+    cursor: pointer;
+}
+
+.pcc-microphone-permission__button:hover,
+.pcc-microphone-permission__button:focus {
+    background: #117c47;
+    color: #fff;
+    outline: 3px solid rgba(21, 153, 87, .2);
+}
+
+.pcc-microphone-permission__button:disabled {
+    cursor: wait;
+    opacity: .65;
+}
+
+.pcc-microphone-permission__copy-link {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 10px;
+    border: 0;
+    background: transparent;
+    color: #176b9e;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.pcc-microphone-permission__copy-link:hover,
+.pcc-microphone-permission__copy-link:focus {
+    color: #0e4e76;
+    text-decoration: underline;
+    outline: none;
+}
+
+.pcc-call-page .o_WelcomeView h1 {
+    margin: 0 0 8px;
+    color: #fff;
+    font-size: 25px;
+    font-weight: 850;
+    letter-spacing: 0;
+    text-align: center;
+}
+
+.pcc-call-page .o_WelcomeView > h2 {
+    display: none;
+}
+
+.pcc-call-page .o_WelcomeView > .d-flex {
+    width: 100%;
+    max-width: 920px;
+    align-items: center;
+    gap: 18px;
+}
+
+.pcc-call-page .o_WelcomeView_guestNameInputLabel,
+.pcc-call-page .o_WelcomeView_guestNameInputLabel + input {
+    display: none !important;
+}
+
+.pcc-call-page .o_WelcomeView_joinButton {
+    position: fixed;
+    left: 50%;
+    bottom: calc(94px + env(safe-area-inset-bottom, 0px));
+    z-index: 2500;
+    display: inline-flex;
+    width: auto;
+    min-width: 164px;
+    height: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin: 0;
+    border-radius: 26px !important;
+    padding: 0 18px !important;
+    transform: translateX(-50%);
+    background: #159957;
+    border-color: #159957;
+    color: #fff;
+    font-size: 14px !important;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.pcc-call-page .o_WelcomeView_joinButton > .fa {
+    width: auto;
+    height: auto;
+    line-height: 1;
+}
+
+.pcc-join-call-label {
+    white-space: nowrap;
+}
+
+body.pcc-call-page.pcc-call-in-progress .o_WelcomeView_joinButton {
+    display: none !important;
+}
+
+body.pcc-call-page.pcc-call-in-progress .pcc-meeting-close {
+    display: none !important;
+}
+
+.pcc-call-page .o_CallActionList_callToggle {
+    display: none !important;
+}
+
+.pcc-call-page .o_CallDemoView {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 !important;
+}
+
+.pcc-call-page .o_CallDemoView_videoDisplay {
+    width: 100%;
+    height: auto;
+    max-height: 62vh;
+    aspect-ratio: 16 / 9;
+    border: 1px solid rgba(255, 255, 255, .13);
+    border-radius: 8px !important;
+    background: #080c10;
+    object-fit: cover;
+}
+
+.pcc-call-page .o_CallView.o-fullScreen {
+    z-index: 1800;
+    padding-top: 64px;
+    background: #0b1117;
+}
+
+.pcc-call-page .o_CallMainView {
+    background: #0b1117 !important;
+}
+
+.pcc-call-page .o_CallMainView_grid {
+    position: relative;
+    box-sizing: border-box;
+    flex-wrap: nowrap !important;
+    padding: 18px 16px 128px;
+    background: #0b1117;
+}
+
+.pcc-call-page .o_CallMainView_gridParticipantCard {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    border-radius: 0 !important;
+}
+
+.pcc-call-page .o_CallMainView_gridParticipantCard.pcc-is-remote {
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: auto !important;
+    padding: 0 !important;
+    background: transparent;
+    cursor: default !important;
+    opacity: 1 !important;
+}
+
+.pcc-call-page .pcc-is-remote .o_CallParticipantCard_avatarFrame {
+    background: transparent;
+}
+
+.pcc-call-page .pcc-is-remote .o_CallParticipantCard_avatarImage {
+    width: 148px;
+    height: 148px;
+    max-width: 148px;
+    max-height: 148px;
+    border-width: 4px;
+}
+
+.pcc-call-page .pcc-is-remote .o_CallParticipantVideo {
+    border-radius: 0 !important;
+    object-fit: cover;
+}
+
+.pcc-call-page .pcc-is-remote .o_CallParticipantCard_overlayBottom {
+    right: auto !important;
+    bottom: 22px !important;
+    left: 50% !important;
+    max-width: 86%;
+    transform: translateX(-50%);
+}
+
+.pcc-call-page .pcc-is-remote .o_CallParticipantCard_name {
+    background: transparent !important;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.pcc-call-page .o_CallMainView_gridParticipantCard.pcc-is-self {
+    position: absolute !important;
+    top: 16px;
+    right: 16px;
+    z-index: 4;
+    width: 96px !important;
+    height: 132px !important;
+    min-width: 96px !important;
+    min-height: 132px !important;
+    aspect-ratio: auto !important;
+    border: 1px solid rgba(255, 255, 255, .22);
+    border-radius: 8px !important;
+    padding: 0 !important;
+    background: #202830;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .34);
+    overflow: hidden;
+}
+
+.pcc-call-page .pcc-is-self .o_CallParticipantCard_avatarFrame,
+.pcc-call-page .pcc-is-self .o_CallParticipantVideo {
+    border-radius: 8px !important;
+}
+
+.pcc-call-page .pcc-is-self .o_CallParticipantCard_avatarImage {
+    width: 58px;
+    height: 58px;
+    max-width: 58px;
+    max-height: 58px;
+    border-width: 3px;
+}
+
+.pcc-call-page .pcc-is-self .o_CallParticipantCard_overlayBottom {
+    max-width: calc(100% - 8px);
+    margin: 4px;
+}
+
+.pcc-call-page .pcc-is-self .o_CallParticipantCard_name {
+    max-width: 86px;
+    padding: 2px 4px !important;
+    font-size: 10px;
+}
+
+.pcc-call-page .o_CallMainView_sidebarButton,
+.pcc-call-page .pcc-layout-toggle {
+    display: none !important;
+}
+
+.pcc-call-page .o_CallMainView_controls {
+    position: fixed !important;
+    right: 0;
+    bottom: 0 !important;
+    left: 0;
+    z-index: 2400;
+    box-sizing: border-box;
+    padding: 12px 8px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    background: rgba(11, 17, 23, .94);
+}
+
+.pcc-call-page .o_CallMainView_controlsOverlayContainer {
+    max-width: 100%;
+}
+
+.pcc-call-page .o_CallActionList_button {
+    width: 52px;
+    height: 52px;
+    margin: 2px !important;
+    background: #2d353d;
+}
+
+.pcc-call-page .o_CallActionList_buttons {
+    flex-wrap: nowrap !important;
+    gap: 6px;
+    justify-content: center;
+}
+
+.pcc-end-call-button {
+    width: 58px;
+    min-width: 58px;
+    height: 58px;
+    min-height: 58px;
+    border: 0;
+    border-radius: 50%;
+    padding: 0;
+    background: #d94343;
+    color: #fff;
+    font-size: 20px;
+    box-shadow: 0 8px 22px rgba(160, 25, 25, .32);
+}
+
+.pcc-end-call-button .fa-phone {
+    transform: rotate(135deg);
+}
+
+.pcc-end-call-button:hover,
+.pcc-end-call-button:focus {
+    background: #bd3030;
+    color: #fff;
+}
+
+.pcc-end-call-button:disabled {
+    opacity: .65;
+}
+
+@mixin pcc-mobile-call-layout {
+    .pcc-meeting-header {
+        min-height: 58px;
+        padding-left: 13px;
+    }
+
+    .pcc-meeting-header__brand {
+        font-size: 14px;
+    }
+
+    .pcc-meeting-header__manager {
+        max-width: 46vw;
+        font-size: 11px;
+    }
+
+    .pcc-meeting-close {
+        right: 14px;
+        left: auto;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        width: 52px;
+        height: 52px;
+        transform: none;
+    }
+
+    .pcc-call-page .o_WelcomeView_joinButton {
+        left: 14px;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        width: auto;
+        min-width: 164px;
+        height: 52px;
+        transform: none;
+    }
+
+    body.pcc-call-page.pcc-call-in-progress .pcc-meeting-close {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .pcc-call-page .o_WelcomeView {
+        padding: 78px 12px 18px;
+    }
+
+    .pcc-call-page .o_WelcomeView > .d-flex {
+        width: calc(100vw - 24px);
+        max-width: 560px;
+        flex-direction: column;
+    }
+
+    .pcc-call-page .o_CallDemoView_videoDisplay {
+        max-height: 54vh;
+        aspect-ratio: 3 / 4;
+    }
+
+    .pcc-call-page .o_CallView.o-fullScreen {
+        padding-top: 58px;
+    }
+
+    .pcc-call-page .o_CallMainView_grid {
+        padding: 12px 10px 112px;
+    }
+
+    .pcc-call-page .o_CallMainView_gridParticipantCard.pcc-is-self {
+        top: 10px;
+        right: 10px;
+        width: 86px !important;
+        height: 118px !important;
+        min-width: 86px !important;
+        min-height: 118px !important;
+    }
+
+    .pcc-call-page .pcc-is-remote .o_CallParticipantCard_avatarImage {
+        width: 132px;
+        height: 132px;
+        max-width: 132px;
+        max-height: 132px;
+    }
+
+    .pcc-call-page .o_CallMainView_controls {
+        padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .pcc-call-page .o_CallActionList_button {
+        width: 48px;
+        height: 48px;
+    }
+
+    .pcc-end-call-button {
+        width: 56px;
+        min-width: 56px;
+        height: 56px;
+        min-height: 56px;
+    }
+}
+
+@media (max-width: 700px) {
+    @include pcc-mobile-call-layout;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    @include pcc-mobile-call-layout;
+}
+
+body.pcc-call-page.pcc-touch-device {
+    width: 100%;
+    min-width: 0;
+}

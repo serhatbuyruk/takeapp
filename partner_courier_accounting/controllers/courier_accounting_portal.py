@@ -1,9 +1,17 @@
 import base64
+import hashlib
+import hmac
 import json
 import logging
 import mimetypes
 import os
 import re
+import time
+import uuid
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
+from urllib.parse import urlencode
+
 from odoo import fields, http
 from odoo.http import request, Stream
 
@@ -12,9 +20,56 @@ _ONESIGNAL_SUBSCRIPTION_ID_PATTERN = re.compile(
     r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
     re.IGNORECASE,
 )
+_ADVANCE_REQUEST_WEEKDAYS = (3, 4)
+_TURKEY_TIMEZONE = ZoneInfo('Europe/Istanbul')
+_KURYETEC_SSO_LOGIN_URL = 'https://kuryetec.autoronics.com/kuryetec-sso/login'
+_INVOICE_SAMPLE_ENABLED = False
+_APP_UPDATE_NOTICE_END_DATE = date(2026, 10, 20)
 
 
 class CourierAccountingPortal(http.Controller):
+
+    def _kuryetec_sso_redirect(self, login, password):
+        """Return a signed redirect URL only for the explicitly configured test user."""
+        params = request.env['ir.config_parameter'].sudo()
+        enabled = params.get_param('partner_courier_accounting.kuryetec_sso_enabled') == 'True'
+        configured_login = (params.get_param('partner_courier_accounting.kuryetec_sso_login') or '').strip()
+        configured_password = params.get_param('partner_courier_accounting.kuryetec_sso_password') or ''
+        secret = params.get_param('partner_courier_accounting.kuryetec_sso_shared_secret') or ''
+        if not enabled or not configured_login or not configured_password:
+            return False
+        if not (
+            hmac.compare_digest(login, configured_login)
+            and hmac.compare_digest(password, configured_password)
+        ):
+            return False
+        if not secret:
+            _logger.warning('Kuryetec SSO special login attempted without a configured shared secret.')
+            return None
+        issued_at = int(time.time())
+        payload = {
+            'iss': 'ktsite',
+            'aud': 'autoronics',
+            'sub': configured_login,
+            'iat': issued_at,
+            'exp': issued_at + 60,
+            'jti': str(uuid.uuid4()),
+            'next': '/kurye-anasayfa',
+        }
+        encoded_payload = base64.urlsafe_b64encode(
+            json.dumps(payload, separators=(',', ':'), ensure_ascii=True).encode('utf-8')
+        ).rstrip(b'=').decode('ascii')
+        signature = hmac.new(
+            secret.encode('utf-8'), encoded_payload.encode('ascii'), hashlib.sha256
+        ).digest()
+        token = '%s.%s' % (
+            encoded_payload,
+            base64.urlsafe_b64encode(signature).rstrip(b'=').decode('ascii'),
+        )
+        return '%s?%s' % (_KURYETEC_SSO_LOGIN_URL, urlencode({'token': token}))
+
+    def _advance_requests_open(self):
+        return datetime.now(_TURKEY_TIMEZONE).weekday() in _ADVANCE_REQUEST_WEEKDAYS
 
     @http.route('/kurye-muhasebe/main-website-domain', type='http', auth='public', methods=['GET'], website=False, csrf=False, sitemap=False)
     def main_website_domain(self, **kw):
@@ -60,6 +115,36 @@ class CourierAccountingPortal(http.Controller):
             'playerId': player_id_value,
         }
 
+    @http.route('/kurye-muhasebe/push-token', type='json', auth='public', methods=['POST'], csrf=False)
+    def save_push_token(self, provider=None, token=None, firebaseToken=None, firebase_token=None,
+                        contactId=None, contact_id=None, **kw):
+        partner = self._partner()
+        if not partner:
+            return {'success': False, 'error': 'not_logged_in'}
+        requested_contact_id = contactId or contact_id
+        if requested_contact_id:
+            try:
+                requested_contact_id = int(requested_contact_id)
+            except (TypeError, ValueError):
+                return {'success': False, 'error': 'invalid_contact_id'}
+            if requested_contact_id != partner.id:
+                return {'success': False, 'error': 'contact_mismatch'}
+        if (provider or 'firebase').lower() != 'firebase':
+            return {'success': False, 'error': 'unsupported_provider'}
+        token_value = (token or firebaseToken or firebase_token or '').strip()
+        if not token_value:
+            return {'success': False, 'error': 'missing_token'}
+        if len(token_value) < 20 or len(token_value) > 4096 or re.search(r'\s', token_value):
+            return {'success': False, 'error': 'invalid_token'}
+        request.env['res.partner'].sudo().search([
+            ('firebase_token', '=', token_value), ('id', '!=', partner.id),
+        ]).write({'firebase_token': False, 'firebase_token_updated_at': False})
+        partner.sudo().write({
+            'firebase_token': token_value,
+            'firebase_token_updated_at': fields.Datetime.now(),
+        })
+        return {'success': True, 'provider': 'firebase', 'contactId': partner.id}
+
     def _partner(self):
         partner_id = request.session.get('courier_accounting_partner_id')
         if not partner_id:
@@ -100,6 +185,67 @@ class CourierAccountingPortal(http.Controller):
 
     def _format_date(self, value):
         return value.strftime('%d/%m/%Y') if value else ''
+
+    def _invoice_sample_available(self, line):
+        return _INVOICE_SAMPLE_ENABLED and bool(line.date_start and line.date_end)
+
+    def _invoice_sample_values(self, line):
+        currency = line.currency_id or request.env.company.currency_id
+        invoice_type = (line.invoice_type or '').strip().upper()
+        is_earchive = 'ARŞİV' in invoice_type or 'ARSIV' in invoice_type
+        base_amount = (
+            line.bonus_included_total_payment_tax_excluded
+            or line.total_payment_tax_excluded
+            or line.earning_amount_tax_excluded
+            or 0.0
+        )
+        vat_amount = line.bonus_included_earning_tax_included - base_amount
+        if vat_amount <= 0:
+            vat_amount = base_amount * 0.20
+        base_amount = currency.round(base_amount)
+        vat_amount = currency.round(vat_amount)
+        invoice_total = currency.round(base_amount + vat_amount)
+        has_withholding = base_amount > 10000.0
+        withholding_amount = 0.0
+        if has_withholding:
+            withholding_amount = line.withholding_tax_amount or (vat_amount * 0.20)
+            withholding_amount = currency.round(withholding_amount)
+        payable_amount = currency.round(invoice_total - withholding_amount)
+
+        seller_address_parts = [
+            line.partner_id.street,
+            line.partner_id.street2,
+            line.partner_id.zip,
+            line.partner_id.city,
+            line.partner_id.state_id.name,
+        ]
+        seller_tax_number = (
+            line.partner_id.invoice_person_tc
+            or line.partner_id.vat
+            or line.partner_id.courier_tc
+            or ''
+        )
+        return {
+            'base_amount': base_amount,
+            'vat_amount': vat_amount,
+            'invoice_total': invoice_total,
+            'withholding_amount': withholding_amount,
+            'payable_amount': payable_amount,
+            'has_withholding': has_withholding,
+            'service_code': 'Hizmet 110' if has_withholding else 'Hizmet 101',
+            'service_name': 'Kurye Hizmet Bedeli',
+            'document_type': 'E-Arşiv Fatura' if is_earchive else 'E-Fatura',
+            'scenario': 'E-Arşiv' if is_earchive else 'Ticari Fatura',
+            'description': '%s - %s Hakediş Haftası' % (
+                self._format_date(line.date_start),
+                self._format_date(line.date_end),
+            ),
+            'seller_name': line.partner_id.invoice_person or line.partner_id.name,
+            'seller_tax_number': seller_tax_number,
+            'seller_address': ', '.join(part for part in seller_address_parts if part),
+            'seller_email': line.partner_id.email or '',
+            'currency': currency,
+        }
 
     def _phone_url(self, phone):
         digits = ''.join(char for char in (phone or '') if char.isdigit())
@@ -244,8 +390,8 @@ class CourierAccountingPortal(http.Controller):
         values = {field: self._format_money(line[field], currency) for field in money_fields}
         return values
 
-    def _line_descriptions(self):
-        return {
+    def _line_descriptions(self, is_car_courier=False):
+        descriptions = {
             'rider_id': 'Kurye için sistemde tanımlı benzersiz kullanıcı kimlik numarasıdır. Excel importunda bu numara kullanılarak hakediş satırı ilgili kurye kartına bağlanır.',
             'rider_name': 'Hakediş kaydının bağlı olduğu kurye ad soyad bilgisidir.',
             'area': 'Kuryenin ilgili haftada çalıştığı bölge veya ilçe bilgisidir.',
@@ -275,6 +421,14 @@ class CourierAccountingPortal(http.Controller):
             'withholding_tax_amount': 'Fatura tipine göre hesaplanan tevkifat vergisi tutarıdır.',
             'net_payable_amount': 'Tüm kesintiler ve hesaplamalar sonrasında kuryeye ödenecek net tutardır.',
         }
+        if is_car_courier:
+            descriptions.update({
+                'pickup_count': 'İlgili haftada çalışılan toplam saattir.',
+                'dropoff_count': 'İlgili haftada tamamlanan toplam paket sayısıdır.',
+                'pickup_amount': 'Çalışılan saatler karşılığında hesaplanan haftalık kazanç tutarıdır.',
+                'dropoff_amount': 'Tamamlanan paketler karşılığında hesaplanan haftalık kazanç tutarıdır.',
+            })
+        return descriptions
 
     @http.route('/kurye-muhasebe', type='http', auth='public', website=True, sitemap=False)
     def login(self, **kw):
@@ -289,6 +443,11 @@ class CourierAccountingPortal(http.Controller):
     def login_post(self, courier_id=None, identity_no=None, privacy_kvkk_accepted=None, **kw):
         courier_id = (courier_id or '').strip()
         identity_no = (identity_no or '').strip()
+        sso_redirect = self._kuryetec_sso_redirect(courier_id, identity_no)
+        if sso_redirect:
+            return request.redirect(sso_redirect, code=303, local=False)
+        if sso_redirect is None:
+            return request.redirect('/kurye-muhasebe?error=sso')
         partner = request.env['res.partner'].sudo().search([
             ('courier_id', '=', courier_id),
             ('courier_tc', '=', identity_no),
@@ -304,6 +463,34 @@ class CourierAccountingPortal(http.Controller):
             })
         request.session['courier_accounting_partner_id'] = partner.id
         return request.redirect('/kurye-muhasebe/home')
+
+    @http.route('/kurye-muhasebe/basvuru', type='http', auth='public', methods=['GET'], website=True, csrf=False, sitemap=False)
+    def courier_application(self, **kw):
+        return self._render('partner_courier_accounting.courier_accounting_application', {
+            'error': kw.get('error'),
+        })
+
+    @http.route('/kurye-muhasebe/basvuru/gonder', type='http', auth='public', methods=['POST'], website=True, csrf=True, sitemap=False)
+    def courier_application_submit(self, name=None, email=None, **kw):
+        name = (name or '').strip()
+        email = (email or '').strip().lower()
+        if not name or not email or not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
+            return request.redirect('/kurye-muhasebe/basvuru?error=1')
+        application_model = request.env['partner.courier.application'].sudo()
+        existing = application_model.search([
+            ('email', '=', email),
+            ('state', 'in', ('pending', 'contacted')),
+        ], limit=1)
+        if not existing:
+            application_model.create({
+                'name': name,
+                'email': email,
+            })
+        return request.redirect('/kurye-muhasebe/basvuru/basarili')
+
+    @http.route('/kurye-muhasebe/basvuru/basarili', type='http', auth='public', methods=['GET'], website=True, csrf=False, sitemap=False)
+    def courier_application_success(self, **kw):
+        return self._render('partner_courier_accounting.courier_accounting_application_success')
 
     @http.route('/kurye-muhasebe/logout', type='http', auth='public', website=True, sitemap=False)
     def logout(self, **kw):
@@ -329,6 +516,7 @@ class CourierAccountingPortal(http.Controller):
             'partner': partner,
             'has_missing_documents': has_missing_documents,
             'courier_user_id': user.id if user else False,
+            'show_app_update_notice': datetime.now(_TURKEY_TIMEZONE).date() <= _APP_UPDATE_NOTICE_END_DATE,
         })
 
     @http.route('/kurye-muhasebe/kisisel-bilgiler', type='http', auth='public', website=True, sitemap=False)
@@ -362,6 +550,7 @@ class CourierAccountingPortal(http.Controller):
             'lines': lines,
             'format_money': self._format_money,
             'format_date': self._format_date,
+            'invoice_sample_available': self._invoice_sample_available,
         })
 
     @http.route('/kurye-muhasebe/hakedis/<int:line_id>', type='http', auth='public', website=True, sitemap=False)
@@ -375,11 +564,36 @@ class CourierAccountingPortal(http.Controller):
         ], limit=1)
         if not line:
             return request.redirect('/kurye-muhasebe/hakedis')
+        is_car_courier = partner.courier_type == 'car'
         return self._render('partner_courier_accounting.courier_accounting_earning_detail', {
             'partner': partner,
             'line': line,
             'money': self._line_values(line),
-            'info': self._line_descriptions(),
+            'info': self._line_descriptions(is_car_courier),
+            'is_car_courier': is_car_courier,
+            'format_date': self._format_date,
+            'invoice_sample_available': self._invoice_sample_available(line),
+        })
+
+    @http.route(
+        '/kurye-muhasebe/hakedis/<int:line_id>/fatura-ornegi',
+        type='http', auth='public', methods=['GET'], website=True, sitemap=False,
+    )
+    def earning_invoice_sample(self, line_id, **kw):
+        partner = self._partner()
+        if not partner:
+            return request.redirect('/kurye-muhasebe')
+        line = request.env['partner.courier.accounting.line'].sudo().search([
+            ('id', '=', line_id),
+            ('partner_id', '=', partner.id),
+        ], limit=1)
+        if not line or not self._invoice_sample_available(line):
+            return request.redirect('/kurye-muhasebe/hakedis')
+        return self._render('partner_courier_accounting.courier_accounting_invoice_sample', {
+            'partner': partner,
+            'line': line,
+            'sample': self._invoice_sample_values(line),
+            'format_money': self._format_money,
             'format_date': self._format_date,
         })
 
@@ -614,20 +828,24 @@ class CourierAccountingPortal(http.Controller):
         partner = self._partner()
         if not partner:
             return request.redirect('/kurye-muhasebe')
-            
+
         type_labels = [
-            ('advance', 'Avans Talebi'),
             ('equipment', 'Ekipman Talebi'),
             ('shift', 'Vardiya / Bölge Değişikliği'),
             ('holiday', 'İzin Talebi'),
             ('accounting', 'Hakediş İtirazı / Muhasebe'),
             ('other', 'Diğer')
         ]
-        
+        advance_requests_open = self._advance_requests_open()
+        if advance_requests_open:
+            type_labels.insert(0, ('advance', 'Avans Talebi'))
+
         return self._render('partner_courier_accounting.courier_accounting_new_request', {
             'partner': partner,
             'type_labels': type_labels,
             'error': kw.get('error'),
+            'advance_error': kw.get('advance_error'),
+            'advance_requests_open': advance_requests_open,
         })
 
     @http.route('/kurye-muhasebe/talepler/yeni/post', type='http', auth='public', methods=['POST'], website=True, csrf=True, sitemap=False)
@@ -643,7 +861,9 @@ class CourierAccountingPortal(http.Controller):
         valid_types = ['advance', 'equipment', 'shift', 'holiday', 'accounting', 'other']
         if not type_val or type_val not in valid_types or not desc_val or (type_val == 'advance' and amount_val <= 0):
             return request.redirect('/kurye-muhasebe/talepler/yeni?error=1')
-            
+        if type_val == 'advance' and not self._advance_requests_open():
+            return request.redirect('/kurye-muhasebe/talepler/yeni?advance_error=1')
+
         request.env['partner.courier.request'].sudo().create({
             'partner_id': partner.id,
             'type': type_val,

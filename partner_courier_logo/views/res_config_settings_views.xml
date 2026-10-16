@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_partner_courier_logo" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.partner.courier.logo</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Logo İşbaşı" string="Logo İşbaşı" data-key="partner_courier_logo">
+                    <h2>Logo İşbaşı Kurye Fatura Entegrasyonu</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_enabled"/><field name="partner_courier_logo_enabled"/><div class="text-muted">Test bilgileri girilmeden etkinleştirmeyin.</div></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_test_mode"/><field name="partner_courier_logo_test_mode"/><div class="text-muted">Logo API'ye istek göndermez; yalnızca portal akışını test eder.</div></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_base_url"/><field name="partner_courier_logo_base_url"/></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_api_key"/><field name="partner_courier_logo_api_key" password="True"/></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_integration_login"/><field name="partner_courier_logo_integration_login"/></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_integration_password"/><field name="partner_courier_logo_integration_password" password="True"/></div></div>
+                    </div>
+                    <h2>SSO ve Taslak Endpointleri</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_sso_start_endpoint"/><field name="partner_courier_logo_sso_start_endpoint"/></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_sso_exchange_endpoint"/><field name="partner_courier_logo_sso_exchange_endpoint"/></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_sso_login_endpoint"/><field name="partner_courier_logo_sso_login_endpoint"/></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_invoice_endpoint"/><field name="partner_courier_logo_invoice_endpoint"/></div></div>
+                    </div>
+                    <h2>Kuryetec Alıcı Bilgileri</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_name"/><field name="partner_courier_logo_buyer_name"/></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_vkn"/><field name="partner_courier_logo_buyer_vkn"/></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_tax_office"/><field name="partner_courier_logo_buyer_tax_office"/></div></div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="courier_accounting_home_call_button"
+              inherit_id="partner_courier_accounting.courier_accounting_home"
+              name="Courier Accounting Home Call Button">
+        <xpath expr="//section[@t-att-data-contact-id]" position="after">
+                <button type="button"
+                        class="pcc-floating-call-button"
+                        id="pcc_open_call_dialog"
+                        title="Online görüşme başlat"
+                        aria-label="Online görüşme başlat"
+                        aria-haspopup="dialog">
+                    <i class="fa fa-phone" aria-hidden="true"/>
+                </button>
+
+                <div class="pcc-call-dialog" id="pcc_call_dialog" role="dialog" aria-modal="true" aria-labelledby="pcc_call_dialog_title" aria-hidden="true">
+                    <div class="pcc-call-dialog__panel">
+                        <button type="button" class="pcc-call-dialog__close" id="pcc_close_call_dialog" title="Kapat" aria-label="Kapat">
+                            <i class="fa fa-times" aria-hidden="true"/>
+                        </button>
+                        <div class="pcc-call-dialog__icon"><i class="fa fa-phone" aria-hidden="true"/></div>
+                        <h2 id="pcc_call_dialog_title">Kimi aramak istiyorsun?</h2>
+                        <p class="pcc-call-dialog__lead">Görüşmek istediğin ekibi seç.</p>
+                        <t t-set="support_open" t-value="request.env['partner.courier.call'].sudo().is_support_hours_open()"/>
+                        <t t-set="support_partner" t-value="request.env['partner.courier.call'].sudo().get_available_support_partner()"/>
+
+                        <form t-if="partner.courier_field_manager_partner_id and partner.courier_field_manager_partner_id.active and partner.courier_field_manager_partner_id != partner" action="/kurye-gorusme/baslat" method="post" class="pcc-call-target-form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="target" value="field_manager"/>
+                            <button type="submit" class="pcc-call-target pcc-call-target--active" aria-busy="false">
+                                <span class="pcc-call-target__avatar"><i class="fa fa-user" aria-hidden="true"/></span>
+                                <span class="pcc-call-target__text">
+                                    <strong>Saha Yöneticim</strong>
+                                    <small t-esc="partner.courier_field_manager_partner_id.name"/>
+                                </span>
+                                <span class="pcc-call-target__action">
+                                    <i class="fa fa-phone pcc-call-target__phone-icon" aria-hidden="true"/>
+                                    <i class="fa fa-spinner fa-spin pcc-call-target__spinner" aria-hidden="true"/>
+                                </span>
+                            </button>
+                        </form>
+
+                        <button t-else="" type="button" class="pcc-call-target pcc-call-target--disabled" disabled="disabled">
+                            <span class="pcc-call-target__avatar"><i class="fa fa-user" aria-hidden="true"/></span>
+                            <span class="pcc-call-target__text">
+                                <strong>Saha Yöneticim</strong>
+                                <small>Saha yöneticin henüz tanımlanmamış</small>
+                            </span>
+                            <span class="pcc-call-target__badge">Pasif</span>
+                        </button>
+
+                        <form t-if="support_open and support_partner" action="/kurye-gorusme/baslat" method="post" class="pcc-call-target-form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="target" value="support"/>
+                            <button type="submit" class="pcc-call-target pcc-call-target--active" aria-busy="false">
+                                <span class="pcc-call-target__avatar"><i class="fa fa-headphones" aria-hidden="true"/></span>
+                                <span class="pcc-call-target__text">
+                                    <strong>Kuryetec Destek Ekibi</strong>
+                                    <small>Müsait destek uzmanına bağlan</small>
+                                </span>
+                                <span class="pcc-call-target__action">
+                                    <i class="fa fa-phone pcc-call-target__phone-icon" aria-hidden="true"/>
+                                    <i class="fa fa-spinner fa-spin pcc-call-target__spinner" aria-hidden="true"/>
+                                </span>
+                            </button>
+                        </form>
+                        <button t-elif="not support_open" type="button" class="pcc-call-target pcc-call-target--disabled" disabled="disabled">
+                            <span class="pcc-call-target__avatar"><i class="fa fa-headphones" aria-hidden="true"/></span>
+                            <span class="pcc-call-target__text">
+                                <strong>Kuryetec Destek Ekibi</strong>
+                                <small>Mesai saatleri dışında</small>
+                            </span>
+                            <span class="pcc-call-target__badge">Kapalı</span>
+                        </button>
+                        <button t-else="" type="button" class="pcc-call-target pcc-call-target--disabled" disabled="disabled">
+                            <span class="pcc-call-target__avatar"><i class="fa fa-headphones" aria-hidden="true"/></span>
+                            <span class="pcc-call-target__text">
+                                <strong>Kuryetec Destek Ekibi</strong>
+                                <small>Şu an müsait destek uzmanı yok</small>
+                            </span>
+                            <span class="pcc-call-target__badge">Müsait Değil</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div t-if="request.params.get('call_error')" class="pcc-call-error" id="pcc_call_error" role="alert">
+                    <i class="fa fa-exclamation-circle" aria-hidden="true"/>
+                    <span t-if="request.params.get('call_error') == 'expired'">Görüşme bağlantısının süresi doldu. Yeniden arama başlatabilirsin.</span>
+                    <span t-elif="request.params.get('call_error') == 'manager_missing'">Aktif bir saha yöneticisi bulunamadı.</span>
+                    <span t-elif="request.params.get('call_error') == 'support_closed'">Kuryetec destek ekibi şu an mesai saatleri dışında.</span>
+                    <span t-elif="request.params.get('call_error') == 'support_unavailable'">Şu an müsait destek uzmanı bulunmuyor.</span>
+                    <span t-else="">Görüşme başlatılamadı. Lütfen tekrar dene.</span>
+                </div>
+
+                <script>
+                    (function () {
+                        const openButton = document.getElementById('pcc_open_call_dialog');
+                        const closeButton = document.getElementById('pcc_close_call_dialog');
+                        const dialog = document.getElementById('pcc_call_dialog');
+                        const error = document.getElementById('pcc_call_error');
+                        if (!openButton || !closeButton || !dialog) return;
+
+                        const openDialog = function () {
+                            dialog.classList.add('is-open');
+                            dialog.setAttribute('aria-hidden', 'false');
+                            document.body.classList.add('pcc-dialog-open');
+                            closeButton.focus();
+                        };
+                        const closeDialog = function () {
+                            dialog.classList.remove('is-open');
+                            dialog.setAttribute('aria-hidden', 'true');
+                            document.body.classList.remove('pcc-dialog-open');
+                            openButton.focus();
+                        };
+                        openButton.addEventListener('click', openDialog);
+                        closeButton.addEventListener('click', closeDialog);
+                        dialog.querySelectorAll('.pcc-call-target-form').forEach(function (form) {
+                            form.addEventListener('submit', function (event) {
+                                if (form.dataset.submitting === 'true') {
+                                    event.preventDefault();
+                                    return;
+                                }
+                                form.dataset.submitting = 'true';
+                                const submitButton = form.querySelector('button[type="submit"]');
+                                if (!submitButton) return;
+                                submitButton.disabled = true;
+                                submitButton.classList.add('is-loading');
+                                submitButton.setAttribute('aria-busy', 'true');
+                                closeButton.disabled = true;
+                            });
+                        });
+                        dialog.addEventListener('click', function (event) {
+                            if (event.target === dialog) closeDialog();
+                        });
+                        document.addEventListener('keydown', function (event) {
+                            if (event.key === 'Escape' &amp;&amp; dialog.classList.contains('is-open')) closeDialog();
+                        });
+                        if (error) {
+                            window.setTimeout(function () { error.classList.add('is-visible'); }, 50);
+                            window.setTimeout(function () { error.classList.remove('is-visible'); }, 6000);
+                        }
+                    })();
+                </script>
+        </xpath>
+    </template>
+</odoo>

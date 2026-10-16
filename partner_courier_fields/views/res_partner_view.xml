@@ -162,6 +162,7 @@
                         <field name="courier_tc"/>
                         <field name="courier_first_name"/>
                         <field name="courier_last_name"/>
+                        <field name="courier_type"/>
                     </group>
 
                     <group string="Fatura Bilgileri">

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_courier_call_user,partner.courier.call.user,model_partner_courier_call,base.group_user,1,0,0,0
+access_partner_courier_call_admin,partner.courier.call.admin,model_partner_courier_call,partner_courier_accounting.group_partner_courier_accounting_admin,1,1,1,1

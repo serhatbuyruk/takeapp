@@ -7,12 +7,14 @@
             <tree decoration-success="state == 'sent'" decoration-danger="state == 'failed'">
                 <field name="create_date"/>
                 <field name="name"/>
+                <field name="provider"/>
                 <field name="target_type"/>
                 <field name="recipient_count"/>
                 <field name="sent_count"/>
                 <field name="skipped_count"/>
                 <field name="failed_count"/>
                 <field name="onesignal_notification_id"/>
+                <field name="provider_message_id" optional="hide"/>
                 <field name="sent_date"/>
                 <field name="state"/>
             </tree>
@@ -41,6 +43,7 @@
                         <group>
                             <field name="name" attrs="{'readonly': [('state', '=', 'sent')]}"/>
                             <field name="message" attrs="{'readonly': [('state', '=', 'sent')]}"/>
+                            <field name="provider" attrs="{'readonly': [('state', '=', 'sent')]}"/>
                             <field name="target_type" attrs="{'readonly': [('state', '=', 'sent')]}"/>
                             <field name="partner_ids" widget="many2many_tags" attrs="{'invisible': [('target_type', '!=', 'partners')], 'readonly': [('state', '=', 'sent')]}"/>
                             <field name="partner_domain" widget="domain" options="{'model': 'res.partner'}" attrs="{'invisible': [('target_type', '!=', 'domain')], 'readonly': [('state', '=', 'sent')]}"/>
@@ -51,6 +54,7 @@
                             <field name="additional_data_json" placeholder='{"screen": "home"}' attrs="{'readonly': [('state', '=', 'sent')]}"/>
                             <field name="sent_date" readonly="1"/>
                             <field name="onesignal_notification_id" readonly="1"/>
+                            <field name="provider_message_id" readonly="1"/>
                         </group>
                     </group>
                     <group string="Kurye ID ile Hedef Ekle" attrs="{'invisible': [('state', '=', 'sent')]}">
@@ -72,14 +76,17 @@
                             <field name="recipient_line_ids" readonly="1">
                                 <tree decoration-success="state == 'sent'" decoration-warning="state == 'skipped'" decoration-danger="state == 'failed'">
                                     <field name="partner_id"/>
+                                    <field name="provider"/>
+                                    <field name="device_token"/>
                                     <field name="player_id"/>
                                     <field name="state"/>
                                     <field name="onesignal_notification_id"/>
+                                    <field name="provider_message_id"/>
                                     <field name="error_message"/>
                                 </tree>
                             </field>
                         </page>
-                        <page string="OneSignal Yanıtı">
+                        <page string="Bildirim Servisi Yanıtı">
                             <field name="response_message" nolabel="1" readonly="1"/>
                         </page>
                     </notebook>
@@ -100,12 +107,14 @@
             <search>
                 <field name="name"/>
                 <field name="message"/>
+                <field name="provider"/>
                 <filter name="draft" string="Taslak" domain="[('state', '=', 'draft')]"/>
                 <filter name="sent" string="Gönderildi" domain="[('state', '=', 'sent')]"/>
                 <filter name="failed" string="Hatalı" domain="[('state', '=', 'failed')]"/>
                 <group expand="0" string="Grupla">
                     <filter name="group_state" string="Durum" context="{'group_by': 'state'}"/>
                     <filter name="group_target_type" string="Hedef" context="{'group_by': 'target_type'}"/>
+                    <filter name="group_provider" string="Bildirim Servisi" context="{'group_by': 'provider'}"/>
                 </group>
             </search>
         </field>

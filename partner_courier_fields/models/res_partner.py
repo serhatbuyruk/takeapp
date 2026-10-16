@@ -7,6 +7,14 @@ class ResPartner(models.Model):
     courier_tc = fields.Char(string="Kurye T.C. No", tracking=True)
     courier_first_name = fields.Char(string="Kurye Adı")
     courier_last_name = fields.Char(string="Kurye Soyadı")
+    courier_type = fields.Selection(
+        selection=[
+            ('motorcycle', 'Motokurye'),
+            ('car', 'Arabalı Kurye'),
+        ],
+        string="Kurye Tipi",
+        default='motorcycle',
+    )
 
     invoice_person = fields.Char(string="Fatura Kesecek Kişi Adı Soyadı")
     invoice_person_tc = fields.Char(string="Fatura Kesecek Kişi T.C. No", tracking=True)

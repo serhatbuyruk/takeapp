@@ -1,8 +1,8 @@
 {
     'name': 'Partner Courier Notification',
-    'version': '16.0.1.0.0',
+    'version': '16.0.2.2.1',
     'category': 'Contacts',
-    'summary': 'Send OneSignal notifications to couriers',
+    'summary': 'Send OneSignal or Firebase notifications to couriers',
     'depends': ['contacts', 'mail', 'partner_courier_accounting'],
     'author': 'Esa Teknik',
     'data': [

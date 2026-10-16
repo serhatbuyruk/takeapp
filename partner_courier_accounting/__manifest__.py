@@ -1,6 +1,6 @@
 {
     'name': 'Partner Courier Accounting',
-    'version': '16.0.1.0.1',
+    'version': '16.0.3.2.0',
     'category': 'Contacts',
     'summary': 'Adds accounting pickup lines to courier contacts',
     'depends': ['partner_courier_fields', 'website'],
@@ -12,6 +12,7 @@
         'views/res_config_settings_views.xml',
         'views/partner_courier_accounting_line_views.xml',
         'views/res_partner_views.xml',
+        'views/partner_courier_application_views.xml',
         'views/partner_courier_request_views.xml',
         'views/partner_courier_training_views.xml',
         'views/courier_accounting_portal_templates.xml',

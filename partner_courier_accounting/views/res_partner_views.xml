@@ -7,6 +7,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='courier_id']" position="after">
                 <field name="player_id"/>
+                <field name="firebase_token"/>
+                <field name="firebase_token_updated_at" readonly="1"/>
                 <field name="courier_privacy_kvkk_accepted" readonly="1"/>
                 <field name="courier_privacy_kvkk_accepted_at" readonly="1"/>
             </xpath>
@@ -44,6 +46,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='courier_id']" position="after">
                 <field name="player_id" optional="hide"/>
+                <field name="firebase_token" optional="hide"/>
                 <field name="has_attachments" invisible="1"/>
                 <button name="action_show_attachments" type="object" icon="fa-paperclip" title="Belgeler" attrs="{'invisible': [('has_attachments', '=', False)]}"/>
             </xpath>

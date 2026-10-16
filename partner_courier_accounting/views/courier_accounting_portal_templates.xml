@@ -16,7 +16,7 @@
                 .ca-form input { width: 100%; min-height: 46px; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px; }
                 .ca-button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; border: 0; border-radius: 8px; padding: 12px 18px; text-decoration: none !important; font-weight: 800; cursor: pointer; }
                 .ca-button:hover, .ca-button:focus, .ca-button:active, .ca-back:hover, .ca-back:focus, .ca-back:active, .ca-week-item:hover, .ca-week-item:focus, .ca-week-item:active, .ca-training-item:hover, .ca-training-item:focus, .ca-training-item:active, .ca-document-link:hover, .ca-document-link:focus, .ca-document-link:active { text-decoration: none !important; }
-                .ca-button-primary { background: #e97712; color: #fff !important; }
+                .ca-button-primary { background: #FB0050; color: #fff !important; }
                 .ca-button-light { background: #ededed; color: #222 !important; }
                 .ca-action-grid { display: grid; gap: 12px; }
                 .ca-back { position: sticky; top: 12px; z-index: 20; display: inline-flex; width: 56px; height: 56px; align-items: center; justify-content: center; margin: 0 0 22px; border-radius: 50%; background: #e9e9e9; color: #111 !important; text-decoration: none; font-size: 34px; line-height: 1; box-shadow: 0 8px 18px rgba(0,0,0,.12); }
@@ -40,7 +40,15 @@
                 .ca-modal-card { width: 100%; max-width: 520px; border-radius: 14px; background: #fff; padding: 24px; box-shadow: 0 16px 50px rgba(0,0,0,.25); }
                 .ca-modal-card h3 { margin: 0 0 12px; font-size: 24px; font-weight: 850; }
                 .ca-modal-card p { margin: 0 0 20px; font-size: 18px; line-height: 1.45; }
-                .ca-modal-close { width: 100%; min-height: 44px; border: 0; border-radius: 8px; background: #e97712; color: #fff; font-weight: 800; cursor: pointer; }
+                .ca-modal-close { width: 100%; min-height: 44px; border: 0; border-radius: 8px; background: #FB0050; color: #fff; font-weight: 800; cursor: pointer; }
+                .ca-app-update-modal { z-index: 10100; background: rgba(20, 24, 32, .56); backdrop-filter: blur(7px); }
+                .ca-app-update-modal-card { max-width: 390px; padding: 30px 26px 24px; text-align: center; }
+                .ca-app-update-icon { display: inline-grid; width: 58px; height: 58px; place-items: center; margin: 0 0 18px; border-radius: 18px; background: #fff0f6; color: #FB0050; font-size: 25px; box-shadow: inset 0 0 0 1px rgba(251, 0, 80, .14); }
+                .ca-app-update-modal-card h3 { margin-bottom: 10px; color: #20232a; }
+                .ca-app-update-modal-card p { margin-bottom: 8px; color: #4c5561; font-size: 16px; }
+                .ca-app-update-note { margin-bottom: 22px !important; color: #7b8490 !important; font-size: 13px !important; line-height: 1.45; }
+                .ca-app-update-confirm { width: 100%; min-height: 48px; border: 0; border-radius: 8px; background: #FB0050; color: #fff; font-size: 16px; font-weight: 850; cursor: pointer; box-shadow: 0 10px 20px rgba(251, 0, 80, .22); }
+                .ca-app-update-confirm:hover, .ca-app-update-confirm:focus { background: #d90045; outline: 3px solid rgba(251, 0, 80, .16); }
                 .ca-emergency-modal-card { max-width: 380px; padding: 28px 24px 24px; text-align: center; }
                 .ca-emergency-modal-icon { display: inline-grid; width: 48px; height: 48px; place-items: center; margin: 0 0 16px; border-radius: 50%; background: #fff1df; color: #c65d00; font-size: 22px; }
                 .ca-emergency-modal-card h3 { margin-bottom: 8px; }
@@ -59,8 +67,15 @@
                 .ca-pdf-download.is-loading { opacity: .82; pointer-events: none; cursor: wait; }
                 .ca-pdf-download[aria-disabled="true"] { pointer-events: none; cursor: wait; }
                 .ca-week-list { display: grid; gap: 26px; }
+                .ca-week-row { display: flex; align-items: stretch; gap: 8px; }
                 .ca-week-item { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 16px 16px 22px; border: 1px solid #dedede; border-radius: 8px; background: #f4f4f4; color: #222 !important; text-decoration: none; overflow: visible; box-shadow: 0 4px 12px rgba(0,0,0,.04); }
                 .ca-week-payment-date { position: absolute; left: 14px; bottom: -17px; display: inline-flex; max-width: calc(100% - 28px); padding: 6px 12px 7px; border: 1px solid #dedede; border-top: 0; border-radius: 0 0 8px 8px; background: #f4f4f4; color: #666; font-size: 12px; font-weight: 800; line-height: 1.25; box-shadow: 0 8px 12px rgba(0,0,0,.06); overflow-wrap: anywhere; }
+                .ca-week-actions { display: grid; width: 112px; flex: 0 0 112px; gap: 6px; }
+                .ca-week-actions .ca-button { width: 100%; min-height: 42px; padding: 7px 9px; gap: 6px; font-size: 12px; line-height: 1.15; text-align: center; }
+                .ca-invoice-sample-button { border: 1px solid #FB0050; background: #fff; color: #d90045 !important; }
+                .ca-invoice-sample-button:hover, .ca-invoice-sample-button:focus { background: #fff0f5; color: #b7003a !important; }
+                .ca-detail-invoice-action { display: flex; justify-content: center; margin: 8px 0 0; }
+                .ca-detail-invoice-action .ca-button { width: min(100%, 460px); gap: 10px; }
                 .ca-error { margin: 0; color: #b00020; font-weight: 700; }
                 .ca-empty { margin: 0; color: #555; }
                 @media (max-width: 560px) {
@@ -70,6 +85,9 @@
                     .ca-row-note { grid-template-columns: minmax(0, 92px) minmax(0, 1fr) 28px; }
                     .ca-personal-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
                     .ca-personal-row span { text-align: left; font-size: 17px; line-height: 1.35; }
+                    .ca-week-row { align-items: stretch; }
+                    .ca-week-actions { width: 94px; flex-basis: 94px; }
+                    .ca-week-actions .ca-button { padding: 6px; font-size: 11px; }
                 }
                 .ca-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; }
                 .ca-badge-danger { background: #ffebee; color: #b71c1c; }
@@ -117,11 +135,11 @@
                 .ca-center-phone, .ca-center-days, .ca-center-hours, .ca-center-cities { margin: 0 0 14px; color: #7a7a7a; font-size: 23px; line-height: 1.35; }
                 .ca-center-phone strong, .ca-center-days, .ca-center-cities strong { font-weight: 850; }
                 .ca-center-phone { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 10px; }
-                .ca-call-button { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; border-radius: 8px; padding: 7px 12px; background: #e97712; color: #fff !important; text-decoration: none !important; font-size: 15px; font-weight: 850; white-space: nowrap; }
-                .ca-emergency-phone { position: fixed; right: 20px; bottom: 20px; z-index: 100; display: grid; gap: 2px; min-width: 218px; padding: 12px 16px; border: 1px solid #d05e00; border-radius: 8px; background: #e97712; color: #fff !important; box-shadow: 0 10px 24px rgba(125, 51, 0, .28); text-decoration: none !important; }
-                .ca-emergency-phone:hover, .ca-emergency-phone:focus { background: #cf650d; color: #fff !important; text-decoration: none !important; }
-                .ca-emergency-phone-label { font-size: 12px; font-weight: 800; letter-spacing: .2px; }
-                .ca-emergency-phone-number { font-size: 18px; font-weight: 850; line-height: 1.2; }
+                .ca-call-button { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; border-radius: 8px; padding: 7px 12px; background: #FB0050; color: #fff !important; text-decoration: none !important; font-size: 15px; font-weight: 850; white-space: nowrap; }
+                .ca-emergency-phone { position: fixed; right: 16px; bottom: 16px; z-index: 100; display: grid; gap: 1px; min-width: 0; padding: 9px 12px; border: 1px solid #c90040; border-radius: 10px; background: #FB0050; color: #fff !important; box-shadow: 0 8px 18px rgba(251, 0, 80, .22); text-decoration: none !important; }
+                .ca-emergency-phone:hover, .ca-emergency-phone:focus { background: #c90040; color: #fff !important; text-decoration: none !important; }
+                .ca-emergency-phone-label { font-size: 11px; font-weight: 800; letter-spacing: .2px; }
+                .ca-emergency-phone-number { font-size: 15px; font-weight: 850; line-height: 1.2; }
                 .ca-center-hours { margin-bottom: 18px; font-weight: 500; }
                 .ca-center-cities { margin-bottom: 0; }
                 @media (max-width: 560px) {
@@ -133,8 +151,64 @@
                     .ca-center-phone, .ca-center-days, .ca-center-hours, .ca-center-cities { font-size: 20px; }
                     .ca-request-success { align-items: stretch; flex-direction: column; }
                     .ca-rate-app-button { width: 100%; }
-                    .ca-emergency-phone { right: 12px; bottom: 12px; min-width: 0; padding: 10px 14px; }
-                    .ca-emergency-phone-number { font-size: 16px; }
+                    .ca-emergency-phone { right: 12px; bottom: 12px; padding: 8px 10px; }
+                    .ca-emergency-phone-number { font-size: 14px; }
+                }
+                .ca-login-page { width: min(100%, 980px); margin: 0 auto; padding: 24px 0 110px; }
+                .ca-login-hero { position: relative; min-height: 300px; overflow: hidden; border-radius: 8px 8px 0 0; background: #f7f7fb; }
+                .ca-login-hero-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center right; }
+                .ca-login-hero-copy { position: absolute; z-index: 1; top: 38px; left: clamp(24px, 7vw, 68px); max-width: 300px; color: #112544; }
+                .ca-login-brand { display: inline-flex; align-items: center; gap: 12px; margin: 0 0 14px; font-size: 30px; font-weight: 900; }
+                .ca-login-brand i { display: inline-grid; width: 52px; height: 52px; place-items: center; border-radius: 14px; background: #FB0050; color: #fff; font-size: 26px; }
+                .ca-login-hero-copy p { margin: 0; color: #63718a; font-size: 20px; font-weight: 700; line-height: 1.35; }
+                .ca-login-card { position: relative; z-index: 1; width: min(calc(100% - 48px), 620px); max-width: none; margin: -180px auto 0; padding: clamp(26px, 5vw, 44px); border: 1px solid rgba(17, 37, 68, .08); border-radius: 18px; box-shadow: 0 18px 48px rgba(17, 37, 68, .16); }
+                .ca-login-heading { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; align-items: center; margin: 0 0 30px; }
+                .ca-login-heading-icon { display: grid; width: 64px; height: 64px; place-items: center; border-radius: 18px; background: #FB0050; color: #fff; box-shadow: 0 10px 20px rgba(251, 0, 80, .24); font-size: 28px; }
+                .ca-login-card h1 { margin: 0 0 5px; color: #112544; font-size: clamp(30px, 5vw, 42px); line-height: 1.05; }
+                .ca-login-heading p { margin: 0; color: #75819a; font-size: 17px; line-height: 1.35; }
+                .ca-login-card .ca-form { gap: 16px; }
+                .ca-login-card .ca-login-field { gap: 9px; color: #112544; font-size: 17px; font-weight: 850; }
+                .ca-login-input-wrap { position: relative; display: flex; align-items: center; }
+                .ca-login-input-wrap > i { position: absolute; left: 18px; color: #8a96aa; font-size: 20px; pointer-events: none; }
+                .ca-login-card .ca-login-input-wrap input { min-height: 62px; padding: 12px 52px; border: 1px solid #d7dce7; border-radius: 14px; background: #fbfbfe; color: #112544; font-size: 19px; font-weight: 650; box-shadow: inset 0 1px 2px rgba(17, 37, 68, .02); }
+                .ca-login-card .ca-login-input-wrap input:focus { border-color: #FB0050; outline: 3px solid rgba(251, 0, 80, .12); }
+                .ca-login-password-toggle { position: absolute; right: 8px; display: grid; width: 46px; height: 46px; place-items: center; border: 0; border-radius: 12px; background: transparent; color: #8a96aa; font-size: 19px; cursor: pointer; }
+                .ca-login-check { display: flex !important; grid-template-columns: none !important; align-items: flex-start; gap: 12px; color: #526079; font-size: 15px; font-weight: 650 !important; line-height: 1.42; text-align: left; }
+                .ca-login-check input { appearance: none; width: 26px !important; min-width: 26px; height: 26px; min-height: 26px !important; margin: 0; border: 2px solid #adb7c8 !important; border-radius: 7px !important; padding: 0 !important; background: #fff; }
+                .ca-login-check input:checked { border-color: #FB0050 !important; background: #FB0050; }
+                .ca-login-check input:checked::after { content: '✓'; display: block; color: #fff; font-size: 18px; line-height: 22px; text-align: center; }
+                .ca-login-check > span { min-width: 0; flex: 1 1 auto; text-align: left; }
+                .ca-login-check .ca-policy-link { display: inline; margin: 0; padding: 0; color: #e60049; font-weight: 850; line-height: inherit; text-align: left; vertical-align: baseline; white-space: nowrap; }
+                .ca-login-remember { align-items: center; color: #112544; font-size: 16px; font-weight: 800 !important; }
+                .ca-login-submit { width: 100%; min-height: 62px; gap: 14px; border-radius: 14px; font-size: 21px; box-shadow: 0 13px 24px rgba(251, 0, 80, .25); }
+                .ca-login-submit i { font-size: 20px; }
+                .ca-register-link { display: inline-flex; width: 100%; min-height: 50px; align-items: center; justify-content: center; gap: 9px; margin-top: 14px; border: 1px solid #d5dbe7; border-radius: 14px; color: #112544 !important; font-size: 16px; font-weight: 850; text-decoration: none !important; }
+                .ca-register-link:hover, .ca-register-link:focus { border-color: #FB0050; color: #e60049 !important; }
+                .ca-application-card { width: min(calc(100% - 36px), 560px); margin: 42px auto 100px; padding: 34px; }
+                .ca-application-card h1 { margin: 0 0 8px; color: #112544; font-size: 32px; }
+                .ca-application-card > p { margin: 0 0 28px; color: #68758d; line-height: 1.45; }
+                .ca-application-card textarea { width: 100%; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px; resize: vertical; }
+                .ca-application-success { text-align: center; }
+                .ca-application-success-icon { display: grid; width: 66px; height: 66px; place-items: center; margin: 0 auto 20px; border-radius: 50%; background: #eaf8f0; color: #1c9b52; font-size: 30px; }
+                @media (max-width: 640px) {
+                    .ca-shell { max-width: none; padding: 0; }
+                    .ca-login-page { padding: 0 0 96px; }
+                    .ca-login-hero { min-height: 230px; border-radius: 0; }
+                    .ca-login-hero-image { object-position: 61% center; }
+                    .ca-login-hero-copy { top: 28px; left: 22px; max-width: 190px; }
+                    .ca-login-brand { gap: 9px; font-size: 25px; }
+                    .ca-login-brand i { width: 42px; height: 42px; border-radius: 12px; font-size: 21px; }
+                    .ca-login-hero-copy p { font-size: 15px; }
+                    .ca-login-card { width: calc(100% - 28px); margin-top: -150px; padding: 28px 22px; border-radius: 18px; }
+                    .ca-login-heading { grid-template-columns: 52px minmax(0, 1fr); gap: 13px; margin-bottom: 26px; }
+                    .ca-login-heading-icon { width: 52px; height: 52px; border-radius: 15px; font-size: 23px; }
+                    .ca-login-card h1 { font-size: 31px; }
+                    .ca-login-heading p { font-size: 15px; }
+                    .ca-login-card .ca-login-input-wrap input { min-height: 58px; font-size: 17px; }
+                    .ca-login-check { font-size: 13px; }
+                    .ca-login-submit { min-height: 58px; font-size: 19px; }
+                    .ca-login-remember { font-size: 15px; }
+                    .ca-application-card { width: calc(100% - 28px); margin-top: 24px; padding: 28px 22px; }
                 }
             </style>
             <div id="wrap" class="ca-portal">
@@ -241,33 +315,54 @@
 
     <template id="courier_accounting_login" name="Courier Accounting Login">
         <t t-call="partner_courier_accounting.courier_accounting_layout">
-            <section class="ca-card ca-login-card">
-                <h1>Kurye Giriş</h1>
+            <section class="ca-login-page">
+                <div class="ca-login-hero" aria-hidden="true">
+                    <img class="ca-login-hero-image"
+                         src="/partner_courier_accounting/static/src/img/courier-login-hero.webp"
+                         alt="" loading="eager" fetchpriority="high" decoding="async"/>
+                </div>
+                <section class="ca-card ca-login-card">
+                <div class="ca-login-heading">
+                    <div class="ca-login-heading-icon"><i class="fa fa-user-o"></i></div>
+                    <div>
+                        <h1>Kuryetec Giriş</h1>
+                        <p>Hesabınıza giriş yaparak teslimatlarınıza hemen başlayın.</p>
+                    </div>
+                </div>
                 <form action="/kurye-muhasebe/login" method="post" class="ca-form">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                    <label>
-                        <span>Kurye ID</span>
-                        <input type="text" name="courier_id" required="required" autocomplete="username" id="ca_login_courier_id"/>
+                    <label class="ca-login-field">
+                        <span>E-posta / Kurye ID</span>
+                        <span class="ca-login-input-wrap">
+                            <i class="fa fa-id-card-o"></i>
+                            <input type="text" name="courier_id" required="required" autocomplete="username" id="ca_login_courier_id"/>
+                        </span>
                     </label>
-                    <label>
-                        <span>Kimlik Numarası</span>
-                        <input type="password" name="identity_no" required="required" autocomplete="current-password" id="ca_login_identity_no"/>
+                    <label class="ca-login-field">
+                        <span>Şifre / T.C.</span>
+                        <span class="ca-login-input-wrap">
+                            <i class="fa fa-lock"></i>
+                            <input type="password" name="identity_no" required="required" autocomplete="current-password" id="ca_login_identity_no"/>
+                            <button type="button" class="ca-login-password-toggle" id="ca_login_password_toggle" aria-label="Kimlik numarasını göster"><i class="fa fa-eye"></i></button>
+                        </span>
                     </label>
-                    <label id="ca_login_privacy_group" style="display:flex; grid-template-columns:none; align-items:flex-start; gap:8px; font-weight:700; line-height:1.35;">
-                        <input type="checkbox" name="privacy_kvkk_accepted" id="ca_login_privacy_kvkk" style="width:18px; min-width:18px; min-height:18px; margin-top:2px;"/>
+                    <label id="ca_login_privacy_group" class="ca-login-check">
+                        <input type="checkbox" name="privacy_kvkk_accepted" id="ca_login_privacy_kvkk"/>
                         <span>
-                            <button type="button" class="ca-policy-link" id="ca_policy_open">KVKK Aydınlatma Metni ve Gizlilik Politikası</button>
+                            <button type="button" class="ca-policy-link" id="ca_policy_open">KVKK ve Gizlilik Politikası</button>
                             metnini okudum, anladım ve onaylıyorum.
                         </span>
                     </label>
-                    <label style="display:flex; grid-template-columns:none; align-items:center; gap:8px; font-weight:700;">
-                        <input type="checkbox" name="remember_me" id="ca_login_remember" style="width:18px; min-height:18px;"/>
+                    <label class="ca-login-check ca-login-remember">
+                        <input type="checkbox" name="remember_me" id="ca_login_remember"/>
                         <span>Beni hatırla</span>
                     </label>
-                    <p t-if="error" class="ca-error">Bilgiler eşleşmedi.</p>
+                    <p t-if="error == 'sso'" class="ca-error">Yönlendirme servisi şu anda kullanılamıyor.</p>
+                    <p t-elif="error" class="ca-error">Bilgiler eşleşmedi.</p>
                     <p t-if="privacy_error" class="ca-error">Giriş yapabilmek için Gizlilik ve KVKK onayını vermeniz gerekir.</p>
-                    <button type="submit" class="ca-button ca-button-primary">Giriş Yap</button>
+                    <button type="submit" class="ca-button ca-button-primary ca-login-submit">Giriş Yap <i class="fa fa-arrow-right"></i></button>
                 </form>
+                <a href="/kurye-muhasebe/basvuru" class="ca-register-link"><i class="fa fa-user-plus"></i> Kayıt Ol</a>
                 <div class="ca-modal" id="ca_policy_modal" role="dialog" aria-modal="true" aria-labelledby="ca_policy_title">
                     <div class="ca-modal-card ca-policy-modal-card">
                         <h3 id="ca_policy_title">KVKK Aydınlatma Metni ve Gizlilik Politikası</h3>
@@ -334,6 +429,7 @@
                         const form = document.querySelector('.ca-login-card form');
                         const courierInput = document.getElementById('ca_login_courier_id');
                         const identityInput = document.getElementById('ca_login_identity_no');
+                        const passwordToggle = document.getElementById('ca_login_password_toggle');
                         const rememberInput = document.getElementById('ca_login_remember');
                         const privacyGroup = document.getElementById('ca_login_privacy_group');
                         const privacyInput = document.getElementById('ca_login_privacy_kvkk');
@@ -363,6 +459,18 @@
                         } catch (error) {}
                         togglePrivacyInput();
                         courierInput.addEventListener('input', togglePrivacyInput);
+                        if (passwordToggle) {
+                            passwordToggle.addEventListener('click', function () {
+                                const isHidden = identityInput.type === 'password';
+                                identityInput.type = isHidden ? 'text' : 'password';
+                                passwordToggle.setAttribute(
+                                    'aria-label', isHidden ? 'Kimlik numarasını gizle' : 'Kimlik numarasını göster'
+                                );
+                                passwordToggle.innerHTML = isHidden
+                                    ? '<i class="fa fa-eye-slash"></i>'
+                                    : '<i class="fa fa-eye"></i>';
+                            });
+                        }
                         if (policyOpen &amp;&amp; policyModal) {
                             policyOpen.addEventListener('click', function () {
                                 policyModal.classList.add('is-open');
@@ -387,9 +495,21 @@
                             } else {
                                 window.localStorage.removeItem(key);
                             }
+
+                            const submitButton = form.querySelector('.ca-login-submit');
+                            if (submitButton &amp;&amp; !submitButton.disabled) {
+                                submitButton.disabled = true;
+                                submitButton.setAttribute('aria-busy', 'true');
+                                submitButton.replaceChildren();
+                                const spinner = document.createElement('span');
+                                spinner.className = 'ca-spinner';
+                                submitButton.appendChild(spinner);
+                                submitButton.appendChild(document.createTextNode('Giriş yapılıyor...'));
+                            }
                         });
                     })();
                 </script>
+                </section>
             </section>
             <a class="ca-emergency-phone" id="ca_emergency_phone" href="tel:+905445752833" aria-label="Acil destek için +90 544 575 28 33 numarasını ara">
                 <span class="ca-emergency-phone-label">Acil Destek</span>
@@ -457,6 +577,34 @@
         </t>
     </template>
 
+    <template id="courier_accounting_application" name="Courier Application">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <section class="ca-card ca-application-card">
+                <h1>Kurye Başvurusu</h1>
+                <p>Bilgilerinizi bırakın, ekibimiz başvurunuzu değerlendirip sizinle iletişime geçsin.</p>
+                <form action="/kurye-muhasebe/basvuru/gonder" method="post" class="ca-form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <label><span>Ad Soyad</span><input type="text" name="name" required="required" autocomplete="name"/></label>
+                    <label><span>E-posta</span><input type="email" name="email" required="required" autocomplete="email" inputmode="email"/></label>
+                    <p t-if="error" class="ca-error">Lütfen ad soyad ve geçerli e-posta bilgilerinizi kontrol edin.</p>
+                    <button type="submit" class="ca-button ca-button-primary ca-login-submit">Başvuruyu Gönder <i class="fa fa-arrow-right"></i></button>
+                </form>
+                <a href="/kurye-muhasebe" class="ca-register-link"><i class="fa fa-arrow-left"></i> Girişe Dön</a>
+            </section>
+        </t>
+    </template>
+
+    <template id="courier_accounting_application_success" name="Courier Application Success">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <section class="ca-card ca-application-card ca-application-success">
+                <div class="ca-application-success-icon"><i class="fa fa-check"></i></div>
+                <h1>Başvurunuz Değerlendirmede</h1>
+                <p>Başvurunuz başarıyla alındı. Ekibimiz değerlendirme sonrasında sizinle iletişime geçecektir.</p>
+                <a href="/kurye-muhasebe" class="ca-button ca-button-primary ca-login-submit">Giriş Ekranına Dön</a>
+            </section>
+        </t>
+    </template>
+
     <template id="courier_accounting_home" name="Courier Accounting Home">
         <t t-call="partner_courier_accounting.courier_accounting_layout">
             <section class="ca-card ca-home-card" t-att-data-contact-id="partner.id" t-att-data-user-id="courier_user_id or ''" t-att-data-courier-id="partner.courier_id or ''" t-att-data-privacy-accepted="'1' if partner.courier_privacy_kvkk_accepted else ''">
@@ -505,6 +653,25 @@
                     })();
                 </script>
             </section>
+            <div t-if="show_app_update_notice" class="ca-modal ca-app-update-modal is-open" id="ca_app_update_notice" role="dialog" aria-modal="true" aria-labelledby="ca_app_update_notice_title">
+                <div class="ca-modal-card ca-app-update-modal-card">
+                    <span class="ca-app-update-icon" aria-hidden="true"><i class="fa fa-refresh"/></span>
+                    <h3 id="ca_app_update_notice_title">Uygulama Güncellemesi</h3>
+                    <p>Lütfen uygulamayı güncelleyiniz.</p>
+                    <p class="ca-app-update-note">Eğer güncelleme yaptıysanız bu bildirimi dikkate almayınız.</p>
+                    <button type="button" class="ca-app-update-confirm" id="ca_app_update_notice_confirm">Tamam</button>
+                </div>
+            </div>
+            <script t-if="show_app_update_notice">
+                (function () {
+                    const notice = document.getElementById('ca_app_update_notice');
+                    const confirmButton = document.getElementById('ca_app_update_notice_confirm');
+                    if (!notice || !confirmButton) return;
+                    confirmButton.addEventListener('click', function () {
+                        notice.classList.remove('is-open');
+                    });
+                })();
+            </script>
         </t>
     </template>
 
@@ -578,15 +745,20 @@
             <section class="ca-card">
                 <h1>Hafta Seçimi</h1>
                 <div class="ca-week-list">
-                    <div t-foreach="lines" t-as="line" style="display: flex; align-items: center; gap: 8px;">
+                    <div t-foreach="lines" t-as="line" class="ca-week-row">
                         <a t-att-href="'/kurye-muhasebe/hakedis/%s' % line.id" class="ca-week-item" style="flex: 1; margin: 0;">
                             <span><t t-esc="format_date(line.date_start)"/> - <t t-esc="format_date(line.date_end)"/></span>
                             <strong t-esc="format_money(line.net_payable_amount, line.currency_id)"/>
                             <small t-if="line.payment_date" class="ca-week-payment-date">Ödemenin yapılacağı tarih: <t t-esc="format_date(line.payment_date)"/></small>
                         </a>
-                        <a t-att-href="'/kurye-muhasebe/hakedis/%s/pdf' % line.id" class="ca-button ca-button-primary ca-pdf-download" style="width: 48px; min-width: 48px; height: 48px; min-height: 48px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; margin: 0;" title="PDF İndir">
-                            PDF
-                        </a>
+                        <div class="ca-week-actions">
+                            <a t-att-href="'/kurye-muhasebe/hakedis/%s/pdf' % line.id" class="ca-button ca-button-primary ca-pdf-download" title="Hakediş PDF'ini indir">
+                                <i class="fa fa-file-pdf-o" aria-hidden="true"/> PDF
+                            </a>
+                            <a t-if="invoice_sample_available(line)" t-att-href="'/kurye-muhasebe/hakedis/%s/fatura-ornegi' % line.id" class="ca-button ca-invoice-sample-button" title="Bu hakedişe göre örnek faturayı gör">
+                                <i class="fa fa-file-text-o" aria-hidden="true"/> Fatura Örneği
+                            </a>
+                        </div>
                     </div>
                     <p t-if="not lines" class="ca-empty">Hakediş kaydı bulunamadı.</p>
                 </div>
@@ -619,19 +791,19 @@
 
             <section class="ca-panel ca-panel-allowance">
                 <h2>Ödenekler</h2>
-                <div class="ca-row"><strong>Pick Up:</strong><span t-esc="line.pickup_count"/><button type="button" class="ca-info-btn" t-att-data-title="'Pick Up'" t-att-data-info="info['pickup_count']">i</button></div>
-                <div class="ca-row"><strong>Drop Off:</strong><span t-esc="line.dropoff_count"/><button type="button" class="ca-info-btn" t-att-data-title="'Drop Off'" t-att-data-info="info['dropoff_count']">i</button></div>
-                <div class="ca-row"><strong>Pick Up Tutar:</strong><span t-esc="money['pickup_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Pick Up Tutar'" t-att-data-info="info['pickup_amount']">i</button></div>
-                <div class="ca-row"><strong>Drop Off Tutar:</strong><span t-esc="money['dropoff_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Drop Off Tutar'" t-att-data-info="info['dropoff_amount']">i</button></div>
-                <div class="ca-row"><strong>Kilometre Başı Mesafe Tutarı:</strong><span t-esc="money['distance_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Kilometre Başı Mesafe Tutarı'" t-att-data-info="info['distance_amount']">i</button></div>
-                <div class="ca-row"><strong>Haftalık Ek Paket:</strong><span t-esc="money['weekly_extra_package_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Haftalık Ek Paket'" t-att-data-info="info['weekly_extra_package_amount']">i</button></div>
+                <div class="ca-row"><strong><t t-if="is_car_courier">Çalışma Saati:</t><t t-else="">Pick Up:</t></strong><span t-esc="line.pickup_count"/><button type="button" class="ca-info-btn" t-att-data-title="'Çalışma Saati' if is_car_courier else 'Pick Up'" t-att-data-info="info['pickup_count']">i</button></div>
+                <div class="ca-row"><strong><t t-if="is_car_courier">Paket Sayısı:</t><t t-else="">Drop Off:</t></strong><span t-esc="line.dropoff_count"/><button type="button" class="ca-info-btn" t-att-data-title="'Paket Sayısı' if is_car_courier else 'Drop Off'" t-att-data-info="info['dropoff_count']">i</button></div>
+                <div class="ca-row"><strong><t t-if="is_car_courier">Saatlik Kazanç Tutarı:</t><t t-else="">Pick Up Tutar:</t></strong><span t-esc="money['pickup_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Saatlik Kazanç Tutarı' if is_car_courier else 'Pick Up Tutar'" t-att-data-info="info['pickup_amount']">i</button></div>
+                <div class="ca-row"><strong><t t-if="is_car_courier">Paket Kazanç Tutarı:</t><t t-else="">Drop Off Tutar:</t></strong><span t-esc="money['dropoff_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Paket Kazanç Tutarı' if is_car_courier else 'Drop Off Tutar'" t-att-data-info="info['dropoff_amount']">i</button></div>
+                <div t-if="not is_car_courier" class="ca-row"><strong>Kilometre Başı Mesafe Tutarı:</strong><span t-esc="money['distance_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Kilometre Başı Mesafe Tutarı'" t-att-data-info="info['distance_amount']">i</button></div>
+                <div t-if="not is_car_courier" class="ca-row"><strong>Haftalık Ek Paket:</strong><span t-esc="money['weekly_extra_package_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Haftalık Ek Paket'" t-att-data-info="info['weekly_extra_package_amount']">i</button></div>
                 <div class="ca-row"><strong>Bahşiş Tutar (KDV Hariç):</strong><span t-esc="money['tip_amount_tax_excluded']"/><button type="button" class="ca-info-btn" t-att-data-title="'Bahşiş Tutar (KDV Hariç)'" t-att-data-info="info['tip_amount_tax_excluded']">i</button></div>
             </section>
 
             <section class="ca-panel ca-panel-deduction">
                 <h2>Mahsup Edilenler</h2>
                 <div class="ca-row"><strong>Cash (Nakit) Kesinti Tutarı:</strong><span t-esc="money['cash_deduction_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'Cash (Nakit) Kesinti Tutarı'" t-att-data-info="info['cash_deduction_tax_included']">i</button></div>
-                <div class="ca-row"><strong>SoftPos (K.K.) Kesinti Tutarı:</strong><span t-esc="money['softpos_deduction_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'SoftPos (K.K.) Kesinti Tutarı'" t-att-data-info="info['softpos_deduction_tax_included']">i</button></div>
+                <div t-if="not is_car_courier" class="ca-row"><strong>SoftPos (K.K.) Kesinti Tutarı:</strong><span t-esc="money['softpos_deduction_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'SoftPos (K.K.) Kesinti Tutarı'" t-att-data-info="info['softpos_deduction_tax_included']">i</button></div>
                 <div class="ca-row"><strong>Sigorta Kesintisi (Yemeksepeti Zorunlu Sağlık Sigortası):</strong><span t-esc="money['insurance_deduction_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Sigorta Kesintisi (Yemeksepeti Zorunlu Sağlık Sigortası)'" t-att-data-info="info['insurance_deduction_amount']">i</button></div>
                 <div class="ca-row"><strong>Saha Kesintisi (Sipariş):</strong><span t-esc="money['field_deduction_order_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Saha Kesintisi (Sipariş)'" t-att-data-info="info['field_deduction_order_amount']">i</button></div>
                 <div class="ca-row"><strong>Avans:</strong><span t-esc="money['advance_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Avans'" t-att-data-info="info['advance_amount']">i</button></div>
@@ -651,6 +823,12 @@
                 <div class="ca-row"><strong>Tevkifat Vergisi Tutarı:</strong><span t-esc="money['withholding_tax_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Tevkifat Vergisi Tutarı'" t-att-data-info="info['withholding_tax_amount']">i</button></div>
                 <div class="ca-row"><strong>Toplam Ödenecek Net Tutar (Kesintiler Düşürülmüştür):</strong><span t-esc="money['net_payable_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Toplam Ödenecek Net Tutar'" t-att-data-info="info['net_payable_amount']">i</button></div>
             </section>
+            <div t-if="invoice_sample_available" class="ca-detail-invoice-action">
+                <a t-att-href="'/kurye-muhasebe/hakedis/%s/fatura-ornegi' % line.id" class="ca-button ca-button-primary">
+                    <i class="fa fa-file-text-o" aria-hidden="true"/>
+                    Hakediş Faturası Örneğini Gör
+                </a>
+            </div>
             <div class="ca-modal" id="caInfoModal" aria-hidden="true">
                 <div class="ca-modal-card" role="dialog" aria-modal="true">
                     <h3 id="caInfoTitle"></h3>
@@ -685,6 +863,170 @@
                     });
                 })();
             </script>
+        </t>
+    </template>
+
+    <template id="courier_accounting_invoice_sample" name="Courier Accounting Invoice Sample">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <style>
+                .ca-invoice-page { display: grid; gap: 18px; }
+                .ca-invoice-toolbar { display: flex; align-items: center; gap: 14px; }
+                .ca-invoice-toolbar .ca-back { position: static; flex: 0 0 56px; margin: 0; }
+                .ca-invoice-toolbar-copy h1 { margin: 0 0 4px; color: #172033; font-size: 26px; font-weight: 900; }
+                .ca-invoice-toolbar-copy p { margin: 0; color: #667085; font-size: 14px; line-height: 1.4; }
+                .ca-invoice-notice { display: flex; align-items: flex-start; gap: 12px; border: 1px solid #ffd1df; border-radius: 8px; padding: 14px 16px; background: #fff4f7; color: #77112f; font-size: 14px; line-height: 1.45; }
+                .ca-invoice-notice i { margin-top: 2px; color: #FB0050; font-size: 20px; }
+                .ca-invoice-paper { position: relative; overflow: hidden; border: 1px solid #d8dde7; border-radius: 6px; background: #fff; padding: 28px; box-shadow: 0 12px 32px rgba(18, 30, 52, .09); }
+                .ca-invoice-paper::after { content: 'ÖRNEK'; position: absolute; z-index: 0; top: 44%; left: 50%; color: rgba(251, 0, 80, .055); font-size: 118px; font-weight: 900; transform: translate(-50%, -50%) rotate(-25deg); pointer-events: none; }
+                .ca-invoice-paper > * { position: relative; z-index: 1; }
+                .ca-invoice-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; border-bottom: 3px solid #172033; padding-bottom: 18px; }
+                .ca-invoice-brand { display: grid; gap: 5px; }
+                .ca-invoice-brand strong { color: #172033; font-size: 25px; font-weight: 900; }
+                .ca-invoice-brand span { color: #697386; font-size: 13px; }
+                .ca-invoice-stamp { display: grid; min-width: 150px; gap: 3px; border: 2px solid #FB0050; border-radius: 6px; padding: 10px 14px; color: #c80040; text-align: center; }
+                .ca-invoice-stamp strong { font-size: 20px; font-weight: 900; }
+                .ca-invoice-stamp small { font-size: 10px; font-weight: 800; }
+                .ca-invoice-parties { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 22px 0; }
+                .ca-invoice-party { border: 1px solid #e1e5ec; border-radius: 6px; padding: 16px; }
+                .ca-invoice-party h2 { margin: 0 0 12px; color: #697386; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+                .ca-invoice-party strong { display: block; margin-bottom: 7px; color: #172033; font-size: 15px; line-height: 1.35; }
+                .ca-invoice-party p { margin: 3px 0; color: #4e586b; font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; }
+                .ca-invoice-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; overflow: hidden; margin-bottom: 20px; border: 1px solid #dce1e9; border-radius: 6px; background: #dce1e9; }
+                .ca-invoice-meta div { display: grid; gap: 4px; background: #f8f9fb; padding: 10px 12px; }
+                .ca-invoice-meta span { color: #747e90; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+                .ca-invoice-meta strong { color: #172033; font-size: 12px; overflow-wrap: anywhere; }
+                .ca-invoice-table-wrap { overflow-x: auto; border: 1px solid #ccd3de; border-radius: 6px; }
+                .ca-invoice-table { width: 100%; min-width: 720px; border-collapse: collapse; color: #253047; font-size: 12px; }
+                .ca-invoice-table th { background: #172033; padding: 11px 9px; color: #fff; font-size: 10px; text-align: left; }
+                .ca-invoice-table td { border-right: 1px solid #e1e5ec; padding: 13px 9px; vertical-align: top; }
+                .ca-invoice-table td:last-child, .ca-invoice-table th:last-child { border-right: 0; }
+                .ca-invoice-table .ca-money { text-align: right; white-space: nowrap; }
+                .ca-invoice-summary { display: grid; width: min(100%, 390px); margin: 20px 0 0 auto; border: 1px solid #ccd3de; border-radius: 6px; }
+                .ca-invoice-summary div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; padding: 9px 12px; border-bottom: 1px solid #e2e6ed; font-size: 12px; }
+                .ca-invoice-summary div:last-child { border-bottom: 0; background: #172033; color: #fff; font-size: 14px; font-weight: 900; }
+                .ca-invoice-summary span:last-child { white-space: nowrap; font-weight: 800; }
+                .ca-invoice-description { margin-top: 20px; border-top: 1px solid #dce1e9; padding-top: 16px; color: #303b50; font-size: 12px; line-height: 1.55; }
+                .ca-invoice-description strong { display: block; margin-bottom: 5px; color: #172033; }
+                .ca-invoice-rules { display: grid; gap: 10px; border-radius: 8px; background: #172033; padding: 18px; color: #fff; }
+                .ca-invoice-rules h2 { margin: 0; font-size: 17px; font-weight: 900; }
+                .ca-invoice-rules p { margin: 0; color: #dbe2ef; font-size: 13px; line-height: 1.5; }
+                @media (max-width: 640px) {
+                    .ca-invoice-toolbar-copy h1 { font-size: 21px; }
+                    .ca-invoice-paper { padding: 18px 14px; }
+                    .ca-invoice-paper::after { font-size: 76px; }
+                    .ca-invoice-head { gap: 12px; }
+                    .ca-invoice-brand strong { font-size: 19px; }
+                    .ca-invoice-stamp { min-width: 112px; padding: 8px; }
+                    .ca-invoice-stamp strong { font-size: 16px; }
+                    .ca-invoice-parties { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+                    .ca-invoice-meta { grid-template-columns: minmax(0, 1fr); }
+                    .ca-invoice-summary { width: 100%; }
+                }
+            </style>
+            <div class="ca-invoice-page">
+                <div class="ca-invoice-toolbar">
+                    <a t-att-href="'/kurye-muhasebe/hakedis/%s' % line.id" class="ca-back" aria-label="Hakediş detayına dön">←</a>
+                    <div class="ca-invoice-toolbar-copy">
+                        <h1>Hakediş Faturası Örneği</h1>
+                        <p>Bu haftaya ait tutarlara göre hazırlanmıştır.</p>
+                    </div>
+                </div>
+
+                <div class="ca-invoice-notice">
+                    <i class="fa fa-info-circle" aria-hidden="true"/>
+                    <span><strong>Bu belge yalnızca örnektir.</strong> Resmî fatura veya mali belge değildir. Faturanızı kendi e-fatura/e-arşiv sisteminizden bu bilgilerle oluşturmalısınız.</span>
+                </div>
+
+                <article class="ca-invoice-paper">
+                    <header class="ca-invoice-head">
+                        <div class="ca-invoice-brand">
+                            <strong><t t-esc="sample['document_type']"/> Örneği</strong>
+                            <span>Kurye hizmet bedeli</span>
+                        </div>
+                        <div class="ca-invoice-stamp">
+                            <strong>ÖRNEK</strong>
+                            <small>RESMİ BELGE DEĞİLDİR</small>
+                        </div>
+                    </header>
+
+                    <div class="ca-invoice-parties">
+                        <section class="ca-invoice-party">
+                            <h2>Faturayı Düzenleyen</h2>
+                            <strong t-esc="sample['seller_name']"/>
+                            <p t-if="sample['seller_address']" t-esc="sample['seller_address']"/>
+                            <p t-if="sample['seller_email']">E-posta: <t t-esc="sample['seller_email']"/></p>
+                            <p>TCKN/VKN: <t t-esc="sample['seller_tax_number'] or 'Vergi levhanızdaki numara'"/></p>
+                            <p>Vergi Dairesi: Vergi levhanızdaki bilgi</p>
+                        </section>
+                        <section class="ca-invoice-party">
+                            <h2>Sayın / Alıcı</h2>
+                            <strong>KURYETEC LOJİSTİK LİMİTED ŞİRKETİ</strong>
+                            <p>Fabrikalar Mah. 3039 Sk. Mardin Apt. No: 3 A İç Kapı No: 5</p>
+                            <p>Kepez / Antalya</p>
+                            <p>E-posta: info@kuryetec.com</p>
+                            <p>Vergi Dairesi: Antalya Kurumlar Vergi Dairesi</p>
+                            <p>VKN: 5970986246</p>
+                        </section>
+                    </div>
+
+                    <div class="ca-invoice-meta">
+                        <div><span>Senaryo</span><strong t-esc="sample['scenario']"/></div>
+                        <div><span>Fatura Tipi</span><strong t-esc="sample['has_withholding'] and 'Tevkifat' or 'Satış'"/></div>
+                        <div><span>Fatura Tarihi</span><strong t-esc="format_date(line.payment_date or line.date_end)"/></div>
+                        <div><span>Fatura No</span><strong>Entegratörünüz oluşturur</strong></div>
+                        <div><span>ETTN</span><strong>Entegratörünüz oluşturur</strong></div>
+                        <div><span>Para Birimi</span><strong>TRY</strong></div>
+                    </div>
+
+                    <div class="ca-invoice-table-wrap">
+                        <table class="ca-invoice-table">
+                            <thead>
+                                <tr>
+                                    <th>Hizmet Kodu</th>
+                                    <th>Açıklama</th>
+                                    <th>Miktar</th>
+                                    <th>Birim Fiyat</th>
+                                    <th>KDV</th>
+                                    <th t-if="sample['has_withholding']">Tevkifat</th>
+                                    <th>Tutar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong t-esc="sample['service_code']"/></td>
+                                    <td><t t-esc="sample['service_name']"/><br/><small t-esc="sample['description']"/></td>
+                                    <td>1 Adet</td>
+                                    <td class="ca-money" t-esc="format_money(sample['base_amount'], sample['currency'])"/>
+                                    <td>%20</td>
+                                    <td t-if="sample['has_withholding']">624 - Yük Taşımacılığı Hizmeti (2/10)</td>
+                                    <td class="ca-money" t-esc="format_money(sample['base_amount'], sample['currency'])"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="ca-invoice-summary">
+                        <div><span>Mal/Hizmet Toplam Tutarı</span><span t-esc="format_money(sample['base_amount'], sample['currency'])"/></div>
+                        <div><span>Hesaplanan KDV (%20)</span><span t-esc="format_money(sample['vat_amount'], sample['currency'])"/></div>
+                        <div t-if="sample['has_withholding']"><span>Tevkifat (624 - 2/10)</span><span t-esc="format_money(sample['withholding_amount'], sample['currency'])"/></div>
+                        <div><span>Vergiler Dahil Toplam Tutar</span><span t-esc="format_money(sample['invoice_total'], sample['currency'])"/></div>
+                        <div><span>Ödenecek Tutar</span><span t-esc="format_money(sample['payable_amount'], sample['currency'])"/></div>
+                    </div>
+
+                    <div class="ca-invoice-description">
+                        <strong>Fatura Açıklaması</strong>
+                        <span t-esc="sample['description']"/>
+                    </div>
+                </article>
+
+                <section class="ca-invoice-rules">
+                    <h2>Bu hakedişte uygulanacak fatura şekli</h2>
+                    <p t-if="not sample['has_withholding']">KDV hariç hizmet bedeli 10.000 TL veya altında olduğu için <strong>Hizmet 101</strong> kullanılmalı ve tevkifat uygulanmamalıdır.</p>
+                    <p t-if="sample['has_withholding']">KDV hariç hizmet bedeli 10.000 TL üzerinde olduğu için <strong>Hizmet 110</strong> kullanılmalı; <strong>624 - Yük Taşımacılığı Hizmeti, 2/10 tevkifat</strong> seçilmelidir.</p>
+                    <p>Fatura açıklamasında hakediş haftası mutlaka yer almalıdır: <strong t-esc="sample['description']"/>.</p>
+                    <p>Bu örnekte fatura birim fiyatı olarak hakedişin KDV hariç hizmet bedeli kullanılmıştır. Avans, nakit ve benzeri mahsuplar bankaya yatacak net tutarı değiştirebilir; bu nedenle hakediş ekranındaki net ödeme ile fatura toplamı farklı görünebilir.</p>
+                </section>
+            </div>
         </t>
     </template>
 
@@ -983,7 +1325,8 @@
                         <span>Açıklama</span>
                         <textarea name="description" required="required" rows="6" style="width: 100%; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px;" placeholder="Lütfen talebinizin detaylarını yazınız..."></textarea>
                     </label>
-                    <div t-if="error" class="ca-error">Lütfen tüm alanları doldurunuz.</div>
+                    <div t-if="advance_error" class="ca-error">Avans talebi yalnızca Perşembe ve Cuma günleri oluşturulabilir.</div>
+                    <div t-elif="error" class="ca-error">Lütfen tüm alanları doldurunuz.</div>
                     <button type="submit" class="ca-button ca-button-primary ca-submit-btn">Talebi Gönder</button>
                 </form>
             </section>
@@ -1185,26 +1528,26 @@
                     <div class="pdf-section-title">Ödenekler</div>
                     <table class="pdf-table">
                         <tr>
-                            <td class="label">Pick Up (Adet):</td>
+                            <td class="label"><t t-if="doc.partner_id.courier_type == 'car'">Çalışma Saati:</t><t t-else="">Pick Up (Adet):</t></td>
                             <td class="value"><span t-esc="doc.pickup_count"/></td>
                         </tr>
                         <tr>
-                            <td class="label">Drop Off (Adet):</td>
+                            <td class="label"><t t-if="doc.partner_id.courier_type == 'car'">Paket Sayısı:</t><t t-else="">Drop Off (Adet):</t></td>
                             <td class="value"><span t-esc="doc.dropoff_count"/></td>
                         </tr>
                         <tr>
-                            <td class="label">Pick Up Tutar:</td>
+                            <td class="label"><t t-if="doc.partner_id.courier_type == 'car'">Saatlik Kazanç Tutarı:</t><t t-else="">Pick Up Tutar:</t></td>
                             <td class="value"><span t-esc="doc.pickup_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
                         </tr>
                         <tr>
-                            <td class="label">Drop Off Tutar:</td>
+                            <td class="label"><t t-if="doc.partner_id.courier_type == 'car'">Paket Kazanç Tutarı:</t><t t-else="">Drop Off Tutar:</t></td>
                             <td class="value"><span t-esc="doc.dropoff_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="doc.partner_id.courier_type != 'car'">
                             <td class="label">Kilometre Başı Mesafe Tutarı:</td>
                             <td class="value"><span t-esc="doc.distance_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="doc.partner_id.courier_type != 'car'">
                             <td class="label">Haftalık Ek Paket:</td>
                             <td class="value"><span t-esc="doc.weekly_extra_package_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
                         </tr>
@@ -1223,7 +1566,7 @@
                             <td class="label">Nakit Kesinti Tutarı (KDV Dahil):</td>
                             <td class="value"><span t-esc="doc.cash_deduction_tax_included" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
                         </tr>
-                        <tr>
+                        <tr t-if="doc.partner_id.courier_type != 'car'">
                             <td class="label">SoftPos Kesinti Tutarı (KDV Dahil):</td>
                             <td class="value"><span t-esc="doc.softpos_deduction_tax_included" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
                         </tr>

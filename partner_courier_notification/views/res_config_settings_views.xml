@@ -11,7 +11,17 @@
                      string="Partner Courier Notification"
                      data-key="partner_courier_notification"
                      name="partner_courier_notification_settings">
-                    <h2>Partner Courier Notification</h2>
+                    <h2>Kurye Bildirim Ayarları</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="partner_courier_notification_provider"/>
+                                <field name="partner_courier_notification_provider"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>OneSignal</h2>
                     <div class="row mt16 o_settings_container">
                         <div name="partner_courier_onesignal_app_id_setting" class="col-12 col-lg-6 o_setting_box">
                             <div class="o_setting_right_pane">
@@ -23,6 +33,25 @@
                             <div class="o_setting_right_pane">
                                 <label for="partner_courier_onesignal_api_key"/>
                                 <field name="partner_courier_onesignal_api_key" password="True"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Firebase Cloud Messaging</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="partner_courier_firebase_project_id"/>
+                                <field name="partner_courier_firebase_project_id"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="partner_courier_firebase_service_account"/>
+                                <field name="partner_courier_firebase_service_account"
+                                       filename="partner_courier_firebase_service_account_filename"/>
+                                <field name="partner_courier_firebase_service_account_filename" invisible="1"/>
+                                <div class="text-muted">Dosya Odoo veritabanında korumalı ek olarak saklanır.</div>
                             </div>
                         </div>
                     </div>
