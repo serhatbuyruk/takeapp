@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_courier_start_notification_tree" model="ir.ui.view">
+        <field name="name">partner.courier.start.notification.tree</field>
+        <field name="model">partner.courier.start.notification</field>
+        <field name="arch" type="xml">
+            <tree string="İş Başı Bildirimleri">
+                <field name="partner_id"/>
+                <field name="courier_id"/>
+                <field name="courier_tc"/>
+                <field name="start_date"/>
+                <field name="submitted_at"/>
+                <field name="state" widget="badge" decoration-info="state == 'new'" decoration-warning="state == 'progress'" decoration-success="state == 'completed'" decoration-danger="state == 'cancelled'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_start_notification_form" model="ir.ui.view">
+        <field name="name">partner.courier.start.notification.form</field>
+        <field name="model">partner.courier.start.notification</field>
+        <field name="arch" type="xml">
+            <form string="İş Başı Bildirimi">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="new,progress,completed,cancelled" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="courier_id" readonly="1"/>
+                            <field name="courier_tc" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="submitted_at" readonly="1"/>
+                            <field name="handled_by" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Ekip Notu">
+                        <field name="team_note" placeholder="İşleme ilişkin not ekleyin..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_partner_courier_start_notification_search" model="ir.ui.view">
+        <field name="name">partner.courier.start.notification.search</field>
+        <field name="model">partner.courier.start.notification</field>
+        <field name="arch" type="xml">
+            <search string="İş Başı Bildirimleri">
+                <field name="partner_id"/>
+                <field name="courier_id"/>
+                <field name="courier_tc"/>
+                <field name="start_date"/>
+                <filter name="state_new" string="Yeni" domain="[('state', '=', 'new')]"/>
+                <filter name="state_progress" string="İşleme Alındı" domain="[('state', '=', 'progress')]"/>
+                <filter name="state_completed" string="Tamamlandı" domain="[('state', '=', 'completed')]"/>
+                <filter name="state_cancelled" string="İptal Edildi" domain="[('state', '=', 'cancelled')]"/>
+                <group expand="0" string="Grupla">
+                    <filter name="group_partner" string="Kurye" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_start_date" string="İşe Başlama Tarihi" context="{'group_by': 'start_date'}"/>
+                    <filter name="group_state" string="Durum" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_partner_courier_start_notification" model="ir.actions.act_window">
+        <field name="name">İş Başı Bildirimleri</field>
+        <field name="res_model">partner.courier.start.notification</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_partner_courier_start_notification_search"/>
+        <field name="context">{'search_default_state_new': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_partner_courier_start_notification"
+        name="İş Başı Bildirimleri"
+        parent="contacts.menu_contacts"
+        action="action_partner_courier_start_notification"
+        groups="partner_courier_accounting.group_partner_courier_accounting_admin"
+        sequence="93"/>
+</odoo>

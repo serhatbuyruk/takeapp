@@ -84,6 +84,11 @@ class PartnerCourierAccountingImportWizard(models.TransientModel):
         (42, 'Yönetici'),
     )
     _REQUIRED_HEADERS = tuple(_HEADER_FIELD_MAP)
+    _EXTENDED_HEADER_FIELD_MAP = {
+        'Yazlık Ek Paket Tutarı': ('summer_extra_package_amount', 'float'),
+        'Haciz Yazısı': ('garnishment_note', 'char'),
+        'P2 Kesintisi': ('p2_deduction_amount', 'float'),
+    }
 
     def action_import(self):
         self.ensure_one()
@@ -101,10 +106,11 @@ class PartnerCourierAccountingImportWizard(models.TransientModel):
             raise UserError(_('KURYE ID kolonu bulunamadı.'))
         self._validate_required_headers(headers)
 
+        field_map = dict(self._HEADER_FIELD_MAP, **self._EXTENDED_HEADER_FIELD_MAP)
         column_map = {
-            index: self._HEADER_FIELD_MAP[header]
+            index: field_map[header]
             for index, header in enumerate(headers)
-            if header in self._HEADER_FIELD_MAP
+            if header in field_map
         }
         self._add_relative_balance_columns(headers, column_map)
         if not column_map:
@@ -154,6 +160,8 @@ class PartnerCourierAccountingImportWizard(models.TransientModel):
                 'date_end': self.date_end,
                 'payment_date': self.payment_date,
             }
+            if 'Yazlık Ek Paket Tutarı' in headers:
+                vals['has_extended_earnings_format'] = True
             for index, (field_name, value_type) in column_map.items():
                 vals[field_name] = self._convert_value(self._cell(row, index), value_type, field_name, courier_id)
             if existing_line:
@@ -261,6 +269,19 @@ class PartnerCourierAccountingImportWizard(models.TransientModel):
             raise UserError(_('Excelde eksik kolon var: %s') % ', '.join(missing_headers))
 
     def _validate_template(self, headers):
+        known = set(self._HEADER_FIELD_MAP) | set(self._EXTENDED_HEADER_FIELD_MAP) | {'KURYE ID', 'KURYE NAME'}
+        duplicates = sorted(header for header in known if headers.count(header) > 1)
+        if duplicates:
+            raise UserError(_('Excelde tekrarlanan kolon var: %s') % ', '.join(duplicates))
+        extended = set(headers) & set(self._EXTENDED_HEADER_FIELD_MAP)
+        if extended:
+            missing = set(self._EXTENDED_HEADER_FIELD_MAP) - extended
+            if missing:
+                raise UserError(_('Yeni hakediş formatında eksik kolon var: %s') % ', '.join(sorted(missing)))
+            for index, header in ((14, 'Yazlık Ek Paket Tutarı'), (38, 'Haciz Yazısı'), (39, 'P2 Kesintisi')):
+                if len(headers) <= index or headers[index] != header:
+                    raise UserError(_('Yeni hakediş kolonlarının sırası şablonla uyuşmuyor: %s') % header)
+            headers = [header for header in headers if header not in extended]
         for index, header in self._TEMPLATE_ANCHORS:
             if len(headers) <= index or headers[index] != header:
                 raise UserError(_('Bu excel mevcut şablonla uyuşmuyor. Lütfen doğru hakediş şablonunu yükleyin.'))

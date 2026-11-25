@@ -9,26 +9,33 @@
                 <div class="app_settings_block" data-string="Logo İşbaşı" string="Logo İşbaşı" data-key="partner_courier_logo">
                     <h2>Logo İşbaşı Kurye Fatura Entegrasyonu</h2>
                     <div class="row mt16 o_settings_container">
-                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_enabled"/><field name="partner_courier_logo_enabled"/><div class="text-muted">Test bilgileri girilmeden etkinleştirmeyin.</div></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_enabled"/><field name="partner_courier_logo_enabled"/><div class="text-muted">Fatura taslağı, ilgili kuryenin Fatura Kesecek Kişi T.C. numarası ile oluşturulur.</div></div></div>
                         <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_test_mode"/><field name="partner_courier_logo_test_mode"/><div class="text-muted">Logo API'ye istek göndermez; yalnızca portal akışını test eder.</div></div></div>
                         <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_base_url"/><field name="partner_courier_logo_base_url"/></div></div>
                         <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_api_key"/><field name="partner_courier_logo_api_key" password="True"/></div></div>
                         <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_integration_login"/><field name="partner_courier_logo_integration_login"/></div></div>
                         <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_integration_password"/><field name="partner_courier_logo_integration_password" password="True"/></div></div>
                     </div>
-                    <h2>SSO ve Taslak Endpointleri</h2>
+                    <h2>Kurye Entegrasyon Endpointleri</h2>
                     <div class="row mt16 o_settings_container">
-                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_sso_start_endpoint"/><field name="partner_courier_logo_sso_start_endpoint"/></div></div>
-                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_sso_exchange_endpoint"/><field name="partner_courier_logo_sso_exchange_endpoint"/></div></div>
-                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_sso_login_endpoint"/><field name="partner_courier_logo_sso_login_endpoint"/></div></div>
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_login_endpoint"/><field name="partner_courier_logo_login_endpoint"/></div></div>
                         <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_invoice_endpoint"/><field name="partner_courier_logo_invoice_endpoint"/></div></div>
                     </div>
-                    <h2>Kuryetec Alıcı Bilgileri</h2>
+                    <h2>Kuryenin Fatura Keseceği Alıcı Bilgileri</h2>
                     <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_code"/><field name="partner_courier_logo_buyer_code"/></div></div>
                         <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_name"/><field name="partner_courier_logo_buyer_name"/></div></div>
                         <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_vkn"/><field name="partner_courier_logo_buyer_vkn"/></div></div>
                         <div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_tax_office"/><field name="partner_courier_logo_buyer_tax_office"/></div></div>
+                        <div class="col-12 col-lg-4 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_country"/><field name="partner_courier_logo_buyer_country"/></div></div>
+                        <div class="col-12 col-lg-4 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_city"/><field name="partner_courier_logo_buyer_city"/></div></div>
+                        <div class="col-12 col-lg-4 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_district"/><field name="partner_courier_logo_buyer_district"/></div></div>
+                        <div class="col-12 col-lg-4 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_postal_code"/><field name="partner_courier_logo_buyer_postal_code"/></div></div>
+                        <div class="col-12 col-lg-4 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_phone"/><field name="partner_courier_logo_buyer_phone"/></div></div>
+                        <div class="col-12 col-lg-4 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_email"/><field name="partner_courier_logo_buyer_email"/></div></div>
+                        <div class="col-12 o_setting_box"><div class="o_setting_right_pane"><label for="partner_courier_logo_buyer_address"/><field name="partner_courier_logo_buyer_address"/></div></div>
                     </div>
+                    <div class="row mt16 o_settings_container"><div class="col-12 col-lg-6 o_setting_box"><div class="o_setting_right_pane"><button name="action_test_partner_courier_logo_connection" string="Logo Bağlantısını Test Et" type="object" class="btn-primary"/><div class="text-muted">Fatura oluşturmadan merkezi hesabın girişini doğrular.</div></div></div></div>
                 </div>
             </xpath>
         </field>

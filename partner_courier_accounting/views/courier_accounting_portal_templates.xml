@@ -41,14 +41,41 @@
                 .ca-modal-card h3 { margin: 0 0 12px; font-size: 24px; font-weight: 850; }
                 .ca-modal-card p { margin: 0 0 20px; font-size: 18px; line-height: 1.45; }
                 .ca-modal-close { width: 100%; min-height: 44px; border: 0; border-radius: 8px; background: #FB0050; color: #fff; font-weight: 800; cursor: pointer; }
-                .ca-app-update-modal { z-index: 10100; background: rgba(20, 24, 32, .56); backdrop-filter: blur(7px); }
-                .ca-app-update-modal-card { max-width: 390px; padding: 30px 26px 24px; text-align: center; }
-                .ca-app-update-icon { display: inline-grid; width: 58px; height: 58px; place-items: center; margin: 0 0 18px; border-radius: 18px; background: #fff0f6; color: #FB0050; font-size: 25px; box-shadow: inset 0 0 0 1px rgba(251, 0, 80, .14); }
-                .ca-app-update-modal-card h3 { margin-bottom: 10px; color: #20232a; }
-                .ca-app-update-modal-card p { margin-bottom: 8px; color: #4c5561; font-size: 16px; }
-                .ca-app-update-note { margin-bottom: 22px !important; color: #7b8490 !important; font-size: 13px !important; line-height: 1.45; }
-                .ca-app-update-confirm { width: 100%; min-height: 48px; border: 0; border-radius: 8px; background: #FB0050; color: #fff; font-size: 16px; font-weight: 850; cursor: pointer; box-shadow: 0 10px 20px rgba(251, 0, 80, .22); }
-                .ca-app-update-confirm:hover, .ca-app-update-confirm:focus { background: #d90045; outline: 3px solid rgba(251, 0, 80, .16); }
+                .ca-start-notification-card { max-width: 500px; text-align: center; }
+                .ca-start-notification-icon { display: inline-grid; width: 62px; height: 62px; place-items: center; margin: 0 0 16px; border-radius: 50%; background: #fff3df; color: #cc6700; font-size: 28px; }
+                .ca-start-notification-card p { color: #5e6670; }
+                .ca-start-notification-card .ca-button { width: 100%; gap: 10px; }
+                .ca-start-notification-success { max-width: 430px; text-align: center; }
+                .ca-start-notification-success-icon { display: inline-grid; width: 68px; height: 68px; place-items: center; margin: 0 0 16px; border-radius: 50%; background: #e7f8ed; color: #16974a; font-size: 32px; }
+                .ca-start-notification-page { width: min(100%, 540px); margin: 0 auto; }
+                .ca-start-notification-surface { overflow: hidden; padding: 0; border: 1px solid #e2e6ed; box-shadow: 0 12px 32px rgba(18, 30, 49, .10); }
+                .ca-start-notification-header { padding: 24px 22px 22px; background: #162131; color: #fff; }
+                .ca-start-notification-kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; color: #e8edf3; font-size: 13px; font-weight: 800; }
+                .ca-start-notification-kicker i { display: inline-grid; width: 32px; height: 32px; place-items: center; border-radius: 8px; background: rgba(255,255,255,.14); color: #fff; font-size: 16px; }
+                .ca-start-notification-header h1 { margin: 0 0 8px; color: #fff; font-size: 28px; line-height: 1.15; }
+                .ca-start-notification-header p { margin: 0; color: #cbd4df; font-size: 16px; line-height: 1.45; }
+                .ca-start-notification-body { padding: 22px; }
+                .ca-start-step { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; color: #4f5b6a; font-size: 14px; font-weight: 800; }
+                .ca-start-step-number { display: inline-grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; background: #fbe4eb; color: #cf174d; font-size: 13px; }
+                .ca-start-date-picker { display: grid; gap: 12px; }
+                .ca-start-date-toggle { width: 100%; min-height: 66px; justify-content: space-between; gap: 12px; border: 1px solid #d8dee7; background: #fff; color: #1d2938 !important; box-shadow: none; text-align: left; }
+                .ca-start-date-toggle.is-open, .ca-start-date-toggle.has-selection { border-color: #FB0050; }
+                .ca-start-date-toggle-main { display: flex; min-width: 0; align-items: center; gap: 12px; }
+                .ca-start-date-toggle-main > i { display: inline-grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 8px; background: #fce7ef; color: #e40046; font-size: 18px; }
+                .ca-start-date-toggle-copy { display: grid; gap: 3px; min-width: 0; }
+                .ca-start-date-toggle-label { color: #1d2938; font-size: 15px; font-weight: 850; }
+                .ca-start-date-toggle-value { overflow: hidden; color: #717d8c; font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+                .ca-start-date-toggle.has-selection .ca-start-date-toggle-value { color: #cf174d; }
+                .ca-start-date-toggle-arrow { flex: 0 0 auto; color: #717d8c; transition: transform .2s ease; }
+                .ca-start-date-toggle.is-open .ca-start-date-toggle-arrow { transform: rotate(180deg); }
+                .ca-start-date-list { display: grid; gap: 8px; margin-top: 2px; }
+                .ca-start-date-list[hidden] { display: none; }
+                .ca-start-date-option { display: flex; align-items: center; gap: 12px; min-height: 56px; border: 1px solid #d9dde5; border-radius: 8px; padding: 10px 14px; background: #fff; color: #272b33; font-size: 16px; font-weight: 800; cursor: pointer; }
+                .ca-start-date-option.is-selected { border-color: #FB0050; background: #fff4f7; color: #bd1144; }
+                .ca-start-date-option input { width: 20px; min-width: 20px; height: 20px; min-height: 20px; margin: 0; accent-color: #FB0050; }
+                .ca-start-notification-submit { width: 100%; min-height: 54px; margin-top: 12px; gap: 10px; box-shadow: 0 10px 20px rgba(251,0,80,.18); }
+                .ca-start-notification-submit:disabled { background: #dfe4eb; color: #8893a1 !important; box-shadow: none; cursor: not-allowed; }
+                .ca-start-notification-hint { margin: 0; color: #7a8593; font-size: 13px; line-height: 1.4; text-align: center; }
                 .ca-emergency-modal-card { max-width: 380px; padding: 28px 24px 24px; text-align: center; }
                 .ca-emergency-modal-icon { display: inline-grid; width: 48px; height: 48px; place-items: center; margin: 0 0 16px; border-radius: 50%; background: #fff1df; color: #c65d00; font-size: 22px; }
                 .ca-emergency-modal-card h3 { margin-bottom: 8px; }
@@ -612,6 +639,7 @@
                 <div class="ca-action-grid">
                     <a href="/kurye-muhasebe/kisisel-bilgiler" class="ca-button ca-button-primary">Kişisel Bilgiler</a>
                     <a href="/kurye-muhasebe/hakedis" class="ca-button ca-button-primary">Hakediş</a>
+                    <a href="/kurye-muhasebe/ise-baslama-bildirimi" class="ca-button ca-button-primary">Bildir</a>
                     
                     <a href="/kurye-muhasebe/belgeler" class="ca-button ca-button-primary" style="display: flex; flex-direction: column; height: auto; padding: 12px 18px; line-height: 1.2;">
                         <span>Belgeler</span>
@@ -653,23 +681,119 @@
                     })();
                 </script>
             </section>
-            <div t-if="show_app_update_notice" class="ca-modal ca-app-update-modal is-open" id="ca_app_update_notice" role="dialog" aria-modal="true" aria-labelledby="ca_app_update_notice_title">
-                <div class="ca-modal-card ca-app-update-modal-card">
-                    <span class="ca-app-update-icon" aria-hidden="true"><i class="fa fa-refresh"/></span>
-                    <h3 id="ca_app_update_notice_title">Uygulama Güncellemesi</h3>
-                    <p>Lütfen uygulamayı güncelleyiniz.</p>
-                    <p class="ca-app-update-note">Eğer güncelleme yaptıysanız bu bildirimi dikkate almayınız.</p>
-                    <button type="button" class="ca-app-update-confirm" id="ca_app_update_notice_confirm">Tamam</button>
+            <div t-if="show_start_notification_warning" class="ca-modal is-open" id="ca_start_notification_warning" role="dialog" aria-modal="true" aria-labelledby="ca_start_notification_warning_title">
+                <div class="ca-modal-card ca-start-notification-card">
+                    <span class="ca-start-notification-icon" aria-hidden="true"><i class="fa fa-exclamation"></i></span>
+                    <h3 id="ca_start_notification_warning_title">Önemli Uyarı!</h3>
+                    <p>İşe başlangıç bildiriminizi ilk 3 gün içinde yapmalısınız.</p>
+                    <a href="/kurye-muhasebe/ise-baslama-bildirimi" class="ca-button ca-button-primary"><i class="fa fa-calendar-check-o"></i> Hemen Bildirimini Yap</a>
+                    <button type="button" class="ca-modal-close" id="ca_start_notification_warning_close" style="margin-top: 10px; background: #eceff3; color: #313640;">İşlemlere Devam Et</button>
                 </div>
             </div>
-            <script t-if="show_app_update_notice">
+            <script t-if="show_start_notification_warning">
                 (function () {
-                    const notice = document.getElementById('ca_app_update_notice');
-                    const confirmButton = document.getElementById('ca_app_update_notice_confirm');
-                    if (!notice || !confirmButton) return;
-                    confirmButton.addEventListener('click', function () {
-                        notice.classList.remove('is-open');
+                    const warning = document.getElementById('ca_start_notification_warning');
+                    const closeButton = document.getElementById('ca_start_notification_warning_close');
+                    if (warning &amp;&amp; closeButton) {
+                        closeButton.addEventListener('click', function () {
+                            warning.classList.remove('is-open');
+                        });
+                    }
+                })();
+            </script>
+        </t>
+    </template>
+
+    <template id="courier_accounting_start_notification" name="Courier Start Notification">
+        <t t-call="partner_courier_accounting.courier_accounting_layout">
+            <a href="/kurye-muhasebe/home" class="ca-back" aria-label="Ana sayfaya dön">←</a>
+            <div class="ca-start-notification-page">
+                <section class="ca-card ca-start-notification-surface">
+                    <header class="ca-start-notification-header">
+                        <div class="ca-start-notification-kicker"><i class="fa fa-shield"></i><span>Sigorta İşlemleri</span></div>
+                        <h1>İşe Başlama Bildirimi</h1>
+                        <p>İşe başlayacağınız günü seçin, sigorta girişiniz için ekibimize bildirin. İlk 3 gün içinde çalışmanız hesap aktivasyonunuz için önemlidir.</p>
+                    </header>
+                    <div class="ca-start-notification-body">
+                        <div class="ca-start-step"><span class="ca-start-step-number">1</span><span>İşe başlama tarihini seçin</span></div>
+                        <form action="/kurye-muhasebe/ise-baslama-bildirimi/gonder" method="post" class="ca-start-date-picker" id="ca_start_notification_form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <button type="button" class="ca-button ca-start-date-toggle" id="ca_start_date_toggle" aria-expanded="false" aria-controls="ca_start_date_list">
+                                <span class="ca-start-date-toggle-main">
+                                    <i class="fa fa-calendar"></i>
+                                    <span class="ca-start-date-toggle-copy">
+                                        <span class="ca-start-date-toggle-label">İşe başlayacağım tarih</span>
+                                        <span class="ca-start-date-toggle-value" id="ca_start_date_value">Tarih seçin</span>
+                                    </span>
+                                </span>
+                                <i class="fa fa-chevron-down ca-start-date-toggle-arrow" aria-hidden="true"></i>
+                            </button>
+                            <div class="ca-start-date-list" id="ca_start_date_list" hidden="hidden">
+                                <label t-foreach="available_dates" t-as="available_date" class="ca-start-date-option">
+                                    <input type="radio" name="start_date" t-att-value="available_date.isoformat()" t-att-checked="existing_notification and existing_notification.start_date == available_date and 'checked' or None"/>
+                                    <span class="ca-start-date-label" t-esc="format_date(available_date)"/>
+                                </label>
+                            </div>
+                            <p t-if="error" class="ca-error">Lütfen listede yer alan geçerli bir tarih seçin.</p>
+                            <button type="submit" class="ca-button ca-button-primary ca-start-notification-submit" id="ca_start_notification_submit" disabled="disabled"><i class="fa fa-paper-plane"></i> Bildir</button>
+                            <p class="ca-start-notification-hint" id="ca_start_notification_hint">Devam etmek için işe başlama tarihini seçin.</p>
+                        </form>
+                    </div>
+                </section>
+            </div>
+            <div t-if="success" class="ca-modal is-open" id="ca_start_notification_success" role="dialog" aria-modal="true" aria-labelledby="ca_start_notification_success_title">
+                <div class="ca-modal-card ca-start-notification-success">
+                    <span class="ca-start-notification-success-icon" aria-hidden="true"><i class="fa fa-check"></i></span>
+                    <h3 id="ca_start_notification_success_title">Bildirim Gönderildi</h3>
+                    <p>İşe başlama bildiriminiz Kuryetec ekibine gönderilmiştir.</p>
+                    <a href="/kurye-muhasebe/home" class="ca-button ca-button-primary">Tamam</a>
+                </div>
+            </div>
+            <script>
+                (function () {
+                    const dateToggle = document.getElementById('ca_start_date_toggle');
+                    const dateList = document.getElementById('ca_start_date_list');
+                    const submitButton = document.getElementById('ca_start_notification_submit');
+                    const form = document.getElementById('ca_start_notification_form');
+                    const dateValue = document.getElementById('ca_start_date_value');
+                    const hint = document.getElementById('ca_start_notification_hint');
+                    if (!dateToggle || !dateList || !submitButton || !form || !dateValue || !hint) return;
+                    const syncSubmitState = function () {
+                        const selectedInput = form.querySelector('input[name="start_date"]:checked');
+                        const selectedOption = selectedInput &amp;&amp; selectedInput.closest('.ca-start-date-option');
+                        form.querySelectorAll('.ca-start-date-option').forEach(function (option) {
+                            option.classList.toggle('is-selected', option === selectedOption);
+                        });
+                        submitButton.disabled = !selectedInput;
+                        if (selectedOption) {
+                            dateValue.textContent = selectedOption.querySelector('.ca-start-date-label').textContent;
+                            dateToggle.classList.add('has-selection');
+                            hint.textContent = 'Tarihinizi kontrol edip bildirimi gönderin.';
+                        } else {
+                            dateValue.textContent = 'Tarih seçin';
+                            dateToggle.classList.remove('has-selection');
+                            hint.textContent = 'Devam etmek için işe başlama tarihini seçin.';
+                        }
+                    };
+                    dateToggle.addEventListener('click', function () {
+                        dateList.hidden = !dateList.hidden;
+                        dateToggle.classList.toggle('is-open', !dateList.hidden);
+                        dateToggle.setAttribute('aria-expanded', dateList.hidden ? 'false' : 'true');
                     });
+                    form.addEventListener('change', function () {
+                        syncSubmitState();
+                        if (form.querySelector('input[name="start_date"]:checked')) {
+                            dateList.hidden = true;
+                            dateToggle.classList.remove('is-open');
+                            dateToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                    form.addEventListener('submit', function () {
+                        if (submitButton.disabled) return;
+                        submitButton.disabled = true;
+                        submitButton.innerHTML = '<span class="ca-spinner"></span>Gönderiliyor';
+                    });
+                    syncSubmitState();
                 })();
             </script>
         </t>
@@ -787,10 +911,15 @@
             <section class="ca-panel ca-panel-note">
                 <h2>Ödeme Notu</h2>
                 <div class="ca-row ca-row-note"><strong>Not:</strong><span t-esc="line.note or ''"/><button type="button" class="ca-info-btn" t-att-data-title="'Ödeme Notu'" t-att-data-info="info['payment_note']">i</button></div>
+                <div t-if="line.has_extended_earnings_format" style="margin-top: 14px; min-width: 0;">
+                    <strong>Haciz Yazısı:</strong>
+                    <p style="white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; margin: 8px 0 0;" t-esc="line.garnishment_note or '—'"/>
+                </div>
             </section>
 
             <section class="ca-panel ca-panel-allowance">
                 <h2>Ödenekler</h2>
+                <div t-if="line.has_extended_earnings_format" class="ca-row"><strong>Yazlık Ek Paket Tutarı:</strong><span t-esc="money['summer_extra_package_amount']"/><button type="button" class="ca-info-btn" data-title="Yazlık Ek Paket Tutarı" t-att-data-info="info['summer_extra_package_amount']">i</button></div>
                 <div class="ca-row"><strong><t t-if="is_car_courier">Çalışma Saati:</t><t t-else="">Pick Up:</t></strong><span t-esc="line.pickup_count"/><button type="button" class="ca-info-btn" t-att-data-title="'Çalışma Saati' if is_car_courier else 'Pick Up'" t-att-data-info="info['pickup_count']">i</button></div>
                 <div class="ca-row"><strong><t t-if="is_car_courier">Paket Sayısı:</t><t t-else="">Drop Off:</t></strong><span t-esc="line.dropoff_count"/><button type="button" class="ca-info-btn" t-att-data-title="'Paket Sayısı' if is_car_courier else 'Drop Off'" t-att-data-info="info['dropoff_count']">i</button></div>
                 <div class="ca-row"><strong><t t-if="is_car_courier">Saatlik Kazanç Tutarı:</t><t t-else="">Pick Up Tutar:</t></strong><span t-esc="money['pickup_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Saatlik Kazanç Tutarı' if is_car_courier else 'Pick Up Tutar'" t-att-data-info="info['pickup_amount']">i</button></div>
@@ -802,6 +931,7 @@
 
             <section class="ca-panel ca-panel-deduction">
                 <h2>Mahsup Edilenler</h2>
+                <div t-if="line.has_extended_earnings_format" class="ca-row"><strong>P2 Kesintisi:</strong><span t-esc="money['p2_deduction_amount']"/><button type="button" class="ca-info-btn" data-title="P2 Kesintisi" t-att-data-info="info['p2_deduction_amount']">i</button></div>
                 <div class="ca-row"><strong>Cash (Nakit) Kesinti Tutarı:</strong><span t-esc="money['cash_deduction_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'Cash (Nakit) Kesinti Tutarı'" t-att-data-info="info['cash_deduction_tax_included']">i</button></div>
                 <div t-if="not is_car_courier" class="ca-row"><strong>SoftPos (K.K.) Kesinti Tutarı:</strong><span t-esc="money['softpos_deduction_tax_included']"/><button type="button" class="ca-info-btn" t-att-data-title="'SoftPos (K.K.) Kesinti Tutarı'" t-att-data-info="info['softpos_deduction_tax_included']">i</button></div>
                 <div class="ca-row"><strong>Sigorta Kesintisi (Yemeksepeti Zorunlu Sağlık Sigortası):</strong><span t-esc="money['insurance_deduction_amount']"/><button type="button" class="ca-info-btn" t-att-data-title="'Sigorta Kesintisi (Yemeksepeti Zorunlu Sağlık Sigortası)'" t-att-data-info="info['insurance_deduction_amount']">i</button></div>
@@ -1325,7 +1455,7 @@
                         <span>Açıklama</span>
                         <textarea name="description" required="required" rows="6" style="width: 100%; border: 1px solid #d6d6d6; border-radius: 8px; padding: 10px 12px;" placeholder="Lütfen talebinizin detaylarını yazınız..."></textarea>
                     </label>
-                    <div t-if="advance_error" class="ca-error">Avans talebi yalnızca Perşembe ve Cuma günleri oluşturulabilir.</div>
+                    <div t-if="advance_error" class="ca-error">Avans talebi bugün oluşturulamaz.</div>
                     <div t-elif="error" class="ca-error">Lütfen tüm alanları doldurunuz.</div>
                     <button type="submit" class="ca-button ca-button-primary ca-submit-btn">Talebi Gönder</button>
                 </form>
@@ -1524,9 +1654,17 @@
                 </t>
 
                 <!-- Ödenekler -->
+                <div t-if="doc.has_extended_earnings_format" class="pdf-section">
+                    <div class="pdf-section-title">Haciz Yazısı</div>
+                    <div style="white-space: pre-wrap; word-wrap: break-word; word-break: break-all;" t-esc="doc.garnishment_note or '—'"/>
+                </div>
                 <div class="pdf-section">
                     <div class="pdf-section-title">Ödenekler</div>
                     <table class="pdf-table">
+                        <tr t-if="doc.has_extended_earnings_format">
+                            <td class="label">Yazlık Ek Paket Tutarı:</td>
+                            <td class="value"><span t-esc="doc.summer_extra_package_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
                         <tr>
                             <td class="label"><t t-if="doc.partner_id.courier_type == 'car'">Çalışma Saati:</t><t t-else="">Pick Up (Adet):</t></td>
                             <td class="value"><span t-esc="doc.pickup_count"/></td>
@@ -1562,6 +1700,10 @@
                 <div class="pdf-section">
                     <div class="pdf-section-title">Mahsup Edilenler</div>
                     <table class="pdf-table">
+                        <tr t-if="doc.has_extended_earnings_format">
+                            <td class="label">P2 Kesintisi:</td>
+                            <td class="value"><span t-esc="doc.p2_deduction_amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
                         <tr>
                             <td class="label">Nakit Kesinti Tutarı (KDV Dahil):</td>
                             <td class="value"><span t-esc="doc.cash_deduction_tax_included" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>

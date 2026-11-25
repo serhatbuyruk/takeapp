@@ -11,6 +11,8 @@
                 <field name="firebase_token_updated_at" readonly="1"/>
                 <field name="courier_privacy_kvkk_accepted" readonly="1"/>
                 <field name="courier_privacy_kvkk_accepted_at" readonly="1"/>
+                <field name="courier_portal_first_login_at" readonly="1"/>
+                <field name="courier_start_notification_prompt" readonly="1"/>
             </xpath>
             <xpath expr="//field[@name='sgk_belgesi']" position="after">
                 <field name="adli_sicil_attachment" widget="many2many_binary"/>
@@ -31,6 +33,9 @@
                             <field name="dropoff_amount" optional="hide"/>
                             <field name="total_deduction_amount" optional="hide"/>
                             <field name="net_payable_amount"/>
+                            <field name="summer_extra_package_amount" optional="hide"/>
+                            <field name="p2_deduction_amount" optional="hide"/>
+                            <field name="garnishment_note" optional="hide"/>
                             <field name="invoice_type" optional="hide"/>
                         </tree>
                     </field>

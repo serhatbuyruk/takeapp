@@ -1,1 +1,2 @@
 from . import partner_courier_accounting_import_wizard
+from . import partner_courier_manager_import_wizard

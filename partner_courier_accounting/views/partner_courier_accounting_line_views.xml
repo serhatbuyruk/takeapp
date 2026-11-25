@@ -11,6 +11,10 @@
                 <field name="date_end"/>
                 <field name="payment_date"/>
                 <field name="net_payable_amount"/>
+                <field name="summer_extra_package_amount" optional="hide"/>
+                <field name="garnishment_note" optional="hide"/>
+                <field name="p2_deduction_amount" optional="hide"/>
+                <field name="has_extended_earnings_format" optional="hide"/>
                 <field name="imported_at" optional="hide"/>
                 <field name="area" optional="hide"/>
                 <field name="city" optional="hide"/>
@@ -92,6 +96,7 @@
                                 <field name="night_shift_amount"/>
                                 <field name="region_campaign_amount"/>
                                 <field name="weekly_extra_package_amount"/>
+                                <field name="summer_extra_package_amount"/>
                                 <field name="daily_bonus_amount"/>
                                 <field name="tip_amount_tax_included"/>
                                 <field name="tip_amount_tax_excluded"/>
@@ -113,6 +118,7 @@
                                 <field name="one_week_previous_payment_deduction_amount"/>
                                 <field name="two_week_previous_payment_deduction_amount"/>
                                 <field name="advance_amount"/>
+                                <field name="p2_deduction_amount"/>
                             </group>
                         </page>
                         <page string="Toplam">
@@ -129,6 +135,7 @@
                             </group>
                         </page>
                         <page string="Not">
+                            <group><field name="has_extended_earnings_format" readonly="1"/><field name="garnishment_note"/></group>
                             <field name="note"/>
                         </page>
                     </notebook>

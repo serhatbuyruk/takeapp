@@ -8,7 +8,7 @@ import os
 import re
 import time
 import uuid
-from datetime import date, datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from urllib.parse import urlencode
 
@@ -20,11 +20,10 @@ _ONESIGNAL_SUBSCRIPTION_ID_PATTERN = re.compile(
     r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
     re.IGNORECASE,
 )
-_ADVANCE_REQUEST_WEEKDAYS = (3, 4)
 _TURKEY_TIMEZONE = ZoneInfo('Europe/Istanbul')
 _KURYETEC_SSO_LOGIN_URL = 'https://kuryetec.autoronics.com/kuryetec-sso/login'
 _INVOICE_SAMPLE_ENABLED = False
-_APP_UPDATE_NOTICE_END_DATE = date(2026, 10, 20)
+_START_NOTIFICATION_FEATURE_START = datetime(2026, 10, 21)
 
 
 class CourierAccountingPortal(http.Controller):
@@ -39,8 +38,8 @@ class CourierAccountingPortal(http.Controller):
         if not enabled or not configured_login or not configured_password:
             return False
         if not (
-            hmac.compare_digest(login, configured_login)
-            and hmac.compare_digest(password, configured_password)
+            hmac.compare_digest(login.encode('utf-8'), configured_login.encode('utf-8'))
+            and hmac.compare_digest(password.encode('utf-8'), configured_password.encode('utf-8'))
         ):
             return False
         if not secret:
@@ -69,7 +68,18 @@ class CourierAccountingPortal(http.Controller):
         return '%s?%s' % (_KURYETEC_SSO_LOGIN_URL, urlencode({'token': token}))
 
     def _advance_requests_open(self):
-        return datetime.now(_TURKEY_TIMEZONE).weekday() in _ADVANCE_REQUEST_WEEKDAYS
+        weekday = datetime.now(_TURKEY_TIMEZONE).weekday()
+        weekday_field_names = (
+            'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
+        )
+        schedule = request.env['partner.courier.advance.schedule'].sudo().search([
+            ('company_id', '=', request.env.company.id),
+        ], limit=1)
+        if schedule:
+            return bool(schedule[weekday_field_names[weekday]])
+        # Preserve the existing Thursday-Friday rule until an internal user
+        # opens the new schedule screen for the first time.
+        return weekday in (3, 4)
 
     @http.route('/kurye-muhasebe/main-website-domain', type='http', auth='public', methods=['GET'], website=False, csrf=False, sitemap=False)
     def main_website_domain(self, **kw):
@@ -378,6 +388,7 @@ class CourierAccountingPortal(http.Controller):
     def _line_values(self, line):
         currency = line.currency_id or request.env.company.currency_id
         money_fields = [
+            'summer_extra_package_amount', 'p2_deduction_amount',
             'pickup_amount', 'dropoff_amount', 'distance_amount', 'weekly_extra_package_amount',
             'tip_amount_tax_excluded', 'cash_deduction_tax_included', 'softpos_deduction_tax_included',
             'insurance_deduction_amount', 'field_deduction_order_amount',
@@ -392,6 +403,8 @@ class CourierAccountingPortal(http.Controller):
 
     def _line_descriptions(self, is_car_courier=False):
         descriptions = {
+            'summer_extra_package_amount': 'Excelde belirtilen yazlık ek paket tutarıdır.',
+            'p2_deduction_amount': 'Excelde belirtilen P2 kesintisi tutarıdır.',
             'rider_id': 'Kurye için sistemde tanımlı benzersiz kullanıcı kimlik numarasıdır. Excel importunda bu numara kullanılarak hakediş satırı ilgili kurye kartına bağlanır.',
             'rider_name': 'Hakediş kaydının bağlı olduğu kurye ad soyad bilgisidir.',
             'area': 'Kuryenin ilgili haftada çalıştığı bölge veya ilçe bilgisidir.',
@@ -430,6 +443,10 @@ class CourierAccountingPortal(http.Controller):
             })
         return descriptions
 
+    def _start_notification_dates(self):
+        today = datetime.now(_TURKEY_TIMEZONE).date()
+        return [today + timedelta(days=offset) for offset in range(6)]
+
     @http.route('/kurye-muhasebe', type='http', auth='public', website=True, sitemap=False)
     def login(self, **kw):
         if self._partner():
@@ -460,6 +477,13 @@ class CourierAccountingPortal(http.Controller):
             partner.write({
                 'courier_privacy_kvkk_accepted': True,
                 'courier_privacy_kvkk_accepted_at': fields.Datetime.now(),
+            })
+        if not partner.courier_portal_first_login_at:
+            partner.write({
+                'courier_portal_first_login_at': fields.Datetime.now(),
+                'courier_start_notification_prompt': bool(
+                    partner.create_date and partner.create_date >= _START_NOTIFICATION_FEATURE_START
+                ),
             })
         request.session['courier_accounting_partner_id'] = partner.id
         return request.redirect('/kurye-muhasebe/home')
@@ -512,12 +536,68 @@ class CourierAccountingPortal(http.Controller):
             return request.redirect('/kurye-muhasebe')
         has_missing_documents = partner._has_missing_documents()
         user = partner.user_ids[:1]
+        has_start_notification = bool(
+            request.env['partner.courier.start.notification'].sudo().search_count([
+                ('partner_id', '=', partner.id),
+                ('state', '!=', 'cancelled'),
+            ])
+        )
         return self._render('partner_courier_accounting.courier_accounting_home', {
             'partner': partner,
             'has_missing_documents': has_missing_documents,
             'courier_user_id': user.id if user else False,
-            'show_app_update_notice': datetime.now(_TURKEY_TIMEZONE).date() <= _APP_UPDATE_NOTICE_END_DATE,
+            'show_start_notification_warning': (
+                partner.courier_start_notification_prompt and not has_start_notification
+            ),
         })
+
+    @http.route('/kurye-muhasebe/ise-baslama-bildirimi', type='http', auth='public', methods=['GET'], website=True, sitemap=False)
+    def start_notification(self, **kw):
+        partner = self._partner()
+        if not partner:
+            return request.redirect('/kurye-muhasebe')
+        selected_dates = self._start_notification_dates()
+        existing_notification = request.env['partner.courier.start.notification'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('state', 'in', ('new', 'progress')),
+        ], order='submitted_at desc, id desc', limit=1)
+        return self._render('partner_courier_accounting.courier_accounting_start_notification', {
+            'partner': partner,
+            'available_dates': selected_dates,
+            'existing_notification': existing_notification,
+            'format_date': self._format_date,
+            'success': kw.get('success') == '1',
+            'error': kw.get('error'),
+        })
+
+    @http.route('/kurye-muhasebe/ise-baslama-bildirimi/gonder', type='http', auth='public', methods=['POST'], website=True, csrf=True, sitemap=False)
+    def start_notification_submit(self, start_date=None, **kw):
+        partner = self._partner()
+        if not partner:
+            return request.redirect('/kurye-muhasebe')
+        try:
+            selected_date = fields.Date.to_date(start_date)
+        except (TypeError, ValueError):
+            selected_date = False
+        if not selected_date or selected_date not in self._start_notification_dates():
+            return request.redirect('/kurye-muhasebe/ise-baslama-bildirimi?error=invalid_date')
+
+        notification_model = request.env['partner.courier.start.notification'].sudo()
+        pending_notification = notification_model.search([
+            ('partner_id', '=', partner.id),
+            ('state', 'in', ('new', 'progress')),
+        ], order='submitted_at desc, id desc', limit=1)
+        values = {
+            'start_date': selected_date,
+            'submitted_at': fields.Datetime.now(),
+            'state': 'new',
+        }
+        if pending_notification:
+            pending_notification.write(values)
+        else:
+            notification_model.create(dict(values, partner_id=partner.id))
+        partner.sudo().write({'courier_start_notification_prompt': False})
+        return request.redirect('/kurye-muhasebe/ise-baslama-bildirimi?success=1')
 
     @http.route('/kurye-muhasebe/kisisel-bilgiler', type='http', auth='public', website=True, sitemap=False)
     def personal(self, **kw):

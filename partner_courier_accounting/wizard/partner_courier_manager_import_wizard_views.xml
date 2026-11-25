@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_courier_manager_import_wizard_form" model="ir.ui.view">
+        <field name="name">partner.courier.manager.import.wizard.form</field>
+        <field name="model">partner.courier.manager.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Kurye Yönetici İçe Aktar" create="0" edit="0" delete="0">
+                <sheet>
+                    <field name="state" invisible="1"/>
+                    <div class="oe_title" attrs="{'invisible': [('state', '!=', 'upload')]}">
+                        <h1>Kurye Yönetici İçe Aktar</h1>
+                        <p class="text-muted">Kurye ID ile eşleşen kayıtların yönetici ve telefon bilgisini toplu güncelleyin.</p>
+                    </div>
+                    <div class="alert alert-info" role="alert" attrs="{'invisible': [('state', '!=', 'upload')]}">
+                        <strong>Excel şablonu:</strong> İlk satırda sırasıyla <strong>Kurye ID</strong>, <strong>Yönetici</strong> ve <strong>Yönetici Telefonu</strong> sütunları bulunmalıdır.
+                    </div>
+                    <group string="Excel Dosyası" attrs="{'invisible': [('state', '!=', 'upload')]}">
+                        <field name="file" filename="filename"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                    <div class="oe_title" attrs="{'invisible': [('state', '!=', 'review')]}">
+                        <h1>İçe Aktarma Kontrolü</h1>
+                        <p class="text-muted">Sadece güncellenecek olarak işaretlenen satırlar kaydedilecektir.</p>
+                    </div>
+                    <div class="alert alert-info" role="alert" attrs="{'invisible': [('state', '!=', 'review')]}">
+                        Hatalı ve değişiklik olmayan satırlar içe aktarılmaz. Tabloyu kontrol edip devam edin.
+                    </div>
+                    <group col="2" attrs="{'invisible': [('state', '!=', 'review')]}">
+                            <field name="ready_line_count" readonly="1"/>
+                            <field name="issue_line_count" readonly="1"/>
+                    </group>
+                    <field name="line_ids" nolabel="1" readonly="1" attrs="{'invisible': [('state', '!=', 'review')]}">
+                        <tree create="0" delete="0" edit="0" decoration-success="state == 'ready'" decoration-warning="state == 'unchanged'" decoration-danger="state == 'error'">
+                            <field name="row_number"/>
+                            <field name="courier_id"/>
+                            <field name="partner_id"/>
+                            <field name="current_manager_name"/>
+                            <field name="current_manager_phone"/>
+                            <field name="manager_name"/>
+                            <field name="manager_phone"/>
+                            <field name="state"/>
+                            <field name="error_message"/>
+                        </tree>
+                    </field>
+                </sheet>
+                <footer>
+                    <button name="action_validate_file" string="Dosyayı Doğrula" type="object" class="btn-primary" icon="fa-check" attrs="{'invisible': [('state', '!=', 'upload')]}"/>
+                    <button name="action_back_to_upload" string="Yeni Dosya Seç" type="object" class="btn-secondary" icon="fa-arrow-left" attrs="{'invisible': [('state', '!=', 'review')]}"/>
+                    <button name="action_import" string="Doğrulanan Satırları İçe Aktar" type="object" class="btn-primary" icon="fa-upload" attrs="{'invisible': [('state', '!=', 'review')]}"/>
+                    <button string="İptal" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_partner_courier_manager_import_wizard" model="ir.actions.act_window">
+        <field name="name">Kurye Yönetici İçe Aktar</field>
+        <field name="res_model">partner.courier.manager.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">action</field>
+        <field name="groups_id" eval="[(4, ref('partner_courier_accounting.group_partner_courier_accounting_admin'))]"/>
+    </record>
+</odoo>

@@ -23,6 +23,11 @@ class ResPartner(models.Model):
         'partner_id',
         string='Hakediş',
     )
+    courier_start_notification_ids = fields.One2many(
+        'partner.courier.start.notification',
+        'partner_id',
+        string='İş Başı Bildirimleri',
+    )
 
     player_id = fields.Char(string='Player ID')
     firebase_token = fields.Char(string='Firebase Cihaz Tokenı', copy=False)
@@ -34,6 +39,16 @@ class ResPartner(models.Model):
     courier_privacy_kvkk_accepted_at = fields.Datetime(
         string='Gizlilik ve KVKK Onay Tarihi',
         copy=False,
+    )
+    courier_portal_first_login_at = fields.Datetime(
+        string='İlk Kurye Portal Girişi',
+        copy=False,
+        readonly=True,
+    )
+    courier_start_notification_prompt = fields.Boolean(
+        string='İş Başı Bildirimi Uyarısı Aktif',
+        copy=False,
+        readonly=True,
     )
 
     is_duplicate_courier = fields.Boolean(
